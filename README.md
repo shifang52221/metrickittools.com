@@ -16,6 +16,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 Set these environment variables (optional but recommended):
 
 - `NEXT_PUBLIC_SITE_URL` (e.g. `https://example.com`) for canonical URLs + sitemap (required in production)
+- `NEXT_PUBLIC_GA_ENABLED=true` to enable GA4
+- `NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX` your GA4 measurement id
 - `NEXT_PUBLIC_ADSENSE_ENABLED=true` to load AdSense script
 - `NEXT_PUBLIC_ADSENSE_CLIENT=ca-pub-xxxxxxxxxxxxxxxx` your AdSense publisher id
 - `NEXT_PUBLIC_ADSENSE_SLOT_CALCULATOR_SIDEBAR` ad slot id (calculator sidebar)

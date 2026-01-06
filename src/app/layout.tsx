@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { AdSenseLoader } from "@/components/ads/AdSenseLoader";
 import { ConsentBanner } from "@/components/consent/ConsentBanner";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { siteConfig } from "@/lib/site";
 
 const geistSans = Geist({
@@ -85,6 +86,7 @@ export default function RootLayout({
       >
         <JsonLd data={orgLd} />
         <JsonLd data={webSiteLd} />
+        <GoogleAnalytics />
         <AdSenseLoader />
         <div className="flex min-h-dvh flex-col">
           <SiteHeader />
