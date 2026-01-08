@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Search",
   description: "Search calculators and guides.",
   alternates: { canonical: "/search" },
+  robots: { index: false, follow: true },
   openGraph: {
     title: "Search",
     description: "Search calculators and guides.",
