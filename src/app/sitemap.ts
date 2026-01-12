@@ -4,8 +4,6 @@ import { guides } from "@/lib/guides";
 import { siteConfig } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
-
   const staticRoutes = [
     "/",
     "/about",
@@ -14,18 +12,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/contact",
     "/guides",
   ].map((path) => ({
-      url: `${siteConfig.siteUrl}${path}`,
-      lastModified: now,
-    }));
+    url: `${siteConfig.siteUrl}${path}`,
+  }));
 
   const categoryRoutes = categories.map((c) => ({
     url: `${siteConfig.siteUrl}/${c.slug}`,
-    lastModified: now,
   }));
 
   const calculatorRoutes = calculators.map((c) => ({
     url: `${siteConfig.siteUrl}/${c.category}/${c.slug}`,
-    lastModified: now,
   }));
 
   const guideRoutes = guides.map((g) => ({

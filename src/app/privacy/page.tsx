@@ -8,10 +8,13 @@ export const metadata: Metadata = {
 };
 
 export default function PrivacyPage() {
+  const lastUpdated =
+    process.env.NEXT_PUBLIC_LEGAL_LAST_UPDATED ?? "2026-01-08";
+
   return (
     <div className="prose prose-zinc max-w-3xl dark:prose-invert">
       <h1>Privacy Policy</h1>
-      <p>Last updated: {new Date().toISOString().slice(0, 10)}</p>
+      <p>Last updated: {lastUpdated}</p>
       <h2>Overview</h2>
       <p>
         {siteConfig.name} provides calculators that run in your browser. By

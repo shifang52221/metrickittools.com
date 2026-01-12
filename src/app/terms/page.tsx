@@ -8,10 +8,13 @@ export const metadata: Metadata = {
 };
 
 export default function TermsPage() {
+  const lastUpdated =
+    process.env.NEXT_PUBLIC_LEGAL_LAST_UPDATED ?? "2026-01-08";
+
   return (
     <div className="prose prose-zinc max-w-3xl dark:prose-invert">
       <h1>Terms of Service</h1>
-      <p>Last updated: {new Date().toISOString().slice(0, 10)}</p>
+      <p>Last updated: {lastUpdated}</p>
       <h2>Informational use only</h2>
       <p>
         The calculators and content on {siteConfig.name} are provided for
@@ -20,7 +23,8 @@ export default function TermsPage() {
       </p>
       <h2>No warranties</h2>
       <p>
-        We provide the site on an “as is” basis without warranties of any kind.
+        We provide the site on an &quot;as is&quot; basis without warranties of
+        any kind.
         We do not guarantee accuracy, completeness, or suitability for any
         purpose.
       </p>
@@ -37,4 +41,3 @@ export default function TermsPage() {
     </div>
   );
 }
-
