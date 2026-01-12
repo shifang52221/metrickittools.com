@@ -8,6 +8,7 @@ import { guides } from "@/lib/guides";
 import { AdUnit } from "@/components/ads/AdUnit";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { siteConfig } from "@/lib/site";
+import { getCategoryIntroBlocks } from "@/lib/content/categoryIntro";
 
 type PageProps = { params: Promise<{ category: string }> };
 
@@ -42,6 +43,7 @@ export default async function CategoryPage({ params }: PageProps) {
   const calcs = getCalculatorsByCategory(category);
   const featured = calcs.filter((c) => c.featured).slice(0, 6);
   const relatedGuides = guides.filter((g) => g.category === category).slice(0, 6);
+  const introBlocks = getCategoryIntroBlocks(category);
 
   const itemListLd = {
     "@context": "https://schema.org",
@@ -73,6 +75,26 @@ export default async function CategoryPage({ params }: PageProps) {
           {cat.description}
         </p>
       </div>
+
+      {introBlocks.length ? (
+        <section className="prose prose-zinc max-w-3xl dark:prose-invert">
+          {introBlocks.map((block) => (
+            <div key={block.title}>
+              <h2>{block.title}</h2>
+              {block.paragraphs.map((p) => (
+                <p key={p}>{p}</p>
+              ))}
+              {block.bullets?.length ? (
+                <ul>
+                  {block.bullets.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
+          ))}
+        </section>
+      ) : null}
 
       {featured.length ? (
         <section className="space-y-3">
@@ -122,7 +144,7 @@ export default async function CategoryPage({ params }: PageProps) {
             href="/guides"
             className="inline-flex text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
-            Browse all guides →
+            Browse all guides {"\u2192"}
           </Link>
         </section>
       ) : null}

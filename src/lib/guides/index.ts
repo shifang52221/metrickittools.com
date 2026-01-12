@@ -739,6 +739,169 @@ export const guides: Guide[] = [
       },
     ],
   },
+  {
+    slug: "contribution-margin-guide",
+    title: "Contribution margin: what it is and why it matters",
+    description:
+      "Contribution margin connects revenue to variable costs. It's the foundation for break-even analysis, ROAS targets, and scaling decisions.",
+    category: "finance",
+    updatedAt: "2026-01-12",
+    relatedCalculatorSlugs: [
+      "break-even-revenue-calculator",
+      "break-even-roas-calculator",
+      "target-roas-calculator",
+    ],
+    sections: [
+      { type: "h2", text: "Definition" },
+      {
+        type: "p",
+        text: "Contribution margin is the portion of revenue left after variable costs. It tells you how much each incremental dollar of revenue contributes to covering fixed costs (and eventually profit).",
+      },
+      { type: "h2", text: "Formula" },
+      {
+        type: "p",
+        text: "Contribution margin ($) = revenue - variable costs. Contribution margin (%) = (revenue - variable costs) / revenue.",
+      },
+      { type: "h2", text: "What to include as variable costs" },
+      {
+        type: "bullets",
+        items: [
+          "COGS (hosting, fulfillment, support directly tied to usage).",
+          "Payment processing fees.",
+          "Shipping and returns (for ecommerce).",
+          "Platform fees (marketplaces, app stores) when they scale with revenue.",
+        ],
+      },
+      { type: "h2", text: "How it relates to break-even" },
+      {
+        type: "p",
+        text: "Break-even models use contribution (or gross) margin because fixed costs are covered by the margin dollars left after variable costs. If you use net margin, you double-count fixed costs and the model becomes misleading.",
+      },
+      { type: "h2", text: "How it relates to ROAS" },
+      {
+        type: "p",
+        text: "ROAS targets are really contribution margin targets. A campaign can have a high ROAS but still be unprofitable if variable costs and overhead allocations are large.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Is contribution margin the same as gross margin?",
+        answer:
+          "Not always. Gross margin usually includes COGS. Contribution margin often includes additional variable costs like fees, shipping, and returns.",
+      },
+      {
+        question: "Should ad spend be included in contribution margin?",
+        answer:
+          "For paid acquisition, many teams treat ad spend as a variable cost and model 'contribution after marketing' to decide what to scale.",
+      },
+    ],
+  },
+  {
+    slug: "incrementality-guide",
+    title: "Incrementality: how to tell if ads are actually driving growth",
+    description:
+      "Platform-reported ROAS can overstate impact. Learn what incrementality means, when it matters, and practical ways to test it.",
+    category: "paid-ads",
+    updatedAt: "2026-01-12",
+    relatedCalculatorSlugs: ["roas-calculator", "roi-calculator"],
+    sections: [
+      { type: "h2", text: "Definition" },
+      {
+        type: "p",
+        text: "Incrementality asks: what would have happened without ads? The incremental lift is the difference between outcomes with ads and outcomes in a comparable no-ads baseline.",
+      },
+      { type: "h2", text: "Why ROAS can mislead" },
+      {
+        type: "bullets",
+        items: [
+          "Attribution often claims credit for conversions that would have happened anyway.",
+          "Retargeting can inflate ROAS by capturing already-intent customers.",
+          "Cross-channel effects (brand, email, organic) make last-click comparisons noisy.",
+        ],
+      },
+      { type: "h2", text: "Common incrementality tests" },
+      {
+        type: "bullets",
+        items: [
+          "Geo holdout: pause ads in matched regions and compare outcomes.",
+          "Audience split: randomize a subset of eligible users into a holdout group.",
+          "Budget experiments: step changes in spend and measure response curves.",
+        ],
+      },
+      { type: "h2", text: "Practical checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Pick a primary outcome (profit, conversions, or contribution margin).",
+          "Run the test long enough to smooth weekly seasonality.",
+          "Validate that holdout and exposed groups are comparable.",
+          "Use the result to set ROAS/CPA targets and scale rules.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Do I need incrementality tests if I'm small?",
+        answer:
+          "Usually not. Early on, focus on creative-market fit and basic unit economics. Incrementality becomes more valuable as spend grows and attribution bias increases.",
+      },
+      {
+        question: "What metric should I optimize for in a test?",
+        answer:
+          "If you can, optimize for contribution margin or profit. If not, use a proxy you trust (e.g., first purchases) and adjust using margin assumptions.",
+      },
+    ],
+  },
+  {
+    slug: "cohort-vs-aggregate-guide",
+    title: "Cohort vs aggregate metrics: why averages can mislead",
+    description:
+      "Aggregate metrics hide churn and expansion dynamics. Learn when to use cohort analysis and how to interpret retention and LTV.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-12",
+    relatedCalculatorSlugs: [
+      "churn-rate-calculator",
+      "retention-rate-calculator",
+      "ltv-calculator",
+    ],
+    sections: [
+      { type: "h2", text: "The problem with averages" },
+      {
+        type: "p",
+        text: "Aggregates blend together customers acquired at different times, prices, and behaviors. When your product or acquisition channel changes, averages can look stable while underlying cohorts deteriorate (or improve).",
+      },
+      { type: "h2", text: "What is a cohort?" },
+      {
+        type: "p",
+        text: "A cohort is a group of customers that share a start date (e.g., customers acquired in January). Cohort analysis tracks retention, expansion, and churn for that group over time.",
+      },
+      { type: "h2", text: "When cohort analysis matters most" },
+      {
+        type: "bullets",
+        items: [
+          "When you change pricing, packaging, or onboarding.",
+          "When you add a new acquisition channel or targeting strategy.",
+          "When you're trying to forecast LTV or payback more accurately.",
+        ],
+      },
+      { type: "h2", text: "How to use cohorts with LTV and payback" },
+      {
+        type: "bullets",
+        items: [
+          "Compute retention/churn by cohort and segment (plan, channel, geo).",
+          "Estimate LTV from retention curves rather than a single churn number.",
+          "Compare payback by cohort to see whether acquisition quality is changing.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is customer churn enough, or do I need revenue retention?",
+        answer:
+          "Customer churn is useful, but revenue retention (NRR/GRR) is often more representative for SaaS because expansion and contraction can dominate the story.",
+      },
+    ],
+  },
 ];
 
 export function getGuide(slug: string): Guide | undefined {

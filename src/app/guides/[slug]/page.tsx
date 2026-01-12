@@ -273,14 +273,14 @@ export default async function GuidePage({ params }: PageProps) {
           <div>
             {prevGuide ? (
               <Link className="text-sm hover:underline" href={`/guides/${prevGuide.slug}`}>
-                ← {prevGuide.title}
+                {"\u2190"} {prevGuide.title}
               </Link>
             ) : null}
           </div>
           <div>
             {nextGuide ? (
               <Link className="text-sm hover:underline" href={`/guides/${nextGuide.slug}`}>
-                {nextGuide.title} →
+                {nextGuide.title} {"\u2192"}
               </Link>
             ) : null}
           </div>

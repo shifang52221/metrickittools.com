@@ -26,7 +26,7 @@ export default function PrivacyPage() {
         We may display ads served by Google AdSense. Google and its partners may
         use cookies to serve ads based on your visits to this and other sites.
         You can learn more about how Google uses information from sites at
-        Google’s policies.
+        Google&apos;s policies.
       </p>
       <h2>Cookie choices</h2>
       <p>
@@ -37,12 +37,12 @@ export default function PrivacyPage() {
       <h2>EEA/UK notice</h2>
       <p>
         If you are in the EEA/UK, cookie requirements may be stricter. You may
-        need to use a certified Consent Management Platform (CMP) for Google’s
+        need to use a certified Consent Management Platform (CMP) for Google&apos;s
         requirements and applicable laws.
       </p>
       <h2>Personalized ads</h2>
       <p>
-        You may be able to control personalized advertising via Google’s ad
+        You may be able to control personalized advertising via Google&apos;s ad
         settings and by using the mechanisms provided by your browser/device.
       </p>
       <h2>Analytics</h2>

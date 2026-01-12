@@ -19,10 +19,9 @@ export function HeaderSearch() {
       <input
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        placeholder="Search…"
+        placeholder="Search..."
         className="w-56 rounded-full border border-zinc-200 bg-white px-4 py-2 text-sm outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-black dark:focus:border-zinc-600"
       />
     </form>
   );
 }
-

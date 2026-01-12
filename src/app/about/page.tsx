@@ -20,7 +20,7 @@ export default function AboutPage() {
       <h2>Methodology</h2>
       <ul>
         <li>Each calculator shows the formula used.</li>
-        <li>Inputs are user-provided; we don’t pull live data.</li>
+        <li>Inputs are user-provided; we don&apos;t pull live data.</li>
         <li>Results are estimates and can vary by definition and context.</li>
       </ul>
       <h2>Contact</h2>
@@ -34,4 +34,3 @@ export default function AboutPage() {
     </div>
   );
 }
-

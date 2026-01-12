@@ -105,12 +105,26 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula: "ROAS = Revenue ÷ Ad Spend",
-    assumptions: ["Revenue and spend are measured over the same time window."],
+    assumptions: [
+      "Revenue and spend are measured over the same time window.",
+      "Revenue is net of refunds/returns if you want ROAS to reflect reality.",
+      "ROAS depends on your attribution model and conversion window.",
+    ],
     faqs: [
       {
         question: "What is a good ROAS?",
         answer:
           "It depends on your margins, fulfillment costs, and fixed costs. A ROAS that looks 'good' can still lose money if margins are low.",
+      },
+      {
+        question: "What's the difference between ROAS and ROI?",
+        answer:
+          "ROAS is revenue divided by ad spend. ROI is profit relative to cost. ROAS can look great while ROI is negative if margins or costs are poor.",
+      },
+      {
+        question: "Can I use ROAS for subscription businesses?",
+        answer:
+          "Yes, but pair ROAS with CAC, payback period, and retention since revenue recurs over time and churn can change profitability.",
       },
     ],
     guide: [
@@ -119,7 +133,7 @@ export const calculators: CalculatorDefinition[] = [
         bullets: [
           "Use the same attribution model as your ad platform or analytics reports.",
           "Compare ROAS by channel, campaign, and creative to spot winners.",
-          "Always pair ROAS with margin to avoid ‘profitable-looking’ losses.",
+          "Always pair ROAS with margin to avoid 'profitable-looking' losses.",
         ],
       },
       {
@@ -408,9 +422,9 @@ export const calculators: CalculatorDefinition[] = [
           "Pick a conservative percent based on your business: total fixed costs divided by your expected revenue in the same period. Keep it stable for comparisons.",
       },
       {
-        question: "Why can’t I get a target ROAS?",
+        question: "Why can't I get a target ROAS?",
         answer:
-          "If contribution margin minus allocations is ≤ 0, your unit economics can’t support the chosen buffers. Reduce fixed/profit allocations or improve margin.",
+          "If contribution margin minus allocations is ≤ 0, your unit economics can't support the chosen buffers. Reduce fixed/profit allocations or improve margin.",
       },
     ],
     guide: [
@@ -512,7 +526,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         title: "How to interpret ROI",
         bullets: [
-          "ROI focuses on profit relative to cost; it’s stricter than ROAS.",
+          "ROI focuses on profit relative to cost; it's stricter than ROAS.",
           "Use a consistent cost definition (include tools/labor if you decide to).",
           "Compare ROI across initiatives using the same timeframe.",
         ],
@@ -520,7 +534,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         title: "Common pitfalls",
         bullets: [
-          "Leaving out ‘hidden’ costs like agency fees or salaries.",
+          "Leaving out 'hidden' costs like agency fees or salaries.",
           "Using lifetime revenue for some campaigns but not others.",
           "Comparing ROI with different attribution rules.",
         ],
@@ -597,7 +611,10 @@ export const calculators: CalculatorDefinition[] = [
     },
     formula: "CAC = Sales & Marketing Spend ÷ New Customers",
     assumptions: [
-      "Spend includes only acquisition-related costs for the same period.",
+      "Spend and new customers are measured over the same time window.",
+      "New customers means net new paying customers (not leads or trials).",
+      "Use a consistent cost definition (paid-only vs fully-loaded).",
+      "Exclude retention costs unless you explicitly allocate them.",
     ],
     faqs: [
       {
@@ -605,12 +622,22 @@ export const calculators: CalculatorDefinition[] = [
         answer:
           "Many teams include the portion of sales/marketing salaries and tools attributable to acquisition; keep your definition consistent over time.",
       },
+      {
+        question: "What's the difference between paid CAC and blended CAC?",
+        answer:
+          "Paid CAC uses only paid acquisition spend (ads). Blended CAC includes all acquisition costs (paid + sales + marketing + tools) divided by new customers.",
+      },
+      {
+        question: "What if my sales cycle is long?",
+        answer:
+          "Match costs and customers using a consistent rule (e.g., cohort-based CAC, or lag spend by your average sales cycle) so CAC isn't artificially high or low in a given month.",
+      },
     ],
     guide: [
       {
         title: "How to calculate CAC well",
         bullets: [
-          "Use ‘new customers acquired’ for the same period as spend.",
+          "Use 'new customers acquired' for the same period as spend.",
           "Decide whether to include salaries/tools and stick to it consistently.",
           "Segment CAC by channel and customer type (SMB vs enterprise).",
         ],
@@ -620,6 +647,14 @@ export const calculators: CalculatorDefinition[] = [
         bullets: [
           "LTV and payback period determine if CAC is sustainable.",
           "Retention/churn explains whether CAC will rise over time.",
+        ],
+      },
+      {
+        title: "Common pitfalls",
+        bullets: [
+          "Mixing paid-only CAC with an LTV model that assumes fully-loaded costs.",
+          "Counting trials/signups as customers (inflates performance).",
+          "Ignoring channel mix changes (your blended CAC will drift).",
         ],
       },
     ],
@@ -898,7 +933,7 @@ export const calculators: CalculatorDefinition[] = [
         title: "How to interpret payback",
         bullets: [
           "Shorter payback improves cash efficiency and reduces risk.",
-          "Compare payback by channel—some channels are slow but scalable.",
+          "Compare payback by channel - some channels are slow but scalable.",
           "Pair with churn: long payback + high churn is dangerous.",
         ],
       },
@@ -1044,7 +1079,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         question: "Can retention rate be above 100%?",
         answer:
-          "Customer retention typically stays ≤100%. If you’re above 100%, double-check inputs or consider revenue retention instead.",
+          "Customer retention typically stays ≤100%. If you're above 100%, double-check inputs or consider revenue retention instead.",
       },
     ],
     guide: [
@@ -1167,14 +1202,14 @@ export const calculators: CalculatorDefinition[] = [
       {
         question: "Does MRR include one-time fees?",
         answer:
-          "Typically no—MRR focuses on recurring revenue only. Track one-time fees separately.",
+          "Typically no - MRR focuses on recurring revenue only. Track one-time fees separately.",
       },
     ],
     guide: [
       {
         title: "MRR best practices",
         bullets: [
-          "Use ‘committed’ MRR (active subscriptions) rather than invoices.",
+          "Use 'committed' MRR (active subscriptions) rather than invoices.",
           "Break down changes: new, expansion, contraction, churn.",
           "Track net new MRR to see momentum.",
         ],
@@ -1231,7 +1266,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         question: "ARR vs annual revenue?",
         answer:
-          "ARR is recurring revenue on an annualized basis. It doesn’t include one-time fees or services revenue.",
+          "ARR is recurring revenue on an annualized basis. It doesn't include one-time fees or services revenue.",
       },
     ],
     guide: [

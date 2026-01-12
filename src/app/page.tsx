@@ -15,7 +15,7 @@ export default function Home() {
         </h1>
         <p className="max-w-2xl text-pretty text-base text-zinc-600 dark:text-zinc-400 sm:text-lg">
           {siteConfig.name} helps you quickly compute CAC, LTV, ROAS, payback
-          period, and more—with clear formulas and assumptions.
+          period, and more - with clear formulas and assumptions.
         </p>
         <div className="flex flex-wrap gap-2 pt-2">
           {categories.map((cat) => (
@@ -39,7 +39,7 @@ export default function Home() {
             href="/saas-metrics"
             className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
-            Browse all →
+            Browse all {"\u2192"}
           </Link>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

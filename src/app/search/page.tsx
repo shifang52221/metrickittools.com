@@ -20,7 +20,7 @@ export default function SearchPage() {
     <Suspense
       fallback={
         <div className="rounded-2xl border border-zinc-200 bg-white p-5 text-sm text-zinc-600 dark:border-zinc-800 dark:bg-black dark:text-zinc-400">
-          Loading search…
+          Loading search...
         </div>
       }
     >

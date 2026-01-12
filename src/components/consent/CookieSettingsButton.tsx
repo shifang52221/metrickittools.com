@@ -18,7 +18,7 @@ export function CookieSettingsButton() {
       }}
       className="hover:underline"
     >
-      {status === "done" ? "Updating…" : "Cookie settings"}
+      {status === "done" ? "Updating..." : "Cookie settings"}
     </button>
   );
 }
