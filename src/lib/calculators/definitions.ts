@@ -222,7 +222,7 @@ export const calculators: CalculatorDefinition[] = [
           value: breakevenRoas,
           format: "multiple",
           maxFractionDigits: 2,
-          detail: "1 ÷ contribution margin",
+          detail: "1 / contribution margin",
         },
         secondary: [
           {
@@ -231,7 +231,7 @@ export const calculators: CalculatorDefinition[] = [
             value: contributionMargin,
             format: "percent",
             maxFractionDigits: 1,
-            detail: "Gross margin − fees − shipping − returns",
+            detail: "Gross margin - fees - shipping - returns",
           },
         ],
         breakdown: [
@@ -267,7 +267,7 @@ export const calculators: CalculatorDefinition[] = [
         warnings,
       };
     },
-    formula: "Break-even ROAS = 1 ÷ (Contribution margin)",
+    formula: "Break-even ROAS = 1 / (Contribution margin)",
     assumptions: [
       "This is a simplified contribution-margin model (not a full P&L).",
       "All inputs are expressed as a percent of revenue and are additive.",
@@ -386,7 +386,7 @@ export const calculators: CalculatorDefinition[] = [
           value: targetRoas,
           format: "multiple",
           maxFractionDigits: 2,
-          detail: "1 ÷ (contribution margin − fixed − desired)",
+          detail: "1 / (contribution margin - fixed - desired)",
         },
         secondary: [
           {
@@ -403,14 +403,14 @@ export const calculators: CalculatorDefinition[] = [
             value: Math.max(contributionMargin, 0),
             format: "percent",
             maxFractionDigits: 1,
-            detail: "Gross margin − fees − shipping − returns",
+            detail: "Gross margin - fees - shipping - returns",
           },
         ],
         warnings,
       };
     },
     formula:
-      "Target ROAS = 1 ÷ (Contribution margin − Fixed cost allocation − Desired profit margin)",
+      "Target ROAS = 1 / (Contribution margin - Fixed cost allocation - Desired profit margin)",
     assumptions: [
       "All inputs are expressed as a percent of revenue.",
       "Fixed costs are represented as an allocation; this is a planning model (not a full P&L).",
@@ -424,7 +424,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         question: "Why can't I get a target ROAS?",
         answer:
-          "If contribution margin minus allocations is ≤ 0, your unit economics can't support the chosen buffers. Reduce fixed/profit allocations or improve margin.",
+          "If contribution margin minus allocations is <= 0, your unit economics can't support the chosen buffers. Reduce fixed/profit allocations or improve margin.",
       },
     ],
     guide: [
@@ -487,7 +487,7 @@ export const calculators: CalculatorDefinition[] = [
           value: roi,
           format: "percent",
           maxFractionDigits: 1,
-          detail: "(Revenue − Cost) ÷ Cost",
+          detail: "(Revenue - Cost) / Cost",
         },
         secondary: [
           {
@@ -496,7 +496,7 @@ export const calculators: CalculatorDefinition[] = [
             value: profit,
             format: "currency",
             currency: "USD",
-            detail: "Revenue − Cost",
+            detail: "Revenue - Cost",
           },
           {
             key: "multiple",
@@ -504,13 +504,13 @@ export const calculators: CalculatorDefinition[] = [
             value: safeDivide(values.revenue, values.cost) ?? 0,
             format: "multiple",
             maxFractionDigits: 2,
-            detail: "Revenue ÷ Cost",
+            detail: "Revenue / Cost",
           },
         ],
         warnings,
       };
     },
-    formula: "ROI = (Revenue − Cost) ÷ Cost",
+    formula: "ROI = (Revenue - Cost) / Cost",
     assumptions: [
       "Revenue and cost are measured over the same time window.",
       "Cost includes all incremental costs you attribute to the initiative.",
@@ -847,7 +847,8 @@ export const calculators: CalculatorDefinition[] = [
   {
     slug: "cac-payback-period-calculator",
     title: "CAC Payback Period Calculator",
-    description: "Estimate how many months it takes to recover CAC via gross profit.",
+    description:
+      "Estimate how many months it takes to recover CAC (months to recover CAC) using gross profit.",
     category: "saas-metrics",
     featured: true,
     guideSlug: "cac-payback-guide",
@@ -927,8 +928,22 @@ export const calculators: CalculatorDefinition[] = [
         answer:
           "If onboarding costs are significant and variable per customer, include them in CAC so payback reflects full acquisition cost.",
       },
+      {
+        question: "How do I calculate months to recover CAC?",
+        answer:
+          "Compute gross profit per month (ARPA × gross margin), then divide CAC by gross profit per month. The result is the CAC payback period in months.",
+      },
     ],
     guide: [
+      {
+        title: "How to calculate CAC payback",
+        bullets: [
+          "Pick a time window (usually month) and a segment (plan/channel/geo).",
+          "Compute gross profit per month: ARPA × gross margin.",
+          "Compute payback months: CAC ÷ gross profit per month.",
+          "Compare across channels and cohorts, not just blended averages.",
+        ],
+      },
       {
         title: "How to interpret payback",
         bullets: [
@@ -1151,6 +1166,11 @@ export const calculators: CalculatorDefinition[] = [
         answer:
           "ARPU is per user; ARPA is per account. Choose the one that matches your product and reporting.",
       },
+      {
+        question: "How do you calculate ARPU?",
+        answer:
+          "ARPU = total revenue ÷ average active users for the same period. Choose a time window (month/quarter), define 'active user', compute average active users, then divide revenue by that average.",
+      },
     ],
     guide: [
       {
@@ -1159,6 +1179,14 @@ export const calculators: CalculatorDefinition[] = [
           "Compare ARPU by segment (geo, plan, acquisition channel).",
           "Pair with retention to understand long-term value.",
           "Avoid mixing trials/free users unless you define it clearly.",
+        ],
+      },
+      {
+        title: "Common mistakes",
+        bullets: [
+          "Using total signups as the denominator instead of active users.",
+          "Mixing gross revenue with net revenue (refunds/discounts) without noting it.",
+          "Comparing ARPU across periods while changing pricing or activation criteria without segmentation.",
         ],
       },
     ],
@@ -1269,6 +1297,11 @@ export const calculators: CalculatorDefinition[] = [
         answer:
           "ARR is recurring revenue on an annualized basis. It doesn't include one-time fees or services revenue.",
       },
+      {
+        question: "Bookings vs ARR?",
+        answer:
+          "ARR is recurring run-rate (MRR × 12). Bookings are contracted value and can include one-time and non-recurring items. Cash receipts can differ again due to prepay timing.",
+      },
     ],
     guide: [
       {
@@ -1329,12 +1362,12 @@ export const calculators: CalculatorDefinition[] = [
           value: valuation,
           format: "currency",
           currency: "USD",
-          detail: "ARR × multiple",
+          detail: "ARR x multiple",
         },
         warnings,
       };
     },
-    formula: "Valuation = ARR × multiple",
+    formula: "Valuation = ARR x multiple",
     assumptions: [
       "Multiples vary widely by growth, margins, retention, and market conditions.",
       "This is a simple heuristic, not investment advice.",
@@ -1343,7 +1376,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         question: "What multiple should I use?",
         answer:
-          "Use a range (e.g., 4×–10×) and sanity-check against growth rate, gross margin, and retention. Market conditions can move multiples significantly.",
+          "Use a range (e.g., 4x-10x) and sanity-check against growth rate, gross margin, and retention. Market conditions can move multiples significantly.",
       },
       {
         question: "Is ARR the same as annual revenue?",
