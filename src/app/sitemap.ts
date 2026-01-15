@@ -12,7 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/contact",
     "/guides",
   ].map((path) => ({
-    url: `${siteConfig.siteUrl}${path}`,
+    url: path === "/" ? siteConfig.siteUrl : `${siteConfig.siteUrl}${path}`,
   }));
 
   const categoryRoutes = categories.map((c) => ({
