@@ -419,9 +419,9 @@ export const guides: Guide[] = [
   },
   {
     slug: "cac-payback-guide",
-    title: "CAC Payback Period: What it means and how to improve it",
+    title: "CAC Payback Period (Months to Recover CAC): definition, formula, benchmarks",
     description:
-      "Understand CAC payback: calculation, benchmarks, and levers to improve payback through pricing, margin, and retention.",
+      "Learn how to calculate CAC payback (months to recover CAC) using gross profit, plus benchmarks and levers to improve it.",
     category: "saas-metrics",
     updatedAt: "2026-01-05",
     relatedCalculatorSlugs: ["cac-payback-period-calculator", "cac-calculator"],
@@ -434,7 +434,17 @@ export const guides: Guide[] = [
       { type: "h2", text: "Formula" },
       {
         type: "p",
-        text: "Payback (months) = CAC / (ARPA * gross margin).",
+        text: "Payback (months) = CAC ÷ (ARPA × gross margin).",
+      },
+      { type: "h2", text: "How to calculate CAC payback" },
+      {
+        type: "bullets",
+        items: [
+          "Pick a period (usually month) and a segment (plan/channel/geo).",
+          "Compute gross profit per month: ARPA × gross margin.",
+          "Compute payback months: CAC ÷ gross profit per month.",
+          "Compare across channels and cohorts, not just the blended average.",
+        ],
       },
       { type: "h2", text: "Benchmarks (rule of thumb)" },
       {
@@ -443,6 +453,16 @@ export const guides: Guide[] = [
           "B2B SaaS often targets 6-18 months, depending on stage and burn.",
           "Long payback can work if churn is low and gross margin is high.",
           "Short payback reduces risk when channels fluctuate.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using revenue instead of gross profit (payback should reflect contribution).",
+          "Mixing gross margin definitions (product margin vs fully-loaded margin).",
+          "Ignoring churn: long payback + high churn can be unprofitable.",
+          "Treating annual prepay cash receipts as immediate payback without adjusting margin timing.",
         ],
       },
       { type: "h2", text: "Ways to improve payback" },
@@ -461,6 +481,11 @@ export const guides: Guide[] = [
         question: "What's a good CAC payback period?",
         answer:
           "It varies by business model and growth stage, but many SaaS businesses aim for roughly 6-18 months. Shorter is usually safer for cash efficiency.",
+      },
+      {
+        question: "Is CAC payback the same as break-even?",
+        answer:
+          "Related, but different. Payback asks how long it takes to recover acquisition cost from gross profit. Break-even considers fixed costs and overall business expenses.",
       },
     ],
     examples: [
@@ -564,9 +589,9 @@ export const guides: Guide[] = [
   },
   {
     slug: "arpu-guide",
-    title: "ARPU: how to use Average Revenue Per User effectively",
+    title: "How to calculate ARPU (Average Revenue Per User)",
     description:
-      "A guide to ARPU: definitions, segmentation ideas, and how ARPU interacts with retention and LTV.",
+      "ARPU calculation guide: definition, formula, worked example, and how to use ARPU with retention and LTV.",
     category: "saas-metrics",
     updatedAt: "2026-01-05",
     relatedCalculatorSlugs: ["arpu-calculator", "ltv-calculator"],
@@ -574,10 +599,25 @@ export const guides: Guide[] = [
       { type: "h2", text: "Definition" },
       {
         type: "p",
-        text: "ARPU (Average Revenue Per User) is revenue divided by average active users in a period. It's useful for tracking monetization and pricing performance over time.",
+        text: "ARPU (Average Revenue Per User) is calculated as revenue ÷ average active users for a period. It's useful for tracking monetization and pricing performance over time.",
       },
       { type: "h2", text: "Formula" },
-      { type: "p", text: "ARPU = revenue / average active users" },
+      { type: "p", text: "ARPU = revenue ÷ average active users" },
+      { type: "h2", text: "How to calculate ARPU (step-by-step)" },
+      {
+        type: "bullets",
+        items: [
+          "Choose a time window (month/quarter) and define what counts as 'active user'.",
+          "Sum revenue for the same window (be consistent: gross vs net of refunds).",
+          "Compute average active users (e.g., average of daily active users, or (start + end) ÷ 2).",
+          "Divide revenue by average active users to get ARPU.",
+        ],
+      },
+      { type: "h2", text: "Example" },
+      {
+        type: "p",
+        text: "If you made $50,000 this month and had 2,000 average active users, ARPU = $50,000 ÷ 2,000 = $25 per user for the month.",
+      },
       { type: "h2", text: "How to segment ARPU" },
       {
         type: "bullets",
@@ -585,6 +625,15 @@ export const guides: Guide[] = [
           "By plan/tier to see packaging performance.",
           "By acquisition channel to understand lead quality and upsell potential.",
           "By geography to reflect different pricing and payment behaviors.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Mixing active users with total signups (denominator mismatch).",
+          "Including free/trial users without a clear definition.",
+          "Comparing ARPU across periods while changing pricing or activation criteria without segmentation.",
         ],
       },
       { type: "h2", text: "Pair ARPU with retention" },
@@ -595,6 +644,25 @@ export const guides: Guide[] = [
           "If ARPU rises but churn rises too, you may be pricing out the wrong segments.",
           "Look for stable ARPU growth without degrading retention cohorts.",
         ],
+      },
+    ],
+    faqs: [
+      {
+        question: "ARPU vs ARPA: which should I use?",
+        answer:
+          "ARPU is per user. ARPA is per account. If you sell to companies with multiple seats, ARPA often matches how you price and report. If you sell per-seat, ARPU can be more natural.",
+      },
+      {
+        question: "Should ARPU use revenue or gross profit?",
+        answer:
+          "ARPU is usually revenue-based. For unit economics decisions, also compute gross profit per user (revenue × gross margin) to reflect profitability.",
+      },
+    ],
+    examples: [
+      {
+        label: "Monthly example ($50,000 revenue; 2,000 avg users)",
+        calculatorSlug: "arpu-calculator",
+        params: { revenue: "50000", avgUsers: "2000" },
       },
     ],
   },
@@ -634,9 +702,9 @@ export const guides: Guide[] = [
   },
   {
     slug: "arr-guide",
-    title: "ARR: how to think about Annual Recurring Revenue",
+    title: "Bookings vs ARR: what ARR means (and what it doesn't)",
     description:
-      "ARR is a useful snapshot, but it's easy to misuse. Learn what ARR is (and isn't), and how it differs from bookings and cash.",
+      "Bookings vs ARR explained: what ARR is (and isn't), plus how it differs from bookings and cash receipts.",
     category: "saas-metrics",
     updatedAt: "2026-01-05",
     relatedCalculatorSlugs: ["arr-calculator", "mrr-calculator"],
@@ -646,7 +714,7 @@ export const guides: Guide[] = [
         type: "p",
         text: "ARR (Annual Recurring Revenue) is MRR annualized (MRR * 12). It's an annualized run-rate snapshot, not a promise of revenue.",
       },
-      { type: "h2", text: "ARR vs bookings vs cash" },
+      { type: "h2", text: "Bookings vs ARR (and cash)" },
       {
         type: "bullets",
         items: [
@@ -662,6 +730,25 @@ export const guides: Guide[] = [
           "Counting services revenue as ARR inflates true recurring run-rate.",
           "Ignoring churn/retention when annualizing short-term MRR spikes.",
         ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Why can bookings be higher than ARR?",
+        answer:
+          "Bookings often include the full contract value (including one-time or non-recurring items), while ARR is a recurring run-rate snapshot. A big annual prepay can increase bookings and cash immediately, while ARR reflects recurring value over time.",
+      },
+    ],
+    examples: [
+      {
+        label: "ARR example (250 customers; $200 ARPA/month)",
+        calculatorSlug: "arr-calculator",
+        params: { customers: "250", arpaMonthly: "200" },
+      },
+      {
+        label: "ARR valuation example ($2.4M ARR; 6× multiple)",
+        calculatorSlug: "arr-valuation-calculator",
+        params: { arr: "2400000", multiple: "6" },
       },
     ],
   },

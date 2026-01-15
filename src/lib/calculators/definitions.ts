@@ -1096,7 +1096,8 @@ export const calculators: CalculatorDefinition[] = [
   {
     slug: "arpu-calculator",
     title: "ARPU Calculator",
-    description: "Calculate Average Revenue Per User (ARPU) for a period.",
+    description:
+      "Calculate Average Revenue Per User (ARPU) for a period and understand the ARPU formula.",
     category: "saas-metrics",
     guideSlug: "arpu-guide",
     inputs: [
@@ -1276,6 +1277,87 @@ export const calculators: CalculatorDefinition[] = [
           "ARR is an annualized snapshot, not a guarantee of yearly revenue.",
           "For annual plans, ARR may lag behind bookings and cash.",
           "Use ARR for comparing scale across SaaS businesses.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "arr-valuation-calculator",
+    title: "ARR Valuation Calculator",
+    description:
+      "Estimate a SaaS valuation from ARR and a revenue multiple (ARR valuation).",
+    category: "saas-metrics",
+    guideSlug: "arr-guide",
+    inputs: [
+      {
+        key: "arr",
+        label: "ARR",
+        placeholder: "2400000",
+        prefix: "$",
+        defaultValue: "2400000",
+      },
+      {
+        key: "multiple",
+        label: "Revenue multiple",
+        placeholder: "6",
+        defaultValue: "6",
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      if (values.arr < 0) warnings.push("ARR must be 0 or greater.");
+      if (values.multiple <= 0) warnings.push("Multiple must be greater than 0.");
+
+      const valuation = values.arr * values.multiple;
+      if (!Number.isFinite(valuation)) {
+        return {
+          headline: {
+            key: "valuation",
+            label: "Valuation",
+            value: 0,
+            format: "currency",
+            currency: "USD",
+          },
+          warnings,
+        };
+      }
+
+      return {
+        headline: {
+          key: "valuation",
+          label: "Valuation",
+          value: valuation,
+          format: "currency",
+          currency: "USD",
+          detail: "ARR × multiple",
+        },
+        warnings,
+      };
+    },
+    formula: "Valuation = ARR × multiple",
+    assumptions: [
+      "Multiples vary widely by growth, margins, retention, and market conditions.",
+      "This is a simple heuristic, not investment advice.",
+    ],
+    faqs: [
+      {
+        question: "What multiple should I use?",
+        answer:
+          "Use a range (e.g., 4×–10×) and sanity-check against growth rate, gross margin, and retention. Market conditions can move multiples significantly.",
+      },
+      {
+        question: "Is ARR the same as annual revenue?",
+        answer:
+          "Not always. ARR focuses on recurring run-rate and excludes one-time fees/services. Annual revenue may include non-recurring items.",
+      },
+    ],
+    guide: [
+      {
+        title: "How to use ARR valuation",
+        bullets: [
+          "Model a range of multiples rather than a single number.",
+          "Use ARR for recurring run-rate; use bookings/cash for planning.",
+          "Tie the multiple to quality signals: growth, margin, churn, and NRR.",
         ],
       },
     ],
