@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 import { consentBannerEnabled, setConsent, useConsent } from "./consentStore";
 
@@ -30,7 +31,11 @@ export function ConsentBanner() {
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="text-sm text-zinc-700 dark:text-zinc-300">
           We use cookies to serve ads and measure performance. You can accept or
-          decline non-essential cookies.
+          decline non-essential cookies. See our{" "}
+          <Link className="underline" href="/privacy">
+            Privacy Policy
+          </Link>
+          .
         </div>
         <div className="flex flex-wrap gap-2">
           <button

@@ -66,5 +66,7 @@ export function consentBannerEnabled(): boolean {
   const env = process.env.NEXT_PUBLIC_CONSENT_BANNER_ENABLED;
   if (env === "false") return false;
   if (env === "true") return true;
-  return false;
+  const adsEnabled = process.env.NEXT_PUBLIC_ADSENSE_ENABLED === "true";
+  const gaEnabled = process.env.NEXT_PUBLIC_GA_ENABLED === "true";
+  return adsEnabled || gaEnabled;
 }
