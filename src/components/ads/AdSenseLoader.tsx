@@ -5,10 +5,11 @@ import {
   consentBannerEnabled,
   useConsent,
 } from "@/components/consent/consentStore";
+import { getAdSenseClient, isAdSenseEnabled } from "@/lib/adsense";
 
 export function AdSenseLoader() {
-  const client = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
-  const enabled = process.env.NEXT_PUBLIC_ADSENSE_ENABLED === "true";
+  const client = getAdSenseClient();
+  const enabled = isAdSenseEnabled();
   const gated = consentBannerEnabled();
   const consent = useConsent();
 

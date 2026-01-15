@@ -6,9 +6,7 @@ export const siteConfig = {
     const envUrl = process.env.NEXT_PUBLIC_SITE_URL;
     if (envUrl) return envUrl;
     if (process.env.NODE_ENV === "development") return "http://localhost:3000";
-    throw new Error(
-      "Missing NEXT_PUBLIC_SITE_URL (required in production for canonical URLs + sitemap).",
-    );
+    return "https://www.metrickittools.com";
   })(),
   email: "admin@metrickittools.com",
 } as const;

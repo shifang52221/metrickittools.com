@@ -5,6 +5,7 @@ import {
   consentBannerEnabled,
   useConsent,
 } from "@/components/consent/consentStore";
+import { getAdSenseClient, isAdSenseEnabled } from "@/lib/adsense";
 
 declare global {
   interface Window {
@@ -19,8 +20,8 @@ type AdUnitProps = {
 };
 
 export function AdUnit({ slot, className, style }: AdUnitProps) {
-  const enabled = process.env.NEXT_PUBLIC_ADSENSE_ENABLED === "true";
-  const client = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
+  const enabled = isAdSenseEnabled();
+  const client = getAdSenseClient();
   const gated = consentBannerEnabled();
   const consent = useConsent();
   const id = useId();
