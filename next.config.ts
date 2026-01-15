@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         destination: "/saas-metrics/cac-payback-period-calculator",
         permanent: true,
       },
+      {
+        source: "/guides/cac-payback-guid",
+        destination: "/guides/cac-payback-guide",
+        permanent: true,
+      },
     ];
   },
 };
