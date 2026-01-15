@@ -9,6 +9,7 @@ import { AdUnit } from "@/components/ads/AdUnit";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { siteConfig } from "@/lib/site";
 import { getCategoryIntroBlocks } from "@/lib/content/categoryIntro";
+import { getAdSenseSlot } from "@/lib/adsense";
 
 type PageProps = { params: Promise<{ category: string }> };
 
@@ -107,7 +108,7 @@ export default async function CategoryPage({ params }: PageProps) {
         </section>
       ) : null}
 
-      <AdUnit slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_CATEGORY_MID} />
+      <AdUnit slot={getAdSenseSlot("categoryMid")} />
 
       <section className="space-y-3">
         <h2 className="text-lg font-semibold tracking-tight">All calculators</h2>

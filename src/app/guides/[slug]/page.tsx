@@ -7,6 +7,7 @@ import { AdUnit } from "@/components/ads/AdUnit";
 import { calculators } from "@/lib/calculators";
 import { getGuide, guides } from "@/lib/guides";
 import { siteConfig } from "@/lib/site";
+import { getAdSenseSlot } from "@/lib/adsense";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -242,7 +243,7 @@ export default async function GuidePage({ params }: PageProps) {
         </section>
       ) : null}
 
-      <AdUnit slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_GUIDE_BOTTOM} />
+      <AdUnit slot={getAdSenseSlot("guideBottom")} />
 
       {relatedGuides.length ? (
         <section className="space-y-3">

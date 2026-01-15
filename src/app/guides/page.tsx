@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { guides } from "@/lib/guides";
 import { AdUnit } from "@/components/ads/AdUnit";
+import { getAdSenseSlot } from "@/lib/adsense";
 
 export const metadata: Metadata = {
   title: "Guides",
@@ -58,7 +59,7 @@ export default function GuidesIndexPage() {
         </div>
       </section>
 
-      <AdUnit slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_GUIDES_INDEX_MID} />
+      <AdUnit slot={getAdSenseSlot("guidesIndexMid")} />
 
       <section className="space-y-4">
         <h2 className="text-lg font-semibold tracking-tight">SaaS metrics</h2>

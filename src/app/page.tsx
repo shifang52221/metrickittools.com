@@ -3,6 +3,7 @@ import { CalculatorCard } from "@/components/site/CalculatorCard";
 import { calculators, categories } from "@/lib/calculators";
 import { siteConfig } from "@/lib/site";
 import { AdUnit } from "@/components/ads/AdUnit";
+import { getAdSenseSlot } from "@/lib/adsense";
 
 export default function Home() {
   const featured = calculators.filter((c) => c.featured).slice(0, 6);
@@ -49,7 +50,7 @@ export default function Home() {
         </div>
       </section>
 
-      <AdUnit slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME_MID} />
+      <AdUnit slot={getAdSenseSlot("homeMid")} />
 
       <section className="rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-black">
         <h2 className="text-lg font-semibold tracking-tight">What you get</h2>

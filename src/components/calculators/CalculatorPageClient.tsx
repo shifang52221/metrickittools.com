@@ -13,7 +13,7 @@ import { CalculatorCard } from "@/components/site/CalculatorCard";
 import Link from "next/link";
 import { AdUnit } from "@/components/ads/AdUnit";
 import { guides } from "@/lib/guides";
-import { defaultAdSenseConfig } from "@/lib/adsense";
+import { getAdSenseSlot } from "@/lib/adsense";
 
 function formatValue(result: ResultValue): string {
   const maxFractionDigits = result.maxFractionDigits ?? 2;
@@ -40,11 +40,7 @@ function buildInitialState(calc: CalculatorDefinition): Record<string, string> {
 
 export function CalculatorPageClient({ slug }: { slug: string }) {
   const calc = calculators.find((c) => c.slug === slug);
-  const sidebarSlot =
-    calc?.category === "paid-ads"
-      ? process.env.NEXT_PUBLIC_ADSENSE_SLOT_CALCULATOR_SIDEBAR ||
-        defaultAdSenseConfig.slots.paidAdsCalculator
-      : process.env.NEXT_PUBLIC_ADSENSE_SLOT_CALCULATOR_SIDEBAR;
+  const sidebarSlot = getAdSenseSlot("calculatorSidebar");
   const relatedGuides = useMemo(() => {
     if (!calc) return [];
     return guides

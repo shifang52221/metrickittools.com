@@ -26,9 +26,9 @@ export function AdUnit({ slot, className, style }: AdUnitProps) {
   const consent = useConsent();
   const id = useId();
   const isDev = process.env.NODE_ENV === "development";
-  const showDebug = isDev
-    ? process.env.NEXT_PUBLIC_SHOW_AD_PLACEHOLDERS !== "false"
-    : false;
+  const showDebug =
+    process.env.NEXT_PUBLIC_SHOW_AD_PLACEHOLDERS === "true" ||
+    (isDev ? process.env.NEXT_PUBLIC_SHOW_AD_PLACEHOLDERS !== "false" : false);
 
   useEffect(() => {
     if (!enabled || !client || !slot) return;

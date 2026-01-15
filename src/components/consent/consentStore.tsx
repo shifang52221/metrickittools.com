@@ -64,8 +64,7 @@ export function useConsent(): ConsentValue | null {
 
 export function consentBannerEnabled(): boolean {
   const env = process.env.NEXT_PUBLIC_CONSENT_BANNER_ENABLED;
-  const adsEnabled = process.env.NEXT_PUBLIC_ADSENSE_ENABLED === "true";
   if (env === "false") return false;
   if (env === "true") return true;
-  return adsEnabled;
+  return false;
 }
