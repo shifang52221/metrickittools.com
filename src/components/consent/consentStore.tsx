@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { isAdSenseEnabled } from "@/lib/adsense";
 
 export type ConsentValue = "accepted" | "denied";
 
@@ -66,7 +67,7 @@ export function consentBannerEnabled(): boolean {
   const env = process.env.NEXT_PUBLIC_CONSENT_BANNER_ENABLED;
   if (env === "false") return false;
   if (env === "true") return true;
-  const adsEnabled = process.env.NEXT_PUBLIC_ADSENSE_ENABLED === "true";
+  const adsEnabled = isAdSenseEnabled();
   const gaEnabled = process.env.NEXT_PUBLIC_GA_ENABLED === "true";
   return adsEnabled || gaEnabled;
 }
