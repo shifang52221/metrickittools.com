@@ -67,6 +67,8 @@ export function consentBannerEnabled(): boolean {
   const env = process.env.NEXT_PUBLIC_CONSENT_BANNER_ENABLED;
   if (env === "false") return false;
   if (env === "true") return true;
+  const cmpProvider = (process.env.NEXT_PUBLIC_CMP_PROVIDER || "").trim();
+  if (cmpProvider === "google-funding-choices") return false;
   const adsEnabled = isAdSenseEnabled();
   const gaEnabled = process.env.NEXT_PUBLIC_GA_ENABLED === "true";
   return adsEnabled || gaEnabled;

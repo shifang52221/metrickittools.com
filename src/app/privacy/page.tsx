@@ -30,9 +30,10 @@ export default function PrivacyPage() {
       </p>
       <h2>Cookie choices</h2>
       <p>
-        If cookie consent is enabled, you can accept or decline non-essential
-        cookies using the banner. You can also reset your choice using the{" "}
-        <strong>Cookie settings</strong> link in the footer.
+        If consent is enabled, you can manage your non-essential cookie choices.
+        You can reset or update your choice using the{" "}
+        <strong>Privacy choices</strong> (or <strong>Cookie settings</strong>) link
+        in the footer.
       </p>
       <h2>EEA/UK notice</h2>
       <p>
