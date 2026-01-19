@@ -741,6 +741,31 @@ export const guides: Guide[] = [
           "Use ARR for comparability across SaaS businesses; use cash for runway planning.",
         ],
       },
+      { type: "h2", text: "Bookings vs ARR vs cash: quick comparison" },
+      {
+        type: "table",
+        columns: ["Metric", "What it measures", "When to use", "Common mistake"],
+        rows: [
+          [
+            "ARR",
+            "Recurring run-rate (typically MRR × 12). Excludes one-time fees/services.",
+            "Comparing SaaS scale and momentum across time or companies.",
+            "Treating ARR as guaranteed annual revenue or including services revenue.",
+          ],
+          [
+            "Bookings",
+            "Contracted value closed in a period (may include prepay, one-time fees, services).",
+            "Sales performance, pipeline conversion, and forecasting contracted demand.",
+            "Assuming bookings equals recurring run-rate or comparing bookings to ARR without adjusting for one-time items.",
+          ],
+          [
+            "Cash",
+            "Money collected (cash receipts). Sensitive to billing terms and prepay timing.",
+            "Runway planning and cash-flow management.",
+            "Using cash spikes from annual prepay as proof of recurring growth without checking retention and renewals.",
+          ],
+        ],
+      },
       { type: "h2", text: "Pitfalls" },
       {
         type: "bullets",
@@ -761,9 +786,24 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
+        question: "What is bookings?",
+        answer:
+          "Bookings are the value of contracts you sign in a period. Bookings can include recurring subscriptions and non-recurring items (services, setup fees) depending on how you define it.",
+      },
+      {
         question: "Why can bookings be higher than ARR?",
         answer:
           "Bookings often include the full contract value (including one-time or non-recurring items), while ARR is a recurring run-rate snapshot. A big annual prepay can increase bookings and cash immediately, while ARR reflects recurring value over time.",
+      },
+      {
+        question: "Is ARR the same as annual revenue?",
+        answer:
+          "Not always. ARR is a recurring run-rate snapshot. Annual revenue can include one-time fees or services, and it reflects what you recognized over a year rather than a current run-rate.",
+      },
+      {
+        question: "How does annual prepay affect ARR?",
+        answer:
+          "Annual prepay increases cash receipts immediately, but ARR reflects recurring run-rate. ARR typically increases based on the recurring subscription amount, not the timing of cash collection.",
       },
     ],
     examples: [

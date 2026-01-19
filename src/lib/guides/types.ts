@@ -2,7 +2,12 @@ export type GuideSection =
   | { type: "p"; text: string }
   | { type: "bullets"; items: string[] }
   | { type: "h2"; text: string }
-  | { type: "h3"; text: string };
+  | { type: "h3"; text: string }
+  | {
+      type: "table";
+      columns: string[];
+      rows: string[][];
+    };
 
 export type Guide = {
   slug: string;

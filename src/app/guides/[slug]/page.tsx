@@ -175,6 +175,39 @@ export default async function GuidePage({ params }: PageProps) {
                 </h3>
               );
             if (s.type === "p") return <p key={idx}>{s.text}</p>;
+            if (s.type === "table")
+              return (
+                <div key={idx} className="not-prose overflow-x-auto">
+                  <table className="w-full border-collapse text-sm">
+                    <thead>
+                      <tr>
+                        {s.columns.map((c) => (
+                          <th
+                            key={c}
+                            className="border-b border-zinc-200 bg-zinc-50 px-3 py-2 text-left font-medium text-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                          >
+                            {c}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {s.rows.map((row, rowIndex) => (
+                        <tr key={rowIndex}>
+                          {row.map((cell, cellIndex) => (
+                            <td
+                              key={`${rowIndex}-${cellIndex}`}
+                              className="border-b border-zinc-200 px-3 py-2 align-top text-zinc-700 dark:border-zinc-800 dark:text-zinc-300"
+                            >
+                              {cell}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              );
             return (
               <ul key={idx}>
                 {s.items.map((item) => (
