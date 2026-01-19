@@ -1,12 +1,25 @@
 import Link from "next/link";
 import { CalculatorCard } from "@/components/site/CalculatorCard";
 import { calculators, categories } from "@/lib/calculators";
+import { guides } from "@/lib/guides";
 import { siteConfig } from "@/lib/site";
 import { AdUnit } from "@/components/ads/AdUnit";
 import { getAdSenseSlot } from "@/lib/adsense";
 
 export default function Home() {
   const featured = calculators.filter((c) => c.featured).slice(0, 6);
+  const featuredGuides = guides
+    .filter((g) =>
+      [
+        "arpu-guide",
+        "arr-guide",
+        "cac-payback-guide",
+        "cac-guide",
+        "ltv-guide",
+        "roas-guide",
+      ].includes(g.slug),
+    )
+    .slice(0, 6);
 
   return (
     <div className="space-y-12">
@@ -49,6 +62,38 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {featuredGuides.length ? (
+        <section className="space-y-4">
+          <div className="flex items-end justify-between gap-4">
+            <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
+              Popular guides
+            </h2>
+            <Link
+              href="/guides"
+              className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+            >
+              Browse all {"\u2192"}
+            </Link>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {featuredGuides.map((g) => (
+              <Link
+                key={g.slug}
+                href={`/guides/${g.slug}`}
+                className="rounded-2xl border border-zinc-200 bg-white p-5 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-black dark:hover:bg-zinc-950"
+              >
+                <div className="text-lg font-semibold tracking-tight hover:underline">
+                  {g.title}
+                </div>
+                <div className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+                  {g.description}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <AdUnit slot={getAdSenseSlot("homeMid")} />
 

@@ -35,6 +35,12 @@ export type CalculatorDefinition = {
   category: CalculatorCategorySlug;
   featured?: boolean;
   guideSlug?: string;
+  seo?: {
+    intro?: string[];
+    steps?: string[];
+    pitfalls?: string[];
+    benchmarks?: string[];
+  };
   inputs: InputField[];
   compute: (values: Record<string, number>) => {
     headline: ResultValue;

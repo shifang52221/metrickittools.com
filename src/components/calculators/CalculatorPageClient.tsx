@@ -171,6 +171,13 @@ export function CalculatorPageClient({ slug }: { slug: string }) {
         <p className="text-pretty text-zinc-600 dark:text-zinc-400">
           {calc.description}
         </p>
+        {calc.seo?.intro?.length ? (
+          <div className="space-y-3 text-pretty text-zinc-700 dark:text-zinc-300">
+            {calc.seo.intro.map((p) => (
+              <p key={p}>{p}</p>
+            ))}
+          </div>
+        ) : null}
         {calc.guideSlug ? (
           <div className="text-sm text-zinc-600 dark:text-zinc-400">
             Prefer an explanation? Read the{" "}
@@ -314,6 +321,21 @@ export function CalculatorPageClient({ slug }: { slug: string }) {
           </div>
         ) : null}
 
+        {calc.seo?.steps?.length ? (
+          <div className="space-y-3">
+            <h2 className="text-lg font-semibold tracking-tight">
+              How to calculate
+            </h2>
+            <div className="rounded-2xl border border-zinc-200 bg-white p-5 text-sm dark:border-zinc-800 dark:bg-black">
+              <ol className="list-decimal space-y-1 pl-5 text-zinc-600 dark:text-zinc-400">
+                {calc.seo.steps.map((s) => (
+                  <li key={s}>{s}</li>
+                ))}
+              </ol>
+            </div>
+          </div>
+        ) : null}
+
         <div className="space-y-3">
           <h2 className="text-lg font-semibold tracking-tight">Formula</h2>
           <div className="rounded-2xl border border-zinc-200 bg-white p-5 text-sm dark:border-zinc-800 dark:bg-black">
@@ -325,6 +347,19 @@ export function CalculatorPageClient({ slug }: { slug: string }) {
             </ul>
           </div>
         </div>
+
+        {calc.seo?.benchmarks?.length ? (
+          <div className="space-y-3">
+            <h2 className="text-lg font-semibold tracking-tight">Benchmarks</h2>
+            <div className="rounded-2xl border border-zinc-200 bg-white p-5 text-sm dark:border-zinc-800 dark:bg-black">
+              <ul className="list-disc space-y-1 pl-5 text-zinc-600 dark:text-zinc-400">
+                {calc.seo.benchmarks.map((b) => (
+                  <li key={b}>{b}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        ) : null}
 
         <div className="space-y-3">
           <h2 className="text-lg font-semibold tracking-tight">FAQ</h2>
@@ -344,6 +379,21 @@ export function CalculatorPageClient({ slug }: { slug: string }) {
             ))}
           </div>
         </div>
+
+        {calc.seo?.pitfalls?.length ? (
+          <div className="space-y-3">
+            <h2 className="text-lg font-semibold tracking-tight">
+              Common mistakes
+            </h2>
+            <div className="rounded-2xl border border-zinc-200 bg-white p-5 text-sm dark:border-zinc-800 dark:bg-black">
+              <ul className="list-disc space-y-1 pl-5 text-zinc-600 dark:text-zinc-400">
+                {calc.seo.pitfalls.map((p) => (
+                  <li key={p}>{p}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        ) : null}
 
         {calc.guide?.length ? (
           <div className="space-y-3">

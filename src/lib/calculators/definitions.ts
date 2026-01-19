@@ -549,6 +549,23 @@ export const calculators: CalculatorDefinition[] = [
     category: "saas-metrics",
     featured: true,
     guideSlug: "cac-guide",
+    seo: {
+      intro: [
+        "Customer Acquisition Cost (CAC) is the average cost to acquire one new paying customer. It is a core SaaS unit-economics metric used to evaluate channel efficiency and plan budgets.",
+        "The key is consistency: define what costs you include and what counts as a “new customer”, then use the same definition across time and segments.",
+      ],
+      steps: [
+        "Pick a time window (month/quarter) and a segment (channel, plan, geo).",
+        "Sum acquisition costs for that same window using a consistent definition (paid-only or fully-loaded).",
+        "Count net new paying customers acquired in the window (not leads).",
+        "Divide acquisition spend by new customers to get CAC.",
+      ],
+      pitfalls: [
+        "Using leads or trials as the denominator instead of paying customers.",
+        "Mixing paid-only CAC with fully-loaded CAC when comparing channels.",
+        "Comparing CAC across periods without accounting for channel mix changes.",
+      ],
+    },
     inputs: [
       {
         key: "spend",
@@ -628,6 +645,11 @@ export const calculators: CalculatorDefinition[] = [
           "Paid CAC uses only paid acquisition spend (ads). Blended CAC includes all acquisition costs (paid + sales + marketing + tools) divided by new customers.",
       },
       {
+        question: "Is CAC a good metric on its own?",
+        answer:
+          "Not by itself. Pair CAC with payback period and retention/LTV. A low CAC can still be bad if churn is high, and a high CAC can be fine if payback is fast and retention is strong.",
+      },
+      {
         question: "What if my sales cycle is long?",
         answer:
           "Match costs and customers using a consistent rule (e.g., cohort-based CAC, or lag spend by your average sales cycle) so CAC isn't artificially high or low in a given month.",
@@ -667,6 +689,23 @@ export const calculators: CalculatorDefinition[] = [
     category: "saas-metrics",
     featured: true,
     guideSlug: "ltv-guide",
+    seo: {
+      intro: [
+        "This is a quick LTV (Lifetime Value) model based on monthly ARPA, gross margin, and churn. It estimates how much gross profit you earn per customer over their expected lifetime.",
+        "For accuracy, keep time units consistent (monthly ARPA with monthly churn). For mature businesses, cohort-based LTV is more reliable than a single churn rate.",
+      ],
+      steps: [
+        "Choose a segment (plan/channel/geo) and a time unit (monthly).",
+        "Enter ARPA per month and gross margin for the segment.",
+        "Enter monthly churn rate (customer churn for this model).",
+        "Compute LTV ≈ (ARPA × gross margin) ÷ churn.",
+      ],
+      pitfalls: [
+        "Mixing annual ARPA with monthly churn (unit mismatch).",
+        "Using revenue churn/NRR numbers as if they were customer churn.",
+        "Ignoring payback period and cash constraints when using LTV for budgeting.",
+      ],
+    },
     inputs: [
       {
         key: "arpaMonthly",
@@ -852,6 +891,29 @@ export const calculators: CalculatorDefinition[] = [
     category: "saas-metrics",
     featured: true,
     guideSlug: "cac-payback-guide",
+    seo: {
+      intro: [
+        "CAC payback period tells you how many months it takes to earn back CAC from monthly gross profit. It is one of the fastest ways to assess cash efficiency for subscription businesses.",
+        "When people search “months to recover CAC”, they usually mean this payback period: CAC divided by gross profit per month.",
+      ],
+      steps: [
+        "Choose a segment (channel/plan/geo) and a time window (usually monthly).",
+        "Estimate ARPA per month for the segment.",
+        "Choose gross margin for the same revenue base (product gross margin is common).",
+        "Compute gross profit per month: ARPA × gross margin.",
+        "Divide CAC by gross profit per month to get payback months.",
+      ],
+      benchmarks: [
+        "Many B2B SaaS teams target ~6–18 months depending on stage and burn.",
+        "Shorter payback reduces risk when channels fluctuate.",
+        "Long payback can work if retention is strong and expansion revenue is significant.",
+      ],
+      pitfalls: [
+        "Using revenue instead of gross profit (payback should reflect contribution).",
+        "Ignoring churn: long payback + high churn can be unprofitable.",
+        "Comparing payback across segments without consistent ARPA and margin definitions.",
+      ],
+    },
     inputs: [
       {
         key: "cac",
@@ -1115,6 +1177,23 @@ export const calculators: CalculatorDefinition[] = [
       "Calculate Average Revenue Per User (ARPU) for a period and understand the ARPU formula.",
     category: "saas-metrics",
     guideSlug: "arpu-guide",
+    seo: {
+      intro: [
+        "ARPU (Average Revenue Per User) measures how much revenue you generate per user in a period. It is commonly used to track monetization changes from pricing, packaging, and user mix.",
+        "To calculate ARPU correctly, make sure your revenue and user count are measured over the same period and that you define what an “active user” means for your product.",
+      ],
+      steps: [
+        "Pick a time window (month/quarter) and define “active user”.",
+        "Sum revenue for that same window (be consistent: gross vs net of refunds).",
+        "Compute average active users for the window (e.g., average DAU, or (start + end) ÷ 2).",
+        "Divide revenue by average active users to get ARPU.",
+      ],
+      pitfalls: [
+        "Using total signups as the denominator instead of active users.",
+        "Mixing active users and accounts (ARPU vs ARPA mismatch).",
+        "Comparing ARPU across periods without segmenting by plan or geo when pricing changes.",
+      ],
+    },
     inputs: [
       {
         key: "revenue",
@@ -1197,6 +1276,22 @@ export const calculators: CalculatorDefinition[] = [
     description: "Estimate Monthly Recurring Revenue (MRR) from customers and ARPA.",
     category: "saas-metrics",
     guideSlug: "mrr-guide",
+    seo: {
+      intro: [
+        "MRR (Monthly Recurring Revenue) is recurring revenue from active subscriptions, normalized to a monthly amount. It is a standard metric for tracking momentum in subscription businesses.",
+        "A clean MRR definition excludes one-time fees and services, and normalizes annual plans to a monthly equivalent (annual price ÷ 12).",
+      ],
+      steps: [
+        "Count paying customers (or active subscriptions) for the period.",
+        "Estimate ARPA per month (average revenue per account per month).",
+        "Multiply customers by ARPA to estimate MRR.",
+      ],
+      pitfalls: [
+        "Including one-time fees or services revenue in MRR.",
+        "Mixing bookings/cash with run-rate revenue (MRR is run-rate).",
+        "Comparing MRR without breaking down new/expansion/contraction/churn components.",
+      ],
+    },
     inputs: [
       {
         key: "customers",
@@ -1251,6 +1346,23 @@ export const calculators: CalculatorDefinition[] = [
     description: "Estimate Annual Recurring Revenue (ARR) from customers and ARPA.",
     category: "saas-metrics",
     guideSlug: "arr-guide",
+    seo: {
+      intro: [
+        "ARR (Annual Recurring Revenue) is MRR annualized (MRR × 12). It is an annualized run-rate snapshot, not a promise of yearly revenue.",
+        "When people compare bookings vs ARR, remember: bookings measure contracted value, while ARR measures recurring run-rate. Cash receipts can differ again due to prepay timing.",
+      ],
+      steps: [
+        "Estimate ARPA per month for your segment (monthly revenue per account).",
+        "Count paying customers (or subscriptions).",
+        "Compute MRR = customers × ARPA.",
+        "Compute ARR = MRR × 12.",
+      ],
+      pitfalls: [
+        "Counting one-time fees or services revenue as recurring run-rate.",
+        "Annualizing a short-term MRR spike without checking churn/retention.",
+        "Mixing bookings and cash receipts into ARR reporting.",
+      ],
+    },
     inputs: [
       {
         key: "customers",

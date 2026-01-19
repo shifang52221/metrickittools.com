@@ -295,6 +295,15 @@ export const guides: Guide[] = [
       },
       { type: "h2", text: "Core formula" },
       { type: "p", text: "CAC = acquisition spend / new customers acquired" },
+      { type: "h2", text: "Benchmarks (rule of thumb)" },
+      {
+        type: "bullets",
+        items: [
+          "There is no universal 'good CAC' without knowing ARPA, margin, and retention.",
+          "Use CAC payback (months) to compare channels more fairly when pricing differs.",
+          "Track CAC by cohort: CAC often rises as channels saturate.",
+        ],
+      },
       { type: "h2", text: "What costs to include" },
       {
         type: "bullets",
@@ -302,6 +311,15 @@ export const guides: Guide[] = [
           "Paid media (ad spend), agencies, creative production (if variable).",
           "Sales/marketing tools (CRM, email, analytics) if you include them consistently.",
           "Salaries/commissions: include if you want a fully-loaded CAC (recommended for planning).",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using leads/trials as 'customers' (denominator mismatch).",
+          "Comparing paid-only CAC to a fully-loaded CAC target (definition drift).",
+          "Ignoring churn: low CAC can still be bad if customers churn quickly.",
         ],
       },
       { type: "h2", text: "How to segment CAC" },
@@ -729,6 +747,15 @@ export const guides: Guide[] = [
         items: [
           "Counting services revenue as ARR inflates true recurring run-rate.",
           "Ignoring churn/retention when annualizing short-term MRR spikes.",
+        ],
+      },
+      { type: "h2", text: "Examples (annual prepay vs monthly)" },
+      {
+        type: "bullets",
+        items: [
+          "Annual prepay: cash may spike today, while ARR reflects ongoing run-rate (MRR × 12).",
+          "A large annual contract can increase bookings immediately even if ARR only increases as recurring run-rate grows.",
+          "If you add one-time services to a deal, bookings rise but ARR should not include the services portion.",
         ],
       },
     ],
