@@ -17,6 +17,7 @@ export type Guide = {
   updatedAt: string; // YYYY-MM-DD
   sections: GuideSection[];
   relatedCalculatorSlugs: string[];
+  relatedGlossarySlugs?: string[];
   faqs?: Array<{ question: string; answer: string }>;
   examples?: Array<{
     label: string;

@@ -6,6 +6,7 @@ import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { AdUnit } from "@/components/ads/AdUnit";
 import { calculators } from "@/lib/calculators";
 import { getGuide, guides } from "@/lib/guides";
+import { glossaryTerms } from "@/lib/glossary";
 import { siteConfig } from "@/lib/site";
 import { getAdSenseSlot } from "@/lib/adsense";
 
@@ -54,6 +55,10 @@ export default async function GuidePage({ params }: PageProps) {
   const relatedCalcs = calculators.filter((c) =>
     guide.relatedCalculatorSlugs.includes(c.slug),
   );
+
+  const relatedGlossary = (guide.relatedGlossarySlugs ?? [])
+    .map((s) => glossaryTerms.find((t) => t.slug === s))
+    .filter((t): t is (typeof glossaryTerms)[number] => Boolean(t));
 
   const examples = (guide.examples ?? [])
     .map((ex) => {
@@ -247,6 +252,23 @@ export default async function GuidePage({ params }: PageProps) {
                     className="rounded-full border border-zinc-200 px-3 py-1 text-sm hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
                   >
                     {c.title}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          {relatedGlossary.length ? (
+            <div className="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-black">
+              <div className="text-sm font-medium">Related definitions</div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {relatedGlossary.map((t) => (
+                  <Link
+                    key={t.slug}
+                    href={`/glossary/${t.slug}`}
+                    className="rounded-full border border-zinc-200 px-3 py-1 text-sm hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
+                  >
+                    {t.title}
                   </Link>
                 ))}
               </div>

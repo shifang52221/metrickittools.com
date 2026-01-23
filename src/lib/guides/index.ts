@@ -67,6 +67,105 @@ export const guides: Guide[] = [
     ],
   },
   {
+    slug: "paid-ads-funnel-guide",
+    title: "Paid ads funnel: CPM, CTR, CVR → CPC, CPA, ROAS (with profit)",
+    description:
+      "A practical guide to the paid ads funnel: how CPM, CTR, and CVR drive CPC, CPA, ROAS, and profit - with formulas and common pitfalls.",
+    category: "paid-ads",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: [
+      "paid-ads-funnel-calculator",
+      "roas-calculator",
+      "break-even-roas-calculator",
+      "target-roas-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "cpm",
+      "ctr",
+      "cvr",
+      "cpc",
+      "cpa",
+      "aov",
+      "roas",
+      "contribution-margin",
+      "gross-margin",
+      "attribution-window",
+    ],
+    sections: [
+      { type: "h2", text: "Why a funnel view helps" },
+      {
+        type: "p",
+        text: "Ads performance often looks confusing because metrics overlap. A simple funnel makes the levers clear: CPM determines how much you pay for exposure, CTR converts exposure into visits, CVR converts visits into orders, and AOV plus margin determine whether ads are profitable.",
+      },
+      { type: "h2", text: "Core formulas (quick reference)" },
+      {
+        type: "bullets",
+        items: [
+          "Clicks per 1,000 impressions = 1000 × CTR.",
+          "CPC = CPM ÷ (1000 × CTR).",
+          "CPA = CPC ÷ CVR.",
+          "ROAS = revenue ÷ ad spend.",
+          "Contribution margin = gross margin − fees − shipping − returns (simplified).",
+          "Break-even ROAS = 1 ÷ contribution margin.",
+          "Break-even CPA = AOV × contribution margin.",
+        ],
+      },
+      { type: "h2", text: "How to diagnose issues" },
+      {
+        type: "table",
+        columns: ["If this is bad…", "Look at…", "Typical fixes"],
+        rows: [
+          ["High CPC", "CPM and CTR", "Improve creative fit, targeting, placements; reduce CPM; lift CTR."],
+          ["High CPA", "CPC and CVR", "Fix landing page and offer; improve intent; reduce friction; better audience."],
+          ["ROAS looks okay but profit is negative", "Contribution margin and returns/fees", "Use margin-aware targets; exclude low-margin products; reduce returns; increase AOV."],
+          ["Great short-term ROAS but growth stalls", "Attribution and incrementality", "Test holdouts; avoid over-crediting retargeting; invest in prospecting."],
+        ],
+      },
+      { type: "h2", text: "Common pitfalls" },
+      {
+        type: "bullets",
+        items: [
+          "Attribution windows differ across platforms; compare apples-to-apples.",
+          "Revenue-based ROAS can hide low margins and high returns.",
+          "Optimizing CTR can decrease intent and lower CVR.",
+          "Retargeting often looks great in ROAS but can be incremental only partly.",
+        ],
+      },
+      { type: "h2", text: "Best practice targets" },
+      {
+        type: "bullets",
+        items: [
+          "Start with contribution margin to compute break-even ROAS and break-even CPA.",
+          "Set different targets by channel (volatility and intent differ).",
+          "Revisit targets when margin, fees, or return rates change.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is break-even ROAS the same as target ROAS?",
+        answer:
+          "No. Break-even ROAS only covers variable economics. Target ROAS should be higher to cover fixed costs and desired profit.",
+      },
+    ],
+    examples: [
+      {
+        label: "Funnel example (CPM $12; CTR 1.5%; CVR 3%; AOV $80; 60% margin)",
+        calculatorSlug: "paid-ads-funnel-calculator",
+        params: {
+          cpm: "12",
+          ctrPercent: "1.5",
+          cvrPercent: "3",
+          aov: "80",
+          grossMarginPercent: "60",
+          paymentFeesPercent: "3",
+          shippingPercent: "0",
+          returnsPercent: "0",
+        },
+      },
+    ],
+  },
+  {
     slug: "roi-guide",
     title: "ROI vs ROAS: definitions, formulas, and when to use each",
     description:
@@ -1314,6 +1413,110 @@ export const guides: Guide[] = [
     ],
   },
   {
+    slug: "unit-economics-guide",
+    title: "Unit economics: CAC, payback, LTV, and LTV:CAC (how to model them)",
+    description:
+      "A practical unit economics guide: consistent definitions for CAC and LTV, how to calculate CAC payback period, and how to interpret LTV:CAC.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: [
+      "unit-economics-calculator",
+      "cac-calculator",
+      "cac-payback-period-calculator",
+      "ltv-calculator",
+      "ltv-to-cac-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "unit-economics",
+      "cac",
+      "ltv",
+      "ltv-to-cac",
+      "cac-payback-period",
+      "gross-margin",
+      "churn-rate",
+      "customer-lifetime",
+    ],
+    sections: [
+      { type: "h2", text: "What unit economics are" },
+      {
+        type: "p",
+        text: "Unit economics measure profitability and cash efficiency at the level of a unit (usually a customer or account). For SaaS, the core unit stack is CAC (cost to acquire), LTV (value over lifetime), and payback (time to recover CAC from gross profit).",
+      },
+      { type: "h2", text: "Use gross profit, not revenue" },
+      {
+        type: "p",
+        text: "A common mistake is to compute LTV using revenue but compare it to a fully-loaded CAC. For cleaner unit economics, compute LTV on gross profit (revenue × gross margin) and label CAC definitions clearly.",
+      },
+      { type: "h2", text: "Core formulas" },
+      {
+        type: "bullets",
+        items: [
+          "CAC = acquisition spend ÷ new customers acquired.",
+          "Monthly gross profit per customer ≈ ARPA × gross margin.",
+          "Payback (months) = CAC ÷ (ARPA × gross margin).",
+          "Lifetime (months) ≈ 1 ÷ monthly churn (rough shortcut).",
+          "LTV (gross profit) ≈ (ARPA × gross margin) ÷ monthly churn.",
+          "LTV:CAC = LTV ÷ CAC.",
+        ],
+      },
+      { type: "h2", text: "How to model it (step-by-step)" },
+      {
+        type: "bullets",
+        items: [
+          "Pick a segment (channel, plan, geo) and a consistent time unit (monthly is common).",
+          "Measure ARPA and gross margin for that segment.",
+          "Measure churn for that segment (logo churn or revenue churn; label it).",
+          "Measure CAC with a clear definition (paid-only vs fully-loaded).",
+          "Compute payback and LTV, then compare to your cash constraints.",
+        ],
+      },
+      { type: "h2", text: "Common pitfalls" },
+      {
+        type: "bullets",
+        items: [
+          "Unit mismatch: using annual churn with monthly ARPA (or vice versa).",
+          "Blended averages hiding segment problems (SMB vs enterprise).",
+          "Optimizing LTV:CAC without checking payback (ratio can look good with very long payback).",
+          "Treating churn as constant over time (cohort curves are more accurate).",
+        ],
+      },
+      { type: "h2", text: "How to improve unit economics" },
+      {
+        type: "bullets",
+        items: [
+          "Reduce CAC: improve conversion rate, sales efficiency, and channel mix.",
+          "Increase ARPA: pricing, packaging, expansion, and better lead quality.",
+          "Improve gross margin: reduce COGS and variable costs.",
+          "Reduce churn: onboarding/activation, reliability, customer success, and renewal execution.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "What is a good LTV:CAC ratio?",
+        answer:
+          "It depends on payback and cash constraints, but ~3:1 is a common rough target. A lower ratio can still work with short payback and strong retention; a higher ratio can mean you're under-investing in growth.",
+      },
+      {
+        question: "Should I use logo churn or revenue churn for LTV?",
+        answer:
+          "For a simple customer LTV model, logo churn (customer churn) is common. If expansion is meaningful, cohort-based revenue retention (NRR/GRR) may be more informative than a single churn number.",
+      },
+    ],
+    examples: [
+      {
+        label: "Unit economics example (ARPA $200; margin 80%; churn 3%; CAC $800)",
+        calculatorSlug: "unit-economics-calculator",
+        params: {
+          arpaMonthly: "200",
+          grossMarginPercent: "80",
+          monthlyChurnPercent: "3",
+          cac: "800",
+        },
+      },
+    ],
+  },
+  {
     slug: "bookings-vs-arr-guide",
     title: "Bookings vs ARR: definitions, formulas, and examples",
     description:
@@ -1525,6 +1728,7 @@ export const guides: Guide[] = [
     category: "finance",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: ["npv-calculator"],
+    relatedGlossarySlugs: ["npv", "discount-rate", "marr", "irr"],
     sections: [
       { type: "h2", text: "What NPV means" },
       {
@@ -1568,6 +1772,142 @@ export const guides: Guide[] = [
         label: "NPV example ($100k upfront; $30k/year for 5 years; 12% discount)",
         calculatorSlug: "npv-calculator",
         params: { initialInvestment: "100000", annualCashFlow: "30000", years: "5", discountRatePercent: "12" },
+      },
+    ],
+  },
+  {
+    slug: "irr-guide",
+    title: "IRR (Internal Rate of Return): definition, formula, and how to use it",
+    description:
+      "IRR explained: what internal rate of return means, how to calculate IRR, and when IRR can be misleading (use NPV too).",
+    category: "finance",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["irr-calculator", "npv-calculator"],
+    relatedGlossarySlugs: ["irr", "npv", "discount-rate", "marr"],
+    sections: [
+      { type: "h2", text: "What IRR means" },
+      {
+        type: "p",
+        text: "IRR (Internal Rate of Return) is the discount rate that makes NPV equal zero. You can interpret IRR as the annualized return implied by a series of cash flows under standard assumptions.",
+      },
+      { type: "h2", text: "IRR definition" },
+      { type: "p", text: "IRR is the rate r where NPV(r) = 0." },
+      { type: "h2", text: "Why IRR is useful" },
+      {
+        type: "bullets",
+        items: [
+          "Compare opportunities with multi-year cash flows.",
+          "Compare to a hurdle rate (MARR) to see if a project clears your required return.",
+          "Works best for projects with one upfront investment followed by positive cash flows.",
+        ],
+      },
+      { type: "h2", text: "When IRR can mislead" },
+      {
+        type: "bullets",
+        items: [
+          "Multiple IRRs can exist when cash flows change sign multiple times.",
+          "IRR can hide scale (high IRR but low NPV).",
+          "IRR implicitly assumes reinvestment at the IRR (often unrealistic).",
+        ],
+      },
+      { type: "h2", text: "Best practice: use IRR with NPV" },
+      {
+        type: "bullets",
+        items: [
+          "Use NPV at your discount rate (MARR) to measure value created in dollars.",
+          "Use IRR as a quick comparison, then validate with NPV and payback.",
+          "Test sensitivity by varying discount rate and cash flow assumptions.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is higher IRR always better?",
+        answer:
+          "Not necessarily. Higher IRR is attractive, but a small project can have high IRR and still create little value. Use NPV to compare total value created at a consistent required return.",
+      },
+      {
+        question: "What if IRR is undefined?",
+        answer:
+          "Some cash flow patterns don't produce a single IRR (or any IRR). In those cases, rely on NPV at a chosen discount rate instead.",
+      },
+    ],
+    examples: [
+      {
+        label: "IRR example (upfront $100k; 5-year cash flows)",
+        calculatorSlug: "irr-calculator",
+        params: {
+          initialInvestment: "100000",
+          cashFlow1: "25000",
+          cashFlow2: "30000",
+          cashFlow3: "35000",
+          cashFlow4: "40000",
+          cashFlow5: "45000",
+          terminalValue: "0",
+          discountRatePercent: "12",
+        },
+      },
+    ],
+  },
+  {
+    slug: "discounted-payback-period-guide",
+    title: "Discounted payback period: definition, formula, and how to calculate",
+    description:
+      "Discounted payback explained: how it differs from simple payback, the formula, and when discounted payback is the right metric.",
+    category: "finance",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["discounted-payback-period-calculator"],
+    relatedGlossarySlugs: ["payback-period", "discount-rate", "npv", "marr"],
+    sections: [
+      { type: "h2", text: "Definition" },
+      {
+        type: "p",
+        text: "Discounted payback period is the time it takes for cumulative discounted cash flows to recover the initial investment. Unlike simple payback, it accounts for the time value of money.",
+      },
+      { type: "h2", text: "Discounted payback vs simple payback" },
+      {
+        type: "table",
+        columns: ["Metric", "Accounts for time value?", "Best for", "Common pitfall"],
+        rows: [
+          [
+            "Simple payback",
+            "No",
+            "Quick sanity checks when discounting is less important.",
+            "Underestimates payback when cash flows are far in the future.",
+          ],
+          [
+            "Discounted payback",
+            "Yes",
+            "Comparing projects at a chosen discount rate and risk level.",
+            "Using it alone (it ignores cash flows after payback).",
+          ],
+        ],
+      },
+      { type: "h2", text: "How to calculate discounted payback" },
+      {
+        type: "bullets",
+        items: [
+          "Choose a discount rate (your required return / MARR).",
+          "Discount each cash flow: PV_t = cash flow_t / (1 + r)^t.",
+          "Sum discounted cash flows cumulatively until the total reaches the initial investment.",
+          "Interpolate within the year for partial-year payback.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using discounted payback alone instead of NPV for value creation.",
+          "Ignoring risk (discount rate should reflect required return).",
+          "Mixing nominal and real assumptions (inflation consistency).",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Discounted payback example ($100k upfront; $30k/year; 10 years; 12% discount)",
+        calculatorSlug: "discounted-payback-period-calculator",
+        params: { initialInvestment: "100000", annualCashFlow: "30000", years: "10", discountRatePercent: "12" },
       },
     ],
   },

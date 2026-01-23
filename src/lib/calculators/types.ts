@@ -35,6 +35,7 @@ export type CalculatorDefinition = {
   category: CalculatorCategorySlug;
   featured?: boolean;
   guideSlug?: string;
+  relatedGlossarySlugs?: string[];
   seo?: {
     intro?: string[];
     steps?: string[];

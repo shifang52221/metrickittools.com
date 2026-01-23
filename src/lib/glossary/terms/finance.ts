@@ -259,6 +259,17 @@ const seeds: Seed[] = [
       "NPV is the present value of future cash flows minus initial cost. NPV helps compare projects and investments.",
   },
   {
+    slug: "irr",
+    title: "IRR (Internal Rate of Return)",
+    description:
+      "IRR is the discount rate that makes NPV equal zero. It's commonly used to compare investment opportunities.",
+    bullets: [
+      "IRR is sensitive to the timing of cash flows.",
+      "Projects with multiple sign changes can have multiple IRRs or no IRR.",
+      "Use NPV alongside IRR for clearer decision-making at a chosen discount rate.",
+    ],
+  },
+  {
     slug: "payback-period",
     title: "Payback Period (finance)",
     description:

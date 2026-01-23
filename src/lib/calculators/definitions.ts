@@ -439,6 +439,250 @@ export const calculators: CalculatorDefinition[] = [
     ],
   },
   {
+    slug: "paid-ads-funnel-calculator",
+    title: "Paid Ads Funnel Calculator",
+    description:
+      "Model CPM → CTR → CVR to estimate CPC, CPA, ROAS, and profit per 1,000 impressions (with margin and variable costs).",
+    category: "paid-ads",
+    featured: true,
+    guideSlug: "paid-ads-funnel-guide",
+    relatedGlossarySlugs: [
+      "cpm",
+      "ctr",
+      "cvr",
+      "cpc",
+      "cpa",
+      "aov",
+      "roas",
+      "contribution-margin",
+      "gross-margin",
+    ],
+    seo: {
+      intro: [
+        "Most ad performance can be decomposed into a simple funnel: cost per 1,000 impressions (CPM) → click-through rate (CTR) → conversion rate (CVR) → average order value (AOV).",
+        "This calculator turns those inputs into CPC, CPA, ROAS, break-even targets, and profit per 1,000 impressions using contribution margin (gross margin minus variable costs).",
+      ],
+      steps: [
+        "Enter CPM, CTR, and CVR to define the media funnel.",
+        "Enter AOV and gross margin plus variable costs (fees, shipping, returns).",
+        "Review CPC, CPA, and ROAS, then compare to break-even ROAS and break-even CPA.",
+        "Use the per-1,000-impressions view to spot whether the bottleneck is CPM, CTR, CVR, or economics.",
+      ],
+      pitfalls: [
+        "Comparing funnels across channels with different attribution windows.",
+        "Using revenue-based ROAS without margin and returns (profitability blind).",
+        "Optimizing CTR at the expense of intent (CVR drops).",
+      ],
+    },
+    inputs: [
+      {
+        key: "cpm",
+        label: "CPM",
+        placeholder: "12",
+        prefix: "$",
+        defaultValue: "12",
+        min: 0,
+      },
+      {
+        key: "ctrPercent",
+        label: "CTR",
+        placeholder: "1.5",
+        suffix: "%",
+        defaultValue: "1.5",
+        min: 0,
+      },
+      {
+        key: "cvrPercent",
+        label: "CVR",
+        placeholder: "3",
+        suffix: "%",
+        defaultValue: "3",
+        min: 0,
+      },
+      {
+        key: "aov",
+        label: "AOV",
+        placeholder: "80",
+        prefix: "$",
+        defaultValue: "80",
+        min: 0,
+      },
+      {
+        key: "grossMarginPercent",
+        label: "Gross margin",
+        placeholder: "60",
+        suffix: "%",
+        defaultValue: "60",
+        min: 0,
+      },
+      {
+        key: "paymentFeesPercent",
+        label: "Payment fees",
+        placeholder: "3",
+        suffix: "%",
+        defaultValue: "3",
+        min: 0,
+      },
+      {
+        key: "shippingPercent",
+        label: "Shipping & fulfillment",
+        placeholder: "0",
+        suffix: "%",
+        defaultValue: "0",
+        min: 0,
+      },
+      {
+        key: "returnsPercent",
+        label: "Returns & refunds",
+        placeholder: "0",
+        suffix: "%",
+        defaultValue: "0",
+        min: 0,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const ctr = values.ctrPercent / 100;
+      const cvr = values.cvrPercent / 100;
+      const grossMargin = values.grossMarginPercent / 100;
+      const fees = values.paymentFeesPercent / 100;
+      const shipping = values.shippingPercent / 100;
+      const returns = values.returnsPercent / 100;
+
+      const contributionMargin = grossMargin - fees - shipping - returns;
+      if (contributionMargin <= 0) {
+        warnings.push("Contribution margin must be greater than 0.");
+      }
+      if (ctr <= 0) warnings.push("CTR must be greater than 0.");
+      if (cvr <= 0) warnings.push("CVR must be greater than 0.");
+
+      const clicksPer1000 = 1000 * ctr;
+      const spendPer1000 = values.cpm;
+      const conversionsPer1000 = clicksPer1000 * cvr;
+      const revenuePer1000 = conversionsPer1000 * values.aov;
+      const contributionPer1000 = revenuePer1000 * Math.max(contributionMargin, 0);
+      const profitPer1000 = contributionPer1000 - spendPer1000;
+
+      const cpc = safeDivide(spendPer1000, clicksPer1000);
+      const cpa = cpc !== null ? safeDivide(cpc, cvr) : null;
+      const roas = safeDivide(revenuePer1000, spendPer1000);
+      const breakevenRoas =
+        contributionMargin > 0 ? 1 / contributionMargin : 0;
+      const breakevenCpa =
+        contributionMargin > 0 ? values.aov * contributionMargin : 0;
+
+      return {
+        headline: {
+          key: "profitPer1000",
+          label: "Profit per 1,000 impressions",
+          value: profitPer1000,
+          format: "currency",
+          currency: "USD",
+          detail: "Contribution per 1,000 − CPM",
+        },
+        secondary: [
+          {
+            key: "cpa",
+            label: "CPA",
+            value: cpa ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: "CPC ÷ CVR",
+          },
+          {
+            key: "roas",
+            label: "ROAS",
+            value: roas ?? 0,
+            format: "multiple",
+            maxFractionDigits: 2,
+            detail: "Revenue ÷ Spend",
+          },
+          {
+            key: "breakevenRoas",
+            label: "Break-even ROAS",
+            value: breakevenRoas,
+            format: "multiple",
+            maxFractionDigits: 2,
+            detail: "1 ÷ contribution margin",
+          },
+        ],
+        breakdown: [
+          {
+            key: "cpc",
+            label: "CPC",
+            value: cpc ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: "CPM ÷ (CTR × 1000)",
+          },
+          {
+            key: "breakevenCpa",
+            label: "Break-even CPA",
+            value: breakevenCpa,
+            format: "currency",
+            currency: "USD",
+            detail: "AOV × contribution margin",
+          },
+          {
+            key: "clicksPer1000",
+            label: "Clicks per 1,000 impressions",
+            value: clicksPer1000,
+            format: "number",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "conversionsPer1000",
+            label: "Conversions per 1,000 impressions",
+            value: conversionsPer1000,
+            format: "number",
+            maxFractionDigits: 3,
+          },
+          {
+            key: "revenuePer1000",
+            label: "Revenue per 1,000 impressions",
+            value: revenuePer1000,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "contributionMargin",
+            label: "Contribution margin",
+            value: Math.max(contributionMargin, 0),
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "contributionPer1000",
+            label: "Contribution per 1,000 impressions",
+            value: contributionPer1000,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Clicks/1000 = 1000×CTR; CPC = CPM ÷ (1000×CTR); CPA = CPC ÷ CVR; ROAS = revenue ÷ spend; Profit/1000 = (revenue×contribution margin) − CPM",
+    assumptions: [
+      "CTR and CVR are expressed as decimals for calculations (percent inputs are converted).",
+      "Contribution margin = gross margin − fees − shipping − returns (simplified).",
+      "Per-1,000-impressions view assumes attribution is consistent and conversions are attributable to ads.",
+    ],
+    faqs: [
+      {
+        question: "Why focus on profit per 1,000 impressions?",
+        answer:
+          "It reveals where performance is coming from. If profit is negative, you can see whether the lever is CPM, CTR, CVR, AOV, or contribution margin.",
+      },
+      {
+        question: "How is break-even CPA computed?",
+        answer:
+          "Break-even CPA is the maximum you can pay per conversion without losing money on variable economics: AOV × contribution margin.",
+      },
+    ],
+  },
+  {
     slug: "roi-calculator",
     title: "ROI Calculator",
     description: "Calculate Return on Investment (ROI) for a campaign or project.",
@@ -2251,6 +2495,158 @@ export const calculators: CalculatorDefinition[] = [
     ],
   },
   {
+    slug: "unit-economics-calculator",
+    title: "Unit Economics Calculator",
+    description:
+      "Model CAC, payback, LTV, and LTV:CAC together from ARPA, gross margin, and churn.",
+    category: "saas-metrics",
+    featured: true,
+    guideSlug: "unit-economics-guide",
+    relatedGlossarySlugs: [
+      "unit-economics",
+      "cac",
+      "cac-payback-period",
+      "ltv",
+      "ltv-to-cac",
+      "gross-margin",
+      "churn-rate",
+      "customer-lifetime",
+    ],
+    seo: {
+      intro: [
+        "Unit economics connect acquisition cost (CAC) to profitability over time (LTV) and cash efficiency (payback). This calculator models them together using consistent units.",
+        "Use it by segment (channel, plan, geo) rather than relying on a single blended average.",
+      ],
+      steps: [
+        "Enter ARPA (monthly revenue per account) and gross margin (%).",
+        "Enter monthly churn (%). This approximates customer lifetime (1 ÷ churn).",
+        "Enter CAC per new customer/account.",
+        "Review payback months, LTV (gross profit), and LTV:CAC ratio.",
+      ],
+      pitfalls: [
+        "Mixing revenue-based LTV with fully-loaded CAC (mismatched bases).",
+        "Using annual churn with monthly ARPA (unit mismatch).",
+        "Ignoring segment differences (SMB vs enterprise behaves differently).",
+      ],
+      benchmarks: [
+        "Many SaaS teams target LTV:CAC around ~3:1 as a rough rule of thumb (varies by stage and cash constraints).",
+        "Shorter payback is usually safer for cash efficiency; acceptable payback depends on burn and retention.",
+      ],
+    },
+    inputs: [
+      {
+        key: "arpaMonthly",
+        label: "ARPA (monthly)",
+        placeholder: "200",
+        prefix: "$",
+        defaultValue: "200",
+      },
+      {
+        key: "grossMarginPercent",
+        label: "Gross margin",
+        placeholder: "80",
+        suffix: "%",
+        defaultValue: "80",
+        min: 0,
+      },
+      {
+        key: "monthlyChurnPercent",
+        label: "Monthly churn rate",
+        placeholder: "3",
+        suffix: "%",
+        defaultValue: "3",
+        min: 0,
+      },
+      {
+        key: "cac",
+        label: "CAC (per new customer/account)",
+        placeholder: "800",
+        prefix: "$",
+        defaultValue: "800",
+        min: 0,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const grossMargin = values.grossMarginPercent / 100;
+      const churn = values.monthlyChurnPercent / 100;
+
+      if (grossMargin <= 0) warnings.push("Gross margin must be greater than 0.");
+      if (churn <= 0)
+        warnings.push("Monthly churn must be greater than 0 for lifetime-based LTV.");
+
+      const grossProfitPerMonth = values.arpaMonthly * grossMargin;
+      const lifetimeMonths = churn > 0 ? 1 / churn : 0;
+      const ltv = grossProfitPerMonth * lifetimeMonths;
+      const paybackMonths =
+        grossProfitPerMonth > 0 ? values.cac / grossProfitPerMonth : 0;
+      const ltvToCac = values.cac > 0 ? ltv / values.cac : 0;
+
+      return {
+        headline: {
+          key: "payback",
+          label: "CAC payback period",
+          value: paybackMonths,
+          format: "months",
+          maxFractionDigits: 1,
+          detail: "CAC ÷ monthly gross profit",
+        },
+        secondary: [
+          {
+            key: "ltv",
+            label: "LTV (gross profit)",
+            value: ltv,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "ltvToCac",
+            label: "LTV:CAC",
+            value: ltvToCac,
+            format: "multiple",
+            maxFractionDigits: 2,
+          },
+        ],
+        breakdown: [
+          {
+            key: "grossProfitPerMonth",
+            label: "Gross profit per month",
+            value: grossProfitPerMonth,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "lifetimeMonths",
+            label: "Estimated customer lifetime",
+            value: lifetimeMonths,
+            format: "months",
+            maxFractionDigits: 1,
+            detail: "1 ÷ churn",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Payback = CAC ÷ (ARPA × gross margin); LTV ≈ (ARPA × gross margin) ÷ churn; LTV:CAC = LTV ÷ CAC",
+    assumptions: [
+      "Uses a simple constant-churn model (lifetime ≈ 1 ÷ churn).",
+      "LTV is modeled as gross profit (revenue × gross margin) to align with CAC.",
+    ],
+    faqs: [
+      {
+        question: "Should LTV be revenue or gross profit?",
+        answer:
+          "For unit economics, LTV should usually be based on gross profit so it reflects the value created after COGS. If you use revenue LTV, label it clearly and be consistent when comparing to CAC.",
+      },
+      {
+        question: "Why does this use monthly churn?",
+        answer:
+          "Because ARPA is monthly in this model. Time units must match: monthly ARPA uses monthly churn. If you prefer annual units, convert both ARPA and churn consistently.",
+      },
+    ],
+  },
+  {
     slug: "bookings-vs-arr-calculator",
     title: "Bookings vs ARR Calculator",
     description:
@@ -2609,6 +3005,7 @@ export const calculators: CalculatorDefinition[] = [
       "Calculate net present value (NPV) from initial investment, annual cash flow, years, and discount rate.",
     category: "finance",
     guideSlug: "npv-guide",
+    relatedGlossarySlugs: ["npv", "discount-rate", "marr"],
     inputs: [
       {
         key: "initialInvestment",
@@ -2692,6 +3089,333 @@ export const calculators: CalculatorDefinition[] = [
         question: "NPV vs IRR?",
         answer:
           "NPV is value created at a chosen discount rate. IRR is the implied discount rate where NPV equals zero.",
+      },
+    ],
+  },
+  {
+    slug: "irr-calculator",
+    title: "IRR Calculator",
+    description:
+      "Estimate internal rate of return (IRR) for an investment using yearly cash flows.",
+    category: "finance",
+    featured: true,
+    guideSlug: "irr-guide",
+    relatedGlossarySlugs: ["irr", "npv", "discount-rate", "marr"],
+    seo: {
+      intro: [
+        "IRR (Internal Rate of Return) is the discount rate that makes NPV equal zero. It is a common way to compare investments when cash flows span multiple years.",
+        "IRR can be misleading when cash flows change sign multiple times, so use NPV alongside IRR for decision-making.",
+      ],
+      steps: [
+        "Enter the upfront investment (cash outflow).",
+        "Enter expected annual cash flows for years 1–5.",
+        "Optionally include a terminal value in year 5.",
+        "Calculate IRR and compare to your required return (MARR).",
+      ],
+      pitfalls: [
+        "Multiple IRRs can exist when cash flows change sign multiple times.",
+        "IRR can hide scale (a small project can have high IRR but low NPV).",
+        "Use consistent periods (annual vs monthly) to avoid unit mismatch.",
+      ],
+    },
+    inputs: [
+      {
+        key: "initialInvestment",
+        label: "Initial investment (upfront)",
+        placeholder: "100000",
+        prefix: "$",
+        defaultValue: "100000",
+        min: 0,
+      },
+      {
+        key: "cashFlow1",
+        label: "Cash flow (year 1)",
+        placeholder: "25000",
+        prefix: "$",
+        defaultValue: "25000",
+      },
+      {
+        key: "cashFlow2",
+        label: "Cash flow (year 2)",
+        placeholder: "30000",
+        prefix: "$",
+        defaultValue: "30000",
+      },
+      {
+        key: "cashFlow3",
+        label: "Cash flow (year 3)",
+        placeholder: "35000",
+        prefix: "$",
+        defaultValue: "35000",
+      },
+      {
+        key: "cashFlow4",
+        label: "Cash flow (year 4)",
+        placeholder: "40000",
+        prefix: "$",
+        defaultValue: "40000",
+      },
+      {
+        key: "cashFlow5",
+        label: "Cash flow (year 5)",
+        placeholder: "45000",
+        prefix: "$",
+        defaultValue: "45000",
+      },
+      {
+        key: "terminalValue",
+        label: "Terminal value (optional, year 5)",
+        placeholder: "0",
+        prefix: "$",
+        defaultValue: "0",
+        min: 0,
+      },
+      {
+        key: "discountRatePercent",
+        label: "Discount rate (for NPV check)",
+        placeholder: "12",
+        suffix: "%",
+        defaultValue: "12",
+        min: 0,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const r = values.discountRatePercent / 100;
+      const cashFlows = [
+        -values.initialInvestment,
+        values.cashFlow1,
+        values.cashFlow2,
+        values.cashFlow3,
+        values.cashFlow4,
+        values.cashFlow5 + values.terminalValue,
+      ];
+
+      function npvAt(rate: number) {
+        let sum = 0;
+        for (let t = 0; t < cashFlows.length; t++) {
+          sum += cashFlows[t] / Math.pow(1 + rate, t);
+        }
+        return sum;
+      }
+
+      // Find a bracket where NPV changes sign.
+      let lo = -0.9;
+      let hi = 5;
+      let fLo = npvAt(lo);
+      let fHi = npvAt(hi);
+
+      if (!Number.isFinite(fLo) || !Number.isFinite(fHi)) {
+        warnings.push("Inputs produce invalid NPV values; check cash flows.");
+      }
+
+      if (fLo === 0) {
+        hi = lo;
+        fHi = fLo;
+      }
+
+      if (fLo * fHi > 0) {
+        // Expand search a bit.
+        const probes = [-0.9, -0.5, -0.2, 0, 0.1, 0.25, 0.5, 1, 2, 3, 5, 8, 10];
+        let found = false;
+        for (let i = 0; i < probes.length - 1; i++) {
+          const a = probes[i];
+          const b = probes[i + 1];
+          const fa = npvAt(a);
+          const fb = npvAt(b);
+          if (!Number.isFinite(fa) || !Number.isFinite(fb)) continue;
+          if (fa === 0) {
+            lo = a;
+            hi = a;
+            fLo = fa;
+            fHi = fb;
+            found = true;
+            break;
+          }
+          if (fa * fb < 0) {
+            lo = a;
+            hi = b;
+            fLo = fa;
+            fHi = fb;
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          warnings.push(
+            "IRR could not be determined (NPV does not cross zero in the tested range). Use NPV with a chosen discount rate instead.",
+          );
+        }
+      }
+
+      let irr: number | null = null;
+      if (fLo * fHi < 0) {
+        // Bisection.
+        for (let i = 0; i < 80; i++) {
+          const mid = (lo + hi) / 2;
+          const fMid = npvAt(mid);
+          if (!Number.isFinite(fMid)) break;
+          if (Math.abs(fMid) < 1e-10) {
+            irr = mid;
+            break;
+          }
+          if (fLo * fMid < 0) {
+            hi = mid;
+            fHi = fMid;
+          } else {
+            lo = mid;
+            fLo = fMid;
+          }
+          irr = (lo + hi) / 2;
+        }
+      } else if (fLo === 0) {
+        irr = lo;
+      }
+
+      const npvAtDiscount = npvAt(r);
+
+      return {
+        headline: {
+          key: "irr",
+          label: "IRR",
+          value: irr ?? 0,
+          format: "percent",
+          maxFractionDigits: 2,
+          detail: "Discount rate where NPV = 0",
+        },
+        secondary: [
+          {
+            key: "npv",
+            label: `NPV @ ${values.discountRatePercent}%`,
+            value: npvAtDiscount,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "IRR is the rate r such that NPV(r) = 0",
+    assumptions: [
+      "Cash flows are annual and occur at the end of each year (except the upfront investment at t=0).",
+      "IRR may not exist or may be non-unique for some cash flow patterns.",
+    ],
+    faqs: [
+      {
+        question: "IRR vs NPV: which should I use?",
+        answer:
+          "Use NPV for decisions at a chosen required return (MARR) because it measures value created in dollars. Use IRR to compare opportunities when capital is constrained, but validate with NPV to avoid misleading results.",
+      },
+      {
+        question: "Why might IRR be undefined or weird?",
+        answer:
+          "If cash flows change sign multiple times, the NPV curve can cross zero multiple times (multiple IRRs) or not at all. In those cases, rely on NPV instead.",
+      },
+    ],
+  },
+  {
+    slug: "discounted-payback-period-calculator",
+    title: "Discounted Payback Period Calculator",
+    description:
+      "Estimate discounted payback period using a discount rate (and compare to simple payback).",
+    category: "finance",
+    guideSlug: "discounted-payback-period-guide",
+    relatedGlossarySlugs: ["payback-period", "discount-rate", "npv", "marr"],
+    inputs: [
+      {
+        key: "initialInvestment",
+        label: "Initial investment (upfront)",
+        placeholder: "100000",
+        prefix: "$",
+        defaultValue: "100000",
+        min: 0,
+      },
+      {
+        key: "annualCashFlow",
+        label: "Annual cash flow",
+        placeholder: "30000",
+        prefix: "$",
+        defaultValue: "30000",
+      },
+      {
+        key: "years",
+        label: "Max years to evaluate",
+        placeholder: "10",
+        defaultValue: "10",
+        min: 1,
+        step: 1,
+      },
+      {
+        key: "discountRatePercent",
+        label: "Discount rate",
+        placeholder: "12",
+        suffix: "%",
+        defaultValue: "12",
+        min: 0,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const r = values.discountRatePercent / 100;
+
+      if (values.annualCashFlow <= 0)
+        warnings.push("Annual cash flow must be greater than 0.");
+
+      const simplePaybackYears = safeDivide(
+        values.initialInvestment,
+        values.annualCashFlow,
+      );
+
+      let cumulative = 0;
+      let paybackYears: number | null = null;
+      for (let year = 1; year <= Math.floor(values.years); year++) {
+        const pv = values.annualCashFlow / Math.pow(1 + r, year);
+        const next = cumulative + pv;
+        if (next >= values.initialInvestment && pv > 0) {
+          const remaining = values.initialInvestment - cumulative;
+          const fraction = remaining / pv;
+          paybackYears = (year - 1) + fraction;
+          break;
+        }
+        cumulative = next;
+      }
+
+      if (paybackYears === null) {
+        warnings.push("Discounted payback not reached within the chosen horizon.");
+      }
+
+      return {
+        headline: {
+          key: "discountedPayback",
+          label: "Discounted payback period",
+          value: (paybackYears ?? 0) * 12,
+          format: "months",
+          maxFractionDigits: 1,
+          detail: "Time to recover investment using discounted cash flows",
+        },
+        secondary: [
+          {
+            key: "simplePayback",
+            label: "Simple payback (undiscounted)",
+            value: (simplePaybackYears ?? 0) * 12,
+            format: "months",
+            maxFractionDigits: 1,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Discounted payback is the earliest time where cumulative discounted cash flows ≥ initial investment",
+    assumptions: [
+      "Cash flows occur at the end of each year (discounted by year index).",
+      "Uses a constant annual cash flow for simplicity.",
+    ],
+    faqs: [
+      {
+        question: "Why is discounted payback longer than simple payback?",
+        answer:
+          "Discounting reduces the present value of future cash flows, so it usually takes longer (in discounted terms) to recover the initial investment.",
       },
     ],
   },
