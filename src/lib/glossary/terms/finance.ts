@@ -89,12 +89,16 @@ const seeds: Seed[] = [
     title: "Fixed Costs",
     description:
       "Fixed costs do not scale directly with volume in the short term (rent, base salaries, core tools). They matter for break-even and operating leverage.",
+    relatedGuideSlugs: ["break-even-pricing-guide"],
+    relatedCalculatorSlugs: ["break-even-pricing-calculator"],
   },
   {
     slug: "variable-costs",
     title: "Variable Costs",
     description:
       "Variable costs scale with volume (payment fees, shipping, returns, usage-based infrastructure). They determine contribution margin.",
+    relatedGuideSlugs: ["break-even-pricing-guide"],
+    relatedCalculatorSlugs: ["break-even-pricing-calculator"],
   },
   {
     slug: "break-even-revenue",
@@ -106,6 +110,8 @@ const seeds: Seed[] = [
       "Using net margin instead of gross/contribution margin.",
       "Forgetting semi-fixed costs that are effectively fixed at your scale.",
     ],
+    relatedGuideSlugs: ["break-even-pricing-guide"],
+    relatedCalculatorSlugs: ["break-even-pricing-calculator"],
   },
   {
     slug: "runway",

@@ -4104,4 +4104,653 @@ export const calculators: CalculatorDefinition[] = [
       },
     ],
   },
+  {
+    slug: "cohort-ltv-forecast-calculator",
+    title: "Cohort LTV Forecast Calculator",
+    description:
+      "Estimate cohort-based LTV using churn, expansion, gross margin, and optional discounting.",
+    category: "saas-metrics",
+    guideSlug: "cohort-ltv-forecast-guide",
+    relatedGlossarySlugs: [
+      "cohorted-ltv",
+      "customer-lifetime",
+      "logo-churn",
+      "gross-margin",
+      "discount-rate",
+      "arpa",
+    ],
+    seo: {
+      intro: [
+        "Simple LTV formulas can be misleading when churn changes over time or when expansion meaningfully offsets churn. A cohort-style forecast is a better planning tool.",
+        "This calculator models expected gross profit from a cohort over time using constant monthly churn and expansion assumptions, and can apply a discount rate to compute discounted LTV.",
+      ],
+      steps: [
+        "Enter ARPA and gross margin to get gross profit per account per month.",
+        "Set monthly logo churn and expansion rate assumptions for the cohort.",
+        "Choose a horizon (e.g., 36–60 months) and an optional annual discount rate.",
+        "Use the discounted LTV for planning and the undiscounted LTV for intuition.",
+      ],
+      pitfalls: [
+        "Mixing logo churn (customer count) with revenue churn (MRR dollars).",
+        "Using annual churn as a monthly churn input (time unit mismatch).",
+        "Forecasting far horizons without scenarios (small rate changes compound).",
+      ],
+    },
+    inputs: [
+      {
+        key: "arpaMonthly",
+        label: "ARPA (monthly)",
+        placeholder: "800",
+        prefix: "$",
+        defaultValue: "800",
+        min: 0,
+      },
+      {
+        key: "grossMarginPercent",
+        label: "Gross margin",
+        placeholder: "80",
+        suffix: "%",
+        defaultValue: "80",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "monthlyChurnPercent",
+        label: "Monthly logo churn",
+        help: "Churn as % of customers lost per month (not revenue churn).",
+        placeholder: "2",
+        suffix: "%",
+        defaultValue: "2",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "monthlyExpansionPercent",
+        label: "Monthly expansion (existing accounts)",
+        help: "Expansion on surviving accounts (e.g., upgrades, seats).",
+        placeholder: "1",
+        suffix: "%",
+        defaultValue: "1",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "months",
+        label: "Months to forecast",
+        placeholder: "60",
+        defaultValue: "60",
+        min: 1,
+        step: 1,
+      },
+      {
+        key: "annualDiscountRatePercent",
+        label: "Annual discount rate (optional)",
+        help: "Used to discount future cash flows; set 0 to disable.",
+        placeholder: "12",
+        suffix: "%",
+        defaultValue: "12",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const months = Math.max(1, Math.floor(values.months));
+      if (values.months !== months)
+        warnings.push("Months was rounded down to a whole number.");
+
+      const grossMargin = values.grossMarginPercent / 100;
+      const churn = values.monthlyChurnPercent / 100;
+      const expansion = values.monthlyExpansionPercent / 100;
+      const annualDiscountRate = values.annualDiscountRatePercent / 100;
+
+      if (values.arpaMonthly <= 0) warnings.push("ARPA must be greater than 0.");
+      if (grossMargin <= 0) warnings.push("Gross margin must be greater than 0%.");
+      if (churn < 0 || churn >= 1)
+        warnings.push("Monthly churn must be between 0% and 99.9%.");
+
+      const retention = 1 - churn;
+      const monthlyDiscount = annualDiscountRate > 0 ? Math.pow(1 + annualDiscountRate, 1 / 12) - 1 : 0;
+
+      let undiscounted = 0;
+      let discounted = 0;
+      let month12GrossProfit = 0;
+
+      for (let t = 1; t <= months; t++) {
+        const expectedRevenue =
+          values.arpaMonthly * Math.pow(1 + expansion, t - 1) * Math.pow(retention, t - 1);
+        const gp = expectedRevenue * grossMargin;
+        undiscounted += gp;
+        const df = monthlyDiscount > 0 ? Math.pow(1 + monthlyDiscount, t) : 1;
+        discounted += gp / df;
+        if (t === 12) month12GrossProfit = gp;
+      }
+
+      const retentionAtHorizon = Math.pow(retention, months);
+      const approxLifetimeMonths = churn > 0 ? 1 / churn : null;
+
+      return {
+        headline: {
+          key: "discountedLtv",
+          label: "Discounted cohort LTV (gross profit)",
+          value: discounted,
+          format: "currency",
+          currency: "USD",
+          detail: "Sum of discounted monthly gross profit over the horizon",
+        },
+        secondary: [
+          {
+            key: "undiscountedLtv",
+            label: "Undiscounted cohort LTV (gross profit)",
+            value: undiscounted,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "grossProfitMonth12",
+            label: "Expected gross profit in month 12",
+            value: month12GrossProfit,
+            format: "currency",
+            currency: "USD",
+            detail: "Expected value per original account in month 12",
+          },
+          {
+            key: "retentionAtHorizon",
+            label: `Logo retention after ${months} months`,
+            value: retentionAtHorizon,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "approxLifetime",
+            label: "Approx. lifetime from churn (months)",
+            value: approxLifetimeMonths ?? 0,
+            format: "months",
+            maxFractionDigits: 1,
+            detail: approxLifetimeMonths === null ? "Churn is 0%" : "1 ÷ monthly churn",
+          },
+        ],
+        breakdown: [
+          {
+            key: "arpaMonthly",
+            label: "ARPA (monthly)",
+            value: values.arpaMonthly,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "grossMargin",
+            label: "Gross margin",
+            value: grossMargin,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "monthlyChurn",
+            label: "Monthly churn",
+            value: churn,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "monthlyExpansion",
+            label: "Monthly expansion",
+            value: expansion,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "annualDiscount",
+            label: "Annual discount rate",
+            value: annualDiscountRate,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Expected revenue_t = ARPA * (1+expansion)^(t-1) * (1-churn)^(t-1); LTV = Σ gross_profit_t (optionally discounted)",
+    assumptions: [
+      "Uses constant monthly churn and expansion assumptions.",
+      "Expansion is applied to surviving accounts' revenue each month.",
+      "Outputs are per original account in the cohort (expected value).",
+    ],
+    faqs: [
+      {
+        question: "Is this better than LTV = ARPA * margin / churn?",
+        answer:
+          "Often yes for planning. The simple churn formula assumes constant churn and no expansion and can be very sensitive to small churn changes. Cohort-style forecasts are easier to scenario test and extend with discounting.",
+      },
+      {
+        question: "What discount rate should I use?",
+        answer:
+          "Use your required return / cost of capital as a rough starting point (e.g., 8–20% annually). If you're comparing scenarios, keep the discount rate consistent.",
+      },
+    ],
+  },
+  {
+    slug: "incrementality-lift-calculator",
+    title: "Incrementality Lift Calculator",
+    description:
+      "Estimate incremental conversions, incremental ROAS, and incremental profit from a holdout test.",
+    category: "paid-ads",
+    guideSlug: "incrementality-lift-guide",
+    relatedGlossarySlugs: [
+      "incrementality",
+      "holdout-test",
+      "cvr",
+      "aov",
+      "contribution-margin",
+      "roas",
+    ],
+    seo: {
+      intro: [
+        "Attribution-reported ROAS can over-credit ads that would have converted anyway. Incrementality asks what lift ads caused compared to a no-ads baseline.",
+        "This calculator turns a simple holdout test (exposed vs control) into incremental conversions, incremental ROAS, and incremental profit using AOV and contribution margin assumptions.",
+      ],
+      steps: [
+        "Enter exposed and holdout sample sizes and conversions.",
+        "Enter ad spend for the exposed group and your AOV + contribution margin.",
+        "Use incremental ROAS and incremental profit to decide what to scale.",
+      ],
+      pitfalls: [
+        "Non-random assignment (exposed users differ from holdout users).",
+        "Too-small samples (results swing due to noise).",
+        "Using revenue but ignoring variable costs (use contribution margin).",
+      ],
+    },
+    inputs: [
+      {
+        key: "exposedUsers",
+        label: "Exposed users (treatment)",
+        placeholder: "100000",
+        defaultValue: "100000",
+        min: 0,
+        step: 1,
+      },
+      {
+        key: "exposedConversions",
+        label: "Exposed conversions",
+        placeholder: "1200",
+        defaultValue: "1200",
+        min: 0,
+        step: 1,
+      },
+      {
+        key: "holdoutUsers",
+        label: "Holdout users (control)",
+        placeholder: "100000",
+        defaultValue: "100000",
+        min: 0,
+        step: 1,
+      },
+      {
+        key: "holdoutConversions",
+        label: "Holdout conversions",
+        placeholder: "900",
+        defaultValue: "900",
+        min: 0,
+        step: 1,
+      },
+      {
+        key: "adSpend",
+        label: "Ad spend (treatment)",
+        placeholder: "50000",
+        prefix: "$",
+        defaultValue: "50000",
+        min: 0,
+      },
+      {
+        key: "aov",
+        label: "Average order value (AOV)",
+        placeholder: "80",
+        prefix: "$",
+        defaultValue: "80",
+        min: 0,
+      },
+      {
+        key: "contributionMarginPercent",
+        label: "Contribution margin",
+        placeholder: "40",
+        suffix: "%",
+        defaultValue: "40",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const exposedUsers = Math.floor(values.exposedUsers);
+      const holdoutUsers = Math.floor(values.holdoutUsers);
+      const exposedConversions = Math.floor(values.exposedConversions);
+      const holdoutConversions = Math.floor(values.holdoutConversions);
+
+      if (values.exposedUsers !== exposedUsers || values.holdoutUsers !== holdoutUsers) {
+        warnings.push("User counts were rounded down to whole numbers.");
+      }
+      if (
+        values.exposedConversions !== exposedConversions ||
+        values.holdoutConversions !== holdoutConversions
+      ) {
+        warnings.push("Conversion counts were rounded down to whole numbers.");
+      }
+
+      if (exposedUsers <= 0 || holdoutUsers <= 0) {
+        warnings.push("Exposed and holdout users must be greater than 0.");
+      }
+
+      const exposedCvr = exposedUsers > 0 ? exposedConversions / exposedUsers : 0;
+      const holdoutCvr = holdoutUsers > 0 ? holdoutConversions / holdoutUsers : 0;
+
+      const expectedWithoutAds = exposedUsers * holdoutCvr;
+      const incrementalConversions = exposedConversions - expectedWithoutAds;
+
+      const incrementalRevenue = incrementalConversions * values.aov;
+      const margin = values.contributionMarginPercent / 100;
+      const incrementalGrossProfit = incrementalRevenue * margin;
+      const incrementalProfitAfterSpend = incrementalGrossProfit - values.adSpend;
+
+      const incrementalRoas = safeDivide(incrementalRevenue, values.adSpend);
+      const uplift = holdoutCvr > 0 ? incrementalConversions / expectedWithoutAds : null;
+
+      if (incrementalConversions < 0) {
+        warnings.push(
+          "Incremental conversions are negative (treatment underperformed control). Verify test setup and sample sizes.",
+        );
+      }
+      if (values.adSpend <= 0) {
+        warnings.push("Ad spend must be greater than 0 to compute incremental ROAS.");
+      }
+
+      return {
+        headline: {
+          key: "incrementalProfit",
+          label: "Incremental profit after ad spend",
+          value: incrementalProfitAfterSpend,
+          format: "currency",
+          currency: "USD",
+          detail: "Incremental gross profit - ad spend",
+        },
+        secondary: [
+          {
+            key: "incrementalConversions",
+            label: "Incremental conversions",
+            value: incrementalConversions,
+            format: "number",
+            maxFractionDigits: 0,
+            detail: "Exposed conversions - expected conversions without ads",
+          },
+          {
+            key: "incrementalRevenue",
+            label: "Incremental revenue",
+            value: incrementalRevenue,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "incrementalRoas",
+            label: "Incremental ROAS",
+            value: incrementalRoas ?? 0,
+            format: "multiple",
+            maxFractionDigits: 2,
+            detail: "Incremental revenue ÷ ad spend",
+          },
+          {
+            key: "exposedCvr",
+            label: "Exposed CVR",
+            value: exposedCvr,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "holdoutCvr",
+            label: "Holdout CVR",
+            value: holdoutCvr,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "uplift",
+            label: "Uplift vs holdout",
+            value: uplift ?? 0,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail: uplift === null ? "Holdout CVR is 0%" : "(Exposed - holdout) ÷ holdout",
+          },
+        ],
+        breakdown: [
+          {
+            key: "expectedWithoutAds",
+            label: "Expected conversions without ads (scaled holdout)",
+            value: expectedWithoutAds,
+            format: "number",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "adSpend",
+            label: "Ad spend",
+            value: values.adSpend,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "aov",
+            label: "AOV",
+            value: values.aov,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "margin",
+            label: "Contribution margin",
+            value: margin,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Incremental conversions = exposed_conversions - exposed_users * (holdout_conversions/holdout_users); Incremental ROAS = incremental_revenue / ad_spend",
+    assumptions: [
+      "Holdout group approximates the no-ads baseline for the exposed group.",
+      "AOV and contribution margin are constant for incremental conversions.",
+      "No statistical significance is computed; treat results as directional unless sample sizes are large.",
+    ],
+    faqs: [
+      {
+        question: "Why can incremental ROAS be lower than platform ROAS?",
+        answer:
+          "Platforms often claim credit for conversions that would have happened anyway (especially retargeting). Incremental ROAS isolates lift, so it’s often lower but more decision-useful.",
+      },
+      {
+        question: "What if my holdout conversion rate is higher than exposed?",
+        answer:
+          "That implies negative lift. It can happen due to noise, non-random assignment, or true cannibalization. Check randomization, sample size, and whether holdout users were truly unexposed.",
+      },
+    ],
+  },
+  {
+    slug: "break-even-pricing-calculator",
+    title: "Break-even Pricing Calculator",
+    description:
+      "Compute contribution margin, break-even units, and profit at a given volume based on price and variable costs.",
+    category: "finance",
+    guideSlug: "break-even-pricing-guide",
+    relatedGlossarySlugs: [
+      "break-even-revenue",
+      "fixed-costs",
+      "variable-costs",
+      "gross-margin",
+      "contribution-margin",
+    ],
+    seo: {
+      intro: [
+        "Break-even pricing connects pricing and cost structure to the volume required to cover fixed costs. It's the simplest way to sanity-check whether a product can be viable at expected demand levels.",
+        "This calculator computes contribution margin, break-even units, break-even revenue, and profit at a chosen unit volume.",
+      ],
+      steps: [
+        "Enter your price per unit and variable cost per unit.",
+        "Enter fixed costs for the period (monthly or annual, but keep units consistent).",
+        "Enter expected units sold to see profit at that volume.",
+      ],
+      pitfalls: [
+        "Mixing time windows (monthly fixed costs with annual volume).",
+        "Forgetting variable costs like payment fees, shipping, or support costs that scale with units.",
+        "Using break-even as the only goal; you still need margin for growth and risk.",
+      ],
+    },
+    inputs: [
+      {
+        key: "pricePerUnit",
+        label: "Price per unit",
+        placeholder: "100",
+        prefix: "$",
+        defaultValue: "100",
+        min: 0,
+      },
+      {
+        key: "variableCostPerUnit",
+        label: "Variable cost per unit",
+        placeholder: "35",
+        prefix: "$",
+        defaultValue: "35",
+        min: 0,
+      },
+      {
+        key: "fixedCosts",
+        label: "Fixed costs (for the period)",
+        placeholder: "50000",
+        prefix: "$",
+        defaultValue: "50000",
+        min: 0,
+      },
+      {
+        key: "unitsSold",
+        label: "Units sold (expected)",
+        placeholder: "1200",
+        defaultValue: "1200",
+        min: 0,
+        step: 1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const unitsSold = Math.floor(values.unitsSold);
+      if (values.unitsSold !== unitsSold)
+        warnings.push("Units sold was rounded down to a whole number.");
+
+      const contributionPerUnit = values.pricePerUnit - values.variableCostPerUnit;
+      if (contributionPerUnit <= 0) {
+        warnings.push(
+          "Price must be greater than variable cost to have positive contribution margin.",
+        );
+      }
+
+      const breakEvenUnits =
+        contributionPerUnit > 0 ? values.fixedCosts / contributionPerUnit : null;
+      const breakEvenRevenue =
+        breakEvenUnits !== null ? breakEvenUnits * values.pricePerUnit : 0;
+
+      const profitAtVolume = unitsSold * contributionPerUnit - values.fixedCosts;
+      const contributionMarginPercent =
+        values.pricePerUnit > 0 ? contributionPerUnit / values.pricePerUnit : null;
+
+      return {
+        headline: {
+          key: "breakEvenUnits",
+          label: "Break-even units",
+          value: breakEvenUnits ?? 0,
+          format: "number",
+          maxFractionDigits: 1,
+          detail: breakEvenUnits === null ? "No break-even (margin <= 0)" : "Fixed costs ÷ contribution per unit",
+        },
+        secondary: [
+          {
+            key: "profitAtVolume",
+            label: "Profit at expected units",
+            value: profitAtVolume,
+            format: "currency",
+            currency: "USD",
+            detail: "Units * contribution per unit - fixed costs",
+          },
+          {
+            key: "breakEvenRevenue",
+            label: "Break-even revenue",
+            value: breakEvenRevenue,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "contributionPerUnit",
+            label: "Contribution margin per unit",
+            value: contributionPerUnit,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "contributionMarginPercent",
+            label: "Contribution margin (%)",
+            value: contributionMarginPercent ?? 0,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail: contributionMarginPercent === null ? "Price is 0" : "(Price - variable cost) ÷ price",
+          },
+        ],
+        breakdown: [
+          {
+            key: "pricePerUnit",
+            label: "Price per unit",
+            value: values.pricePerUnit,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "variableCostPerUnit",
+            label: "Variable cost per unit",
+            value: values.variableCostPerUnit,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "fixedCosts",
+            label: "Fixed costs",
+            value: values.fixedCosts,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "unitsSold",
+            label: "Units sold",
+            value: unitsSold,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Contribution per unit = price - variable cost; Break-even units = fixed costs / contribution per unit; Profit = units * contribution - fixed costs",
+    assumptions: [
+      "Variable cost per unit is constant across volume.",
+      "Fixed costs are fixed for the chosen period.",
+      "Ignores step-functions and capacity constraints (which can change fixed costs).",
+    ],
+    faqs: [
+      {
+        question: "Is break-even the same as profitability?",
+        answer:
+          "Break-even is the point where profit is exactly zero. Profitability means you are above break-even (positive profit) and ideally have margin to absorb uncertainty and fund growth.",
+      },
+      {
+        question: "Should marketing spend be fixed or variable?",
+        answer:
+          "It depends on your model. Some marketing scales with volume (variable) and some is budgeted as fixed for a period. For break-even analysis, use the classification that matches how your costs actually behave.",
+      },
+    ],
+  },
 ];

@@ -198,12 +198,16 @@ const seeds: Seed[] = [
       "Use holdouts or geo-experiments to estimate incremental lift.",
       "Be careful with short tests when purchase cycles are long.",
     ],
+    relatedGuideSlugs: ["incrementality-guide", "incrementality-lift-guide"],
+    relatedCalculatorSlugs: ["incrementality-lift-calculator"],
   },
   {
     slug: "holdout-test",
     title: "Holdout Test",
     description:
       "A holdout test withholds ads from a control group and compares outcomes to measure incremental lift.",
+    relatedGuideSlugs: ["incrementality-lift-guide", "incrementality-guide"],
+    relatedCalculatorSlugs: ["incrementality-lift-calculator"],
   },
   {
     slug: "geo-test",

@@ -2010,8 +2010,12 @@ export const guides: Guide[] = [
     description:
       "Platform-reported ROAS can overstate impact. Learn what incrementality means, when it matters, and practical ways to test it.",
     category: "paid-ads",
-    updatedAt: "2026-01-12",
-    relatedCalculatorSlugs: ["roas-calculator", "roi-calculator"],
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: [
+      "incrementality-lift-calculator",
+      "roas-calculator",
+      "roi-calculator",
+    ],
     sections: [
       { type: "h2", text: "Definition" },
       {
@@ -2361,6 +2365,241 @@ export const guides: Guide[] = [
           newCustomers: "120",
           arpaMonthly: "800",
           grossMarginPercent: "80",
+        },
+      },
+    ],
+  },
+  {
+    slug: "cohort-ltv-forecast-guide",
+    title: "Cohort LTV forecasting: churn, expansion, discounting (practical model)",
+    description:
+      "A practical guide to cohort-based LTV: why it beats simple churn formulas, how to choose assumptions, and how to interpret discounted LTV.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["cohort-ltv-forecast-calculator", "ltv-calculator"],
+    relatedGlossarySlugs: [
+      "cohorted-ltv",
+      "customer-lifetime",
+      "logo-churn",
+      "gross-margin",
+      "discount-rate",
+      "arpa",
+    ],
+    sections: [
+      { type: "h2", text: "Why cohort-based LTV is worth it" },
+      {
+        type: "p",
+        text: "The classic shortcut LTV ≈ (ARPA × gross margin) ÷ churn can mislead because it assumes constant churn, ignores expansion, and can explode when churn is small. A cohort model makes assumptions explicit and is easier to scenario test.",
+      },
+      { type: "h2", text: "A simple cohort model" },
+      {
+        type: "bullets",
+        items: [
+          "Start with ARPA and gross margin to compute monthly gross profit per account.",
+          "Apply a monthly retention factor (1 - churn) to model survival.",
+          "Apply monthly expansion to surviving accounts to model upgrades/seat growth.",
+          "Optionally discount future cash flows to compute discounted LTV.",
+        ],
+      },
+      { type: "h2", text: "Choosing assumptions" },
+      {
+        type: "bullets",
+        items: [
+          "Logo churn: start with trailing monthly churn by plan/segment if possible.",
+          "Expansion: use observed net retention patterns (expansion often varies heavily by segment).",
+          "Discount rate: pick a consistent annual rate (e.g., cost of capital) if you want a present-value lens.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Mixing time units (annual churn plugged into monthly churn).",
+          "Confusing logo churn with revenue churn (different denominators).",
+          "Using blended averages when segments behave differently (plan, channel, cohort).",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Should I use revenue or gross profit for LTV?",
+        answer:
+          "For unit economics decisions, gross profit is usually better because it accounts for COGS and variable delivery costs. If you use revenue, you can overstate value and set CAC targets too high.",
+      },
+      {
+        question: "How long should the horizon be?",
+        answer:
+          "Use 36–60 months for many SaaS products as a practical horizon. For high retention businesses, also run scenarios since long tails dominate the sum.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $800 ARPA, 80% margin, 2% churn, 1% expansion, 60 months, 12% discount",
+        calculatorSlug: "cohort-ltv-forecast-calculator",
+        params: {
+          arpaMonthly: "800",
+          grossMarginPercent: "80",
+          monthlyChurnPercent: "2",
+          monthlyExpansionPercent: "1",
+          months: "60",
+          annualDiscountRatePercent: "12",
+        },
+      },
+    ],
+  },
+  {
+    slug: "incrementality-lift-guide",
+    title: "Incrementality lift: how to compute incremental ROAS from holdouts",
+    description:
+      "Turn an exposed vs holdout test into incremental conversions, incremental ROAS, and incremental profit for decision-making.",
+    category: "paid-ads",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: [
+      "incrementality-lift-calculator",
+      "roas-calculator",
+      "break-even-roas-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "incrementality",
+      "holdout-test",
+      "cvr",
+      "aov",
+      "contribution-margin",
+      "roas",
+    ],
+    sections: [
+      { type: "h2", text: "What lift means" },
+      {
+        type: "p",
+        text: "Lift is the incremental outcome caused by ads compared to a no-ads baseline. A holdout test estimates that baseline by withholding ads from a comparable control group.",
+      },
+      { type: "h2", text: "Core calculation (holdout scaled)" },
+      {
+        type: "bullets",
+        items: [
+          "Holdout CVR = holdout conversions ÷ holdout users.",
+          "Expected conversions without ads = exposed users × holdout CVR.",
+          "Incremental conversions = exposed conversions - expected without ads.",
+          "Incremental ROAS = incremental revenue ÷ ad spend.",
+        ],
+      },
+      { type: "h2", text: "Decision rules (practical)" },
+      {
+        type: "bullets",
+        items: [
+          "Use incremental profit, not reported ROAS, to decide what to scale.",
+          "If lift is near zero, treat the campaign as demand capture (not demand creation).",
+          "Prefer larger and longer tests to reduce noise; avoid changing many variables mid-test.",
+        ],
+      },
+      { type: "h2", text: "Common pitfalls" },
+      {
+        type: "bullets",
+        items: [
+          "Holdout users still seeing ads (leakage).",
+          "Selection bias: exposed users differ from holdout users.",
+          "Ignoring variable costs (use contribution margin, not revenue).",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Should I use revenue, gross profit, or contribution margin?",
+        answer:
+          "Use contribution margin when possible because it reflects variable costs (fees, shipping, returns). Revenue-only lift can be misleading for low-margin products.",
+      },
+      {
+        question: "Can lift be negative?",
+        answer:
+          "Yes. It can occur due to noise, bad targeting/creative, or true cannibalization. Double-check randomization and that the holdout truly had no exposure.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: 100k exposed users (1,200 conv) vs 100k holdout users (900 conv), $50k spend",
+        calculatorSlug: "incrementality-lift-calculator",
+        params: {
+          exposedUsers: "100000",
+          exposedConversions: "1200",
+          holdoutUsers: "100000",
+          holdoutConversions: "900",
+          adSpend: "50000",
+          aov: "80",
+          contributionMarginPercent: "40",
+        },
+      },
+    ],
+  },
+  {
+    slug: "break-even-pricing-guide",
+    title: "Break-even pricing: contribution margin, break-even units, and profit",
+    description:
+      "A practical guide to break-even pricing: how to compute contribution margin, break-even units, and profit at expected volume.",
+    category: "finance",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["break-even-pricing-calculator"],
+    relatedGlossarySlugs: [
+      "break-even-revenue",
+      "fixed-costs",
+      "variable-costs",
+      "gross-margin",
+      "contribution-margin",
+    ],
+    sections: [
+      { type: "h2", text: "Why break-even pricing matters" },
+      {
+        type: "p",
+        text: "Break-even analysis tells you how much volume you need to cover fixed costs at a given price and variable cost. It’s the fastest way to sanity-check whether a pricing model can work at expected demand.",
+      },
+      { type: "h2", text: "Key formulas" },
+      {
+        type: "bullets",
+        items: [
+          "Contribution per unit = price - variable cost per unit.",
+          "Break-even units = fixed costs ÷ contribution per unit.",
+          "Profit = units × contribution per unit - fixed costs.",
+        ],
+      },
+      { type: "h2", text: "What to include in variable costs" },
+      {
+        type: "bullets",
+        items: [
+          "Payment processing fees, shipping, returns/refunds (ecommerce).",
+          "Support or delivery costs that scale with usage (SaaS infrastructure, success).",
+          "Any cost that rises with each additional unit/customer/order.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Mixing time windows (monthly fixed costs with annual unit volumes).",
+          "Ignoring step costs (capacity constraints can make 'fixed' costs jump).",
+          "Treating break-even as success; you usually need buffer margin and profit.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "What if price equals variable cost?",
+        answer:
+          "Then contribution margin is zero and you will never break even because each unit contributes nothing toward fixed costs. You need either higher price or lower variable cost.",
+      },
+      {
+        question: "Is break-even revenue more useful than break-even units?",
+        answer:
+          "They answer similar questions. Units is more intuitive for products with stable pricing; revenue is more general when pricing varies or you have multiple SKUs.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $100 price, $35 variable cost, $50k fixed costs, 1,200 units",
+        calculatorSlug: "break-even-pricing-calculator",
+        params: {
+          pricePerUnit: "100",
+          variableCostPerUnit: "35",
+          fixedCosts: "50000",
+          unitsSold: "1200",
         },
       },
     ],

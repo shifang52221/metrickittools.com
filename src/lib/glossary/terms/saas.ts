@@ -356,6 +356,8 @@ const seeds: Seed[] = [
       "More accurate when churn changes over time or expansion is meaningful.",
       "Use cohorts by plan/channel to avoid mixing behaviors.",
     ],
+    relatedGuideSlugs: ["cohort-ltv-forecast-guide", "cohort-vs-aggregate-guide"],
+    relatedCalculatorSlugs: ["cohort-ltv-forecast-calculator"],
   },
   {
     slug: "arr-valuation-multiple",
