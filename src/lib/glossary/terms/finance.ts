@@ -7,6 +7,8 @@ type Seed = {
   formula?: string;
   bullets?: string[];
   mistakes?: string[];
+  relatedGuideSlugs?: string[];
+  relatedCalculatorSlugs?: string[];
 };
 
 function sectionsFor(seed: Seed): GlossarySection[] {
@@ -37,6 +39,8 @@ function make(seed: Seed): GlossaryTerm {
     category: "finance",
     updatedAt: "2026-01-23",
     sections: sectionsFor(seed),
+    relatedGuideSlugs: seed.relatedGuideSlugs,
+    relatedCalculatorSlugs: seed.relatedCalculatorSlugs,
   };
 }
 
@@ -109,6 +113,8 @@ const seeds: Seed[] = [
     description:
       "Runway estimates how many months you can operate before running out of cash at the current net burn.",
     formula: "Runway (months) = cash balance ÷ net monthly burn",
+    relatedGuideSlugs: ["cash-runway-guide"],
+    relatedCalculatorSlugs: ["cash-runway-calculator"],
   },
   {
     slug: "burn-rate",

@@ -3419,4 +3419,689 @@ export const calculators: CalculatorDefinition[] = [
       },
     ],
   },
+  {
+    slug: "mrr-forecast-calculator",
+    title: "MRR Forecast Calculator",
+    description:
+      "Forecast MRR over time using new MRR plus expansion, contraction, and churn rates.",
+    category: "saas-metrics",
+    guideSlug: "mrr-forecast-guide",
+    relatedGlossarySlugs: [
+      "mrr",
+      "net-new-mrr",
+      "new-mrr",
+      "expansion-mrr",
+      "contraction-mrr",
+      "churned-mrr",
+      "nrr",
+      "grr",
+    ],
+    seo: {
+      intro: [
+        "An MRR forecast helps you sanity-check growth assumptions and understand which lever matters most: new customer acquisition (new MRR) or retention and expansion (NRR).",
+        "This calculator models a simple monthly MRR bridge: starting MRR plus new MRR, expansion, minus contraction and churn, repeated for the number of months you choose.",
+      ],
+      steps: [
+        "Enter your starting MRR (current recurring run-rate).",
+        "Estimate new MRR added per month (from new customers).",
+        "Set monthly expansion, contraction, and churn rates for existing MRR.",
+        "Choose a horizon (e.g., 6–24 months) and compare scenarios.",
+      ],
+      pitfalls: [
+        "Mixing time units (monthly churn with annual inputs).",
+        "Using expansion/churn rates that imply impossible outcomes (e.g., churn > 100%).",
+        "Treating this as a replacement for cohort-based retention curves; use cohorts for higher accuracy.",
+      ],
+    },
+    inputs: [
+      {
+        key: "startingMrr",
+        label: "Starting MRR",
+        placeholder: "100000",
+        prefix: "$",
+        defaultValue: "100000",
+        min: 0,
+      },
+      {
+        key: "newMrrPerMonth",
+        label: "New MRR added per month",
+        help: "Recurring revenue from brand-new customers (not expansions).",
+        placeholder: "12000",
+        prefix: "$",
+        defaultValue: "12000",
+        min: 0,
+      },
+      {
+        key: "expansionRatePercent",
+        label: "Monthly expansion rate (existing MRR)",
+        placeholder: "2",
+        suffix: "%",
+        defaultValue: "2",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "contractionRatePercent",
+        label: "Monthly contraction rate (existing MRR)",
+        placeholder: "0.5",
+        suffix: "%",
+        defaultValue: "0.5",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "churnRatePercent",
+        label: "Monthly churn rate (existing MRR)",
+        placeholder: "1.5",
+        suffix: "%",
+        defaultValue: "1.5",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "months",
+        label: "Months to forecast",
+        placeholder: "12",
+        defaultValue: "12",
+        min: 1,
+        step: 1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const months = Math.max(1, Math.floor(values.months));
+
+      const expansionRate = values.expansionRatePercent / 100;
+      const contractionRate = values.contractionRatePercent / 100;
+      const churnRate = values.churnRatePercent / 100;
+
+      if (values.startingMrr <= 0) warnings.push("Starting MRR must be greater than 0.");
+      if (values.months !== months)
+        warnings.push("Months was rounded down to a whole number.");
+      if (values.churnRatePercent > 100 || values.contractionRatePercent > 100)
+        warnings.push("Churn/contraction rates above 100% are not realistic.");
+
+      let mrr = Math.max(0, values.startingMrr);
+      let totalNew = 0;
+      let totalExpansion = 0;
+      let totalContraction = 0;
+      let totalChurn = 0;
+
+      const baseMrr = mrr;
+
+      for (let month = 1; month <= months; month++) {
+        const expansion = mrr * expansionRate;
+        const contraction = mrr * contractionRate;
+        const churn = mrr * churnRate;
+        const next = mrr + values.newMrrPerMonth + expansion - contraction - churn;
+
+        totalNew += values.newMrrPerMonth;
+        totalExpansion += expansion;
+        totalContraction += contraction;
+        totalChurn += churn;
+
+        mrr = Math.max(0, next);
+        if (next < 0) warnings.push("Your assumptions drive MRR below $0; the forecast is floored at $0.");
+      }
+
+      const netNewMrr = mrr - baseMrr;
+      const cmgr = baseMrr > 0 ? Math.pow(mrr / baseMrr, 1 / months) - 1 : 0;
+
+      const oneMonthExistingMrr = baseMrr;
+      const oneMonthNrr = safeDivide(
+        oneMonthExistingMrr +
+          oneMonthExistingMrr * expansionRate -
+          oneMonthExistingMrr * contractionRate -
+          oneMonthExistingMrr * churnRate,
+        oneMonthExistingMrr,
+      );
+      const oneMonthGrr = safeDivide(
+        oneMonthExistingMrr -
+          oneMonthExistingMrr * contractionRate -
+          oneMonthExistingMrr * churnRate,
+        oneMonthExistingMrr,
+      );
+
+      return {
+        headline: {
+          key: "endingMrr",
+          label: `Ending MRR (month ${months})`,
+          value: mrr,
+          format: "currency",
+          currency: "USD",
+          detail: "Simple monthly MRR bridge forecast",
+        },
+        secondary: [
+          {
+            key: "endingArrRunRate",
+            label: "ARR run-rate (ending MRR × 12)",
+            value: mrr * 12,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "netNewMrr",
+            label: "Net new MRR over horizon",
+            value: netNewMrr,
+            format: "currency",
+            currency: "USD",
+            detail: "Ending MRR - starting MRR",
+          },
+          {
+            key: "cmgr",
+            label: "CMGR (monthly growth rate)",
+            value: cmgr,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: "Compound monthly growth rate over the horizon",
+          },
+          {
+            key: "impliedMonthlyNrr",
+            label: "Implied monthly NRR (existing MRR only)",
+            value: oneMonthNrr ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: "1 + expansion - contraction - churn (monthly)",
+          },
+          {
+            key: "impliedMonthlyGrr",
+            label: "Implied monthly GRR (existing MRR only)",
+            value: oneMonthGrr ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: "1 - contraction - churn (monthly)",
+          },
+        ],
+        breakdown: [
+          {
+            key: "startingMrr",
+            label: "Starting MRR",
+            value: values.startingMrr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "newMrrPerMonth",
+            label: "New MRR per month",
+            value: values.newMrrPerMonth,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "totalNew",
+            label: `Total new MRR added (${months} months)`,
+            value: totalNew,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "totalExpansion",
+            label: `Total expansion (${months} months)`,
+            value: totalExpansion,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "totalContraction",
+            label: `Total contraction (${months} months)`,
+            value: totalContraction,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "totalChurn",
+            label: `Total churn (${months} months)`,
+            value: totalChurn,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Ending MRR = iterate monthly: MRR_next = MRR + new + (expansion% * MRR) - (contraction% * MRR) - (churn% * MRR)",
+    assumptions: [
+      "Rates apply to the current month's MRR base (not cohort-based).",
+      "New MRR is constant each month for simplicity.",
+      "This is a planning model; use cohort retention curves for higher precision.",
+    ],
+    faqs: [
+      {
+        question: "Is this the same as NRR forecasting?",
+        answer:
+          "This model includes both new customer growth (new MRR) and existing customer dynamics (expansion, contraction, churn). NRR focuses only on existing customers; here we show the implied monthly NRR from your assumptions.",
+      },
+      {
+        question: "What horizon should I use?",
+        answer:
+          "For execution planning, 6–12 months is common. For longer-range strategy, use scenarios (base/optimistic/conservative) because small rate changes compound quickly.",
+      },
+    ],
+  },
+  {
+    slug: "cash-runway-calculator",
+    title: "Cash Runway Calculator",
+    description:
+      "Estimate runway from cash balance, revenue, gross margin, and operating expenses (optionally with revenue growth).",
+    category: "finance",
+    guideSlug: "cash-runway-guide",
+    relatedGlossarySlugs: [
+      "runway",
+      "burn-rate",
+      "net-burn",
+      "gross-margin",
+      "break-even-revenue",
+      "cash-breakeven",
+      "cash-flow",
+    ],
+    seo: {
+      intro: [
+        "Runway answers a simple question: how many months can you operate before cash hits zero at your current net burn?",
+        "This calculator estimates net burn from revenue, gross margin, and operating expenses, and optionally simulates runway with a monthly revenue growth assumption.",
+      ],
+      steps: [
+        "Enter your current cash balance.",
+        "Enter monthly revenue and gross margin (to estimate gross profit).",
+        "Enter monthly operating expenses (cash basis).",
+        "Optionally add a monthly revenue growth rate to model improving burn.",
+      ],
+      pitfalls: [
+        "Using booked revenue instead of collected cash (AR timing matters).",
+        "Using accounting expenses when cash outflows differ (capex, prepaids, deferred revenue).",
+        "Assuming growth without accounting for growth costs (sales/marketing, infra).",
+      ],
+    },
+    inputs: [
+      {
+        key: "cashBalance",
+        label: "Cash balance",
+        placeholder: "500000",
+        prefix: "$",
+        defaultValue: "500000",
+        min: 0,
+      },
+      {
+        key: "monthlyRevenue",
+        label: "Monthly revenue (cash-in proxy)",
+        help: "If collections lag, adjust this closer to cash collected per month.",
+        placeholder: "150000",
+        prefix: "$",
+        defaultValue: "150000",
+        min: 0,
+      },
+      {
+        key: "grossMarginPercent",
+        label: "Gross margin",
+        placeholder: "80",
+        suffix: "%",
+        defaultValue: "80",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "monthlyOperatingExpenses",
+        label: "Monthly operating expenses (cash out)",
+        placeholder: "220000",
+        prefix: "$",
+        defaultValue: "220000",
+        min: 0,
+      },
+      {
+        key: "monthlyRevenueGrowthPercent",
+        label: "Monthly revenue growth (optional)",
+        placeholder: "3",
+        suffix: "%",
+        defaultValue: "0",
+        step: 0.1,
+      },
+      {
+        key: "monthsToSimulate",
+        label: "Months to simulate",
+        placeholder: "24",
+        defaultValue: "24",
+        min: 1,
+        step: 1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const months = Math.max(1, Math.floor(values.monthsToSimulate));
+      if (values.monthsToSimulate !== months)
+        warnings.push("Months to simulate was rounded down to a whole number.");
+
+      const grossMargin = values.grossMarginPercent / 100;
+      if (grossMargin <= 0)
+        warnings.push("Gross margin must be greater than 0 to compute break-even revenue.");
+
+      const currentGrossProfit = values.monthlyRevenue * grossMargin;
+      const currentNetBurn = values.monthlyOperatingExpenses - currentGrossProfit;
+
+      const noGrowthRunwayMonths =
+        currentNetBurn > 0 ? (safeDivide(values.cashBalance, currentNetBurn) ?? 0) : months;
+
+      const monthlyGrowth = values.monthlyRevenueGrowthPercent / 100;
+      let cash = values.cashBalance;
+      let revenue = values.monthlyRevenue;
+      let runwayWithGrowth: number | null = null;
+      let breakevenMonth: number | null = null;
+
+      for (let month = 1; month <= months; month++) {
+        const grossProfit = revenue * grossMargin;
+        const netBurn = values.monthlyOperatingExpenses - grossProfit;
+        if (breakevenMonth === null && netBurn <= 0) breakevenMonth = month;
+
+        cash -= netBurn;
+        if (cash <= 0) {
+          runwayWithGrowth = month;
+          break;
+        }
+        revenue *= 1 + monthlyGrowth;
+      }
+
+      if (currentNetBurn <= 0) {
+        warnings.push(
+          "At this revenue, margin, and expense level you are cash-flow positive (net burn <= 0). Runway is not the limiting factor.",
+        );
+      }
+
+      const breakEvenRevenue =
+        grossMargin > 0
+          ? (safeDivide(values.monthlyOperatingExpenses, grossMargin) ?? 0)
+          : 0;
+
+      return {
+        headline: {
+          key: "runwayMonths",
+          label: "Cash runway (months)",
+          value: runwayWithGrowth ?? noGrowthRunwayMonths,
+          format: "months",
+          maxFractionDigits: 1,
+          detail:
+            values.monthlyRevenueGrowthPercent > 0
+              ? "Simulated with revenue growth"
+              : "Current net burn (no growth)",
+        },
+        secondary: [
+          {
+            key: "netBurn",
+            label: "Current net burn (monthly)",
+            value: currentNetBurn,
+            format: "currency",
+            currency: "USD",
+            detail: "Operating expenses - gross profit",
+          },
+          {
+            key: "grossProfit",
+            label: "Current gross profit (monthly)",
+            value: currentGrossProfit,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "noGrowthRunway",
+            label: "Runway (no growth)",
+            value: noGrowthRunwayMonths,
+            format: "months",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "breakevenRevenue",
+            label: "Break-even revenue (monthly)",
+            value: breakEvenRevenue,
+            format: "currency",
+            currency: "USD",
+            detail: "Opex / gross margin",
+          },
+          {
+            key: "breakevenMonth",
+            label: "Estimated month to cash break-even (if growth applied)",
+            value: breakevenMonth ?? 0,
+            format: "months",
+            maxFractionDigits: 0,
+            detail: breakevenMonth ? "First month where net burn <= 0" : "Not reached in horizon",
+          },
+        ],
+        breakdown: [
+          {
+            key: "cashBalance",
+            label: "Cash balance",
+            value: values.cashBalance,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "monthlyRevenue",
+            label: "Monthly revenue",
+            value: values.monthlyRevenue,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "grossMarginPercent",
+            label: "Gross margin",
+            value: grossMargin,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "monthlyOperatingExpenses",
+            label: "Monthly operating expenses",
+            value: values.monthlyOperatingExpenses,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Net burn = operating expenses - (revenue * gross margin); Runway = cash balance / net burn (if net burn > 0)",
+    assumptions: [
+      "Monthly revenue is used as a proxy for cash inflow (collections timing can differ).",
+      "Gross margin is treated as a simple % of revenue for gross profit.",
+      "Operating expenses are treated as cash outflows and constant in the simulation.",
+    ],
+    faqs: [
+      {
+        question: "Why is runway different from profitability?",
+        answer:
+          "Runway is about cash. You can be profitable on an accounting basis but still have cash issues due to collections timing, prepayments, capex, or working capital changes.",
+      },
+      {
+        question: "Should I include non-recurring revenue?",
+        answer:
+          "If it reliably produces cash inflows (services, one-time fees), you can include it, but label it clearly. For SaaS planning, recurring revenue is often the most stable input.",
+      },
+    ],
+  },
+  {
+    slug: "blended-cac-calculator",
+    title: "Blended CAC Calculator",
+    description:
+      "Compare paid-only CAC vs fully-loaded (blended) CAC, and estimate payback at a target margin.",
+    category: "saas-metrics",
+    guideSlug: "blended-cac-guide",
+    relatedGlossarySlugs: ["cac", "arpa", "gross-margin", "payback-period"],
+    seo: {
+      intro: [
+        "CAC looks very different depending on what you include. Paid-only CAC helps optimize channels; blended CAC helps plan the business.",
+        "This calculator compares paid CAC vs fully-loaded CAC, and estimates payback months using ARPA and gross margin assumptions.",
+      ],
+      steps: [
+        "Enter variable acquisition costs (ad spend, creative/agency).",
+        "Add fixed sales & marketing costs you want to allocate (salaries, tools).",
+        "Enter new paying customers acquired in the period.",
+        "Optionally add ARPA and gross margin to estimate CAC payback.",
+      ],
+      pitfalls: [
+        "Mixing a revenue-based LTV with a fully-loaded CAC (mismatch).",
+        "Including fixed costs in CAC for channel optimization (can hide channel efficiency).",
+        "Using leads as the denominator instead of new paying customers.",
+      ],
+    },
+    inputs: [
+      {
+        key: "adSpend",
+        label: "Ad spend (variable)",
+        placeholder: "60000",
+        prefix: "$",
+        defaultValue: "60000",
+        min: 0,
+      },
+      {
+        key: "creativeAgency",
+        label: "Creative/agency (variable)",
+        placeholder: "10000",
+        prefix: "$",
+        defaultValue: "10000",
+        min: 0,
+      },
+      {
+        key: "salesMarketingSalaries",
+        label: "Sales & marketing salaries (fixed)",
+        placeholder: "80000",
+        prefix: "$",
+        defaultValue: "80000",
+        min: 0,
+      },
+      {
+        key: "toolsOverhead",
+        label: "Tools/overhead allocated (fixed)",
+        placeholder: "5000",
+        prefix: "$",
+        defaultValue: "5000",
+        min: 0,
+      },
+      {
+        key: "newCustomers",
+        label: "New paying customers acquired",
+        placeholder: "120",
+        defaultValue: "120",
+        min: 0,
+        step: 1,
+      },
+      {
+        key: "arpaMonthly",
+        label: "ARPA (monthly, optional)",
+        help: "Used to estimate payback months. Leave 0 if unknown.",
+        placeholder: "800",
+        prefix: "$",
+        defaultValue: "800",
+        min: 0,
+      },
+      {
+        key: "grossMarginPercent",
+        label: "Gross margin (optional)",
+        placeholder: "80",
+        suffix: "%",
+        defaultValue: "80",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const customers = Math.floor(values.newCustomers);
+      if (values.newCustomers !== customers)
+        warnings.push("New customers was rounded down to a whole number.");
+      if (customers <= 0) warnings.push("New customers must be greater than 0.");
+
+      const variableSpend = values.adSpend + values.creativeAgency;
+      const fixedSpend = values.salesMarketingSalaries + values.toolsOverhead;
+      const paidCac = customers > 0 ? variableSpend / customers : 0;
+      const blendedCac = customers > 0 ? (variableSpend + fixedSpend) / customers : 0;
+
+      const grossMargin = values.grossMarginPercent / 100;
+      const monthlyGrossProfitPerCustomer = values.arpaMonthly * grossMargin;
+      const paybackMonths =
+        monthlyGrossProfitPerCustomer > 0 ? blendedCac / monthlyGrossProfitPerCustomer : null;
+
+      if (values.arpaMonthly <= 0 || grossMargin <= 0) {
+        warnings.push("To compute payback months, enter ARPA and a gross margin above 0%.");
+      }
+
+      return {
+        headline: {
+          key: "blendedCac",
+          label: "Blended CAC (fully-loaded)",
+          value: blendedCac,
+          format: "currency",
+          currency: "USD",
+          detail: "Variable + fixed S&M spend ÷ new customers",
+        },
+        secondary: [
+          {
+            key: "paidCac",
+            label: "Paid-only CAC",
+            value: paidCac,
+            format: "currency",
+            currency: "USD",
+            detail: "Variable acquisition spend ÷ new customers",
+          },
+          {
+            key: "paybackMonths",
+            label: "Estimated payback (months)",
+            value: paybackMonths ?? 0,
+            format: "months",
+            maxFractionDigits: 1,
+            detail:
+              paybackMonths === null
+                ? "Enter ARPA and margin to calculate"
+                : "CAC ÷ monthly gross profit per customer",
+          },
+          {
+            key: "fixedShare",
+            label: "Fixed share of total acquisition spend",
+            value: safeDivide(fixedSpend, fixedSpend + variableSpend) ?? 0,
+            format: "percent",
+            maxFractionDigits: 0,
+          },
+        ],
+        breakdown: [
+          {
+            key: "variableSpend",
+            label: "Variable spend (paid + creative/agency)",
+            value: variableSpend,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "fixedSpend",
+            label: "Fixed spend allocated (salaries + tools)",
+            value: fixedSpend,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "newCustomers",
+            label: "New customers",
+            value: customers,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Paid CAC = variable acquisition spend / new customers; Blended CAC = (variable + fixed S&M spend) / new customers",
+    assumptions: [
+      "Fixed costs are allocated to the period and acquisition volume you choose.",
+      "New customers are new paying customers (not leads).",
+      "Payback uses gross profit per customer: ARPA * gross margin.",
+    ],
+    faqs: [
+      {
+        question: "When should I use paid CAC vs blended CAC?",
+        answer:
+          "Use paid CAC to optimize channels and campaigns. Use blended CAC for planning and to understand whether your overall go-to-market is efficient after salaries and tools.",
+      },
+      {
+        question: "What should the denominator be?",
+        answer:
+          "For CAC, the denominator should be new paying customers. If you use leads or signups, label it clearly (CPL/CPA) and connect it to downstream conversion rates.",
+      },
+    ],
+  },
 ];

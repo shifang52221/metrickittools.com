@@ -2110,6 +2110,261 @@ export const guides: Guide[] = [
       },
     ],
   },
+  {
+    slug: "mrr-forecast-guide",
+    title: "MRR forecasting: a simple bridge model (new, expansion, churn)",
+    description:
+      "A practical way to forecast MRR using a monthly bridge: starting MRR + new MRR + expansion - contraction - churn.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: [
+      "mrr-forecast-calculator",
+      "net-new-mrr-calculator",
+      "nrr-calculator",
+      "grr-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "mrr",
+      "net-new-mrr",
+      "new-mrr",
+      "expansion-mrr",
+      "contraction-mrr",
+      "churned-mrr",
+      "nrr",
+      "grr",
+      "cmgr",
+    ],
+    sections: [
+      { type: "h2", text: "Why a bridge model is useful" },
+      {
+        type: "p",
+        text: "MRR forecasts can get complicated fast. A bridge model keeps the levers explicit: how much MRR comes from new customers vs how much comes from retaining and expanding existing customers. It's a great first-pass planning tool for budgets, targets, and scenario analysis.",
+      },
+      { type: "h2", text: "Core monthly bridge" },
+      {
+        type: "p",
+        text: "MRR_next = MRR + new MRR + expansion - contraction - churn (computed monthly).",
+      },
+      { type: "h2", text: "How to set inputs (practical defaults)" },
+      {
+        type: "bullets",
+        items: [
+          "Starting MRR: current month recurring run-rate (exclude one-time revenue).",
+          "New MRR: use trailing 3-month average if growth is volatile.",
+          "Expansion/churn rates: start with your trailing monthly revenue retention behavior (or approximate from NRR/GRR).",
+          "Horizon: 6–12 months for execution, 12–24 months for strategy scenarios.",
+        ],
+      },
+      { type: "h2", text: "How to interpret results" },
+      {
+        type: "bullets",
+        items: [
+          "Ending MRR and ARR run-rate show where the business lands if assumptions hold.",
+          "CMGR helps compare scenarios (growth rate compounded monthly).",
+          "Implied monthly NRR/GRR reflects existing-customer health independent of new MRR.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Mixing monthly and annual rates (e.g., annual churn used as monthly churn).",
+          "Double counting: including expansions inside 'new MRR' or vice versa.",
+          "Forecasting long horizons without scenarios (small rate changes compound a lot).",
+          "Using this instead of cohort curves when you have meaningful seasonality or changing retention by cohort.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "How do I translate annual NRR to a monthly rate?",
+        answer:
+          "If you only have an annual NRR, you can approximate a monthly rate by taking the 12th root: monthly NRR ≈ (annual NRR)^(1/12). It’s still better to compute monthly retention directly when possible.",
+      },
+      {
+        question: "Should expansion and churn be applied to starting MRR or ending MRR?",
+        answer:
+          "Most simple models apply the rates to the current MRR base at the start of each month (then update). For precision, use cohort-based retention curves and apply behavior by segment.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $100k start, $12k new, 2% expansion, 0.5% contraction, 1.5% churn, 12 months",
+        calculatorSlug: "mrr-forecast-calculator",
+        params: {
+          startingMrr: "100000",
+          newMrrPerMonth: "12000",
+          expansionRatePercent: "2",
+          contractionRatePercent: "0.5",
+          churnRatePercent: "1.5",
+          months: "12",
+        },
+      },
+    ],
+  },
+  {
+    slug: "cash-runway-guide",
+    title: "Cash runway: how to estimate burn, break-even, and survival time",
+    description:
+      "A practical guide to runway: net burn, gross profit, break-even revenue, and how to avoid common cash planning mistakes.",
+    category: "finance",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["cash-runway-calculator"],
+    relatedGlossarySlugs: [
+      "runway",
+      "burn-rate",
+      "gross-burn",
+      "net-burn",
+      "gross-margin",
+      "break-even-revenue",
+      "cash-breakeven",
+      "cash-flow",
+      "working-capital",
+      "accounts-receivable",
+    ],
+    sections: [
+      { type: "h2", text: "Definition" },
+      {
+        type: "p",
+        text: "Runway estimates how many months you can operate before running out of cash. The key input is net burn: cash outflows minus cash inflows in a period.",
+      },
+      { type: "h2", text: "Quick formulas" },
+      {
+        type: "bullets",
+        items: [
+          "Net burn = cash outflows - cash inflows.",
+          "Runway (months) = cash balance / net burn (if net burn > 0).",
+          "Gross profit = revenue * gross margin (simplified).",
+          "Break-even revenue ≈ operating expenses / gross margin (simplified).",
+        ],
+      },
+      { type: "h2", text: "Why cash planning goes wrong" },
+      {
+        type: "bullets",
+        items: [
+          "Revenue is not cash: collections timing (AR) can delay inflows.",
+          "Expenses are not always cash: prepayments, capex, and payroll timing matter.",
+          "Growth often increases burn before it reduces it (sales/marketing ramp, hiring, infra).",
+        ],
+      },
+      { type: "h2", text: "Practical checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Model best/base/worst scenarios and update monthly.",
+          "Separate recurring revenue from one-time revenue so you can see stability.",
+          "Track runway by cash, not just by P&L profitability.",
+          "If runway is short, prioritize actions with immediate cash impact (collections, spend control, pricing).",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is runway the same as burn multiple?",
+        answer:
+          "No. Runway is a cash survival metric. Burn multiple relates net burn to net new ARR and is a growth efficiency metric for SaaS.",
+      },
+      {
+        question: "Should I include R&D in burn?",
+        answer:
+          "For runway, include all cash outflows required to operate: payroll, rent, tools, cloud, and any spending you can't avoid. For unit economics decisions, you may separate growth investments from maintenance spending.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $500k cash, $150k revenue, 80% margin, $220k opex, 0% growth, 24 months",
+        calculatorSlug: "cash-runway-calculator",
+        params: {
+          cashBalance: "500000",
+          monthlyRevenue: "150000",
+          grossMarginPercent: "80",
+          monthlyOperatingExpenses: "220000",
+          monthlyRevenueGrowthPercent: "0",
+          monthsToSimulate: "24",
+        },
+      },
+    ],
+  },
+  {
+    slug: "blended-cac-guide",
+    title: "Blended CAC vs paid CAC: when each is the right metric",
+    description:
+      "CAC depends on what you include. Learn paid-only CAC vs fully-loaded blended CAC, how to avoid mismatches, and how to connect CAC to payback.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: [
+      "blended-cac-calculator",
+      "cac-calculator",
+      "cac-payback-period-calculator",
+      "ltv-to-cac-calculator",
+    ],
+    relatedGlossarySlugs: ["cac", "arpa", "gross-margin", "payback-period", "ltv"],
+    sections: [
+      { type: "h2", text: "Why CAC has multiple definitions" },
+      {
+        type: "p",
+        text: "CAC is only meaningful when the numerator and denominator are clearly defined. Paid CAC helps you optimize acquisition channels. Blended (fully-loaded) CAC helps you plan the business by allocating salaries and overhead to acquisition.",
+      },
+      { type: "h2", text: "Two common CAC definitions" },
+      {
+        type: "bullets",
+        items: [
+          "Paid CAC = variable paid acquisition spend / new paying customers.",
+          "Blended CAC = (variable spend + sales & marketing salaries + tools/overhead) / new paying customers.",
+        ],
+      },
+      { type: "h2", text: "How to connect CAC to payback" },
+      {
+        type: "p",
+        text: "Payback months estimates how long it takes to recover CAC using monthly gross profit per customer: payback = CAC / (ARPA * gross margin).",
+      },
+      { type: "h2", text: "Common mistakes (and how to avoid them)" },
+      {
+        type: "bullets",
+        items: [
+          "Using leads/signups as the denominator (that’s CPA/CPL; convert it to CAC using funnel conversion rates).",
+          "Comparing revenue-based LTV to fully-loaded CAC (mismatch). Prefer gross profit LTV or label definitions clearly.",
+          "Allocating fixed costs inconsistently across periods (creates fake CAC trend).",
+        ],
+      },
+      { type: "h2", text: "Practical reporting template" },
+      {
+        type: "bullets",
+        items: [
+          "Paid CAC by channel/campaign (optimization).",
+          "Blended CAC overall and by segment (planning).",
+          "Payback months and LTV:CAC (health).",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Should I include brand marketing spend in CAC?",
+        answer:
+          "For planning (blended CAC), many teams include it if it contributes to acquisition at your stage. For channel optimization, keep the paid CAC numerator closer to variable costs tied to that channel.",
+      },
+      {
+        question: "Can blended CAC go down even if paid CAC rises?",
+        answer:
+          "Yes. If you scale acquisition volume, fixed costs per customer can fall. That can offset a rising paid CAC, which is why it helps to track both metrics.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $60k ads + $10k creative + $80k salaries + $5k tools; 120 customers",
+        calculatorSlug: "blended-cac-calculator",
+        params: {
+          adSpend: "60000",
+          creativeAgency: "10000",
+          salesMarketingSalaries: "80000",
+          toolsOverhead: "5000",
+          newCustomers: "120",
+          arpaMonthly: "800",
+          grossMarginPercent: "80",
+        },
+      },
+    ],
+  },
 ];
 
 export function getGuide(slug: string): Guide | undefined {

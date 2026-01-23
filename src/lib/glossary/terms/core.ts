@@ -71,8 +71,51 @@ export const termsCore: GlossaryTerm[] = [
         ],
       },
     ],
-    relatedGuideSlugs: ["mrr-guide", "arr-guide"],
-    relatedCalculatorSlugs: ["mrr-calculator", "arr-calculator"],
+    relatedGuideSlugs: ["mrr-guide", "mrr-forecast-guide", "arr-guide"],
+    relatedCalculatorSlugs: [
+      "mrr-calculator",
+      "mrr-forecast-calculator",
+      "arr-calculator",
+    ],
+  },
+  {
+    slug: "cmgr",
+    title: "CMGR (Compound Monthly Growth Rate)",
+    description:
+      "CMGR is the compounded monthly growth rate between a starting value and an ending value over N months.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-23",
+    sections: [
+      { type: "h2", text: "Definition" },
+      {
+        type: "p",
+        text: "CMGR (Compound Monthly Growth Rate) answers: if growth were smooth and compounded monthly, what constant monthly rate would turn the starting value into the ending value over the chosen number of months?",
+      },
+      { type: "h2", text: "Formula" },
+      {
+        type: "p",
+        text: "CMGR = (ending ÷ starting)^(1 ÷ months) - 1",
+      },
+      { type: "h2", text: "How to use it" },
+      {
+        type: "bullets",
+        items: [
+          "Use CMGR to compare scenarios over different horizons (it normalizes to a monthly rate).",
+          "Use CMGR for topline metrics like MRR, revenue, users, or traffic, but pair it with retention and margin for business quality.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using CMGR when the starting value is near zero (results explode).",
+          "Assuming CMGR will continue indefinitely (small differences compound).",
+          "Confusing CMGR with simple average monthly change (compounding matters).",
+        ],
+      },
+    ],
+    relatedGuideSlugs: ["mrr-forecast-guide"],
+    relatedCalculatorSlugs: ["mrr-forecast-calculator"],
   },
   {
     slug: "arpu",
@@ -127,8 +170,12 @@ export const termsCore: GlossaryTerm[] = [
         ],
       },
     ],
-    relatedGuideSlugs: ["cac-guide", "cac-payback-guide"],
-    relatedCalculatorSlugs: ["cac-calculator", "cac-payback-period-calculator"],
+    relatedGuideSlugs: ["cac-guide", "blended-cac-guide", "cac-payback-guide"],
+    relatedCalculatorSlugs: [
+      "cac-calculator",
+      "blended-cac-calculator",
+      "cac-payback-period-calculator",
+    ],
   },
   {
     slug: "roas",
@@ -163,4 +210,3 @@ export const termsCore: GlossaryTerm[] = [
     ],
   },
 ];
-
