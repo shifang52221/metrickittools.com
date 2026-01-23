@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { calculators, categories } from "@/lib/calculators";
 import { guides } from "@/lib/guides";
+import { glossaryTerms } from "@/lib/glossary";
 import { siteConfig } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -11,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/terms",
     "/contact",
     "/guides",
+    "/glossary",
   ].map((path) => ({
     url: path === "/" ? siteConfig.siteUrl : `${siteConfig.siteUrl}${path}`,
   }));
@@ -28,5 +30,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(g.updatedAt),
   }));
 
-  return [...staticRoutes, ...categoryRoutes, ...calculatorRoutes, ...guideRoutes];
+  const glossaryRoutes = glossaryTerms.map((t) => ({
+    url: `${siteConfig.siteUrl}/glossary/${t.slug}`,
+    lastModified: new Date(t.updatedAt),
+  }));
+
+  return [
+    ...staticRoutes,
+    ...categoryRoutes,
+    ...calculatorRoutes,
+    ...guideRoutes,
+    ...glossaryRoutes,
+  ];
 }

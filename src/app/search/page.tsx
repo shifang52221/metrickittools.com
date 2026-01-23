@@ -4,12 +4,12 @@ import { SearchClient } from "@/components/search/SearchClient";
 
 export const metadata: Metadata = {
   title: "Search",
-  description: "Search calculators and guides.",
+  description: "Search calculators, guides, and glossary definitions.",
   alternates: { canonical: "/search" },
   robots: { index: false, follow: true },
   openGraph: {
     title: "Search",
-    description: "Search calculators and guides.",
+    description: "Search calculators, guides, and glossary definitions.",
     url: "/search",
     type: "website",
   },

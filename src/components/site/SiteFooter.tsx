@@ -32,6 +32,9 @@ export function SiteFooter() {
             <Link href="/guides" className="hover:underline">
               Guides
             </Link>
+            <Link href="/glossary" className="hover:underline">
+              Glossary
+            </Link>
             <Link href="/privacy" className="hover:underline">
               Privacy
             </Link>

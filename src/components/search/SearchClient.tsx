@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { calculators, categories } from "@/lib/calculators";
 import { guides } from "@/lib/guides";
+import { glossaryTerms } from "@/lib/glossary";
 
 function normalize(value: string): string {
   return value.trim().toLowerCase();
@@ -14,7 +15,7 @@ function includesText(haystack: string, needle: string): boolean {
   return normalize(haystack).includes(needle);
 }
 
-type FilterKind = "all" | "calculators" | "guides";
+type FilterKind = "all" | "calculators" | "guides" | "glossary";
 
 export function SearchClient() {
   const params = useSearchParams();
@@ -48,8 +49,22 @@ export function SearchClient() {
     });
   }, [needle]);
 
-  const visibleCalculators = kind === "guides" ? [] : calculatorResults;
-  const visibleGuides = kind === "calculators" ? [] : guideResults;
+  const glossaryResults = useMemo(() => {
+    if (!needle) return [];
+    return glossaryTerms.filter((t) => {
+      return (
+        includesText(t.title, needle) ||
+        includesText(t.description, needle) ||
+        includesText(t.category, needle)
+      );
+    });
+  }, [needle]);
+
+  const visibleCalculators =
+    kind === "guides" || kind === "glossary" ? [] : calculatorResults;
+  const visibleGuides = kind === "calculators" || kind === "glossary" ? [] : guideResults;
+  const visibleGlossary =
+    kind === "calculators" || kind === "guides" ? [] : glossaryResults;
 
   return (
     <div className="space-y-8">
@@ -76,7 +91,7 @@ export function SearchClient() {
             className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-black dark:focus:border-zinc-600"
           />
           <div className="flex flex-wrap gap-2">
-            {(["all", "calculators", "guides"] as const).map((k) => (
+            {(["all", "calculators", "guides", "glossary"] as const).map((k) => (
               <button
                 key={k}
                 type="button"
@@ -92,7 +107,9 @@ export function SearchClient() {
                   ? "All"
                   : k === "calculators"
                     ? "Calculators"
-                    : "Guides"}
+                    : k === "guides"
+                      ? "Guides"
+                      : "Glossary"}
               </button>
             ))}
           </div>
@@ -177,6 +194,38 @@ export function SearchClient() {
             ) : (
               <div className="text-sm text-zinc-600 dark:text-zinc-400">
                 No guide results.
+              </div>
+            )}
+          </section>
+
+          <section className="space-y-3 lg:col-span-2">
+            <h2 className="text-lg font-semibold tracking-tight">Glossary</h2>
+            {visibleGlossary.length ? (
+              <div className="grid gap-2 sm:grid-cols-2">
+                {visibleGlossary.map((t) => (
+                  <Link
+                    key={t.slug}
+                    href={`/glossary/${t.slug}`}
+                    className="block rounded-2xl border border-zinc-200 bg-white p-4 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-black dark:hover:bg-zinc-950"
+                  >
+                    <div className="text-sm text-zinc-500">
+                      {t.category.replace("-", " ")}
+                    </div>
+                    <div className="mt-1 font-semibold tracking-tight">
+                      {t.title}
+                    </div>
+                    <div className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                      {t.description}
+                    </div>
+                    <div className="mt-2 text-xs text-zinc-500">
+                      Updated {t.updatedAt}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="text-sm text-zinc-600 dark:text-zinc-400">
+                No glossary results.
               </div>
             )}
           </section>

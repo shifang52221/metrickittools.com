@@ -2,6 +2,7 @@ import Link from "next/link";
 import { CalculatorCard } from "@/components/site/CalculatorCard";
 import { calculators, categories } from "@/lib/calculators";
 import { guides } from "@/lib/guides";
+import { glossaryTerms } from "@/lib/glossary";
 import { siteConfig } from "@/lib/site";
 import { AdUnit } from "@/components/ads/AdUnit";
 import { getAdSenseSlot } from "@/lib/adsense";
@@ -20,6 +21,16 @@ export default function Home() {
       ].includes(g.slug),
     )
     .slice(0, 6);
+  const featuredGlossary = [
+    "cac",
+    "cac-payback-period",
+    "roas",
+    "arr",
+    "mrr",
+    "gross-margin",
+  ]
+    .map((slug) => glossaryTerms.find((t) => t.slug === slug))
+    .filter((t): t is (typeof glossaryTerms)[number] => Boolean(t));
 
   return (
     <div className="space-y-12">
@@ -94,6 +105,31 @@ export default function Home() {
           </div>
         </section>
       ) : null}
+
+      <section className="space-y-4">
+        <div className="flex items-end justify-between gap-4">
+          <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
+            Popular definitions
+          </h2>
+          <Link
+            href="/glossary"
+            className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+          >
+            Browse all {"\u2192"}
+          </Link>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {featuredGlossary.map((t) => (
+            <Link
+              key={t.slug}
+              href={`/glossary/${t.slug}`}
+              className="rounded-full border border-zinc-200 px-3 py-1 text-sm hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
+            >
+              {t.title}
+            </Link>
+          ))}
+        </div>
+      </section>
 
       <AdUnit slot={getAdSenseSlot("homeMid")} />
 
