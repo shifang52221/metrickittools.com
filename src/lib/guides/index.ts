@@ -929,6 +929,391 @@ export const guides: Guide[] = [
     ],
   },
   {
+    slug: "nrr-guide",
+    title: "NRR (Net Revenue Retention): definition, formula, how to calculate",
+    description:
+      "NRR explained: what net revenue retention measures, the NRR formula, how to calculate it by cohort, and common mistakes.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["nrr-calculator", "grr-calculator"],
+    sections: [
+      { type: "h2", text: "What NRR measures" },
+      {
+        type: "p",
+        text: "NRR (Net Revenue Retention) measures how revenue from an existing customer cohort changes over a period, including expansion, contraction, and churn. It answers a simple question: after customers start, do they grow, shrink, or leave?",
+      },
+      { type: "h2", text: "NRR formula" },
+      {
+        type: "p",
+        text: "NRR = (starting MRR + expansion − contraction − churn) ÷ starting MRR",
+      },
+      { type: "h2", text: "Components (quick reference)" },
+      {
+        type: "table",
+        columns: ["Component", "What it is", "Example"],
+        rows: [
+          [
+            "Starting MRR",
+            "Recurring revenue from the cohort at the start of the window.",
+            "Cohort starts the month at $100k MRR.",
+          ],
+          [
+            "Expansion",
+            "Upgrades, more seats, add-ons, usage growth for existing customers.",
+            "+$15k expansion MRR",
+          ],
+          [
+            "Contraction",
+            "Downgrades, seat reductions, usage decreases (not full churn).",
+            "−$5k contraction MRR",
+          ],
+          [
+            "Churn",
+            "Lost recurring revenue from cancellations.",
+            "−$8k churned MRR",
+          ],
+        ],
+      },
+      { type: "h2", text: "How to calculate NRR (step-by-step)" },
+      {
+        type: "bullets",
+        items: [
+          "Pick a cohort and a time window (monthly or quarterly are common).",
+          "Measure starting MRR for that cohort at the beginning of the window.",
+          "Measure expansion, contraction, and churned MRR for the cohort over the window.",
+          "Compute ending MRR = starting + expansion − contraction − churn.",
+          "Compute NRR = ending MRR ÷ starting MRR.",
+        ],
+      },
+      { type: "h2", text: "NRR vs GRR" },
+      {
+        type: "bullets",
+        items: [
+          "NRR includes expansion; GRR excludes expansion.",
+          "NRR can look strong even when churn is high if expansion is large.",
+          "Use GRR to understand durability; use NRR to understand cohort growth.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Including new customer revenue (NRR is existing cohort only).",
+          "Using blended NRR without segmenting (SMB vs enterprise behaves differently).",
+          "Mixing MRR movements with cash receipts or revenue recognition.",
+          "Changing the definition of MRR or movements month-to-month.",
+        ],
+      },
+      { type: "h2", text: "How to improve NRR" },
+      {
+        type: "bullets",
+        items: [
+          "Reduce churn: onboarding, activation, product reliability, support, and renewal process.",
+          "Reduce contraction: packaging, value realization, and proactive customer success.",
+          "Increase expansion: upsells, add-ons, usage-based pricing, and product-led growth loops.",
+          "Segment and focus: improve NRR in the segments you want to scale.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "What is a good NRR?",
+        answer:
+          "Benchmarks vary by segment and stage. NRR above 100% means the cohort grows without new customers. For many SMB businesses, NRR near 100% can still work if payback is short and churn is controlled.",
+      },
+      {
+        question: "Should I calculate NRR monthly or quarterly?",
+        answer:
+          "Monthly gives faster feedback but can be noisy. Quarterly smooths seasonality and timing effects. Pick one and keep it consistent, and segment by cohort/plan when possible.",
+      },
+    ],
+    examples: [
+      {
+        label: "NRR example (start $100k; +$15k expansion; −$5k contraction; −$8k churn)",
+        calculatorSlug: "nrr-calculator",
+        params: {
+          startingMrr: "100000",
+          expansionMrr: "15000",
+          contractionMrr: "5000",
+          churnedMrr: "8000",
+        },
+      },
+    ],
+  },
+  {
+    slug: "grr-guide",
+    title: "GRR (Gross Revenue Retention): definition, formula, how to calculate",
+    description:
+      "GRR explained: gross revenue retention definition, GRR formula, how to calculate it, and why it matters alongside NRR.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["grr-calculator", "nrr-calculator"],
+    sections: [
+      { type: "h2", text: "What GRR measures" },
+      {
+        type: "p",
+        text: "GRR (Gross Revenue Retention) measures how much of a cohort’s starting revenue remains after churn and downgrades, excluding expansion. It is a clean read of durability.",
+      },
+      { type: "h2", text: "GRR formula" },
+      {
+        type: "p",
+        text: "GRR = (starting MRR − contraction − churn) ÷ starting MRR",
+      },
+      { type: "h2", text: "How to calculate GRR (step-by-step)" },
+      {
+        type: "bullets",
+        items: [
+          "Pick a cohort and a time window (monthly or quarterly).",
+          "Measure starting MRR for the cohort at the beginning of the window.",
+          "Measure contraction MRR and churned MRR for the cohort during the window.",
+          "Compute ending gross MRR = starting − contraction − churn.",
+          "Compute GRR = ending gross MRR ÷ starting MRR.",
+        ],
+      },
+      { type: "h2", text: "Why GRR matters" },
+      {
+        type: "bullets",
+        items: [
+          "NRR can be strong due to expansion even when underlying churn is weak.",
+          "GRR exposes churn and downgrades directly (durability without expansion).",
+          "Improving GRR usually improves payback, valuation multiples, and predictability.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Including expansion (GRR excludes it by definition).",
+          "Not segmenting by customer size or plan (blended GRR hides churn pockets).",
+          "Mixing billing/cash timing with recurring revenue movements.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is GRR always lower than NRR?",
+        answer:
+          "Usually yes because GRR excludes expansion, but it depends on how you define the metrics. GRR focuses on losses only; NRR includes gains from expansion.",
+      },
+    ],
+    examples: [
+      {
+        label: "GRR example (start $100k; −$5k contraction; −$8k churn)",
+        calculatorSlug: "grr-calculator",
+        params: {
+          startingMrr: "100000",
+          contractionMrr: "5000",
+          churnedMrr: "8000",
+        },
+      },
+    ],
+  },
+  {
+    slug: "net-new-mrr-guide",
+    title: "Net new MRR: definition, formula, and how to calculate it",
+    description:
+      "Net new MRR explained: how to calculate net new MRR from new, expansion, contraction, and churned MRR - plus common mistakes.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["net-new-mrr-calculator"],
+    sections: [
+      { type: "h2", text: "Definition" },
+      {
+        type: "p",
+        text: "Net new MRR is the net change in recurring revenue in a period after accounting for new customers, expansions, downgrades, and churn. It is a fast read on momentum.",
+      },
+      { type: "h2", text: "Formula" },
+      {
+        type: "p",
+        text: "Net new MRR = new MRR + expansion MRR − contraction MRR − churned MRR",
+      },
+      { type: "h2", text: "How to calculate net new MRR" },
+      {
+        type: "bullets",
+        items: [
+          "Measure new MRR from customers that became paying in the period.",
+          "Measure expansion MRR from existing customers in the same period.",
+          "Measure contraction MRR (downgrades) and churned MRR (cancellations).",
+          "Apply the net new MRR formula to get the net change.",
+        ],
+      },
+      { type: "h2", text: "Net new MRR vs growth rate" },
+      {
+        type: "bullets",
+        items: [
+          "Net new MRR is a dollar amount.",
+          "MRR growth rate is usually net new MRR ÷ starting MRR for the period.",
+          "Use growth rate for comparing across time; use net new MRR for planning capacity and targets.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Mixing MRR movements with invoices or cash receipts.",
+          "Counting reactivations inconsistently (label them clearly).",
+          "Comparing months without adjusting for annual billing seasonality and deal timing.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "What is net new MRR used for?",
+        answer:
+          "Net new MRR helps you track momentum and plan growth. Teams use it for forecasting, capacity planning, and understanding whether growth is driven by new customers or by expansion.",
+      },
+    ],
+    examples: [
+      {
+        label: "Net new MRR example (new $12k; expansion $8k; contraction $3k; churn $5k)",
+        calculatorSlug: "net-new-mrr-calculator",
+        params: { newMrr: "12000", expansionMrr: "8000", contractionMrr: "3000", churnedMrr: "5000" },
+      },
+    ],
+  },
+  {
+    slug: "saas-quick-ratio-guide",
+    title: "SaaS Quick Ratio: definition, formula, and how to use it",
+    description:
+      "SaaS quick ratio explained: (new + expansion) ÷ (contraction + churn). Learn how to compute it and what it tells you about growth quality.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["saas-quick-ratio-calculator", "net-new-mrr-calculator"],
+    sections: [
+      { type: "h2", text: "Definition" },
+      {
+        type: "p",
+        text: "SaaS quick ratio is a growth quality metric that compares positive MRR movements (new + expansion) to negative movements (contraction + churn) in a period.",
+      },
+      { type: "h2", text: "Formula" },
+      {
+        type: "p",
+        text: "Quick ratio = (new MRR + expansion MRR) ÷ (contraction MRR + churned MRR)",
+      },
+      { type: "h2", text: "How to calculate it" },
+      {
+        type: "bullets",
+        items: [
+          "Use the same time window for all movements (monthly or quarterly).",
+          "Use MRR movements (not billings/cash) so the metric is consistent.",
+          "Compute the quick ratio and track it over time by segment.",
+        ],
+      },
+      { type: "h2", text: "How to interpret quick ratio" },
+      {
+        type: "bullets",
+        items: [
+          "Higher quick ratio means positive growth outweighs losses.",
+          "A falling quick ratio often signals increasing churn or contraction.",
+          "Segment-level quick ratio is more actionable than a blended number.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Treating quick ratio as a standalone goal without payback and cash context.",
+          "Using different definitions for movements across months.",
+          "Comparing across segments without normalizing contract terms.",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Quick ratio example (new $12k; expansion $8k; contraction $3k; churn $5k)",
+        calculatorSlug: "saas-quick-ratio-calculator",
+        params: { newMrr: "12000", expansionMrr: "8000", contractionMrr: "3000", churnedMrr: "5000" },
+      },
+    ],
+  },
+  {
+    slug: "rule-of-40-guide",
+    title: "Rule of 40: definition, formula, and how to interpret it",
+    description:
+      "Rule of 40 explained: growth rate + profit margin. Learn which margin to use, how to compute it, and common pitfalls.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["rule-of-40-calculator"],
+    sections: [
+      { type: "h2", text: "Definition" },
+      {
+        type: "p",
+        text: "Rule of 40 is a common SaaS heuristic: revenue growth rate (%) plus profit margin (%) should be around 40% or higher. It is a coarse way to balance growth and profitability.",
+      },
+      { type: "h2", text: "Formula" },
+      { type: "p", text: "Rule of 40 score = growth rate (%) + profit margin (%)" },
+      { type: "h2", text: "Which margin should you use?" },
+      {
+        type: "bullets",
+        items: [
+          "Operating margin: good for operating performance comparisons.",
+          "EBITDA margin: common in SaaS reporting but can differ from cash.",
+          "Free cash flow margin: ties to cash efficiency but can be volatile.",
+          "Pick one and keep it consistent over time.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Mixing different margin types across periods.",
+          "Comparing across companies with very different accounting and GTM models.",
+          "Using Rule of 40 as a single KPI instead of a context metric.",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Rule of 40 example (35% growth; 10% margin)",
+        calculatorSlug: "rule-of-40-calculator",
+        params: { growthPercent: "35", marginPercent: "10" },
+      },
+    ],
+  },
+  {
+    slug: "burn-multiple-guide",
+    title: "Burn multiple: definition, formula, and how to use it",
+    description:
+      "Burn multiple explained: net burn ÷ net new ARR. Learn how to compute it, interpret it, and avoid common mistakes.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["burn-multiple-calculator"],
+    sections: [
+      { type: "h2", text: "Definition" },
+      {
+        type: "p",
+        text: "Burn multiple measures growth efficiency: how much net cash you burn to generate $1 of net new ARR. It is commonly tracked quarterly to reduce noise from timing.",
+      },
+      { type: "h2", text: "Formula" },
+      { type: "p", text: "Burn multiple = net burn ÷ net new ARR" },
+      { type: "h2", text: "How to calculate it" },
+      {
+        type: "bullets",
+        items: [
+          "Compute net burn for the period (cash outflows minus inflows).",
+          "Compute net new ARR for the same period (change in ARR after churn and expansions).",
+          "Divide net burn by net new ARR to get burn multiple.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using mismatched time windows for burn and ARR.",
+          "Letting annual prepay timing distort short measurement windows.",
+          "Ignoring retention quality (burn multiple can improve temporarily if churn is hidden).",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Burn multiple example (net burn $300k; net new ARR $200k)",
+        calculatorSlug: "burn-multiple-calculator",
+        params: { netBurn: "300000", netNewArr: "200000" },
+      },
+    ],
+  },
+  {
     slug: "break-even-guide",
     title: "Break-even revenue: calculate your break-even point",
     description:

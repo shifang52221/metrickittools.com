@@ -64,7 +64,7 @@ export default async function GuidePage({ params }: PageProps) {
       return {
         ...ex,
         calculatorTitle: calc.title,
-        calculatorHref: `${calc.category}/${calc.slug}`,
+        calculatorHref: `/${calc.category}/${calc.slug}`,
         hrefWithParams: `${url.pathname}${url.search}`,
       };
     })
@@ -143,7 +143,7 @@ export default async function GuidePage({ params }: PageProps) {
             {examples.map((ex) => (
               <Link
                 key={ex.label}
-                href={`/${ex.hrefWithParams}`}
+                href={ex.hrefWithParams}
                 className="rounded-2xl border border-zinc-200 bg-white p-4 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-black dark:hover:bg-zinc-950"
               >
                 <div className="text-sm text-zinc-500">{ex.calculatorTitle}</div>

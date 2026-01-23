@@ -1508,6 +1508,749 @@ export const calculators: CalculatorDefinition[] = [
     ],
   },
   {
+    slug: "nrr-calculator",
+    title: "NRR Calculator",
+    description:
+      "Calculate Net Revenue Retention (NRR) from starting MRR and revenue movements.",
+    category: "saas-metrics",
+    featured: true,
+    guideSlug: "nrr-guide",
+    seo: {
+      intro: [
+        "NRR (Net Revenue Retention) measures how revenue from an existing customer cohort changes over a period, including expansion, contraction, and churn. It answers: do customers grow, shrink, or leave after they start?",
+        "NRR is most useful when measured by cohort and segment (plan, size, channel). A blended NRR can hide problems in parts of the business.",
+      ],
+      steps: [
+        "Pick a cohort and time window (often monthly or quarterly).",
+        "Measure starting MRR for that cohort at the beginning of the window.",
+        "Add expansion MRR and subtract contraction and churned MRR.",
+        "Compute NRR = ending MRR ÷ starting MRR.",
+      ],
+      pitfalls: [
+        "Mixing new customer revenue into NRR (NRR is existing cohort only).",
+        "Comparing NRR across segments without consistent definitions.",
+        "Using revenue recognition instead of recurring MRR movements.",
+      ],
+      benchmarks: [
+        "NRR > 100% means the cohort grows without new customers.",
+        "NRR close to 100% can be healthy in SMB models if CAC payback is short.",
+      ],
+    },
+    inputs: [
+      {
+        key: "startingMrr",
+        label: "Starting MRR",
+        placeholder: "100000",
+        prefix: "$",
+        defaultValue: "100000",
+      },
+      {
+        key: "expansionMrr",
+        label: "Expansion MRR",
+        placeholder: "15000",
+        prefix: "$",
+        defaultValue: "15000",
+      },
+      {
+        key: "contractionMrr",
+        label: "Contraction MRR",
+        placeholder: "5000",
+        prefix: "$",
+        defaultValue: "5000",
+      },
+      {
+        key: "churnedMrr",
+        label: "Churned MRR",
+        placeholder: "8000",
+        prefix: "$",
+        defaultValue: "8000",
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      if (values.startingMrr <= 0)
+        warnings.push("Starting MRR must be greater than 0.");
+      if (values.expansionMrr < 0) warnings.push("Expansion MRR must be 0 or greater.");
+      if (values.contractionMrr < 0)
+        warnings.push("Contraction MRR must be 0 or greater.");
+      if (values.churnedMrr < 0) warnings.push("Churned MRR must be 0 or greater.");
+
+      const endingMrr =
+        values.startingMrr +
+        values.expansionMrr -
+        values.contractionMrr -
+        values.churnedMrr;
+
+      const nrr = safeDivide(endingMrr, values.startingMrr);
+      if (nrr === null) {
+        return {
+          headline: {
+            key: "nrr",
+            label: "NRR",
+            value: 0,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          warnings,
+        };
+      }
+
+      return {
+        headline: {
+          key: "nrr",
+          label: "NRR",
+          value: nrr,
+          format: "percent",
+          maxFractionDigits: 1,
+          detail: "Ending MRR ÷ Starting MRR",
+        },
+        secondary: [
+          {
+            key: "endingMrr",
+            label: "Ending MRR",
+            value: endingMrr,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        breakdown: [
+          {
+            key: "startingMrr",
+            label: "Starting MRR",
+            value: values.startingMrr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "expansionMrr",
+            label: "Expansion MRR",
+            value: values.expansionMrr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "contractionMrr",
+            label: "Contraction MRR",
+            value: values.contractionMrr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "churnedMrr",
+            label: "Churned MRR",
+            value: values.churnedMrr,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "NRR = (Starting MRR + Expansion − Contraction − Churn) ÷ Starting MRR",
+    assumptions: [
+      "NRR measures an existing cohort only; exclude new customers in the period.",
+      "All components use the same MRR definition and time window.",
+    ],
+    faqs: [
+      {
+        question: "What is a good NRR?",
+        answer:
+          "NRR benchmarks vary by segment. NRR > 100% means the cohort grows without new customers. SMB businesses can succeed with NRR near 100% if CAC payback is short and margins are strong.",
+      },
+      {
+        question: "NRR vs GRR?",
+        answer:
+          "NRR includes expansion. GRR excludes expansion and focuses on durability after churn and downgrades.",
+      },
+    ],
+    guide: [
+      {
+        title: "NRR best practices",
+        bullets: [
+          "Track NRR by cohort, plan, and customer size (avoid blended averages).",
+          "Pair NRR with logo churn to see whether growth comes from a few large accounts.",
+          "Validate NRR with churned MRR trends and retention curves.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "grr-calculator",
+    title: "GRR Calculator",
+    description:
+      "Calculate Gross Revenue Retention (GRR) from starting MRR, contraction, and churn.",
+    category: "saas-metrics",
+    guideSlug: "grr-guide",
+    seo: {
+      intro: [
+        "GRR (Gross Revenue Retention) measures how much of a cohort’s starting revenue remains after churn and downgrades, excluding expansion. It is a clean durability metric.",
+      ],
+      steps: [
+        "Pick a cohort and time window.",
+        "Measure starting MRR for the cohort.",
+        "Subtract contraction and churned MRR to get ending gross MRR.",
+        "Compute GRR = ending gross MRR ÷ starting MRR.",
+      ],
+      pitfalls: [
+        "Including expansion (GRR intentionally excludes it).",
+        "Using a blended number that hides segment issues.",
+      ],
+    },
+    inputs: [
+      {
+        key: "startingMrr",
+        label: "Starting MRR",
+        placeholder: "100000",
+        prefix: "$",
+        defaultValue: "100000",
+      },
+      {
+        key: "contractionMrr",
+        label: "Contraction MRR",
+        placeholder: "5000",
+        prefix: "$",
+        defaultValue: "5000",
+      },
+      {
+        key: "churnedMrr",
+        label: "Churned MRR",
+        placeholder: "8000",
+        prefix: "$",
+        defaultValue: "8000",
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      if (values.startingMrr <= 0)
+        warnings.push("Starting MRR must be greater than 0.");
+      if (values.contractionMrr < 0)
+        warnings.push("Contraction MRR must be 0 or greater.");
+      if (values.churnedMrr < 0) warnings.push("Churned MRR must be 0 or greater.");
+
+      const endingGrossMrr =
+        values.startingMrr - values.contractionMrr - values.churnedMrr;
+      const grr = safeDivide(endingGrossMrr, values.startingMrr);
+      if (grr === null) {
+        return {
+          headline: {
+            key: "grr",
+            label: "GRR",
+            value: 0,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          warnings,
+        };
+      }
+
+      return {
+        headline: {
+          key: "grr",
+          label: "GRR",
+          value: grr,
+          format: "percent",
+          maxFractionDigits: 1,
+          detail: "(Starting − Contraction − Churn) ÷ Starting",
+        },
+        secondary: [
+          {
+            key: "endingGrossMrr",
+            label: "Ending gross MRR",
+            value: endingGrossMrr,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        breakdown: [
+          {
+            key: "startingMrr",
+            label: "Starting MRR",
+            value: values.startingMrr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "contractionMrr",
+            label: "Contraction MRR",
+            value: values.contractionMrr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "churnedMrr",
+            label: "Churned MRR",
+            value: values.churnedMrr,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "GRR = (Starting MRR − Contraction − Churn) ÷ Starting MRR",
+    assumptions: [
+      "GRR excludes expansion by definition.",
+      "All components use the same MRR definition and time window.",
+    ],
+    faqs: [
+      {
+        question: "Why track GRR if I already track NRR?",
+        answer:
+          "NRR can look strong due to expansion even when underlying churn/downgrades are weak. GRR isolates durability without expansion.",
+      },
+      {
+        question: "What is a good GRR?",
+        answer:
+          "There is no single benchmark across all businesses. Use GRR trends by segment to identify where churn and downgrades are improving or worsening.",
+      },
+    ],
+    guide: [
+      {
+        title: "GRR tips",
+        bullets: [
+          "Track GRR by customer size and plan to find where churn risk is concentrated.",
+          "Use cohort curves to understand when contraction happens (early vs later).",
+          "Pair GRR with churned MRR and logo churn for a full picture.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "net-new-mrr-calculator",
+    title: "Net New MRR Calculator",
+    description:
+      "Calculate net new MRR from new, expansion, contraction, and churned MRR.",
+    category: "saas-metrics",
+    guideSlug: "net-new-mrr-guide",
+    seo: {
+      intro: [
+        "Net new MRR measures how your recurring revenue changed in a period after accounting for expansions, contractions, and churn. It is a fast read on growth momentum.",
+      ],
+      steps: [
+        "Measure new MRR from new customers in the period.",
+        "Measure expansion MRR from existing customers.",
+        "Subtract contraction MRR and churned MRR.",
+        "Net new MRR is the net change in MRR for the period.",
+      ],
+      pitfalls: [
+        "Mixing invoiced revenue or cash with MRR movements.",
+        "Comparing months without considering annual billing seasonality.",
+      ],
+    },
+    inputs: [
+      {
+        key: "newMrr",
+        label: "New MRR",
+        placeholder: "12000",
+        prefix: "$",
+        defaultValue: "12000",
+      },
+      {
+        key: "expansionMrr",
+        label: "Expansion MRR",
+        placeholder: "8000",
+        prefix: "$",
+        defaultValue: "8000",
+      },
+      {
+        key: "contractionMrr",
+        label: "Contraction MRR",
+        placeholder: "3000",
+        prefix: "$",
+        defaultValue: "3000",
+      },
+      {
+        key: "churnedMrr",
+        label: "Churned MRR",
+        placeholder: "5000",
+        prefix: "$",
+        defaultValue: "5000",
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      if (values.newMrr < 0) warnings.push("New MRR must be 0 or greater.");
+      if (values.expansionMrr < 0) warnings.push("Expansion MRR must be 0 or greater.");
+      if (values.contractionMrr < 0) warnings.push("Contraction MRR must be 0 or greater.");
+      if (values.churnedMrr < 0) warnings.push("Churned MRR must be 0 or greater.");
+
+      const grossAdditions = values.newMrr + values.expansionMrr;
+      const grossLosses = values.contractionMrr + values.churnedMrr;
+      const netNewMrr = grossAdditions - grossLosses;
+
+      return {
+        headline: {
+          key: "netNewMrr",
+          label: "Net new MRR",
+          value: netNewMrr,
+          format: "currency",
+          currency: "USD",
+          detail: "New + Expansion − Contraction − Churn",
+        },
+        secondary: [
+          {
+            key: "grossAdditions",
+            label: "Gross additions",
+            value: grossAdditions,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "grossLosses",
+            label: "Gross losses",
+            value: grossLosses,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "Net new MRR = New MRR + Expansion MRR − Contraction MRR − Churned MRR",
+    assumptions: [
+      "All components are measured over the same time window.",
+      "New MRR excludes expansions from existing customers.",
+    ],
+    faqs: [
+      {
+        question: "Is net new MRR the same as MRR growth rate?",
+        answer:
+          "Net new MRR is a dollar amount (change in MRR). Growth rate is net new MRR divided by starting MRR for the period.",
+      },
+    ],
+    guide: [
+      {
+        title: "How to use net new MRR",
+        bullets: [
+          "Track by segment to see which motions produce durable growth.",
+          "Watch churned MRR trends to avoid growth hiding retention issues.",
+          "Pair with CAC and payback to judge growth efficiency.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "saas-quick-ratio-calculator",
+    title: "SaaS Quick Ratio Calculator",
+    description:
+      "Calculate the SaaS quick ratio: (new + expansion) ÷ (contraction + churn).",
+    category: "saas-metrics",
+    guideSlug: "saas-quick-ratio-guide",
+    seo: {
+      intro: [
+        "SaaS quick ratio is a growth quality metric that compares positive MRR movements (new + expansion) to negative movements (contraction + churn).",
+      ],
+      steps: [
+        "Measure new and expansion MRR for the period.",
+        "Measure contraction and churned MRR for the same period.",
+        "Compute quick ratio = (new + expansion) ÷ (contraction + churn).",
+      ],
+      pitfalls: [
+        "Using mismatched windows or definitions for movements.",
+        "Relying on blended numbers that hide segment problems.",
+      ],
+    },
+    inputs: [
+      {
+        key: "newMrr",
+        label: "New MRR",
+        placeholder: "12000",
+        prefix: "$",
+        defaultValue: "12000",
+      },
+      {
+        key: "expansionMrr",
+        label: "Expansion MRR",
+        placeholder: "8000",
+        prefix: "$",
+        defaultValue: "8000",
+      },
+      {
+        key: "contractionMrr",
+        label: "Contraction MRR",
+        placeholder: "3000",
+        prefix: "$",
+        defaultValue: "3000",
+      },
+      {
+        key: "churnedMrr",
+        label: "Churned MRR",
+        placeholder: "5000",
+        prefix: "$",
+        defaultValue: "5000",
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      if (values.newMrr < 0) warnings.push("New MRR must be 0 or greater.");
+      if (values.expansionMrr < 0) warnings.push("Expansion MRR must be 0 or greater.");
+      if (values.contractionMrr < 0) warnings.push("Contraction MRR must be 0 or greater.");
+      if (values.churnedMrr < 0) warnings.push("Churned MRR must be 0 or greater.");
+
+      const positive = values.newMrr + values.expansionMrr;
+      const negative = values.contractionMrr + values.churnedMrr;
+      if (negative <= 0) warnings.push("Losses (contraction + churn) must be greater than 0.");
+
+      const ratio = safeDivide(positive, negative);
+      if (ratio === null) {
+        return {
+          headline: {
+            key: "quickRatio",
+            label: "Quick ratio",
+            value: 0,
+            format: "ratio",
+            maxFractionDigits: 2,
+          },
+          warnings,
+        };
+      }
+
+      return {
+        headline: {
+          key: "quickRatio",
+          label: "Quick ratio",
+          value: ratio,
+          format: "ratio",
+          maxFractionDigits: 2,
+          detail: "(New + Expansion) ÷ (Contraction + Churn)",
+        },
+        breakdown: [
+          {
+            key: "positive",
+            label: "Positive MRR movements",
+            value: positive,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "negative",
+            label: "Negative MRR movements",
+            value: negative,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "Quick ratio = (New MRR + Expansion MRR) ÷ (Contraction MRR + Churned MRR)",
+    assumptions: [
+      "All movements are measured for the same period.",
+      "Use MRR movements (not billings/cash) to keep the metric consistent.",
+    ],
+    faqs: [
+      {
+        question: "What is a good SaaS quick ratio?",
+        answer:
+          "Benchmarks vary by stage, but higher ratios generally indicate healthier growth quality (more positive MRR compared to losses). Use trends and segment-level ratios to diagnose where losses are coming from.",
+      },
+    ],
+    guide: [
+      {
+        title: "Quick ratio tips",
+        bullets: [
+          "Track quick ratio by segment to find leaky cohorts.",
+          "If quick ratio drops, inspect churned MRR and contraction first.",
+          "Pair with payback and burn multiple to judge cash efficiency.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "rule-of-40-calculator",
+    title: "Rule of 40 Calculator",
+    description:
+      "Calculate the Rule of 40 score: growth rate (%) + profit margin (%).",
+    category: "saas-metrics",
+    featured: true,
+    guideSlug: "rule-of-40-guide",
+    seo: {
+      intro: [
+        "Rule of 40 is a common SaaS heuristic: growth rate plus profit margin should be around 40% or higher. It balances growth and profitability in one number.",
+      ],
+      steps: [
+        "Choose a growth rate definition (e.g., YoY revenue growth).",
+        "Choose a margin definition (operating, EBITDA, or free cash flow margin).",
+        "Compute Rule of 40 score = growth (%) + margin (%).",
+      ],
+      pitfalls: [
+        "Mixing margin types across periods (EBITDA one quarter, FCF the next).",
+        "Comparing across businesses with very different go-to-market motions.",
+      ],
+    },
+    inputs: [
+      {
+        key: "growthPercent",
+        label: "Revenue growth rate",
+        placeholder: "35",
+        suffix: "%",
+        defaultValue: "35",
+      },
+      {
+        key: "marginPercent",
+        label: "Profit margin",
+        help: "Operating / EBITDA / FCF margin (choose one and stick to it).",
+        placeholder: "10",
+        suffix: "%",
+        defaultValue: "10",
+      },
+    ],
+    compute(values) {
+      const score = (values.growthPercent + values.marginPercent) / 100;
+      return {
+        headline: {
+          key: "ruleOf40",
+          label: "Rule of 40 score",
+          value: score,
+          format: "percent",
+          maxFractionDigits: 1,
+          detail: "Growth (%) + Margin (%)",
+        },
+        breakdown: [
+          {
+            key: "growthPercent",
+            label: "Growth",
+            value: values.growthPercent / 100,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "marginPercent",
+            label: "Margin",
+            value: values.marginPercent / 100,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+        ],
+      };
+    },
+    formula: "Rule of 40 = Growth rate (%) + Profit margin (%)",
+    assumptions: [
+      "This is a heuristic and depends on stage, market, and go-to-market motion.",
+      "Use consistent growth and margin definitions across time.",
+    ],
+    faqs: [
+      {
+        question: "Which margin should I use for Rule of 40?",
+        answer:
+          "Teams commonly use operating margin, EBITDA margin, or free cash flow margin. Pick one and keep it consistent so you can compare trends.",
+      },
+      {
+        question: "Does Rule of 40 guarantee good performance?",
+        answer:
+          "No. It is a rough benchmark for balancing growth and profitability. It does not replace retention, payback, and cash efficiency analysis.",
+      },
+    ],
+    guide: [
+      {
+        title: "Rule of 40 tips",
+        bullets: [
+          "Use it as a trend metric, not a single-point verdict.",
+          "Pair with NRR/GRR and payback to judge growth quality and durability.",
+          "Compare within your segment (SMB vs enterprise) rather than across all SaaS.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "burn-multiple-calculator",
+    title: "Burn Multiple Calculator",
+    description:
+      "Calculate burn multiple: net burn ÷ net new ARR (a growth efficiency metric).",
+    category: "saas-metrics",
+    featured: true,
+    guideSlug: "burn-multiple-guide",
+    seo: {
+      intro: [
+        "Burn multiple measures growth efficiency: how much net cash you burn to generate $1 of net new ARR. Lower is generally better, but benchmarks vary by stage.",
+      ],
+      steps: [
+        "Measure net burn for a period (often quarterly).",
+        "Measure net new ARR for the same period.",
+        "Compute burn multiple = net burn ÷ net new ARR.",
+      ],
+      pitfalls: [
+        "Using inconsistent periods (net burn quarterly vs net new ARR monthly).",
+        "Ignoring annual prepay timing that can distort short windows.",
+      ],
+    },
+    inputs: [
+      {
+        key: "netBurn",
+        label: "Net burn (period)",
+        placeholder: "300000",
+        prefix: "$",
+        defaultValue: "300000",
+      },
+      {
+        key: "netNewArr",
+        label: "Net new ARR (same period)",
+        placeholder: "200000",
+        prefix: "$",
+        defaultValue: "200000",
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      if (values.netBurn < 0) warnings.push("Net burn must be 0 or greater.");
+      if (values.netNewArr <= 0)
+        warnings.push("Net new ARR must be greater than 0.");
+
+      const multiple = safeDivide(values.netBurn, values.netNewArr);
+      if (multiple === null) {
+        return {
+          headline: {
+            key: "burnMultiple",
+            label: "Burn multiple",
+            value: 0,
+            format: "multiple",
+            maxFractionDigits: 2,
+          },
+          warnings,
+        };
+      }
+
+      return {
+        headline: {
+          key: "burnMultiple",
+          label: "Burn multiple",
+          value: multiple,
+          format: "multiple",
+          maxFractionDigits: 2,
+          detail: "Net burn ÷ Net new ARR",
+        },
+        warnings,
+      };
+    },
+    formula: "Burn multiple = Net burn ÷ Net new ARR",
+    assumptions: [
+      "Use the same time window for burn and net new ARR (often quarterly).",
+      "Net burn is net cash outflow (cash out - cash in) for the period.",
+    ],
+    faqs: [
+      {
+        question: "What is a good burn multiple?",
+        answer:
+          "Benchmarks vary widely by stage and go-to-market motion. Use trends and compare within your peer group. Pair burn multiple with retention and gross margin to judge growth quality.",
+      },
+      {
+        question: "Is burn multiple the same as the SaaS magic number?",
+        answer:
+          "No. Burn multiple uses cash burn and net new ARR. Magic number uses sales & marketing spend and revenue output with a lag. Both are efficiency heuristics with different inputs.",
+      },
+    ],
+    guide: [
+      {
+        title: "Burn multiple tips",
+        bullets: [
+          "Measure quarterly to reduce noise from timing.",
+          "Pair with NRR/GRR to ensure growth is durable, not leaky.",
+          "Use payback period to connect efficiency to channel-level economics.",
+        ],
+      },
+    ],
+  },
+  {
     slug: "break-even-revenue-calculator",
     title: "Break-even Revenue Calculator",
     description: "Estimate the revenue needed to break even given fixed costs and gross margin.",
