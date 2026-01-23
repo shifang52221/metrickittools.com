@@ -1314,6 +1314,264 @@ export const guides: Guide[] = [
     ],
   },
   {
+    slug: "bookings-vs-arr-guide",
+    title: "Bookings vs ARR: definitions, formulas, and examples",
+    description:
+      "Bookings vs ARR explained: what each metric measures, the formulas, and how to avoid common mistakes with annual prepay and one-time fees.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["bookings-vs-arr-calculator", "arr-calculator", "mrr-calculator"],
+    sections: [
+      { type: "h2", text: "Bookings vs ARR (quick definition)" },
+      {
+        type: "p",
+        text: "Bookings measure contracted value you sign in a period. ARR (Annual Recurring Revenue) is an annualized recurring run-rate snapshot (typically MRR × 12). They are related but not interchangeable.",
+      },
+      { type: "h2", text: "What each metric measures" },
+      {
+        type: "table",
+        columns: ["Metric", "What it measures", "When to use", "Common mistake"],
+        rows: [
+          [
+            "Bookings",
+            "Contracted value signed in a period (may include one-time fees/services).",
+            "Sales performance, pipeline conversion, forecasting demand.",
+            "Treating bookings as recurring run-rate.",
+          ],
+          [
+            "ARR",
+            "Recurring run-rate snapshot (MRR × 12). Excludes one-time fees/services.",
+            "Comparing SaaS scale and momentum across time or companies.",
+            "Treating ARR as guaranteed annual revenue or including services.",
+          ],
+          [
+            "Cash",
+            "Money collected (cash receipts). Sensitive to billing terms and prepay timing.",
+            "Runway planning and cash-flow management.",
+            "Using annual prepay cash spikes as proof of recurring growth.",
+          ],
+        ],
+      },
+      { type: "h2", text: "Core formulas" },
+      {
+        type: "bullets",
+        items: [
+          "Bookings (simplified) ≈ total contract value signed in the period.",
+          "MRR equivalent = recurring portion ÷ contract term months.",
+          "ARR = MRR × 12.",
+        ],
+      },
+      { type: "h2", text: "Worked example (annual prepay + one-time fees)" },
+      {
+        type: "p",
+        text: "Suppose you close a $120,000 12-month contract that includes $10,000 of one-time onboarding. Bookings are $120,000. Recurring portion is $110,000. MRR equivalent is $110,000 ÷ 12 = ~$9,167. ARR run-rate is ~$110,000 (MRR × 12). Cash collected may be $120,000 upfront if prepaid.",
+      },
+      { type: "h2", text: "Common mistakes to avoid" },
+      {
+        type: "bullets",
+        items: [
+          "Including services/onboarding in ARR (inflates recurring run-rate).",
+          "Comparing bookings to ARR without normalizing for term length.",
+          "Mixing recognized revenue with bookings/cash (different timing).",
+          "Using blended metrics without segmenting (SMB vs enterprise terms differ).",
+        ],
+      },
+      { type: "h2", text: "How to use these metrics together" },
+      {
+        type: "bullets",
+        items: [
+          "Use bookings to manage sales execution and forecasting.",
+          "Use ARR to track recurring momentum and valuation context.",
+          "Use cash receipts and burn to plan runway and hiring.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Why can bookings be higher than ARR?",
+        answer:
+          "Bookings can include the full contract value and one-time items, while ARR focuses on recurring run-rate. Annual prepay increases bookings and cash immediately, while ARR reflects recurring value.",
+      },
+      {
+        question: "Is ARR the same as annual revenue?",
+        answer:
+          "Not always. ARR is a run-rate snapshot focused on recurring revenue. Annual revenue is what you recognize over a year and can include one-time items.",
+      },
+    ],
+    examples: [
+      {
+        label: "Bookings vs ARR example ($120k TCV; 12 months; $10k one-time; 100% prepaid)",
+        calculatorSlug: "bookings-vs-arr-calculator",
+        params: { contractValue: "120000", termMonths: "12", oneTimeFees: "10000", prepaidPercent: "100" },
+      },
+    ],
+  },
+  {
+    slug: "saas-magic-number-guide",
+    title: "SaaS Magic Number: definition, formula, and how to use it",
+    description:
+      "SaaS Magic Number explained: what it measures, the formula, lag assumptions, and how to interpret it alongside burn multiple and payback.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["saas-magic-number-calculator", "burn-multiple-calculator"],
+    sections: [
+      { type: "h2", text: "Definition" },
+      {
+        type: "p",
+        text: "The SaaS Magic Number is a sales efficiency heuristic. It approximates how much recurring revenue output you generate relative to sales & marketing spend, using a lag to reflect conversion delay.",
+      },
+      { type: "h2", text: "Formula (common simplified version)" },
+      {
+        type: "p",
+        text: "Magic Number ≈ (net new ARR in period × 4) ÷ prior-period sales & marketing spend",
+      },
+      { type: "h2", text: "How to use it" },
+      {
+        type: "bullets",
+        items: [
+          "Track it as a trend metric (quarterly is common) rather than a single point.",
+          "Segment by motion (self-serve vs sales-led) if possible.",
+          "Pair with retention (NRR/GRR) to ensure growth is durable.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Ignoring lag effects between spend and revenue.",
+          "Comparing across businesses with different cycles and expansion behavior.",
+          "Using blended spend without understanding what is included (marketing-only vs sales+marketing).",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Magic Number vs burn multiple: which is better?",
+        answer:
+          "They answer different questions. Magic Number focuses on sales & marketing efficiency. Burn multiple focuses on total cash efficiency. Many teams track both.",
+      },
+    ],
+    examples: [
+      {
+        label: "Magic Number example ($250k net new ARR; $400k prior S&M spend)",
+        calculatorSlug: "saas-magic-number-calculator",
+        params: { netNewArr: "250000", salesMarketingSpend: "400000" },
+      },
+    ],
+  },
+  {
+    slug: "customer-lifetime-guide",
+    title: "Customer lifetime: definition, formula, and how to estimate it",
+    description:
+      "Customer lifetime explained: how to estimate lifetime from churn, why the simple formula can be wrong, and how to improve the estimate with cohorts.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["customer-lifetime-calculator", "churn-rate-calculator"],
+    sections: [
+      { type: "h2", text: "Definition" },
+      {
+        type: "p",
+        text: "Customer lifetime is how long customers remain active before churn. Lifetime matters because it drives LTV and payback viability.",
+      },
+      { type: "h2", text: "Simple formula (shortcut)" },
+      {
+        type: "p",
+        text: "Customer lifetime (months) ≈ 1 ÷ monthly churn rate",
+      },
+      { type: "h2", text: "Worked example" },
+      {
+        type: "p",
+        text: "If monthly churn is 3%, the simple estimate is lifetime ≈ 1 / 0.03 ≈ 33.3 months. This is useful for planning but can be wrong if churn changes over tenure.",
+      },
+      { type: "h2", text: "Why the shortcut breaks" },
+      {
+        type: "bullets",
+        items: [
+          "Churn is usually higher early and lower later (tenure effects).",
+          "Segments behave differently (SMB vs enterprise).",
+          "Expansion and downgrades change revenue lifetime vs logo lifetime.",
+        ],
+      },
+      { type: "h2", text: "A better approach" },
+      {
+        type: "bullets",
+        items: [
+          "Use cohort retention curves (logo and revenue) to measure observed survival over time.",
+          "Estimate LTV by summing gross profit over the cohort curve.",
+          "Track churn drivers and reduce early churn (activation and onboarding).",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Should I use logo churn or revenue churn?",
+        answer:
+          "Use logo churn to estimate customer lifetime (accounts). Use revenue retention (GRR/NRR) to understand revenue lifetime when expansions exist.",
+      },
+    ],
+    examples: [
+      {
+        label: "Lifetime example (3% monthly churn)",
+        calculatorSlug: "customer-lifetime-calculator",
+        params: { monthlyChurnPercent: "3" },
+      },
+    ],
+  },
+  {
+    slug: "npv-guide",
+    title: "NPV (Net Present Value): definition, formula, and example",
+    description:
+      "NPV explained: what net present value means, how to calculate NPV, how to pick a discount rate (MARR), and common pitfalls.",
+    category: "finance",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["npv-calculator"],
+    sections: [
+      { type: "h2", text: "What NPV means" },
+      {
+        type: "p",
+        text: "NPV (Net Present Value) measures the value created by an investment after discounting future cash flows back to today. If NPV is positive, the investment exceeds your required return (discount rate).",
+      },
+      { type: "h2", text: "NPV formula" },
+      {
+        type: "p",
+        text: "NPV = Σ (cash flow_t / (1 + r)^t) − initial investment",
+      },
+      { type: "h2", text: "How to calculate NPV (step-by-step)" },
+      {
+        type: "bullets",
+        items: [
+          "List expected cash flows by year (or month).",
+          "Choose a discount rate (your required return / MARR).",
+          "Discount each cash flow back to present value.",
+          "Sum discounted cash flows and subtract the upfront investment.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using an unrealistic discount rate (test a range).",
+          "Ignoring risk differences across projects (one rate doesn’t fit all).",
+          "Mixing nominal and real cash flows (inflation consistency).",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "What is a good discount rate for NPV?",
+        answer:
+          "It depends on your required return and risk. Many teams start with a hurdle rate (MARR) and test a range to understand sensitivity.",
+      },
+    ],
+    examples: [
+      {
+        label: "NPV example ($100k upfront; $30k/year for 5 years; 12% discount)",
+        calculatorSlug: "npv-calculator",
+        params: { initialInvestment: "100000", annualCashFlow: "30000", years: "5", discountRatePercent: "12" },
+      },
+    ],
+  },
+  {
     slug: "break-even-guide",
     title: "Break-even revenue: calculate your break-even point",
     description:

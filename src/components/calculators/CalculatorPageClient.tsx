@@ -187,6 +187,13 @@ export function CalculatorPageClient({ slug }: { slug: string }) {
             .
           </div>
         ) : null}
+        <div className="text-sm text-zinc-600 dark:text-zinc-400">
+          Need definitions? Browse the{" "}
+          <Link className="underline" href="/glossary">
+            glossary
+          </Link>
+          .
+        </div>
         {relatedGuides.length ? (
           <div className="flex flex-wrap gap-2 pt-1">
             {relatedGuides.map((g) => (

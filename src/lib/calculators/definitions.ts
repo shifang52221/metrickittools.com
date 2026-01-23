@@ -2251,6 +2251,286 @@ export const calculators: CalculatorDefinition[] = [
     ],
   },
   {
+    slug: "bookings-vs-arr-calculator",
+    title: "Bookings vs ARR Calculator",
+    description:
+      "Compare bookings vs ARR (and cash) for a contract with term length and one-time fees.",
+    category: "saas-metrics",
+    featured: true,
+    guideSlug: "bookings-vs-arr-guide",
+    seo: {
+      intro: [
+        "Bookings measure contracted value signed in a period. ARR is a recurring run-rate snapshot (typically MRR × 12). Cash receipts can differ again depending on billing terms.",
+        "This calculator turns a contract into comparable metrics: bookings (signed value), recurring run-rate (ARR), and cash collected (if prepaid).",
+      ],
+      steps: [
+        "Enter the total contract value (TCV) and the term length (months).",
+        "Enter any one-time fees/services included in the contract.",
+        "Compute recurring value = TCV − one-time.",
+        "Compute MRR = recurring ÷ term months, then ARR = MRR × 12.",
+      ],
+      pitfalls: [
+        "Treating bookings as recurring run-rate (especially with annual prepay).",
+        "Including one-time services in ARR.",
+        "Comparing bookings to ARR without normalizing term length.",
+      ],
+    },
+    inputs: [
+      {
+        key: "contractValue",
+        label: "Total contract value (TCV)",
+        placeholder: "120000",
+        prefix: "$",
+        defaultValue: "120000",
+      },
+      {
+        key: "termMonths",
+        label: "Contract term (months)",
+        placeholder: "12",
+        defaultValue: "12",
+        min: 1,
+        step: 1,
+      },
+      {
+        key: "oneTimeFees",
+        label: "One-time fees / services (optional)",
+        placeholder: "10000",
+        prefix: "$",
+        defaultValue: "10000",
+        min: 0,
+      },
+      {
+        key: "prepaidPercent",
+        label: "Paid upfront (cash %) ",
+        help: "100% for annual prepay; 0% if billed monthly (cash spread out).",
+        placeholder: "100",
+        suffix: "%",
+        defaultValue: "100",
+        min: 0,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      if (values.contractValue < 0) warnings.push("TCV must be 0 or greater.");
+      if (values.termMonths <= 0) warnings.push("Term months must be greater than 0.");
+      if (values.oneTimeFees < 0) warnings.push("One-time fees must be 0 or greater.");
+      if (values.prepaidPercent < 0 || values.prepaidPercent > 100)
+        warnings.push("Paid upfront (%) must be between 0 and 100.");
+
+      const recurring = Math.max(0, values.contractValue - values.oneTimeFees);
+      const mrr = safeDivide(recurring, values.termMonths) ?? 0;
+      const arr = mrr * 12;
+      const bookings = values.contractValue;
+      const cashCollected = bookings * (values.prepaidPercent / 100);
+
+      return {
+        headline: {
+          key: "arr",
+          label: "ARR (run-rate)",
+          value: arr,
+          format: "currency",
+          currency: "USD",
+          detail: "Recurring ÷ term months × 12",
+        },
+        secondary: [
+          {
+            key: "bookings",
+            label: "Bookings (signed value)",
+            value: bookings,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "cash",
+            label: "Cash collected (upfront)",
+            value: cashCollected,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        breakdown: [
+          {
+            key: "recurring",
+            label: "Recurring portion",
+            value: recurring,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "mrr",
+            label: "MRR equivalent",
+            value: mrr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "oneTimeFees",
+            label: "One-time fees",
+            value: values.oneTimeFees,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Bookings = TCV; ARR = ((TCV − one-time) ÷ term months) × 12; Cash upfront = TCV × prepaid %",
+    assumptions: [
+      "ARR is a run-rate snapshot; it is not recognized revenue.",
+      "Recurring portion excludes one-time fees and services.",
+      "Cash collected depends on billing terms; this model uses 'paid upfront %' as a simplification.",
+    ],
+    faqs: [
+      {
+        question: "Is bookings the same as ARR?",
+        answer:
+          "No. Bookings measure contracted value signed in a period. ARR measures recurring run-rate (MRR × 12). They answer different questions.",
+      },
+      {
+        question: "Why can bookings be much higher than ARR?",
+        answer:
+          "Bookings can include the full contract term and one-time items, while ARR only reflects recurring run-rate. Annual prepay can also increase bookings and cash without changing run-rate proportionally.",
+      },
+    ],
+    guide: [
+      {
+        title: "How to use this comparison",
+        bullets: [
+          "Use bookings to evaluate sales performance and contracted demand.",
+          "Use ARR to compare recurring scale and momentum across time/companies.",
+          "Use cash to plan runway; billing terms can move cash without changing ARR.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "saas-magic-number-calculator",
+    title: "SaaS Magic Number Calculator",
+    description:
+      "Estimate sales efficiency using net new ARR and prior-period sales & marketing spend (Magic Number).",
+    category: "saas-metrics",
+    guideSlug: "saas-magic-number-guide",
+    seo: {
+      intro: [
+        "The SaaS Magic Number is a rough sales efficiency heuristic. It compares revenue output (net new ARR) to sales & marketing spend with a lag.",
+      ],
+      steps: [
+        "Pick a quarter (or month) and measure net new ARR for that period.",
+        "Use the prior period’s sales & marketing spend as the input spend (to account for lag).",
+        "Compute Magic Number ≈ (net new ARR × 4) ÷ prior-period S&M spend.",
+      ],
+      pitfalls: [
+        "Ignoring lag effects (spend today converts later).",
+        "Using a blended number that hides channel/segment differences.",
+      ],
+    },
+    inputs: [
+      {
+        key: "netNewArr",
+        label: "Net new ARR (period)",
+        placeholder: "250000",
+        prefix: "$",
+        defaultValue: "250000",
+      },
+      {
+        key: "salesMarketingSpend",
+        label: "Sales & marketing spend (prior period)",
+        placeholder: "400000",
+        prefix: "$",
+        defaultValue: "400000",
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      if (values.salesMarketingSpend <= 0)
+        warnings.push("Sales & marketing spend must be greater than 0.");
+      const magic = safeDivide(values.netNewArr * 4, values.salesMarketingSpend);
+      if (magic === null) {
+        return {
+          headline: {
+            key: "magic",
+            label: "Magic Number",
+            value: 0,
+            format: "multiple",
+            maxFractionDigits: 2,
+          },
+          warnings,
+        };
+      }
+      return {
+        headline: {
+          key: "magic",
+          label: "Magic Number",
+          value: magic,
+          format: "multiple",
+          maxFractionDigits: 2,
+          detail: "(Net new ARR × 4) ÷ prior S&M spend",
+        },
+        warnings,
+      };
+    },
+    formula: "Magic Number ≈ (Net new ARR in period × 4) ÷ prior-period S&M spend",
+    assumptions: [
+      "Uses a lag: prior-period S&M spend is compared to current revenue output.",
+      "Works best as a trend metric and when measured consistently (often quarterly).",
+    ],
+    faqs: [
+      {
+        question: "Is Magic Number the same as burn multiple?",
+        answer:
+          "No. Magic Number uses sales & marketing spend and net new ARR. Burn multiple uses net cash burn and net new ARR.",
+      },
+    ],
+  },
+  {
+    slug: "customer-lifetime-calculator",
+    title: "Customer Lifetime Calculator",
+    description:
+      "Estimate customer lifetime (months) from monthly churn rate (a simple approximation).",
+    category: "saas-metrics",
+    guideSlug: "customer-lifetime-guide",
+    inputs: [
+      {
+        key: "monthlyChurnPercent",
+        label: "Monthly churn rate",
+        placeholder: "3",
+        suffix: "%",
+        defaultValue: "3",
+        min: 0,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const churn = values.monthlyChurnPercent / 100;
+      if (churn <= 0) warnings.push("Churn must be greater than 0 for this model.");
+      const lifetimeMonths = churn > 0 ? 1 / churn : 0;
+      return {
+        headline: {
+          key: "lifetime",
+          label: "Estimated customer lifetime",
+          value: lifetimeMonths,
+          format: "months",
+          maxFractionDigits: 1,
+          detail: "1 ÷ monthly churn rate",
+        },
+        warnings,
+      };
+    },
+    formula: "Customer lifetime (months) ≈ 1 ÷ monthly churn rate",
+    assumptions: [
+      "Assumes churn is roughly constant over time (often untrue early vs late).",
+      "Useful as a planning shortcut; cohort curves are more accurate.",
+    ],
+    faqs: [
+      {
+        question: "Why is this only an estimate?",
+        answer:
+          "Churn usually changes by tenure (early churn is higher). This formula assumes churn is constant, so it should be used as a quick approximation or compared across segments consistently.",
+      },
+    ],
+  },
+  {
     slug: "break-even-revenue-calculator",
     title: "Break-even Revenue Calculator",
     description: "Estimate the revenue needed to break even given fixed costs and gross margin.",
@@ -2319,6 +2599,99 @@ export const calculators: CalculatorDefinition[] = [
           "Validate fixed costs: include salaries, rent, core tools, and overhead.",
           "Recompute when pricing or COGS changes.",
         ],
+      },
+    ],
+  },
+  {
+    slug: "npv-calculator",
+    title: "NPV Calculator",
+    description:
+      "Calculate net present value (NPV) from initial investment, annual cash flow, years, and discount rate.",
+    category: "finance",
+    guideSlug: "npv-guide",
+    inputs: [
+      {
+        key: "initialInvestment",
+        label: "Initial investment (upfront)",
+        placeholder: "100000",
+        prefix: "$",
+        defaultValue: "100000",
+        min: 0,
+      },
+      {
+        key: "annualCashFlow",
+        label: "Annual cash flow",
+        placeholder: "30000",
+        prefix: "$",
+        defaultValue: "30000",
+      },
+      {
+        key: "years",
+        label: "Years",
+        placeholder: "5",
+        defaultValue: "5",
+        min: 1,
+        step: 1,
+      },
+      {
+        key: "discountRatePercent",
+        label: "Discount rate",
+        placeholder: "12",
+        suffix: "%",
+        defaultValue: "12",
+        min: 0,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const r = values.discountRatePercent / 100;
+      if (values.years <= 0) warnings.push("Years must be greater than 0.");
+
+      let pv = 0;
+      if (r === 0) {
+        pv = values.annualCashFlow * values.years;
+      } else {
+        pv = values.annualCashFlow * ((1 - Math.pow(1 + r, -values.years)) / r);
+      }
+
+      const npv = pv - values.initialInvestment;
+      return {
+        headline: {
+          key: "npv",
+          label: "Net present value (NPV)",
+          value: npv,
+          format: "currency",
+          currency: "USD",
+          detail: "PV of cash flows − initial investment",
+        },
+        secondary: [
+          {
+            key: "pv",
+            label: "Present value of cash flows",
+            value: pv,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "NPV = Σ (cash flow_t / (1 + r)^t) − initial investment (annuity PV for constant cash flow)",
+    assumptions: [
+      "Assumes constant annual cash flow (real projects vary).",
+      "Discount rate reflects required return (hurdle rate / MARR).",
+    ],
+    faqs: [
+      {
+        question: "What discount rate should I use?",
+        answer:
+          "Use your required return or hurdle rate (often called MARR). Many teams test a range (e.g., 8%–20%) to see sensitivity.",
+      },
+      {
+        question: "NPV vs IRR?",
+        answer:
+          "NPV is value created at a chosen discount rate. IRR is the implied discount rate where NPV equals zero.",
       },
     ],
   },

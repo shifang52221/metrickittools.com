@@ -16,6 +16,7 @@ export default function Home() {
         "arr-guide",
         "cac-payback-guide",
         "cac-guide",
+        "bookings-vs-arr-guide",
         "ltv-guide",
         "roas-guide",
       ].includes(g.slug),
