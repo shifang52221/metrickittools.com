@@ -277,11 +277,11 @@ export const guides: Guide[] = [
   },
   {
     slug: "cac-guide",
-    title: "CAC: How to calculate Customer Acquisition Cost",
+    title: "CAC: how to calculate Customer Acquisition Cost (formula + examples)",
     description:
-      "Learn how to define and calculate CAC, what to include in costs, and how to segment CAC for better decisions.",
+      "Customer acquisition cost (CAC) explained: formula, what to include, and practical CAC metrics (paid vs fully-loaded) you can trust.",
     category: "saas-metrics",
-    updatedAt: "2026-01-05",
+    updatedAt: "2026-01-23",
     relatedCalculatorSlugs: [
       "cac-calculator",
       "ltv-to-cac-calculator",
@@ -293,8 +293,18 @@ export const guides: Guide[] = [
         type: "p",
         text: "CAC (Customer Acquisition Cost) is the cost to acquire a new paying customer. It's a core unit economics metric for SaaS and subscription businesses.",
       },
-      { type: "h2", text: "Core formula" },
-      { type: "p", text: "CAC = acquisition spend / new customers acquired" },
+      { type: "h2", text: "CAC formula" },
+      { type: "p", text: "CAC = acquisition spend ÷ new customers acquired" },
+      { type: "h2", text: "How to calculate CAC (step-by-step)" },
+      {
+        type: "bullets",
+        items: [
+          "Pick a time window (usually monthly) and a segment (channel, plan, geo).",
+          "Sum acquisition spend for that window (paid spend + variable acquisition costs).",
+          "Count new paying customers acquired in that window (not leads or trials).",
+          "Divide spend by new customers to get CAC.",
+        ],
+      },
       { type: "h2", text: "Benchmarks (rule of thumb)" },
       {
         type: "bullets",
@@ -302,6 +312,15 @@ export const guides: Guide[] = [
           "There is no universal 'good CAC' without knowing ARPA, margin, and retention.",
           "Use CAC payback (months) to compare channels more fairly when pricing differs.",
           "Track CAC by cohort: CAC often rises as channels saturate.",
+        ],
+      },
+      { type: "h2", text: "CAC metrics (paid vs fully-loaded)" },
+      {
+        type: "bullets",
+        items: [
+          "Paid CAC: ad spend (and variable creative/agency) ÷ new customers (useful for channel optimization).",
+          "Fully-loaded CAC: paid spend + sales/marketing salaries + tools ÷ new customers (useful for planning).",
+          "Blended CAC: includes all acquisition sources (paid + organic + outbound). Always label the definition.",
         ],
       },
       { type: "h2", text: "What costs to include" },
@@ -346,6 +365,16 @@ export const guides: Guide[] = [
         question: "Should CAC include salaries?",
         answer:
           "For planning and true unit economics, many teams use fully-loaded CAC (including salaries/tools). For channel optimization, paid-only CAC can be useful if you keep the definition consistent.",
+      },
+      {
+        question: "How do you calculate customer acquisition cost?",
+        answer:
+          "Pick a time window, sum acquisition spend for that window, count new paying customers acquired, and divide spend by customers. Make sure the spend window matches the customer count window.",
+      },
+      {
+        question: "What is the customer acquisition cost formula?",
+        answer:
+          "Customer acquisition cost (CAC) = acquisition spend ÷ new customers acquired. The key is defining what you include in spend (paid-only vs fully-loaded) and what counts as a new customer.",
       },
       {
         question: "Should I use lead CAC or customer CAC?",
@@ -611,7 +640,7 @@ export const guides: Guide[] = [
     description:
       "ARPU calculation guide: definition, formula, worked example, and how to use ARPU with retention and LTV.",
     category: "saas-metrics",
-    updatedAt: "2026-01-05",
+    updatedAt: "2026-01-23",
     relatedCalculatorSlugs: ["arpu-calculator", "ltv-calculator"],
     sections: [
       { type: "h2", text: "Definition" },
@@ -619,7 +648,7 @@ export const guides: Guide[] = [
         type: "p",
         text: "ARPU (Average Revenue Per User) is calculated as revenue ÷ average active users for a period. It's useful for tracking monetization and pricing performance over time.",
       },
-      { type: "h2", text: "Formula" },
+      { type: "h2", text: "ARPU formula" },
       { type: "p", text: "ARPU = revenue ÷ average active users" },
       { type: "h2", text: "How to calculate ARPU (step-by-step)" },
       {
@@ -636,6 +665,15 @@ export const guides: Guide[] = [
         type: "p",
         text: "If you made $50,000 this month and had 2,000 average active users, ARPU = $50,000 ÷ 2,000 = $25 per user for the month.",
       },
+      { type: "h2", text: "ARPU vs ARPA (SaaS)" },
+      {
+        type: "bullets",
+        items: [
+          "ARPU is usually per active user; ARPA (average revenue per account) is per paying account/customer.",
+          "B2B SaaS often uses ARPA because pricing is per company (not per user).",
+          "Be consistent: if your denominator is accounts, label it ARPA/ARPC instead of ARPU.",
+        ],
+      },
       { type: "h2", text: "How to segment ARPU" },
       {
         type: "bullets",
@@ -643,6 +681,24 @@ export const guides: Guide[] = [
           "By plan/tier to see packaging performance.",
           "By acquisition channel to understand lead quality and upsell potential.",
           "By geography to reflect different pricing and payment behaviors.",
+        ],
+      },
+      { type: "h2", text: "What is a good ARPU?" },
+      {
+        type: "bullets",
+        items: [
+          "There is no universal benchmark. 'Good' depends on gross margin, CAC, and retention.",
+          "A useful check is whether ARPU supports a reasonable CAC payback period for your growth stage.",
+          "Compare ARPU by segment (plan/channel) rather than only the blended average.",
+        ],
+      },
+      { type: "h2", text: "ARPU vs LTV" },
+      {
+        type: "bullets",
+        items: [
+          "ARPU is a per-period monetization metric; LTV is the expected value over the customer lifetime.",
+          "A simple relationship is LTV ~= ARPA × gross margin ÷ churn rate (with consistent time units).",
+          "Use ARPU/ARPA to track pricing; use LTV with CAC to evaluate unit economics.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -666,9 +722,24 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
+        question: "What is the ARPU formula?",
+        answer:
+          "ARPU (average revenue per user) = revenue ÷ average active users for the same period. The key is defining 'active user' consistently.",
+      },
+      {
+        question: "What is a good ARPU?",
+        answer:
+          "It depends on your business model. A 'good' ARPU is one that supports healthy unit economics: reasonable CAC payback, strong gross margin, and retention that makes LTV exceed CAC by a comfortable margin.",
+      },
+      {
         question: "ARPU vs ARPA: which should I use?",
         answer:
           "ARPU is per user. ARPA is per account. If you sell to companies with multiple seats, ARPA often matches how you price and report. If you sell per-seat, ARPU can be more natural.",
+      },
+      {
+        question: "How does ARPU relate to LTV?",
+        answer:
+          "ARPU/ARPA is the per-period revenue, while LTV considers the whole customer lifetime. LTV models usually combine ARPA, gross margin, and retention/churn to estimate total value over time.",
       },
       {
         question: "Should ARPU use revenue or gross profit?",

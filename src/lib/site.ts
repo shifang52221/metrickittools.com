@@ -6,7 +6,7 @@ export const siteConfig = {
     const envUrl = process.env.NEXT_PUBLIC_SITE_URL;
     if (envUrl) return envUrl;
     if (process.env.NODE_ENV === "development") return "http://localhost:3000";
-    return "https://www.metrickittools.com";
+    return "https://metrickittools.com";
   })(),
   email: "admin@metrickittools.com",
 } as const;
