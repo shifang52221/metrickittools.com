@@ -213,7 +213,7 @@ const seeds: Seed[] = [
       {
         question: "Is churn the same as 1 - retention?",
         answer:
-          "Only if you’re measuring the same base (logos or revenue) over the same period with consistent definitions. Otherwise they can differ.",
+          "Only if you're measuring the same base (logos or revenue) over the same period with consistent definitions. Otherwise they can differ.",
       },
       {
         question: "Why does churn change after a price increase?",
@@ -267,7 +267,7 @@ const seeds: Seed[] = [
       "Separate expansion from reactivations and price increases for clean reporting.",
     ],
     mistakes: [
-      "Counting expansion as ‘retention’ without also tracking GRR (NRR can hide churn).",
+      "Counting expansion as ‘retention' without also tracking GRR (NRR can hide churn).",
       "Mixing price-driven expansions with true usage expansion (separate when possible).",
     ],
     relatedGuideSlugs: ["nrr-guide", "retention-churn-hub-guide"],
@@ -342,7 +342,7 @@ const seeds: Seed[] = [
     formula:
       "Gross revenue churn = (contraction MRR + churned MRR) / starting MRR",
     bullets: [
-      "It’s a loss metric (how much revenue you lost), not a remaining metric.",
+      "It's a loss metric (how much revenue you lost), not a remaining metric.",
       "Use the same cohort and time window for starting MRR and losses.",
       "Track gross churn alongside GRR/NRR to avoid being misled by expansion.",
     ],
@@ -379,7 +379,7 @@ const seeds: Seed[] = [
       {
         question: "NRR vs GRR: why track both?",
         answer:
-          "NRR includes expansion and can be high even with significant churn. GRR isolates churn and downgrades, making it harder to ‘hide’ retention problems.",
+          "NRR includes expansion and can be high even with significant churn. GRR isolates churn and downgrades, making it harder to ‘hide' retention problems.",
       },
     ],
     relatedGuideSlugs: ["nrr-guide", "nrr-vs-grr-guide", "retention-churn-hub-guide"],
@@ -398,7 +398,7 @@ const seeds: Seed[] = [
       "Use GRR to validate that growth isn't masking underlying churn.",
     ],
     mistakes: [
-      "Including expansion in GRR (by definition it’s excluded).",
+      "Including expansion in GRR (by definition it's excluded).",
       "Mixing cohorts or time windows (start from one cohort, losses from another).",
     ],
     faqs: [
@@ -461,7 +461,7 @@ const seeds: Seed[] = [
       {
         question: "How do I pick the right activation event?",
         answer:
-          "Pick the earliest behavior that strongly predicts retention or revenue (the ‘aha’ moment). Validate it with cohort analysis before locking it in.",
+          "Pick the earliest behavior that strongly predicts retention or revenue (the ‘aha' moment). Validate it with cohort analysis before locking it in.",
       },
     ],
     relatedGuideSlugs: ["activation-rate-guide", "plg-metrics-hub-guide"],
@@ -510,7 +510,7 @@ const seeds: Seed[] = [
     slug: "wau",
     title: "WAU (Weekly Active Users)",
     description:
-      "WAU counts unique active users over a 7-day window. It’s often a better engagement signal for weekly cadence products than DAU.",
+      "WAU counts unique active users over a 7-day window. It's often a better engagement signal for weekly cadence products than DAU.",
     formula: "WAU = unique active users in a week",
     bullets: [
       "Use WAU/MAU for weekly workflows and B2B cadence products.",
@@ -569,7 +569,7 @@ const seeds: Seed[] = [
     ],
     mistakes: [
       "Using total users instead of active users as the denominator.",
-      "Optimizing adoption of a feature that doesn’t drive retention or revenue.",
+      "Optimizing adoption of a feature that doesn't drive retention or revenue.",
     ],
     relatedGuideSlugs: ["feature-adoption-guide"],
     relatedCalculatorSlugs: ["feature-adoption-rate-calculator"],
@@ -647,7 +647,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "What’s the fastest way to improve unit economics?",
+        question: "What's the fastest way to improve unit economics?",
         answer:
           "Usually by improving retention (raises LTV) and/or improving margin. Lowering CAC helps too, but it often has trade-offs with scale.",
       },
@@ -680,7 +680,7 @@ const seeds: Seed[] = [
       {
         question: "Does a high Rule of 40 score guarantee a good business?",
         answer:
-          "No. It’s a rough heuristic. You still need to check retention quality (NRR/GRR), cash efficiency (burn multiple), and whether growth is durable.",
+          "No. It's a rough heuristic. You still need to check retention quality (NRR/GRR), cash efficiency (burn multiple), and whether growth is durable.",
       },
     ],
     relatedGuideSlugs: ["rule-of-40-guide", "unit-economics-hub-guide"],
@@ -701,7 +701,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "What’s a ‘good’ burn multiple?",
+        question: "What's a ‘good' burn multiple?",
         answer:
           "It depends on stage and market. Lower is generally better, but you should compare against peers and consider retention and margin quality.",
       },
@@ -840,7 +840,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "What’s a ‘good’ quick ratio?",
+        question: "What's a ‘good' quick ratio?",
         answer:
           "It depends on stage. Higher is better, but the key is trend and segment mix. Pair it with NRR/GRR and payback to judge quality.",
       },
@@ -971,7 +971,7 @@ const seeds: Seed[] = [
     slug: "pipeline-coverage",
     title: "Pipeline Coverage",
     description:
-      "Pipeline coverage is pipeline value divided by quota for a time window. It’s a sanity check that you have enough opportunity value to produce the target outcome given your win rate.",
+      "Pipeline coverage is pipeline value divided by quota for a time window. It's a sanity check that you have enough opportunity value to produce the target outcome given your win rate.",
     formula: "Pipeline coverage = pipeline / quota",
     bullets: [
       "Use time-bound pipeline (closing in the period), not all open opportunities.",
@@ -1040,7 +1040,7 @@ const seeds: Seed[] = [
     slug: "quota-attainment",
     title: "Quota Attainment",
     description:
-      "Quota attainment is booked revenue divided by quota for a period. It’s used to track progress toward targets and to manage pacing.",
+      "Quota attainment is booked revenue divided by quota for a period. It's used to track progress toward targets and to manage pacing.",
     formula: "Attainment = booked / quota",
     bullets: [
       "Use pacing to project end-of-period, but cross-check with pipeline and win rate.",

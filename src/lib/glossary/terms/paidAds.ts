@@ -251,12 +251,12 @@ const seeds: Seed[] = [
       {
         question: "Does a higher CTR always mean better performance?",
         answer:
-          "Not always. High CTR can come from curiosity clicks that don’t convert. Always check CVR, CPA, and profit.",
+          "Not always. High CTR can come from curiosity clicks that don't convert. Always check CVR, CPA, and profit.",
       },
       {
         question: "How do I use break-even CTR?",
         answer:
-          "Break-even CTR tells you the minimum CTR needed to hit a profitability target given CPM, CVR, and economics. It’s a good creative-quality target for a placement mix.",
+          "Break-even CTR tells you the minimum CTR needed to hit a profitability target given CPM, CVR, and economics. It's a good creative-quality target for a placement mix.",
       },
     ],
     relatedGuideSlugs: ["break-even-ctr-guide", "paid-ads-funnel-guide"],
@@ -271,8 +271,8 @@ const seeds: Seed[] = [
     example:
       "If you had 50 purchases from 2,000 clicks, click-based CVR = 50 / 2,000 = 2.5%.",
     bullets: [
-      "Use click-based CVR when you’re bidding on clicks (CPC).",
-      "Use session-based CVR when you’re optimizing landing pages and on-site funnels.",
+      "Use click-based CVR when you're bidding on clicks (CPC).",
+      "Use session-based CVR when you're optimizing landing pages and on-site funnels.",
     ],
     mistakes: [
       "Mixing click-based and session-based CVR.",
@@ -285,7 +285,7 @@ const seeds: Seed[] = [
           "Scaling often broadens audiences/placements (lower intent). CVR can also drop from creative mismatch, landing-page friction, or offer fatigue.",
       },
       {
-        question: "What’s a good CVR?",
+        question: "What's a good CVR?",
         answer:
           "It depends on intent and offer. Compare CVR within the same funnel and traffic type rather than chasing a universal benchmark.",
       },
@@ -351,9 +351,9 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "MER vs ROAS: what’s the difference?",
+        question: "MER vs ROAS: what's the difference?",
         answer:
-          "ROAS is usually channel/campaign-level. MER is top-down across all marketing spend and reduces attribution noise, but it hides what’s working.",
+          "ROAS is usually channel/campaign-level. MER is top-down across all marketing spend and reduces attribution noise, but it hides what's working.",
       },
       {
         question: "What should count as marketing spend in MER?",
@@ -382,12 +382,12 @@ const seeds: Seed[] = [
       {
         question: "Is blended ROAS the same as MER?",
         answer:
-          "They’re often used similarly. MER is typically revenue / total marketing spend, while blended ROAS is usually revenue / total ad spend.",
+          "They're often used similarly. MER is typically revenue / total marketing spend, while blended ROAS is usually revenue / total ad spend.",
       },
       {
         question: "Can blended ROAS still be misleading?",
         answer:
-          "Yes. It can hide mix shifts (prospecting vs retargeting) and doesn’t prove incrementality. Use experiments for causal truth when needed.",
+          "Yes. It can hide mix shifts (prospecting vs retargeting) and doesn't prove incrementality. Use experiments for causal truth when needed.",
       },
     ],
   },
@@ -403,7 +403,7 @@ const seeds: Seed[] = [
       "Use incrementality tests when possible to estimate true lift.",
     ],
     mistakes: [
-      "Treating attribution as causal truth (it’s model-based credit).",
+      "Treating attribution as causal truth (it's model-based credit).",
       "Comparing channels with different windows and tracking coverage as if the numbers are comparable.",
     ],
     faqs: [
@@ -434,7 +434,7 @@ const seeds: Seed[] = [
       {
         question: "Should I use click-through or view-through attribution?",
         answer:
-          "Click-through is usually less noisy. View-through can add insight for upper-funnel, but it’s easier to over-credit. Validate with incrementality tests at scale.",
+          "Click-through is usually less noisy. View-through can add insight for upper-funnel, but it's easier to over-credit. Validate with incrementality tests at scale.",
       },
       {
         question: "What window should I pick?",
@@ -461,7 +461,7 @@ const seeds: Seed[] = [
       {
         question: "When is last-click attribution useful?",
         answer:
-          "When you want a consistent, easy-to-explain model for day-to-day optimization. It’s less reliable for long purchase cycles or multi-touch journeys.",
+          "When you want a consistent, easy-to-explain model for day-to-day optimization. It's less reliable for long purchase cycles or multi-touch journeys.",
       },
     ],
   },
@@ -472,7 +472,7 @@ const seeds: Seed[] = [
       "Multi-touch attribution spreads conversion credit across multiple touchpoints (first, last, and middle touches).",
     bullets: [
       "MTA can improve visibility into upper-funnel touches versus last-click.",
-      "It’s still attribution, not causality; validate with experiments for big bets.",
+      "It's still attribution, not causality; validate with experiments for big bets.",
     ],
     mistakes: [
       "Assuming MTA is incrementality (it is still model-based attribution).",
@@ -482,7 +482,7 @@ const seeds: Seed[] = [
       {
         question: "Does MTA prove that a channel is incremental?",
         answer:
-          "No. It redistributes credit but doesn’t prove causality. Use holdouts/geo tests to estimate true lift.",
+          "No. It redistributes credit but doesn't prove causality. Use holdouts/geo tests to estimate true lift.",
       },
     ],
   },
@@ -498,7 +498,7 @@ const seeds: Seed[] = [
       "Be careful with short tests when purchase cycles are long.",
     ],
     mistakes: [
-      "Treating attribution as causal truth (it’s model-based credit).",
+      "Treating attribution as causal truth (it's model-based credit).",
       "Running tests without clean holdouts (contamination breaks results).",
     ],
     faqs: [
@@ -551,7 +551,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "What’s the difference between average ROAS and marginal ROAS?",
+        question: "What's the difference between average ROAS and marginal ROAS?",
         answer:
           "Average ROAS looks at total revenue / total spend. Marginal ROAS looks at what the next dollars of spend generate. Scaling decisions should use marginal ROAS (or incremental profit).",
       },
@@ -586,7 +586,7 @@ const seeds: Seed[] = [
     description:
       "A geo experiment measures lift by varying spend across regions and comparing outcomes against controls.",
     bullets: [
-      "Use geo tests when user-level holdouts aren’t feasible (e.g., offline or privacy constraints).",
+      "Use geo tests when user-level holdouts aren't feasible (e.g., offline or privacy constraints).",
       "Ensure regions are comparable and avoid cross-region spillover.",
     ],
     mistakes: [
@@ -633,7 +633,7 @@ const seeds: Seed[] = [
       {
         question: "Do UTMs affect SEO?",
         answer:
-          "They shouldn’t if you handle canonicals correctly. UTMs can create duplicate URLs, so canonical URLs should point to the clean version without query parameters.",
+          "They shouldn't if you handle canonicals correctly. UTMs can create duplicate URLs, so canonical URLs should point to the clean version without query parameters.",
       },
     ],
   },
@@ -641,7 +641,7 @@ const seeds: Seed[] = [
     slug: "ga4",
     title: "GA4 (Google Analytics 4)",
     description:
-      "GA4 is Google’s analytics platform for web and app measurement. In paid ads workflows, GA4 is often used for consistent cross-channel reporting (but it can undercount due to privacy and cross-device gaps).",
+      "GA4 is Google's analytics platform for web and app measurement. In paid ads workflows, GA4 is often used for consistent cross-channel reporting (but it can undercount due to privacy and cross-device gaps).",
     bullets: [
       "Use GA4 for consistent channel trends; use platforms for optimization, and reconcile with MER and incrementality tests.",
       "Validate that conversion events fire once (dedupe pixel + server events if you use both).",
@@ -684,7 +684,7 @@ const seeds: Seed[] = [
       {
         question: "What frequency is too high?",
         answer:
-          "There’s no universal number. If frequency rises and CTR/CVR fall, that’s a practical signal to refresh creative, expand audiences, or cap spend.",
+          "There's no universal number. If frequency rises and CTR/CVR fall, that's a practical signal to refresh creative, expand audiences, or cap spend.",
       },
     ],
   },
@@ -692,7 +692,7 @@ const seeds: Seed[] = [
     slug: "frequency-cap",
     title: "Frequency Cap",
     description:
-      "A frequency cap limits how often a person can see your ad in a time window (per day/week). It’s used to reduce fatigue and wasted impressions in saturated audiences.",
+      "A frequency cap limits how often a person can see your ad in a time window (per day/week). It's used to reduce fatigue and wasted impressions in saturated audiences.",
     bullets: [
       "Use caps when frequency rises and CTR/CVR decay, especially in small audiences.",
       "Combine caps with audience expansion and creative refresh to avoid simply throttling delivery.",
@@ -756,7 +756,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "How do I know if it’s creative fatigue or audience saturation?",
+        question: "How do I know if it's creative fatigue or audience saturation?",
         answer:
           "Fatigue often shows up as CTR decline at stable CPM, while saturation shows falling marginal returns as you scale. They can overlap, so test new creative and new audiences separately.",
       },

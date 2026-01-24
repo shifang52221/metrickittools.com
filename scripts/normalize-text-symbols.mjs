@@ -2,11 +2,35 @@ import fs from "node:fs";
 import path from "node:path";
 
 const replacements = [
+  // Common mojibake sequences (UTF-8 decoded as legacy encoding)
+  { from: "Ã·", to: "/" },
+  { from: "Ã—", to: "*" },
+  { from: "âˆ’", to: "-" },
+  { from: "â‰ˆ", to: "~" },
+  { from: "â†’", to: "->" },
+  { from: "â€™", to: "'" },
+  { from: "â€œ", to: "\"" },
+  { from: "â€\u009d", to: "\"" },
+  { from: "â€”", to: "-" },
+  { from: "â€“", to: "-" },
+  { from: "â€¦", to: "..." },
+
+  // Normalize unicode punctuation/symbols to ASCII for consistent rendering
+  { from: "’", to: "'" },
+  { from: "“", to: "\"" },
+  { from: "”", to: "\"" },
+  { from: "—", to: "-" },
+  { from: "–", to: "-" },
+  { from: "…", to: "..." },
+
+  // Math symbols
   { from: "÷", to: "/" },
   { from: "×", to: "*" },
   { from: "−", to: "-" },
   { from: "≈", to: "~" },
   { from: "→", to: "->" },
+  { from: "≤", to: "<=" },
+  { from: "≥", to: ">=" },
 ];
 
 const files = [
@@ -24,11 +48,10 @@ function applyReplacements(text) {
 
   for (const { from, to } of replacements) {
     const parts = out.split(from);
-    if (parts.length > 1) {
-      changed = true;
-      counts[from] = (counts[from] ?? 0) + (parts.length - 1);
-      out = parts.join(to);
-    }
+    if (parts.length <= 1) continue;
+    changed = true;
+    counts[from] = (counts[from] ?? 0) + (parts.length - 1);
+    out = parts.join(to);
   }
 
   return { out, changed, counts };

@@ -92,7 +92,7 @@ const seeds: Seed[] = [
     formula:
       "Terminal value (perpetuity) = FCF_(n+1) / (discount rate - terminal growth)",
     example:
-      "If next year’s FCF is $6M, discount rate is 12%, and terminal growth is 3%, terminal value = $6M / (0.12 - 0.03) = $66.7M (before discounting it back to today).",
+      "If next year's FCF is $6M, discount rate is 12%, and terminal growth is 3%, terminal value = $6M / (0.12 - 0.03) = $66.7M (before discounting it back to today).",
     mistakes: [
       "Letting terminal value dominate without sensitivity analysis.",
       "Using aggressive terminal growth that implies implausible long-run scale.",
@@ -101,10 +101,10 @@ const seeds: Seed[] = [
       {
         question: "Why must discount rate be higher than terminal growth?",
         answer:
-          "In the perpetuity formula, if growth ≥ discount rate, the denominator goes to zero or negative and the terminal value explodes or becomes invalid.",
+          "In the perpetuity formula, if growth >= discount rate, the denominator goes to zero or negative and the terminal value explodes or becomes invalid.",
       },
       {
-        question: "What’s a reasonable terminal growth rate?",
+        question: "What's a reasonable terminal growth rate?",
         answer:
           "Often a conservative long-run growth rate below the discount rate. Use scenarios rather than a single point estimate.",
       },
@@ -159,7 +159,7 @@ const seeds: Seed[] = [
       {
         question: "Is cost of equity the same as expected stock return?",
         answer:
-          "It’s a required return estimate, not a guarantee. It’s commonly used as an input to WACC and valuation, but realized returns can differ materially.",
+          "It's a required return estimate, not a guarantee. It's commonly used as an input to WACC and valuation, but realized returns can differ materially.",
       },
     ],
     relatedGuideSlugs: ["wacc-guide", "dcf-valuation-guide"],
@@ -174,11 +174,11 @@ const seeds: Seed[] = [
     example:
       "If cost of debt is 7% and tax rate is 25%, after-tax cost of debt ~ 7%*(1-0.25) = 5.25%.",
     bullets: [
-      "Use the company’s current borrowing rate for similar maturity and risk.",
+      "Use the company's current borrowing rate for similar maturity and risk.",
       "Remember the tax shield: after-tax cost of debt is lower than the nominal coupon.",
     ],
     mistakes: [
-      "Using old debt coupons when the firm’s risk or rates have changed.",
+      "Using old debt coupons when the firm's risk or rates have changed.",
       "Forgetting the tax shield when using WACC as a discount rate proxy.",
     ],
     faqs: [
@@ -201,7 +201,7 @@ const seeds: Seed[] = [
       "If PV(inflows) is $130k and initial investment is $100k, PI = 1.30 (positive NPV).",
     bullets: [
       "PI > 1 implies positive NPV; PI < 1 implies negative NPV.",
-      "Use PI to rank projects when you can’t fund everything (capital rationing).",
+      "Use PI to rank projects when you can't fund everything (capital rationing).",
     ],
     mistakes: [
       "Using PI to choose between mutually exclusive projects of different scale (compare NPV too).",
@@ -247,7 +247,7 @@ const seeds: Seed[] = [
     slug: "sensitivity-analysis",
     title: "Sensitivity Analysis",
     description:
-      "Sensitivity analysis shows how outputs change when key inputs vary within a reasonable range. In valuation, it’s used to test how fragile a DCF is to discount rate and terminal assumptions.",
+      "Sensitivity analysis shows how outputs change when key inputs vary within a reasonable range. In valuation, it's used to test how fragile a DCF is to discount rate and terminal assumptions.",
     bullets: [
       "Use sensitivity grids to avoid false precision from single-point estimates.",
       "Pick ranges that reflect uncertainty (not just tiny deltas).",
@@ -375,14 +375,14 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Contribution margin vs gross margin: what’s the difference?",
+        question: "Contribution margin vs gross margin: what's the difference?",
         answer:
-          "Gross margin usually means revenue minus COGS. Contribution margin often subtracts additional variable costs like payment fees, shipping, and returns, so it’s closer to per-order profit.",
+          "Gross margin usually means revenue minus COGS. Contribution margin often subtracts additional variable costs like payment fees, shipping, and returns, so it's closer to per-order profit.",
       },
       {
         question: "Why does contribution margin matter for paid ads?",
         answer:
-          "Because break-even ROAS/CPA depends on profit per conversion, not revenue. Using revenue-only targets can make campaigns look profitable when they’re not.",
+          "Because break-even ROAS/CPA depends on profit per conversion, not revenue. Using revenue-only targets can make campaigns look profitable when they're not.",
       },
     ],
     relatedGuideSlugs: ["paid-ads-funnel-guide", "break-even-pricing-guide"],
@@ -524,8 +524,8 @@ const seeds: Seed[] = [
     description:
       "Working capital reflects short-term assets and liabilities (receivables, payables, deferred revenue). It can cause profit and cash to diverge.",
     bullets: [
-      "AR increases consume cash (you sold but haven’t collected yet).",
-      "AP increases can preserve cash (you haven’t paid yet).",
+      "AR increases consume cash (you sold but haven't collected yet).",
+      "AP increases can preserve cash (you haven't paid yet).",
       "Deferred revenue increases can boost cash (prepay) while revenue is recognized later.",
     ],
     faqs: [
@@ -558,7 +558,7 @@ const seeds: Seed[] = [
     example:
       "If you negotiate net-60 payment terms instead of net-30, you can improve short-term cash timing without changing total costs.",
     bullets: [
-      "AP timing can extend runway, but don’t damage vendor relationships or reliability.",
+      "AP timing can extend runway, but don't damage vendor relationships or reliability.",
       "Match payment terms to your collections cycle where possible.",
     ],
     relatedGuideSlugs: ["runway-burn-cash-guide", "cash-conversion-cycle-guide"],
@@ -567,7 +567,7 @@ const seeds: Seed[] = [
     slug: "cash-conversion-cycle",
     title: "Cash Conversion Cycle (CCC)",
     description:
-      "The cash conversion cycle (CCC) measures how long cash is tied up between paying out cash (to suppliers) and collecting cash (from customers). It’s a working-capital lens on runway.",
+      "The cash conversion cycle (CCC) measures how long cash is tied up between paying out cash (to suppliers) and collecting cash (from customers). It's a working-capital lens on runway.",
     formula: "CCC = DSO + DIO - DPO (often DIO ~ 0 for SaaS)",
     bullets: [
       "Lower CCC means cash comes back faster (less runway risk).",
@@ -715,7 +715,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Discount rate vs interest rate: what’s the difference?",
+        question: "Discount rate vs interest rate: what's the difference?",
         answer:
           "Interest rates are observed borrowing/lending rates. Discount rate is the required return used to value risky cash flows (it may include risk premiums).",
       },
@@ -786,7 +786,7 @@ const seeds: Seed[] = [
     title: "Payback Period (finance)",
     description:
       "Payback period is the time needed to recover an investment's cost from cash flows. In SaaS, 'CAC payback' is a specific variant.",
-    formula: "Payback period = time until cumulative cash flow ≥ initial investment",
+    formula: "Payback period = time until cumulative cash flow >= initial investment",
     example:
       "If you invest $100k and get $30k per year, simple payback is a bit over 3 years (ignoring discounting).",
     bullets: [
@@ -836,7 +836,7 @@ const seeds: Seed[] = [
     ],
     mistakes: [
       "Using a single MARR for projects with very different risk profiles.",
-      "Confusing MARR with IRR (MARR is your required threshold; IRR is a project’s implied return).",
+      "Confusing MARR with IRR (MARR is your required threshold; IRR is a project's implied return).",
     ],
     faqs: [
       {
@@ -877,7 +877,7 @@ const seeds: Seed[] = [
     ],
     mistakes: [
       "Assuming post-money always equals pre-money + investment without checking term details.",
-      "Using post-money ownership numbers that aren’t on a fully diluted basis.",
+      "Using post-money ownership numbers that aren't on a fully diluted basis.",
     ],
     relatedGuideSlugs: ["pre-money-post-money-guide"],
     relatedCalculatorSlugs: ["pre-money-post-money-calculator"],
@@ -886,7 +886,7 @@ const seeds: Seed[] = [
     slug: "dilution",
     title: "Dilution",
     description:
-      "Dilution is the reduction in an existing shareholder’s ownership percentage when new shares are issued (new financing, option grants, or convertible conversions).",
+      "Dilution is the reduction in an existing shareholder's ownership percentage when new shares are issued (new financing, option grants, or convertible conversions).",
     bullets: [
       "Dilution can come from new investment, option pool increases, and SAFE/note conversions.",
       "Always specify the basis (issued shares vs fully diluted).",

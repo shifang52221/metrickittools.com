@@ -85,7 +85,7 @@ export const termsCore: GlossaryTerm[] = [
     ],
     faqs: [
       {
-        question: "What’s the difference between MRR and cash collected?",
+        question: "What's the difference between MRR and cash collected?",
         answer:
           "MRR is a recurring run-rate metric. Cash can be lumpy (annual prepay, timing), so cash collections can move differently than MRR.",
       },
@@ -236,7 +236,7 @@ export const termsCore: GlossaryTerm[] = [
       { type: "h2", text: "Definition" },
       {
         type: "p",
-        text: "Fully-loaded CAC extends paid CAC by including additional acquisition costs beyond paid media—commonly sales & marketing salaries, commissions, and tooling—so the metric reflects the true cost to acquire a customer for planning and unit economics.",
+        text: "Fully-loaded CAC extends paid CAC by including additional acquisition costs beyond paid media-commonly sales & marketing salaries, commissions, and tooling-so the metric reflects the true cost to acquire a customer for planning and unit economics.",
       },
       { type: "h2", text: "Formula" },
       {
@@ -248,7 +248,7 @@ export const termsCore: GlossaryTerm[] = [
         type: "bullets",
         items: [
           "Mixing paid-only CAC and fully-loaded CAC without labeling and consistency.",
-          "Including costs that aren’t acquisition-related (COGS, R&D) without a clear allocation method.",
+          "Including costs that aren't acquisition-related (COGS, R&D) without a clear allocation method.",
           "Comparing fully-loaded CAC to revenue-only payback or revenue LTV (use gross profit where appropriate).",
         ],
       },
@@ -271,7 +271,7 @@ export const termsCore: GlossaryTerm[] = [
       { type: "h2", text: "Definition" },
       {
         type: "p",
-        text: "LTV (Lifetime Value) is the total value you expect from a customer over their lifetime. It’s often used to set acquisition targets (CAC/CPA) and to evaluate payback and growth efficiency. Because costs matter, many teams prefer gross profit LTV (revenue * gross margin over the lifetime).",
+        text: "LTV (Lifetime Value) is the total value you expect from a customer over their lifetime. It's often used to set acquisition targets (CAC/CPA) and to evaluate payback and growth efficiency. Because costs matter, many teams prefer gross profit LTV (revenue * gross margin over the lifetime).",
       },
       { type: "h2", text: "Common formulas (shortcuts)" },
       {
@@ -349,7 +349,7 @@ export const termsCore: GlossaryTerm[] = [
     ],
     faqs: [
       {
-        question: "What’s the difference between ROAS and ROI?",
+        question: "What's the difference between ROAS and ROI?",
         answer:
           "ROAS is revenue divided by ad spend. ROI is profit relative to total cost. You can have high ROAS and still lose money if margins or costs are poor.",
       },
