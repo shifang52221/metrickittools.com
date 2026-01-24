@@ -298,9 +298,22 @@ const seeds: Seed[] = [
     description:
       "AOV measures the average revenue per order. It affects your allowable CPA at a given margin.",
     formula: "AOV = revenue / orders",
+    example:
+      "If you had $40,000 of revenue from 500 orders, AOV = $40,000 / 500 = $80.",
     bullets: [
       "Use AOV with gross margin to estimate contribution per order.",
       "Track AOV by channel and campaign (intent differs).",
+    ],
+    mistakes: [
+      "Using AOV without accounting for refunds/returns (net revenue can be lower).",
+      "Comparing AOV across channels with very different product mixes.",
+    ],
+    faqs: [
+      {
+        question: "How do I use AOV to set a target CPA?",
+        answer:
+          "AOV and contribution margin determine how much profit you have per order. Target CPA should be below profit per conversion (and usually below break-even to include a buffer).",
+      },
     ],
   },
   {
@@ -382,10 +395,24 @@ const seeds: Seed[] = [
     title: "Attribution",
     description:
       "Attribution is the method used to assign credit for conversions to channels, campaigns, and touchpoints.",
+    example:
+      "In last-click attribution, 100% of credit goes to the final touchpoint. In multi-touch attribution, credit is split across touchpoints.",
     bullets: [
       "Define attribution consistently before comparing ROAS/CPA across channels.",
       "Use incrementality tests when possible to estimate true lift.",
     ],
+    mistakes: [
+      "Treating attribution as causal truth (it’s model-based credit).",
+      "Comparing channels with different windows and tracking coverage as if the numbers are comparable.",
+    ],
+    faqs: [
+      {
+        question: "Is attribution the same as incrementality?",
+        answer:
+          "No. Attribution assigns credit; incrementality estimates causal lift (what ads caused). Incrementality is best measured via experiments.",
+      },
+    ],
+    relatedGuideSlugs: ["attribution-incrementality-guide"],
   },
   {
     slug: "attribution-window",
@@ -421,9 +448,20 @@ const seeds: Seed[] = [
     title: "Last-click Attribution",
     description:
       "Last-click attribution assigns 100% of conversion credit to the final touchpoint before conversion.",
+    bullets: [
+      "Last-click is simple and often actionable, but it under-credits demand creation.",
+      "Use it for clarity, then validate major budget decisions with incrementality tests.",
+    ],
     mistakes: [
       "Under-crediting upper-funnel channels that create demand.",
       "Over-crediting branded search for conversions driven by other channels.",
+    ],
+    faqs: [
+      {
+        question: "When is last-click attribution useful?",
+        answer:
+          "When you want a consistent, easy-to-explain model for day-to-day optimization. It’s less reliable for long purchase cycles or multi-touch journeys.",
+      },
     ],
   },
   {
@@ -431,9 +469,20 @@ const seeds: Seed[] = [
     title: "Multi-touch Attribution (MTA)",
     description:
       "Multi-touch attribution spreads conversion credit across multiple touchpoints (first, last, and middle touches).",
+    bullets: [
+      "MTA can improve visibility into upper-funnel touches versus last-click.",
+      "It’s still attribution, not causality; validate with experiments for big bets.",
+    ],
     mistakes: [
       "Assuming MTA is incrementality (it is still model-based attribution).",
       "Using complex models without validating against experiments.",
+    ],
+    faqs: [
+      {
+        question: "Does MTA prove that a channel is incremental?",
+        answer:
+          "No. It redistributes credit but doesn’t prove causality. Use holdouts/geo tests to estimate true lift.",
+      },
     ],
   },
   {
@@ -552,12 +601,21 @@ const seeds: Seed[] = [
     description:
       "A tracking pixel is a snippet that records events (page views, purchases) for measurement and optimization in ad platforms.",
     bullets: [
+      "Validate key events (view content, add to cart, purchase) after releases.",
       "Validate event firing after every site change (especially checkout).",
       "Deduplicate events (client + server) to avoid inflated conversion counts.",
+      "Prefer server-side signals where possible to reduce loss from blockers.",
     ],
     mistakes: [
       "Duplicate firing (inflates conversions).",
       "Not validating events after site changes (breaks optimization).",
+    ],
+    faqs: [
+      {
+        question: "Why do conversions drop after a site release?",
+        answer:
+          "Often because events stopped firing or are double-counted then filtered. Always run an end-to-end event validation after changes to checkout and routing.",
+      },
     ],
   },
   {
@@ -587,18 +645,33 @@ const seeds: Seed[] = [
       "Watch frequency and CTR together; rising frequency with falling CTR can signal fatigue.",
       "Optimal frequency depends on offer, audience size, and creative variety.",
     ],
+    faqs: [
+      {
+        question: "What frequency is too high?",
+        answer:
+          "There’s no universal number. If frequency rises and CTR/CVR fall, that’s a practical signal to refresh creative, expand audiences, or cap spend.",
+      },
+    ],
   },
   {
     slug: "reach",
     title: "Reach",
     description:
       "Reach is the number of unique people who saw your ads over a period.",
+    bullets: [
+      "Use reach with frequency to understand how saturated an audience is.",
+      "High reach with low frequency usually means you still have room to scale.",
+    ],
   },
   {
     slug: "impressions",
     title: "Impressions",
     description:
       "Impressions count how many times your ads were shown (not unique people).",
+    bullets: [
+      "Impressions = reach * frequency (approximately, within a time window).",
+      "Use impressions with CPM to estimate spend: spend ~ impressions/1000 * CPM.",
+    ],
   },
   {
     slug: "landing-page",
@@ -606,9 +679,15 @@ const seeds: Seed[] = [
     description:
       "A landing page is the page users arrive on after clicking an ad. Landing page quality strongly affects CVR and CPA.",
     bullets: [
-      "Match message-to-market: ad promise must match landing content.",
-      "Reduce friction: fast load, clear CTA, fewer form fields.",
+      "Match the ad promise: the first screen should confirm intent and offer.",
+      "Remove friction: speed, fewer fields, clear CTA, trust signals.",
+      "Segment landing pages by intent (prospecting vs retargeting).",
     ],
+    mistakes: [
+      "Sending all traffic to one generic page (intent mismatch).",
+      "Optimizing CVR with dark patterns that increase refunds or churn.",
+    ],
+    relatedGuideSlugs: ["paid-ads-creative-landing-playbook-guide"],
   },
   {
     slug: "creative-fatigue",
@@ -663,24 +742,47 @@ const seeds: Seed[] = [
     title: "Branded Search",
     description:
       "Branded search refers to search campaigns targeting your brand terms. It often shows very high ROAS but can overlap with organic demand.",
+    bullets: [
+      "Branded search is often closer to demand capture than demand creation.",
+      "Validate incrementality before scaling aggressively (organic cannibalization risk).",
+    ],
+    relatedGuideSlugs: ["attribution-incrementality-guide"],
   },
   {
     slug: "non-branded-search",
     title: "Non-branded Search",
     description:
       "Non-branded search targets generic queries. It can be more incremental but often has higher CPC and requires strong landing pages.",
+    bullets: [
+      "Use clear intent segmentation (problem-aware vs solution-aware queries).",
+      "Landing page relevance and quality score can materially change CPC.",
+    ],
+    relatedGuideSlugs: ["paid-ads-creative-landing-playbook-guide"],
   },
   {
     slug: "quality-score",
     title: "Quality Score (search ads)",
     description:
       "Quality score is an estimate of ad/landing relevance and expected CTR used by some platforms. It can influence CPC and impression share.",
+    bullets: [
+      "Higher quality score often reduces CPC for the same position.",
+      "Improve it by aligning keyword -> ad -> landing page intent and reducing bounce.",
+    ],
+    mistakes: [
+      "Optimizing quality score while ignoring conversion quality and profit.",
+      "Using one landing page for many intents (relevance suffers).",
+    ],
   },
   {
     slug: "impression-share",
     title: "Impression Share",
     description:
       "Impression share is the % of times your ads were shown out of total eligible impressions (search).",
+    bullets: [
+      "Lost impression share usually comes from budget limits or low rank (bid/quality).",
+      "Increase impression share only if marginal ROAS/profit supports it.",
+    ],
+    relatedGuideSlugs: ["marginal-roas-guide", "attribution-incrementality-guide"],
   },
   {
     slug: "cvr-funnel",

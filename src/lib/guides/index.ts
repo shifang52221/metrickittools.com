@@ -7333,6 +7333,251 @@ export const guides: Guide[] = [
       },
     ],
   },
+  {
+    slug: "attribution-incrementality-guide",
+    title: "Attribution vs incrementality: what to trust, when, and how to test",
+    description:
+      "A practical guide to attribution vs incrementality: common attribution models, window pitfalls, how MER/marginal ROAS fit in, and how to run holdout/geo tests.",
+    category: "paid-ads",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: [
+      "incrementality-lift-calculator",
+      "mer-calculator",
+      "marginal-roas-calculator",
+      "paid-ads-funnel-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "attribution",
+      "attribution-window",
+      "last-click-attribution",
+      "multi-touch-attribution",
+      "incrementality",
+      "holdout-test",
+      "geo-test",
+      "utm-parameters",
+      "pixel",
+      "mer",
+      "marginal-roas",
+      "diminishing-returns",
+      "retargeting",
+      "prospecting",
+    ],
+    sections: [
+      { type: "h2", text: "The core problem" },
+      {
+        type: "p",
+        text: "Attribution assigns credit. Incrementality estimates causal lift (what ads caused). These are not the same, and confusing them is one of the fastest ways to scale spend into diminishing returns.",
+      },
+      { type: "h2", text: "What each approach is good at" },
+      {
+        type: "table",
+        columns: ["Approach", "Good for", "Common failure modes"],
+        rows: [
+          ["Platform attribution", "Fast feedback for optimization", "Over-credits retargeting; windows differ; model changes"],
+          ["Analytics attribution", "Cross-channel visibility", "Last-touch bias; missing view-through; tracking gaps"],
+          ["MER (top-down)", "Alignment and sanity checks", "Hides which channel is working; needs clean spend definition"],
+          ["Incrementality tests", "Causal truth for scale", "Contamination, low power, short tests vs purchase cycle"],
+        ],
+      },
+      { type: "h2", text: "Attribution windows (why comparisons break)" },
+      {
+        type: "bullets",
+        items: [
+          "Keep windows stable when comparing periods; changing windows changes the metric, not performance.",
+          "Longer windows can inflate credit (especially for retargeting); shorter windows can under-credit longer-cycle products.",
+          "If you must change windows, annotate and avoid comparing across the change.",
+        ],
+      },
+      { type: "h2", text: "How to build a measurement stack that scales" },
+      {
+        type: "bullets",
+        items: [
+          "Start with funnel math (CPM/CTR/CVR) plus profit guardrails (break-even targets).",
+          "Add MER to align marketing and finance on top-down efficiency.",
+          "Use marginal ROAS (or incremental profit) as you scale to detect saturation.",
+          "Run incrementality tests when spend is meaningful or when channels fight for credit.",
+        ],
+      },
+      { type: "h2", text: "How to run incrementality tests (pragmatic checklist)" },
+      {
+        type: "bullets",
+        items: [
+          "Pick a clean holdout: ensure the control truly has no exposure (avoid contamination).",
+          "Run long enough to cover the purchase cycle and reduce noise.",
+          "Measure both conversions and profit proxies (margin-aware outcomes).",
+          "Repeat when creatives/audiences change; incrementality is not permanent.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is incrementality always necessary?",
+        answer:
+          "Not always. Early on, attribution can be good enough for learning. Incrementality becomes more valuable as spend grows, audiences overlap, and attribution bias increases.",
+      },
+      {
+        question: "Can MER replace attribution?",
+        answer:
+          "No. MER is top-down truth and alignment, but it won’t tell you what to change. Use attribution for action and MER to sanity-check.",
+      },
+    ],
+    examples: [
+      {
+        label: "Lift example (exposed 5.0% vs control 4.6%)",
+        calculatorSlug: "incrementality-lift-calculator",
+        params: {
+          testConversions: "500",
+          testPopulation: "10000",
+          controlConversions: "460",
+          controlPopulation: "10000",
+        },
+      },
+    ],
+  },
+  {
+    slug: "paid-ads-creative-landing-playbook-guide",
+    title: "Creative + landing page playbook: diagnose CTR/CVR, then set break-even targets",
+    description:
+      "A practical playbook for improving paid ads performance: use CTR/CVR diagnosis, set break-even CTR/CVR/CPM targets from your economics, and fix the biggest lever first.",
+    category: "paid-ads",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: [
+      "paid-ads-funnel-calculator",
+      "break-even-ctr-calculator",
+      "break-even-cvr-calculator",
+      "break-even-cpm-calculator",
+      "max-cpc-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "ctr",
+      "cvr",
+      "cpm",
+      "cpc",
+      "cpa",
+      "aov",
+      "contribution-margin",
+      "landing-page",
+      "creative-fatigue",
+      "frequency",
+      "prospecting",
+      "retargeting",
+    ],
+    sections: [
+      { type: "h2", text: "Why CTR and CVR are the two fastest levers" },
+      {
+        type: "p",
+        text: "In most accounts, CTR is your creative-market fit signal and CVR is your offer + landing page signal. When ROAS/CPA is bad, decomposing into CTR and CVR tells you where the leakage is.",
+      },
+      { type: "h2", text: "A simple diagnosis flow" },
+      {
+        type: "table",
+        columns: ["Symptom", "Likely issue", "First fixes"],
+        rows: [
+          ["Low CTR", "Creative mismatch or fatigue", "New angles, new hooks, new formats; rotate; fix frequency"],
+          ["OK CTR, low CVR", "Landing/offer mismatch", "Match intent, simplify CTA, speed, trust signals"],
+          ["High CPC", "High CPM or low CTR", "Improve relevance/creative; adjust placements/audiences"],
+          ["High CPA", "Low CVR or high CPC", "Fix the worst lever first; don’t guess"],
+        ],
+      },
+      { type: "h2", text: "Set break-even targets (so you stop guessing)" },
+      {
+        type: "bullets",
+        items: [
+          "Use break-even CTR to set creative quality targets for a placement mix.",
+          "Use break-even CVR to set landing page targets given CPM/CTR and economics.",
+          "Use max CPC to set bidding guardrails from margin and CVR assumptions.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Optimizing CTR with curiosity clicks (CVR collapses).",
+          "Refreshing creative without changing the underlying message/offer (fatigue returns).",
+          "Using revenue-only ROAS targets when variable costs and returns are material.",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Break-even CTR example (CPM $12, CVR 3%, AOV $90, CM 40%)",
+        calculatorSlug: "break-even-ctr-calculator",
+        params: {
+          cpm: "12",
+          cvrPercent: "3",
+          aov: "90",
+          contributionMarginPercent: "40",
+        },
+      },
+    ],
+  },
+  {
+    slug: "runway-burn-cash-guide",
+    title: "Runway and burn: gross vs net burn, working capital, and cash levers",
+    description:
+      "A practical guide to runway: compute net burn, understand why cash differs from profit, and how working capital and collections change runway.",
+    category: "finance",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: [
+      "cash-runway-calculator",
+      "burn-multiple-calculator",
+      "investment-decision-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "runway",
+      "burn-rate",
+      "gross-burn",
+      "net-burn",
+      "cash-flow",
+      "working-capital",
+      "accounts-receivable",
+      "accounts-payable",
+      "deferred-revenue",
+      "cash-breakeven",
+    ],
+    sections: [
+      { type: "h2", text: "Runway is a cash timing problem" },
+      {
+        type: "p",
+        text: "Teams go out of business because cash runs out, not because dashboards look bad. Runway depends on net burn (cash outflows minus inflows) and on timing effects like receivables, payables, and prepaid revenue.",
+      },
+      { type: "h2", text: "Gross burn vs net burn" },
+      {
+        type: "bullets",
+        items: [
+          "Gross burn: total cash outflows (how much you spend).",
+          "Net burn: outflows minus inflows (how much cash you actually lose).",
+          "Runway uses net burn; use gross burn to understand cost structure.",
+        ],
+      },
+      { type: "h2", text: "Why profit != cash" },
+      {
+        type: "bullets",
+        items: [
+          "Working capital: AR/AP timing shifts cash even if revenue/profit is stable.",
+          "Deferred revenue: annual prepay can boost cash today while revenue is recognized later.",
+          "Capex and debt service: cash outflows that don’t show up as operating profit.",
+        ],
+      },
+      { type: "h2", text: "Fast levers to extend runway (without fantasy)" },
+      {
+        type: "bullets",
+        items: [
+          "Collections: tighten billing terms and reduce days outstanding (AR).",
+          "Spend: cut low-ROI programs, negotiate vendors, pause non-critical hires.",
+          "Pricing: increases can help, but watch churn and collections risk.",
+          "Prepay: offer annual incentives if your customer base supports it (track retention impact).",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Runway example ($1.2M cash, $150k net burn)",
+        calculatorSlug: "cash-runway-calculator",
+        params: { cashBalance: "1200000", netBurnPerMonth: "150000" },
+      },
+    ],
+  },
 ];
 
 export function getGuide(slug: string): Guide | undefined {

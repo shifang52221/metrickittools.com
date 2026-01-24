@@ -492,34 +492,75 @@ const seeds: Seed[] = [
     title: "Cash Break-even",
     description:
       "Cash break-even is when cash inflows cover cash outflows (net burn is ~0). It can differ from accounting break-even due to timing.",
+    bullets: [
+      "Cash break-even focuses on cash timing (collections, payables, prepay), not accounting profit.",
+      "A company can be accounting-profitable but still cash-negative if working capital is consuming cash.",
+    ],
     mistakes: [
       "Confusing cash break-even with profitability in financial statements.",
       "Ignoring collections timing (AR) and deferred revenue effects.",
     ],
+    relatedGuideSlugs: ["runway-burn-cash-guide", "cash-runway-guide"],
+    relatedCalculatorSlugs: ["cash-runway-calculator"],
   },
   {
     slug: "cash-flow",
     title: "Cash Flow",
     description:
       "Cash flow is the net movement of cash in and out of the business. It differs from profit due to working capital and timing.",
+    example:
+      "A common reason profit and cash diverge is accounts receivable: you can record revenue today but collect cash later.",
+    bullets: [
+      "Operating cash flow is affected by working capital (AR/AP/deferred revenue).",
+      "Investing cash flow includes capex and acquisitions.",
+      "Financing cash flow includes debt, equity, and repayments.",
+    ],
+    relatedGuideSlugs: ["runway-burn-cash-guide"],
   },
   {
     slug: "working-capital",
     title: "Working Capital",
     description:
       "Working capital reflects short-term assets and liabilities (receivables, payables, deferred revenue). It can cause profit and cash to diverge.",
+    bullets: [
+      "AR increases consume cash (you sold but haven’t collected yet).",
+      "AP increases can preserve cash (you haven’t paid yet).",
+      "Deferred revenue increases can boost cash (prepay) while revenue is recognized later.",
+    ],
+    faqs: [
+      {
+        question: "How does working capital affect runway?",
+        answer:
+          "Working capital changes can increase or decrease net burn without changing headline revenue. Faster collections and better payment terms can extend runway.",
+      },
+    ],
+    relatedGuideSlugs: ["runway-burn-cash-guide"],
   },
   {
     slug: "accounts-receivable",
     title: "Accounts Receivable (AR)",
     description:
       "Accounts receivable is money owed by customers for invoices issued but not yet paid. It affects cash flow and collections risk.",
+    example:
+      "If you invoice $100k this month but only collect $60k, AR increased by $40k, reducing cash even if revenue looked strong.",
+    bullets: [
+      "High AR can create cash strain even with healthy revenue growth.",
+      "Improving collections (DSO) is one of the fastest levers to extend runway.",
+    ],
+    relatedGuideSlugs: ["runway-burn-cash-guide"],
   },
   {
     slug: "accounts-payable",
     title: "Accounts Payable (AP)",
     description:
       "Accounts payable is money you owe suppliers/vendors for invoices received but not yet paid. It affects cash timing.",
+    example:
+      "If you negotiate net-60 payment terms instead of net-30, you can improve short-term cash timing without changing total costs.",
+    bullets: [
+      "AP timing can extend runway, but don’t damage vendor relationships or reliability.",
+      "Match payment terms to your collections cycle where possible.",
+    ],
+    relatedGuideSlugs: ["runway-burn-cash-guide"],
   },
   {
     slug: "billings",

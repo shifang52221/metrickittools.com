@@ -660,10 +660,25 @@ const seeds: Seed[] = [
     description:
       "Rule of 40 is a SaaS heuristic: growth rate (%) + profit margin (%) should be ~40%+. It balances growth and profitability.",
     formula: "Rule of 40 score = revenue growth (%) + profit margin (%)",
+    example:
+      "If revenue growth is 35% and profit margin is 10%, the Rule of 40 score is 45% (often considered strong).",
+    bullets: [
+      "Use it as a stage-aware heuristic, not a universal law.",
+      "Be explicit about the margin type (EBITDA vs operating vs FCF) and the growth definition.",
+    ],
     mistakes: [
       "Mixing margin types (EBITDA vs FCF) without clarity.",
       "Using the score as a target without considering stage and motion.",
     ],
+    faqs: [
+      {
+        question: "Does a high Rule of 40 score guarantee a good business?",
+        answer:
+          "No. It’s a rough heuristic. You still need to check retention quality (NRR/GRR), cash efficiency (burn multiple), and whether growth is durable.",
+      },
+    ],
+    relatedGuideSlugs: ["rule-of-40-guide", "unit-economics-hub-guide"],
+    relatedCalculatorSlugs: ["rule-of-40-calculator", "burn-multiple-calculator"],
   },
   {
     slug: "burn-multiple",
@@ -807,10 +822,25 @@ const seeds: Seed[] = [
       "SaaS quick ratio measures growth quality by comparing positive MRR movements to negative movements in a period.",
     formula:
       "Quick ratio = (new MRR + expansion MRR) / (contraction MRR + churned MRR)",
+    example:
+      "If new MRR is $40k and expansion is $10k, while contraction is $5k and churn is $15k, quick ratio = ($40k+$10k)/($5k+$15k) = 2.5.",
     bullets: [
       "Use it to assess whether growth is healthy vs leaky.",
       "Track by segment; blended ratios can hide churn pockets.",
     ],
+    mistakes: [
+      "Comparing periods with different definitions of MRR movements.",
+      "Using quick ratio alone without checking margin and payback.",
+    ],
+    faqs: [
+      {
+        question: "What’s a ‘good’ quick ratio?",
+        answer:
+          "It depends on stage. Higher is better, but the key is trend and segment mix. Pair it with NRR/GRR and payback to judge quality.",
+      },
+    ],
+    relatedGuideSlugs: ["saas-quick-ratio-guide", "mrr-waterfall-guide", "retention-churn-hub-guide"],
+    relatedCalculatorSlugs: ["saas-quick-ratio-calculator", "mrr-waterfall-calculator"],
   },
   {
     slug: "mrr-churn-rate",
@@ -818,6 +848,8 @@ const seeds: Seed[] = [
     description:
       "MRR churn rate measures churned MRR (lost recurring revenue from cancellations) as a percentage of starting MRR for a period.",
     formula: "MRR churn rate = churned MRR / starting MRR",
+    example:
+      "If starting MRR is $200k and churned MRR is $8k in a month, MRR churn rate = $8k / $200k = 4% for the month.",
     bullets: [
       "MRR churn is revenue churn (not customer/logo churn).",
       "Track churned MRR and contraction MRR separately, then use GRR/NRR for the full picture.",
@@ -827,6 +859,13 @@ const seeds: Seed[] = [
       "Mixing churned MRR with contraction MRR without labeling.",
       "Using ending MRR as the denominator instead of starting MRR.",
       "Mixing billings/cash with run-rate churn metrics.",
+    ],
+    faqs: [
+      {
+        question: "MRR churn vs GRR: which should I track?",
+        answer:
+          "MRR churn focuses on cancellations (churned MRR). GRR includes both churn and downgrades (contraction). Track both for a complete loss picture.",
+      },
     ],
     relatedGuideSlugs: ["mrr-churn-rate-guide", "churn-guide", "mrr-guide"],
     relatedCalculatorSlugs: ["mrr-churn-rate-calculator", "mrr-waterfall-calculator"],
@@ -1037,10 +1076,18 @@ const seeds: Seed[] = [
     title: "Sales Cycle Length",
     description:
       "Sales cycle length is the time from first touch or opportunity creation to close. It impacts CAC payback and forecasting.",
+    example:
+      "If your median sales cycle is 90 days, the cash you spend on acquisition today may not convert into customers (and revenue) until a quarter later.",
     bullets: [
       "Longer cycles increase cash needs and make payback slower in practice.",
       "Track by segment (SMB vs enterprise) because cycles differ.",
     ],
+    mistakes: [
+      "Using one blended sales cycle for all segments and channels.",
+      "Ignoring sales cycle when comparing CAC payback across channels (timing matters).",
+    ],
+    relatedGuideSlugs: ["sales-capacity-guide", "unit-economics-hub-guide"],
+    relatedCalculatorSlugs: ["sales-capacity-calculator", "cac-payback-period-calculator"],
   },
   {
     slug: "net-dollar-retention",
@@ -1049,6 +1096,10 @@ const seeds: Seed[] = [
       "NDR is another name for NRR in dollar terms. It measures how existing revenue changes including expansion.",
     formula:
       "NDR = (starting revenue + expansion - contraction - churn) / starting revenue",
+    example:
+      "If starting revenue is $100k, expansion is $20k, contraction is $5k, and churn is $10k, NDR = ($100k+$20k-$5k-$10k)/$100k = 105%.",
+    relatedGuideSlugs: ["nrr-guide", "nrr-vs-grr-guide", "retention-churn-hub-guide"],
+    relatedCalculatorSlugs: ["nrr-calculator", "nrr-vs-grr-calculator"],
   },
 ];
 
