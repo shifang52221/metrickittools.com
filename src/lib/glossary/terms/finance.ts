@@ -46,6 +46,47 @@ function make(seed: Seed): GlossaryTerm {
 
 const seeds: Seed[] = [
   {
+    slug: "dcf",
+    title: "DCF (Discounted Cash Flow)",
+    description:
+      "DCF values an asset or business by discounting expected future free cash flows back to present value and adding a terminal value for cash flows beyond the forecast period.",
+    bullets: [
+      "DCF is highly sensitive to discount rate and terminal assumptions; always run scenarios.",
+      "Use free cash flow (cash) rather than accounting profit where possible.",
+    ],
+    mistakes: [
+      "Using terminal growth that is higher than the discount rate (invalid in perpetuity model).",
+      "Treating a single scenario as a precise estimate (false precision).",
+    ],
+    relatedGuideSlugs: ["dcf-valuation-guide"],
+    relatedCalculatorSlugs: ["dcf-valuation-calculator"],
+  },
+  {
+    slug: "terminal-value",
+    title: "Terminal Value",
+    description:
+      "Terminal value represents the value of cash flows beyond the explicit forecast period in a DCF. It often contributes a large share of enterprise value.",
+    formula: "Terminal value (perpetuity) = FCF_(n+1) ÷ (discount rate - terminal growth)",
+    mistakes: [
+      "Letting terminal value dominate without sensitivity analysis.",
+      "Using aggressive terminal growth that implies implausible long-run scale.",
+    ],
+    relatedGuideSlugs: ["dcf-valuation-guide"],
+    relatedCalculatorSlugs: ["dcf-valuation-calculator"],
+  },
+  {
+    slug: "wacc",
+    title: "WACC (Weighted Average Cost of Capital)",
+    description:
+      "WACC is a blended required return for capital providers (equity and debt). It is commonly used as a discount rate proxy in DCF models.",
+    bullets: [
+      "Higher WACC lowers present value; lower WACC raises it.",
+      "WACC depends on capital structure, market risk, and interest rates.",
+    ],
+    relatedGuideSlugs: ["dcf-valuation-guide"],
+    relatedCalculatorSlugs: ["dcf-valuation-calculator"],
+  },
+  {
     slug: "gross-margin",
     title: "Gross Margin",
     description:

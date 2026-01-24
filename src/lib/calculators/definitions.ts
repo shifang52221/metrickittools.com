@@ -4753,4 +4753,685 @@ export const calculators: CalculatorDefinition[] = [
       },
     ],
   },
+  {
+    slug: "price-increase-break-even-calculator",
+    title: "Price Increase Break-even Calculator",
+    description:
+      "Estimate the maximum churn (immediate or ongoing) a price increase can tolerate before it destroys revenue.",
+    category: "saas-metrics",
+    guideSlug: "price-increase-guide",
+    relatedGlossarySlugs: [
+      "mrr",
+      "arr",
+      "arpa",
+      "logo-churn",
+      "revenue-churn",
+      "nrr",
+      "grr",
+      "price-increase",
+    ],
+    seo: {
+      intro: [
+        "Price increases are one of the highest-leverage growth levers, but they can backfire if they trigger churn or downgrades.",
+        "This calculator estimates (1) the break-even immediate churn from a price change, and (2) the break-even ongoing churn increase that would offset the price uplift over your chosen horizon.",
+      ],
+      steps: [
+        "Enter starting MRR and your planned price increase (%).",
+        "Choose a forecast horizon (e.g., 6–24 months).",
+        "Enter baseline monthly churn, then either immediate churn from the change or an ongoing churn increase.",
+        "Compare revenue impact and the break-even churn thresholds.",
+      ],
+      pitfalls: [
+        "Mixing logo churn and revenue churn (downgrades behave differently).",
+        "Assuming churn impact is permanent when it may be a one-time shock.",
+        "Applying price increases without segmentation (plans, cohorts, usage).",
+      ],
+    },
+    inputs: [
+      {
+        key: "startingMrr",
+        label: "Starting MRR",
+        placeholder: "200000",
+        prefix: "$",
+        defaultValue: "200000",
+        min: 0,
+      },
+      {
+        key: "priceIncreasePercent",
+        label: "Price increase",
+        placeholder: "10",
+        suffix: "%",
+        defaultValue: "10",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "baselineMonthlyChurnPercent",
+        label: "Baseline monthly churn (revenue)",
+        help: "Approximate revenue churn on existing MRR (exclude expansion).",
+        placeholder: "1.5",
+        suffix: "%",
+        defaultValue: "1.5",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "horizonMonths",
+        label: "Horizon (months)",
+        placeholder: "12",
+        defaultValue: "12",
+        min: 1,
+        step: 1,
+      },
+      {
+        key: "immediateChurnPercent",
+        label: "Immediate churn from price change (optional)",
+        help: "One-time revenue loss right after the change (set 0 if unknown).",
+        placeholder: "3",
+        suffix: "%",
+        defaultValue: "0",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "ongoingChurnIncreasePercent",
+        label: "Ongoing churn increase (optional)",
+        help: "Additional churn added to baseline each month (set 0 if using immediate churn only).",
+        placeholder: "0.3",
+        suffix: "%",
+        defaultValue: "0",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const horizon = Math.max(1, Math.floor(values.horizonMonths));
+      if (values.horizonMonths !== horizon)
+        warnings.push("Horizon was rounded down to a whole number.");
+
+      const u = values.priceIncreasePercent / 100;
+      const baselineChurn = values.baselineMonthlyChurnPercent / 100;
+      const shock = values.immediateChurnPercent / 100;
+      const churnIncrease = values.ongoingChurnIncreasePercent / 100;
+
+      if (values.startingMrr <= 0) warnings.push("Starting MRR must be greater than 0.");
+      if (baselineChurn < 0 || baselineChurn >= 1)
+        warnings.push("Baseline churn must be between 0% and 99.9%.");
+      if (shock < 0 || shock >= 1)
+        warnings.push("Immediate churn must be between 0% and 99.9%.");
+      if (churnIncrease < 0 || churnIncrease >= 1)
+        warnings.push("Ongoing churn increase must be between 0% and 99.9%.");
+
+      const starting = Math.max(0, values.startingMrr);
+
+      const mrrNoChange = (month: number) =>
+        starting * Math.pow(1 - baselineChurn, month - 1);
+
+      const mrrWithChange = (month: number) => {
+        const churnedAtChange = 1 - shock;
+        const churnThisMonth = Math.min(0.999, baselineChurn + churnIncrease);
+        return (
+          starting *
+          (1 + u) *
+          churnedAtChange *
+          Math.pow(1 - churnThisMonth, month - 1)
+        );
+      };
+
+      let revenueNoChange = 0;
+      let revenueWithChange = 0;
+      for (let m = 1; m <= horizon; m++) {
+        revenueNoChange += mrrNoChange(m);
+        revenueWithChange += mrrWithChange(m);
+      }
+
+      const deltaRevenue = revenueWithChange - revenueNoChange;
+      const deltaPercent =
+        revenueNoChange > 0 ? deltaRevenue / revenueNoChange : 0;
+
+      const breakEvenImmediateChurn = 1 - 1 / (1 + u);
+
+      let breakEvenOngoingChurnIncrease: number | null = null;
+      if (u > 0 && baselineChurn >= 0 && baselineChurn < 1) {
+        const sumMultiplier = (churnRate: number) => {
+          if (churnRate <= 0) return horizon;
+          return (1 - Math.pow(1 - churnRate, horizon)) / churnRate;
+        };
+
+        const base = sumMultiplier(baselineChurn);
+        const target = base / (1 + u);
+
+        let lo = baselineChurn;
+        let hi = Math.min(0.999, baselineChurn + 0.999);
+        if (baselineChurn < 0.999) hi = 0.999;
+
+        const f = (churnRate: number) => sumMultiplier(churnRate) - target;
+        const fLo = f(lo);
+        const fHi = f(hi);
+
+        if (Number.isFinite(fLo) && Number.isFinite(fHi) && fLo >= 0 && fHi <= 0) {
+          for (let i = 0; i < 60; i++) {
+            const mid = (lo + hi) / 2;
+            const fMid = f(mid);
+            if (fMid > 0) lo = mid;
+            else hi = mid;
+          }
+          const churnBe = (lo + hi) / 2;
+          breakEvenOngoingChurnIncrease = Math.max(0, churnBe - baselineChurn);
+        }
+      }
+
+      return {
+        headline: {
+          key: "deltaRevenue",
+          label: `Revenue impact over ${horizon} months`,
+          value: deltaRevenue,
+          format: "currency",
+          currency: "USD",
+          detail: "With change - without change (existing base only)",
+        },
+        secondary: [
+          {
+            key: "deltaPercent",
+            label: "Revenue impact (%)",
+            value: deltaPercent,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "breakEvenImmediateChurn",
+            label: "Break-even immediate churn",
+            value: breakEvenImmediateChurn,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail: "Max one-time revenue loss at change time",
+          },
+          {
+            key: "breakEvenOngoingChurnIncrease",
+            label: "Break-even ongoing churn increase (approx)",
+            value: breakEvenOngoingChurnIncrease ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail:
+              breakEvenOngoingChurnIncrease === null
+                ? "Not available for this input set"
+                : "Added to baseline monthly churn",
+          },
+        ],
+        breakdown: [
+          {
+            key: "revenueNoChange",
+            label: `Revenue without change (${horizon} months)`,
+            value: revenueNoChange,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "revenueWithChange",
+            label: `Revenue with price increase (${horizon} months)`,
+            value: revenueWithChange,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "startingMrr",
+            label: "Starting MRR",
+            value: starting,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Break-even immediate churn ≈ 1 - 1/(1+price increase). For ongoing churn, compare the discounted retention of cash flows over the horizon.",
+    assumptions: [
+      "Models the existing revenue base only (no new customer MRR).",
+      "Baseline churn is constant over the horizon.",
+      "Immediate churn is a one-time shock; ongoing churn increase applies each month.",
+    ],
+    faqs: [
+      {
+        question: "Why does break-even immediate churn depend only on price increase?",
+        answer:
+          "If churn happens as a one-time shock right after the change, the break-even point is when (1 + increase) × (1 - churn) = 1. Horizon affects payback and compounding effects, but the immediate break-even threshold is purely arithmetic.",
+      },
+      {
+        question: "Should I model downgrades as churn?",
+        answer:
+          "For revenue impact, downgrades are effectively revenue churn. If downgrades are likely, treat them as revenue loss in immediate churn or as an increase in ongoing churn for the period after the change.",
+      },
+    ],
+  },
+  {
+    slug: "marginal-roas-calculator",
+    title: "Marginal ROAS Calculator",
+    description:
+      "Estimate diminishing returns and find the profit-maximizing ad spend from a simple response curve.",
+    category: "paid-ads",
+    guideSlug: "marginal-roas-guide",
+    relatedGlossarySlugs: [
+      "roas",
+      "incrementality",
+      "contribution-margin",
+      "aov",
+      "cpa",
+      "diminishing-returns",
+      "marginal-roas",
+    ],
+    seo: {
+      intro: [
+        "At low spend, ROAS can look great. As you scale, you usually hit diminishing returns: incremental conversions become more expensive and marginal ROAS falls.",
+        "This calculator models revenue as a power-law response curve and estimates the spend level that maximizes profit given your margin assumptions.",
+      ],
+      steps: [
+        "Enter current ad spend and revenue (or attributed revenue proxy).",
+        "Enter contribution margin to convert revenue into gross profit.",
+        "Set a diminishing returns exponent (0–1) and optionally a max spend cap.",
+        "Review optimal spend, expected profit, and implied marginal ROAS.",
+      ],
+      pitfalls: [
+        "Using platform-attributed revenue when incrementality is low (overstates the curve).",
+        "Assuming the same curve across channels and audiences (segment curves differ).",
+        "Ignoring capacity constraints (inventory, sales capacity, fulfillment).",
+      ],
+    },
+    inputs: [
+      {
+        key: "currentSpend",
+        label: "Current ad spend",
+        placeholder: "50000",
+        prefix: "$",
+        defaultValue: "50000",
+        min: 0,
+      },
+      {
+        key: "currentRevenue",
+        label: "Current attributed revenue",
+        help: "Use a consistent attribution model; treat as a proxy for response curve fitting.",
+        placeholder: "200000",
+        prefix: "$",
+        defaultValue: "200000",
+        min: 0,
+      },
+      {
+        key: "contributionMarginPercent",
+        label: "Contribution margin",
+        placeholder: "40",
+        suffix: "%",
+        defaultValue: "40",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "diminishingReturnsExponent",
+        label: "Diminishing returns exponent (0–1)",
+        help: "Lower means stronger diminishing returns. 0.6–0.9 is a common range.",
+        placeholder: "0.75",
+        defaultValue: "0.75",
+        min: 0.01,
+        step: 0.01,
+      },
+      {
+        key: "maxSpendCap",
+        label: "Max spend cap (optional)",
+        help: "If you have an operational cap, set it here; 0 means no cap.",
+        placeholder: "200000",
+        prefix: "$",
+        defaultValue: "0",
+        min: 0,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const spend0 = values.currentSpend;
+      const rev0 = values.currentRevenue;
+      const margin = values.contributionMarginPercent / 100;
+      const b = values.diminishingReturnsExponent;
+
+      if (spend0 <= 0) warnings.push("Current spend must be greater than 0.");
+      if (rev0 <= 0) warnings.push("Current revenue must be greater than 0.");
+      if (margin <= 0) warnings.push("Contribution margin must be greater than 0% to optimize profit.");
+      if (b <= 0 || b >= 1)
+        warnings.push("Exponent should be between 0 and 1 (exclusive) for diminishing returns.");
+
+      const currentRoas = safeDivide(rev0, spend0) ?? 0;
+      const currentProfit = rev0 * margin - spend0;
+
+      let optimalSpend = 0;
+      if (spend0 > 0 && rev0 > 0 && margin > 0 && b > 0 && b < 1) {
+        const k = rev0 / Math.pow(spend0, b);
+        const numerator = margin * b * k;
+        optimalSpend = Math.pow(numerator, 1 / (1 - b));
+      }
+
+      if (values.maxSpendCap > 0) optimalSpend = Math.min(optimalSpend, values.maxSpendCap);
+
+      const revenueAt = (spend: number) => {
+        if (spend0 <= 0 || rev0 <= 0 || spend <= 0 || b <= 0) return 0;
+        const k = rev0 / Math.pow(spend0, b);
+        return k * Math.pow(spend, b);
+      };
+
+      const revenueOpt = revenueAt(optimalSpend);
+      const profitOpt = revenueOpt * margin - optimalSpend;
+      const roasOpt = safeDivide(revenueOpt, optimalSpend) ?? 0;
+
+      const marginalRevenuePerDollar =
+        spend0 > 0 && rev0 > 0 && optimalSpend > 0 && b > 0
+          ? (rev0 / Math.pow(spend0, b)) * b * Math.pow(optimalSpend, b - 1)
+          : 0;
+      const marginalRoas = marginalRevenuePerDollar;
+      const marginalProfitPerDollar = margin * marginalRevenuePerDollar - 1;
+
+      return {
+        headline: {
+          key: "optimalSpend",
+          label: "Profit-maximizing spend",
+          value: optimalSpend,
+          format: "currency",
+          currency: "USD",
+          detail: "Estimated optimum under diminishing returns",
+        },
+        secondary: [
+          {
+            key: "profitOpt",
+            label: "Expected profit at optimal spend",
+            value: profitOpt,
+            format: "currency",
+            currency: "USD",
+            detail: "Revenue × margin - spend",
+          },
+          {
+            key: "roasOpt",
+            label: "Expected ROAS at optimal spend",
+            value: roasOpt,
+            format: "multiple",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "marginalRoas",
+            label: "Marginal ROAS at optimal spend",
+            value: marginalRoas,
+            format: "multiple",
+            maxFractionDigits: 2,
+            detail: "Incremental revenue per incremental $1 spend",
+          },
+          {
+            key: "marginalProfit",
+            label: "Marginal profit per $1 at optimal spend",
+            value: marginalProfitPerDollar,
+            format: "currency",
+            currency: "USD",
+            detail: "If ~0, you're near the optimum",
+          },
+          {
+            key: "currentRoas",
+            label: "Current ROAS",
+            value: currentRoas,
+            format: "multiple",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "currentProfit",
+            label: "Current profit",
+            value: currentProfit,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        breakdown: [
+          {
+            key: "currentSpend",
+            label: "Current spend",
+            value: spend0,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "currentRevenue",
+            label: "Current revenue",
+            value: rev0,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "margin",
+            label: "Contribution margin",
+            value: margin,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "b",
+            label: "Exponent (diminishing returns)",
+            value: b,
+            format: "number",
+            maxFractionDigits: 2,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Assume revenue = k * spend^b (0<b<1). Profit = margin*revenue - spend. Optimal spend occurs when marginal profit ≈ 0.",
+    assumptions: [
+      "Uses a simple power-law response curve; real curves vary by channel and saturation.",
+      "Current spend/revenue anchor the curve (k).",
+      "Ignores fixed costs and long-term LTV effects (use incrementality and LTV when possible).",
+    ],
+    faqs: [
+      {
+        question: "What exponent should I use?",
+        answer:
+          "If you don't know, start with 0.7–0.85 and scenario test. Lower means stronger diminishing returns. The right value varies by channel, creative freshness, audience size, and tracking.",
+      },
+      {
+        question: "How is marginal ROAS different from average ROAS?",
+        answer:
+          "Average ROAS is total revenue ÷ total spend. Marginal ROAS is incremental revenue from an extra $1 of spend. Scaling decisions should use marginal ROAS (or incremental profit), not average ROAS.",
+      },
+    ],
+  },
+  {
+    slug: "dcf-valuation-calculator",
+    title: "DCF Valuation Calculator",
+    description:
+      "Estimate enterprise value using a simple DCF: forecast cash flows, discount them, and add a terminal value.",
+    category: "finance",
+    guideSlug: "dcf-valuation-guide",
+    relatedGlossarySlugs: [
+      "dcf",
+      "cash-flow",
+      "discount-rate",
+      "npv",
+      "terminal-value",
+      "wacc",
+    ],
+    seo: {
+      intro: [
+        "A DCF (discounted cash flow) values a business by discounting expected future cash flows back to today and adding a terminal value for cash flows beyond the forecast period.",
+        "This calculator uses a simple constant growth forecast and either a perpetuity (terminal growth) terminal value.",
+      ],
+      steps: [
+        "Enter current annual free cash flow (FCF).",
+        "Set forecast years and annual growth during the forecast period.",
+        "Set a discount rate (often WACC as a proxy).",
+        "Set terminal growth (must be lower than discount rate).",
+      ],
+      pitfalls: [
+        "Using terminal growth ≥ discount rate (blows up the terminal value).",
+        "Using accounting profit instead of cash flow (working capital and capex matter).",
+        "Over-weighting terminal value without checking sensitivity.",
+      ],
+    },
+    inputs: [
+      {
+        key: "annualFcf",
+        label: "Current annual free cash flow (FCF)",
+        placeholder: "5000000",
+        prefix: "$",
+        defaultValue: "5000000",
+        min: 0,
+      },
+      {
+        key: "forecastYears",
+        label: "Forecast years",
+        placeholder: "5",
+        defaultValue: "5",
+        min: 1,
+        step: 1,
+      },
+      {
+        key: "forecastGrowthPercent",
+        label: "Forecast growth (annual)",
+        placeholder: "15",
+        suffix: "%",
+        defaultValue: "15",
+        min: -100,
+        step: 0.1,
+      },
+      {
+        key: "discountRatePercent",
+        label: "Discount rate (annual)",
+        placeholder: "12",
+        suffix: "%",
+        defaultValue: "12",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "terminalGrowthPercent",
+        label: "Terminal growth (annual)",
+        placeholder: "3",
+        suffix: "%",
+        defaultValue: "3",
+        min: -50,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const years = Math.max(1, Math.floor(values.forecastYears));
+      if (values.forecastYears !== years)
+        warnings.push("Forecast years was rounded down to a whole number.");
+
+      const g = values.forecastGrowthPercent / 100;
+      const r = values.discountRatePercent / 100;
+      const tg = values.terminalGrowthPercent / 100;
+
+      if (values.annualFcf <= 0) warnings.push("FCF should be greater than 0 for valuation.");
+      if (r <= 0) warnings.push("Discount rate must be greater than 0%.");
+      if (tg >= r) warnings.push("Terminal growth should be less than the discount rate.");
+
+      let pvForecast = 0;
+      let fcf = values.annualFcf;
+      for (let t = 1; t <= years; t++) {
+        fcf = fcf * (1 + g);
+        const pv = fcf / Math.pow(1 + r, t);
+        pvForecast += pv;
+      }
+
+      const fcfTerminal = fcf * (1 + tg);
+      const terminalValue =
+        tg < r ? fcfTerminal / (r - tg) : 0;
+      const pvTerminal = terminalValue / Math.pow(1 + r, years);
+      const enterpriseValue = pvForecast + pvTerminal;
+      const terminalShare = enterpriseValue > 0 ? pvTerminal / enterpriseValue : 0;
+
+      return {
+        headline: {
+          key: "enterpriseValue",
+          label: "Enterprise value (DCF)",
+          value: enterpriseValue,
+          format: "currency",
+          currency: "USD",
+          detail: "PV of forecast + PV of terminal value",
+        },
+        secondary: [
+          {
+            key: "pvForecast",
+            label: "PV of forecast period",
+            value: pvForecast,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "pvTerminal",
+            label: "PV of terminal value",
+            value: pvTerminal,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "terminalShare",
+            label: "Terminal value share",
+            value: terminalShare,
+            format: "percent",
+            maxFractionDigits: 0,
+            detail: "How much of EV comes from terminal",
+          },
+          {
+            key: "fcfTerminal",
+            label: `FCF in year ${years} (end of forecast)`,
+            value: fcf,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        breakdown: [
+          {
+            key: "annualFcf",
+            label: "Current annual FCF",
+            value: values.annualFcf,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "forecastGrowth",
+            label: "Forecast growth",
+            value: g,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "discountRate",
+            label: "Discount rate",
+            value: r,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "terminalGrowth",
+            label: "Terminal growth",
+            value: tg,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "EV = Σ(FCF_t / (1+r)^t) + (FCF_(n+1) / (r - g_terminal)) / (1+r)^n",
+    assumptions: [
+      "FCF grows at a constant rate during the forecast period.",
+      "Terminal value uses a perpetuity growth model.",
+      "Discount rate is constant and represents risk (e.g., WACC as a proxy).",
+    ],
+    faqs: [
+      {
+        question: "Why is terminal value often so large?",
+        answer:
+          "Because most businesses are assumed to operate beyond the explicit forecast period. If terminal dominates, run sensitivity tables (discount rate, terminal growth) and consider extending the forecast period or using more conservative assumptions.",
+      },
+      {
+        question: "Is enterprise value the same as equity value?",
+        answer:
+          "No. Enterprise value is value of the business operations. To get equity value you’d adjust for net debt (cash, debt) and other claims. This calculator focuses on EV.",
+      },
+    ],
+  },
 ];

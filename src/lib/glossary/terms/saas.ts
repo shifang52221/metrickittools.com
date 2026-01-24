@@ -110,6 +110,26 @@ const seeds: Seed[] = [
     ],
   },
   {
+    slug: "price-increase",
+    title: "Price Increase (SaaS)",
+    description:
+      "A price increase raises ARPA/MRR for an existing customer base. It is high leverage, but it can trigger churn or downgrades if customers perceive reduced value-for-money.",
+    formula:
+      "Break-even immediate churn (one-time) ≈ 1 - 1/(1 + price increase)",
+    bullets: [
+      "Segment price changes by plan, usage, value delivered, and tenure.",
+      "Watch revenue churn (downgrades + cancellations), not only logo churn.",
+      "Use a rollout (grandfathering, phased increases) to reduce shock and learn safely.",
+    ],
+    mistakes: [
+      "Applying a blanket increase without segmentation.",
+      "Over-focusing on short-term MRR while ignoring retention damage.",
+      "Using platform-reported attribution to justify pricing changes (different problem).",
+    ],
+    relatedGuideSlugs: ["price-increase-guide"],
+    relatedCalculatorSlugs: ["price-increase-break-even-calculator"],
+  },
+  {
     slug: "net-new-mrr",
     title: "Net New MRR",
     description:
