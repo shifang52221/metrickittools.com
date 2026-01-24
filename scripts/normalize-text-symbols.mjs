@@ -37,8 +37,11 @@ const files = [
   "src/lib/guides/index.ts",
   "src/lib/glossary/terms/core.ts",
   "src/lib/glossary/terms/finance.ts",
+  "src/lib/glossary/terms/financeExtra.ts",
   "src/lib/glossary/terms/paidAds.ts",
+  "src/lib/glossary/terms/paidAdsExtra.ts",
   "src/lib/glossary/terms/saas.ts",
+  "src/lib/glossary/terms/saasExtra.ts",
 ];
 
 function applyReplacements(text) {
