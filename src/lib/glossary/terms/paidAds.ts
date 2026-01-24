@@ -61,6 +61,8 @@ const seeds: Seed[] = [
       "Comparing CPA across campaigns with different conversion definitions.",
       "Ignoring downstream quality (refunds, churn, LTV).",
     ],
+    relatedGuideSlugs: ["target-cpa-guide", "paid-ads-funnel-guide"],
+    relatedCalculatorSlugs: ["target-cpa-ltv-calculator", "paid-ads-funnel-calculator"],
   },
   {
     slug: "cpc",

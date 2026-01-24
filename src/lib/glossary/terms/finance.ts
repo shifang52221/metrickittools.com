@@ -87,6 +87,22 @@ const seeds: Seed[] = [
     relatedCalculatorSlugs: ["dcf-valuation-calculator"],
   },
   {
+    slug: "profitability-index",
+    title: "Profitability Index (PI)",
+    description:
+      "Profitability index (PI) measures the present value of cash inflows per dollar invested. PI is useful when capital is constrained and you want value per dollar.",
+    formula: "PI = PV(inflows) ÷ initial investment",
+    bullets: [
+      "PI > 1 implies positive NPV; PI < 1 implies negative NPV.",
+      "Use PI to rank projects when you can’t fund everything (capital rationing).",
+    ],
+    mistakes: [
+      "Using PI to choose between mutually exclusive projects of different scale (compare NPV too).",
+    ],
+    relatedGuideSlugs: ["investment-decision-guide"],
+    relatedCalculatorSlugs: ["investment-decision-calculator"],
+  },
+  {
     slug: "gross-margin",
     title: "Gross Margin",
     description:

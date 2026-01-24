@@ -5434,4 +5434,592 @@ export const calculators: CalculatorDefinition[] = [
       },
     ],
   },
+  {
+    slug: "retention-curve-calculator",
+    title: "Retention Curve Calculator",
+    description:
+      "Model a simple cohort retention curve (logo retention) and translate it into expected revenue and gross profit over time.",
+    category: "saas-metrics",
+    guideSlug: "retention-curve-guide",
+    relatedGlossarySlugs: [
+      "retention-rate",
+      "logo-churn",
+      "customer-lifetime",
+      "cohorted-ltv",
+      "net-retention",
+      "gross-retention",
+      "gross-margin",
+      "arpa",
+      "nrr",
+      "grr",
+    ],
+    seo: {
+      intro: [
+        "Retention curves show how customer survival changes over time. They are often more informative than a single churn rate because they reveal where drop-offs happen (activation and early lifecycle).",
+        "This calculator uses a simple constant monthly churn assumption to generate retention at key checkpoints and estimate expected revenue and gross profit per original customer.",
+      ],
+      steps: [
+        "Enter ARPA and gross margin to translate retained customers into gross profit.",
+        "Enter monthly logo churn (constant churn assumption).",
+        "Choose a horizon and review retention at 3/6/12/24 months plus expected value.",
+      ],
+      pitfalls: [
+        "Using blended churn across segments (plan/channel) and hiding weak cohorts.",
+        "Confusing revenue retention (NRR/GRR) with logo retention (customer count).",
+        "Assuming constant churn when churn decays over time (use real cohorts when possible).",
+      ],
+    },
+    inputs: [
+      {
+        key: "monthlyLogoChurnPercent",
+        label: "Monthly logo churn",
+        placeholder: "2",
+        suffix: "%",
+        defaultValue: "2",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "arpaMonthly",
+        label: "ARPA (monthly)",
+        placeholder: "800",
+        prefix: "$",
+        defaultValue: "800",
+        min: 0,
+      },
+      {
+        key: "grossMarginPercent",
+        label: "Gross margin",
+        placeholder: "80",
+        suffix: "%",
+        defaultValue: "80",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "months",
+        label: "Months to model",
+        placeholder: "36",
+        defaultValue: "36",
+        min: 1,
+        step: 1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const months = Math.max(1, Math.floor(values.months));
+      if (values.months !== months)
+        warnings.push("Months was rounded down to a whole number.");
+
+      const churn = values.monthlyLogoChurnPercent / 100;
+      if (churn < 0 || churn >= 1)
+        warnings.push("Monthly churn must be between 0% and 99.9%.");
+
+      const retention = 1 - churn;
+      const margin = values.grossMarginPercent / 100;
+      if (values.arpaMonthly <= 0) warnings.push("ARPA must be greater than 0.");
+      if (margin <= 0) warnings.push("Gross margin must be greater than 0%.");
+
+      const retainedAt = (m: number) => Math.pow(retention, m);
+
+      const r3 = retainedAt(3);
+      const r6 = retainedAt(6);
+      const r12 = retainedAt(12);
+      const r24 = retainedAt(24);
+
+      let expectedRevenue = 0;
+      let expectedGrossProfit = 0;
+      for (let m = 1; m <= months; m++) {
+        const expectedActive = retainedAt(m - 1);
+        const rev = expectedActive * values.arpaMonthly;
+        expectedRevenue += rev;
+        expectedGrossProfit += rev * margin;
+      }
+
+      const lifetimeMonths = churn > 0 ? 1 / churn : null;
+
+      return {
+        headline: {
+          key: "retention12",
+          label: "Logo retention after 12 months",
+          value: r12,
+          format: "percent",
+          maxFractionDigits: 1,
+          detail: "Constant churn model",
+        },
+        secondary: [
+          {
+            key: "retention3",
+            label: "Retention after 3 months",
+            value: r3,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "retention6",
+            label: "Retention after 6 months",
+            value: r6,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "retention24",
+            label: "Retention after 24 months",
+            value: r24,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "expectedRevenue",
+            label: `Expected revenue per original customer (${months} months)`,
+            value: expectedRevenue,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "expectedGrossProfit",
+            label: `Expected gross profit per original customer (${months} months)`,
+            value: expectedGrossProfit,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "lifetimeMonths",
+            label: "Approx. lifetime from churn (months)",
+            value: lifetimeMonths ?? 0,
+            format: "months",
+            maxFractionDigits: 1,
+            detail: lifetimeMonths === null ? "Churn is 0%" : "1 ÷ monthly churn (rough)",
+          },
+        ],
+        breakdown: [
+          {
+            key: "monthlyChurn",
+            label: "Monthly churn",
+            value: churn,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "arpaMonthly",
+            label: "ARPA (monthly)",
+            value: values.arpaMonthly,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "grossMargin",
+            label: "Gross margin",
+            value: margin,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "Retention after m months = (1 - monthly churn)^m",
+    assumptions: [
+      "Uses constant monthly logo churn (simplification).",
+      "ARPA and gross margin are constant over the horizon.",
+      "Outputs are per original customer/account in the cohort (expected value).",
+    ],
+    faqs: [
+      {
+        question: "Why use a retention curve instead of a single churn rate?",
+        answer:
+          "Retention curves show where churn happens (early vs late). Two products can have the same average churn but very different early drop-off, which affects activation work and payback.",
+      },
+      {
+        question: "How do I make this more realistic?",
+        answer:
+          "Use observed cohorts segmented by plan/channel and model churn that decays over time. If you have expansion, model revenue retention (NRR/GRR) alongside logo retention.",
+      },
+    ],
+  },
+  {
+    slug: "target-cpa-ltv-calculator",
+    title: "Target CPA from LTV Calculator",
+    description:
+      "Translate LTV and contribution margin into a target CPA (and break-even CPA) for paid acquisition.",
+    category: "paid-ads",
+    guideSlug: "target-cpa-guide",
+    relatedGlossarySlugs: [
+      "cpa",
+      "cac",
+      "ltv",
+      "contribution-margin",
+      "payback-period",
+      "incrementality",
+    ],
+    seo: {
+      intro: [
+        "A 'good' CPA depends on how much value a customer creates. Target CPA connects acquisition cost to unit economics so you can scale profitably.",
+        "This calculator computes break-even CPA from LTV and contribution margin, and also a target CPA based on desired profit buffer or payback fraction.",
+      ],
+      steps: [
+        "Enter gross profit LTV (or revenue LTV and margin).",
+        "Choose how conservative you want to be (target profit buffer or spend as % of LTV).",
+        "Use break-even and target CPA to set bidding/optimization targets.",
+      ],
+      pitfalls: [
+        "Using revenue LTV instead of gross profit LTV (overstates value).",
+        "Ignoring cash/payback constraints (long payback can kill runway).",
+        "Using platform-attributed LTV without incrementality validation.",
+      ],
+    },
+    inputs: [
+      {
+        key: "ltvRevenue",
+        label: "Revenue LTV (lifetime revenue)",
+        help: "If you already have gross profit LTV, set margin to 100%.",
+        placeholder: "3000",
+        prefix: "$",
+        defaultValue: "3000",
+        min: 0,
+      },
+      {
+        key: "contributionMarginPercent",
+        label: "Contribution margin",
+        placeholder: "60",
+        suffix: "%",
+        defaultValue: "60",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "targetProfitBufferPercent",
+        label: "Target profit buffer (optional)",
+        help: "Profit buffer as % of gross profit LTV (e.g., 20% means spend ≤ 80% of gross profit LTV).",
+        placeholder: "20",
+        suffix: "%",
+        defaultValue: "20",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "maxSpendSharePercent",
+        label: "Max spend as % of gross profit LTV (optional)",
+        help: "If you prefer a simple rule: set a max share (e.g., 50%). 0 disables.",
+        placeholder: "50",
+        suffix: "%",
+        defaultValue: "0",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const margin = values.contributionMarginPercent / 100;
+      if (values.ltvRevenue <= 0) warnings.push("Revenue LTV must be greater than 0.");
+      if (margin <= 0) warnings.push("Contribution margin must be greater than 0%.");
+
+      const grossProfitLtv = values.ltvRevenue * margin;
+      const breakEvenCpa = grossProfitLtv;
+
+      const buffer = values.targetProfitBufferPercent / 100;
+      const targetByBuffer = grossProfitLtv * Math.max(0, 1 - buffer);
+
+      const share = values.maxSpendSharePercent / 100;
+      const targetByShare = values.maxSpendSharePercent > 0 ? grossProfitLtv * share : null;
+
+      let targetCpa = targetByBuffer;
+      let targetRule = "Profit buffer";
+      if (targetByShare !== null) {
+        targetCpa = Math.min(targetCpa, targetByShare);
+        targetRule = "Most conservative rule (buffer vs spend share)";
+      }
+
+      if (values.targetProfitBufferPercent === 0 && values.maxSpendSharePercent === 0) {
+        warnings.push("Set a profit buffer or max spend share to define a target CPA. Showing break-even by default.");
+        targetCpa = breakEvenCpa;
+        targetRule = "Break-even (no target rule set)";
+      }
+
+      return {
+        headline: {
+          key: "targetCpa",
+          label: "Target CPA",
+          value: targetCpa,
+          format: "currency",
+          currency: "USD",
+          detail: targetRule,
+        },
+        secondary: [
+          {
+            key: "breakEvenCpa",
+            label: "Break-even CPA (gross profit)",
+            value: breakEvenCpa,
+            format: "currency",
+            currency: "USD",
+            detail: "Spend equal to gross profit LTV (profit = 0)",
+          },
+          {
+            key: "grossProfitLtv",
+            label: "Gross profit LTV",
+            value: grossProfitLtv,
+            format: "currency",
+            currency: "USD",
+            detail: "Revenue LTV × contribution margin",
+          },
+          {
+            key: "targetByBuffer",
+            label: "Target CPA from profit buffer",
+            value: targetByBuffer,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "targetByShare",
+            label: "Target CPA from max spend share",
+            value: targetByShare ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: targetByShare === null ? "Disabled" : "Gross profit LTV × spend share",
+          },
+        ],
+        breakdown: [
+          {
+            key: "ltvRevenue",
+            label: "Revenue LTV",
+            value: values.ltvRevenue,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "margin",
+            label: "Contribution margin",
+            value: margin,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Gross profit LTV = revenue LTV × contribution margin; Break-even CPA = gross profit LTV; Target CPA = break-even × (1 - buffer) or × spend share",
+    assumptions: [
+      "LTV is measured on a consistent basis with your CPA attribution window.",
+      "Contribution margin reflects variable costs (not fixed overhead).",
+      "Incrementality may be lower than attribution; validate with experiments when possible.",
+    ],
+    faqs: [
+      {
+        question: "Should I use CAC or CPA?",
+        answer:
+          "CPA is often used at the campaign level (purchase/lead). CAC usually means cost per new paying customer. Use the denominator that matches your funnel stage and label it clearly.",
+      },
+      {
+        question: "Why set a target below break-even?",
+        answer:
+          "Because forecasts are uncertain and you usually need buffer for returns, fraud, attribution bias, and overhead. A target CPA below break-even reduces the risk of scaling into losses.",
+      },
+    ],
+  },
+  {
+    slug: "investment-decision-calculator",
+    title: "Investment Decision Calculator",
+    description:
+      "Evaluate an investment using NPV, IRR, discounted payback, and profitability index from simple cash flow assumptions.",
+    category: "finance",
+    guideSlug: "investment-decision-guide",
+    relatedGlossarySlugs: [
+      "npv",
+      "irr",
+      "discount-rate",
+      "marr",
+      "payback-period",
+      "profitability-index",
+    ],
+    seo: {
+      intro: [
+        "NPV, IRR, and payback answer different decision questions. A small dashboard view helps you avoid relying on a single metric.",
+        "This calculator uses a simple constant annual cash flow stream and computes NPV, IRR (if it exists), discounted payback, and profitability index.",
+      ],
+      steps: [
+        "Enter the initial investment (upfront cash outflow).",
+        "Enter annual cash flow and number of years to evaluate.",
+        "Enter discount rate (MARR / required return).",
+        "Review NPV, IRR, payback, and PI together to make a balanced decision.",
+      ],
+      pitfalls: [
+        "Using IRR alone (can mislead with non-standard cash flows).",
+        "Using simple payback without discounting (ignores time value).",
+        "Comparing projects of different scale without normalizing (use PI and NPV).",
+      ],
+    },
+    inputs: [
+      {
+        key: "initialInvestment",
+        label: "Initial investment (upfront)",
+        placeholder: "100000",
+        prefix: "$",
+        defaultValue: "100000",
+        min: 0,
+      },
+      {
+        key: "annualCashFlow",
+        label: "Annual cash flow",
+        placeholder: "30000",
+        prefix: "$",
+        defaultValue: "30000",
+      },
+      {
+        key: "years",
+        label: "Years",
+        placeholder: "10",
+        defaultValue: "10",
+        min: 1,
+        step: 1,
+      },
+      {
+        key: "discountRatePercent",
+        label: "Discount rate (MARR)",
+        placeholder: "12",
+        suffix: "%",
+        defaultValue: "12",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const years = Math.max(1, Math.floor(values.years));
+      if (values.years !== years) warnings.push("Years was rounded down to a whole number.");
+
+      const r = values.discountRatePercent / 100;
+      if (values.annualCashFlow <= 0) warnings.push("Annual cash flow must be greater than 0.");
+
+      const npvAt = (rate: number) => {
+        let sum = -values.initialInvestment;
+        for (let t = 1; t <= years; t++) {
+          sum += values.annualCashFlow / Math.pow(1 + rate, t);
+        }
+        return sum;
+      };
+
+      const npv = npvAt(r);
+
+      // IRR via bisection for standard cash flows (one sign change).
+      let irr: number | null = null;
+      let lo = -0.9999;
+      let hi = 10;
+      let fLo = npvAt(lo);
+      let fHi = npvAt(hi);
+      if (Number.isFinite(fLo) && Number.isFinite(fHi) && fLo * fHi < 0) {
+        for (let i = 0; i < 80; i++) {
+          const mid = (lo + hi) / 2;
+          const fMid = npvAt(mid);
+          if (fMid === 0) {
+            irr = mid;
+            break;
+          }
+          if (fLo * fMid < 0) {
+            hi = mid;
+            fHi = fMid;
+          } else {
+            lo = mid;
+            fLo = fMid;
+          }
+          irr = (lo + hi) / 2;
+        }
+      } else if (fLo === 0) {
+        irr = lo;
+      }
+
+      // Discounted payback
+      let cumulative = 0;
+      let discountedPaybackYears: number | null = null;
+      for (let year = 1; year <= years; year++) {
+        const pv = values.annualCashFlow / Math.pow(1 + r, year);
+        const next = cumulative + pv;
+        if (next >= values.initialInvestment && pv > 0) {
+          const remaining = values.initialInvestment - cumulative;
+          discountedPaybackYears = (year - 1) + remaining / pv;
+          break;
+        }
+        cumulative = next;
+      }
+
+      if (discountedPaybackYears === null) {
+        warnings.push("Discounted payback not reached within the chosen horizon.");
+      }
+
+      const pvInflow = npv + values.initialInvestment;
+      const pi = values.initialInvestment > 0 ? pvInflow / values.initialInvestment : null;
+
+      return {
+        headline: {
+          key: "npv",
+          label: `NPV @ ${values.discountRatePercent}%`,
+          value: npv,
+          format: "currency",
+          currency: "USD",
+          detail: "Present value of inflows - investment",
+        },
+        secondary: [
+          {
+            key: "irr",
+            label: "IRR (if applicable)",
+            value: irr ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: irr === null ? "Not found / not unique" : "Rate where NPV = 0",
+          },
+          {
+            key: "discountedPayback",
+            label: "Discounted payback period",
+            value: (discountedPaybackYears ?? 0) * 12,
+            format: "months",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "pi",
+            label: "Profitability index (PI)",
+            value: pi ?? 0,
+            format: "multiple",
+            maxFractionDigits: 2,
+            detail: pi === null ? "Investment is 0" : "PV inflows ÷ investment",
+          },
+        ],
+        breakdown: [
+          {
+            key: "initialInvestment",
+            label: "Initial investment",
+            value: values.initialInvestment,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "annualCashFlow",
+            label: "Annual cash flow",
+            value: values.annualCashFlow,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "NPV = -I + Σ(CF_t/(1+r)^t); IRR solves NPV(r)=0; PI = PV(inflows)/I; Discounted payback is when cumulative PV ≥ I",
+    assumptions: [
+      "Cash flows are annual and occur at the end of each year (except the upfront investment at t=0).",
+      "Uses a constant annual cash flow for simplicity.",
+      "IRR is approximated via bisection and may be undefined for some patterns.",
+    ],
+    faqs: [
+      {
+        question: "Which metric should I trust most?",
+        answer:
+          "NPV is usually the best decision metric at a chosen required return because it measures value created in dollars. Use IRR for intuition and comparison, and use payback/PI as constraints or secondary lenses.",
+      },
+      {
+        question: "What does profitability index mean?",
+        answer:
+          "PI normalizes value by investment: PI > 1 means positive NPV. It’s useful when capital is constrained and you want value per dollar invested.",
+      },
+    ],
+  },
 ];

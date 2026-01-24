@@ -178,6 +178,51 @@ export const termsCore: GlossaryTerm[] = [
     ],
   },
   {
+    slug: "ltv",
+    title: "LTV (Lifetime Value)",
+    description:
+      "LTV estimates the value a customer generates over their lifetime. For unit economics, gross profit LTV is usually more useful than revenue LTV.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-23",
+    sections: [
+      { type: "h2", text: "Definition" },
+      {
+        type: "p",
+        text: "LTV (Lifetime Value) is the total value you expect from a customer over their lifetime. It’s often used to set acquisition targets (CAC/CPA) and to evaluate payback and growth efficiency. Because costs matter, many teams prefer gross profit LTV (revenue × gross margin over the lifetime).",
+      },
+      { type: "h2", text: "Common formulas (shortcuts)" },
+      {
+        type: "bullets",
+        items: [
+          "Revenue LTV ≈ ARPA ÷ churn (with consistent time units).",
+          "Gross profit LTV ≈ (ARPA × gross margin) ÷ churn.",
+          "Cohort-based LTV: sum observed gross profit over time from real cohorts (more accurate).",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using revenue LTV while comparing to fully-loaded CAC (mismatch).",
+          "Mixing monthly churn with annual ARPA (time unit mismatch).",
+          "Ignoring expansion or contraction when it materially affects retention dynamics.",
+        ],
+      },
+    ],
+    relatedGuideSlugs: [
+      "ltv-guide",
+      "cohort-ltv-forecast-guide",
+      "target-cpa-guide",
+      "blended-cac-guide",
+    ],
+    relatedCalculatorSlugs: [
+      "ltv-calculator",
+      "cohort-ltv-forecast-calculator",
+      "target-cpa-ltv-calculator",
+      "ltv-to-cac-calculator",
+    ],
+  },
+  {
     slug: "roas",
     title: "ROAS (Return on Ad Spend)",
     description:

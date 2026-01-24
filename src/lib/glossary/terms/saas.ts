@@ -130,6 +130,24 @@ const seeds: Seed[] = [
     relatedCalculatorSlugs: ["price-increase-break-even-calculator"],
   },
   {
+    slug: "retention-rate",
+    title: "Retention Rate",
+    description:
+      "Retention rate measures the fraction of customers (or revenue) that remains over a period. It is the complement of churn when measured on the same basis and time window.",
+    formula: "Retention rate = 1 - churn rate (with consistent definitions)",
+    bullets: [
+      "Specify whether you mean logo retention (customers) or revenue retention (dollars).",
+      "Use cohort retention curves to see where retention drops over time.",
+      "Pair retention with gross margin to understand LTV and payback feasibility.",
+    ],
+    mistakes: [
+      "Mixing logo churn with revenue retention (different denominators).",
+      "Comparing retention across periods without consistent cohort definitions.",
+    ],
+    relatedGuideSlugs: ["retention-curve-guide", "cohort-vs-aggregate-guide"],
+    relatedCalculatorSlugs: ["retention-rate-calculator", "retention-curve-calculator"],
+  },
+  {
     slug: "net-new-mrr",
     title: "Net New MRR",
     description:

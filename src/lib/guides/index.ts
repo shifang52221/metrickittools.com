@@ -2831,6 +2831,221 @@ export const guides: Guide[] = [
       },
     ],
   },
+  {
+    slug: "retention-curve-guide",
+    title: "Retention curves: how to read them and why they matter",
+    description:
+      "A practical guide to retention curves: what they show, how to interpret churn vs retention, and how to connect retention to LTV and payback.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["retention-curve-calculator", "cohort-ltv-forecast-calculator"],
+    relatedGlossarySlugs: [
+      "retention-rate",
+      "logo-churn",
+      "customer-lifetime",
+      "cohorted-ltv",
+      "net-retention",
+      "gross-retention",
+      "gross-margin",
+      "arpa",
+      "nrr",
+      "grr",
+    ],
+    sections: [
+      { type: "h2", text: "What a retention curve shows" },
+      {
+        type: "p",
+        text: "A retention curve shows the fraction of a cohort that remains active over time. Instead of a single churn number, the curve reveals where drop-off happens (activation period vs later months) and whether retention is improving across cohorts.",
+      },
+      { type: "h2", text: "Logo vs revenue retention" },
+      {
+        type: "bullets",
+        items: [
+          "Logo retention tracks customer count survival (accounts).",
+          "Revenue retention (GRR/NRR) tracks dollars retained and can be high even if logo retention is weak (when expansion offsets churn).",
+        ],
+      },
+      { type: "h2", text: "How to use retention curves" },
+      {
+        type: "bullets",
+        items: [
+          "Identify the biggest drop (month 1–3 often indicates activation/onboarding issues).",
+          "Segment by plan, channel, and cohort start month to avoid blended averages.",
+          "Connect to unit economics: retention drives LTV and payback feasibility.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using blended churn to forecast LTV when segments differ materially.",
+          "Assuming constant churn forever (churn often decays over time).",
+          "Looking at NRR alone and missing logo churn problems.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Do I need cohort curves if I already track churn?",
+        answer:
+          "Yes if you want better forecasting and diagnosis. The shape of the curve matters: two businesses can have the same average churn but very different early retention, which changes payback and growth quality.",
+      },
+      {
+        question: "What’s a good retention curve?",
+        answer:
+          "It depends on product and segment. The key is improvement over time and strong early retention. Track benchmarks within your own history first, then compare to peers cautiously.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: 2% monthly churn, $800 ARPA, 80% margin, 36 months",
+        calculatorSlug: "retention-curve-calculator",
+        params: {
+          monthlyLogoChurnPercent: "2",
+          arpaMonthly: "800",
+          grossMarginPercent: "80",
+          months: "36",
+        },
+      },
+    ],
+  },
+  {
+    slug: "target-cpa-guide",
+    title: "Target CPA: how to set acquisition targets from LTV and margin",
+    description:
+      "A practical guide to target CPA: connect acquisition cost to LTV, contribution margin, and payback constraints (and avoid common mismatches).",
+    category: "paid-ads",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["target-cpa-ltv-calculator", "incrementality-lift-calculator"],
+    relatedGlossarySlugs: ["cpa", "cac", "ltv", "contribution-margin", "payback-period", "incrementality"],
+    sections: [
+      { type: "h2", text: "Why target CPA is not one number" },
+      {
+        type: "p",
+        text: "A CPA that looks great for one business can be disastrous for another. The right target depends on customer value (LTV), margin, and how quickly you need cash back (payback).",
+      },
+      { type: "h2", text: "Break-even vs target CPA" },
+      {
+        type: "bullets",
+        items: [
+          "Break-even CPA: the max you can pay and still make $0 profit on gross profit LTV (no buffer).",
+          "Target CPA: a more conservative number that leaves buffer for uncertainty, overhead, and measurement error.",
+        ],
+      },
+      { type: "h2", text: "Best practices" },
+      {
+        type: "bullets",
+        items: [
+          "Use gross profit LTV (or contribution after variable costs), not revenue LTV.",
+          "Validate incrementality as spend scales; attribution can overstate value.",
+          "Add buffer for refunds, fraud, churn shocks, and long payback cycles.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Calling lead CPA 'CAC' without converting leads to customers.",
+          "Mixing fully-loaded CAC with revenue-based LTV (mismatch).",
+          "Setting a target CPA above break-even because short-window ROAS looks good.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Should target CPA include fixed costs?",
+        answer:
+          "For campaign optimization, target CPA usually reflects variable economics. For business planning, you can set more conservative targets to cover fixed costs and desired profit.",
+      },
+      {
+        question: "What if my payback is too long?",
+        answer:
+          "Lower your target CPA, improve retention/expansion (raise LTV), raise margin, or change pricing. Long payback can make otherwise 'profitable' acquisition impossible due to cash constraints.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $3,000 revenue LTV, 60% margin, 20% buffer",
+        calculatorSlug: "target-cpa-ltv-calculator",
+        params: {
+          ltvRevenue: "3000",
+          contributionMarginPercent: "60",
+          targetProfitBufferPercent: "20",
+          maxSpendSharePercent: "0",
+        },
+      },
+    ],
+  },
+  {
+    slug: "investment-decision-guide",
+    title: "Investment decision metrics: NPV vs IRR vs payback vs PI",
+    description:
+      "A practical guide to investment decision metrics: when to use NPV, when IRR misleads, and how payback and profitability index fit in.",
+    category: "finance",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: [
+      "investment-decision-calculator",
+      "npv-calculator",
+      "irr-calculator",
+      "discounted-payback-period-calculator",
+    ],
+    relatedGlossarySlugs: ["npv", "irr", "discount-rate", "marr", "payback-period", "profitability-index"],
+    sections: [
+      { type: "h2", text: "What each metric is optimizing" },
+      {
+        type: "bullets",
+        items: [
+          "NPV: value created in dollars at a chosen required return.",
+          "IRR: implied return rate (can be undefined or misleading for some cash flows).",
+          "Payback: how quickly you get cash back (often used as a risk constraint).",
+          "Profitability index (PI): value per dollar invested (useful when capital is constrained).",
+        ],
+      },
+      { type: "h2", text: "Common traps" },
+      {
+        type: "bullets",
+        items: [
+          "Using IRR for mutually exclusive projects of different scale (NPV is better).",
+          "Ignoring time value by using simple payback only.",
+          "Using a single discount rate without scenario analysis.",
+        ],
+      },
+      { type: "h2", text: "Practical decision flow" },
+      {
+        type: "bullets",
+        items: [
+          "Start with NPV at your MARR.",
+          "Use payback as a constraint if runway/risk matters.",
+          "Use IRR for intuition and comparison, but validate with NPV.",
+          "Use PI when you have limited capital and many opportunities.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "If NPV is positive, should I always do the project?",
+        answer:
+          "Not always. Consider risk, capacity, strategic fit, and opportunity cost. Many teams require both positive NPV and payback within a threshold.",
+      },
+      {
+        question: "What’s a good MARR?",
+        answer:
+          "It depends on risk and alternatives. Some teams use WACC for mature businesses and higher hurdle rates for risky projects. Consistency matters more than precision.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $100k investment, $30k/year for 10 years, 12% discount",
+        calculatorSlug: "investment-decision-calculator",
+        params: {
+          initialInvestment: "100000",
+          annualCashFlow: "30000",
+          years: "10",
+          discountRatePercent: "12",
+        },
+      },
+    ],
+  },
 ];
 
 export function getGuide(slug: string): Guide | undefined {
