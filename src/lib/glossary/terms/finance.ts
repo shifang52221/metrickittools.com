@@ -531,6 +531,164 @@ const seeds: Seed[] = [
     description:
       "MARR is the minimum return threshold used to evaluate investments. It is often used as a hurdle rate in capital budgeting and NPV decisions.",
   },
+  {
+    slug: "pre-money-valuation",
+    title: "Pre-money Valuation",
+    description:
+      "Pre-money valuation is the value of a company immediately before a new equity financing. It is used with the investment amount to determine post-money valuation and implied ownership.",
+    formula: "Post-money (simplified) = pre-money + investment",
+    bullets: [
+      "Use pre-money and new investment to estimate investor ownership (investment ÷ post-money).",
+      "Confirm whether option pool increases are included in the pre-money (option pool shuffle).",
+    ],
+    mistakes: [
+      "Mixing pre-money and post-money definitions across different documents or cap tables.",
+      "Treating the ownership math as exact without modeling the option pool and convertibles.",
+    ],
+    relatedGuideSlugs: ["pre-money-post-money-guide", "option-pool-shuffle-guide"],
+    relatedCalculatorSlugs: ["pre-money-post-money-calculator", "option-pool-shuffle-calculator"],
+  },
+  {
+    slug: "post-money-valuation",
+    title: "Post-money Valuation",
+    description:
+      "Post-money valuation is the value of a company immediately after a new equity financing. It is commonly approximated as pre-money plus the new investment amount (simplified).",
+    formula: "Post-money (simplified) = pre-money + investment",
+    bullets: [
+      "Investor ownership is often approximated as investment ÷ post-money (simplified).",
+      "Use a cap table to validate when option pool changes and convertibles are present.",
+    ],
+    mistakes: [
+      "Assuming post-money always equals pre-money + investment without checking term details.",
+      "Using post-money ownership numbers that aren’t on a fully diluted basis.",
+    ],
+    relatedGuideSlugs: ["pre-money-post-money-guide"],
+    relatedCalculatorSlugs: ["pre-money-post-money-calculator"],
+  },
+  {
+    slug: "dilution",
+    title: "Dilution",
+    description:
+      "Dilution is the reduction in an existing shareholder’s ownership percentage when new shares are issued (new financing, option grants, or convertible conversions).",
+    bullets: [
+      "Dilution can come from new investment, option pool increases, and SAFE/note conversions.",
+      "Always specify the basis (issued shares vs fully diluted).",
+    ],
+    mistakes: [
+      "Looking only at headline valuation instead of the full dilution package (pool, convertibles, etc.).",
+      "Mixing different ownership bases in the same analysis.",
+    ],
+    relatedGuideSlugs: [
+      "pre-money-post-money-guide",
+      "pro-rata-rights-guide",
+      "option-pool-shuffle-guide",
+      "safe-guide",
+      "convertible-note-guide",
+    ],
+    relatedCalculatorSlugs: [
+      "pre-money-post-money-calculator",
+      "pro-rata-investment-calculator",
+      "option-pool-shuffle-calculator",
+      "safe-conversion-calculator",
+      "convertible-note-conversion-calculator",
+    ],
+  },
+  {
+    slug: "pro-rata-rights",
+    title: "Pro Rata Rights",
+    description:
+      "Pro rata rights allow an existing investor to participate in a future financing to maintain ownership, typically by buying a proportional share of the new issuance (subject to terms and allocation).",
+    bullets: [
+      "A rough check-size estimate is current ownership % × round size (priced equity, simplified).",
+      "Your ability to take pro rata can be limited by allocation and company discretion.",
+    ],
+    mistakes: [
+      "Assuming full pro rata is always available (many rounds are oversubscribed).",
+      "Ignoring other dilution sources (option pool increases, SAFE/note conversions).",
+    ],
+    relatedGuideSlugs: ["pro-rata-rights-guide"],
+    relatedCalculatorSlugs: ["pro-rata-investment-calculator"],
+  },
+  {
+    slug: "option-pool",
+    title: "Option Pool",
+    description:
+      "An option pool is a reserve of equity (typically employee stock options) set aside for hiring and incentives. Option pools dilute existing shareholders on a fully diluted basis.",
+    bullets: [
+      "Option pools are often increased during fundraising; the timing determines who bears dilution.",
+      "Always define the pool as a percent of fully diluted shares (not just issued shares).",
+    ],
+    mistakes: [
+      "Confusing granted options with the full pool reserve.",
+      "Modeling pool % on the wrong basis (issued vs fully diluted).",
+    ],
+    relatedGuideSlugs: ["option-pool-shuffle-guide"],
+    relatedCalculatorSlugs: ["option-pool-shuffle-calculator"],
+  },
+  {
+    slug: "valuation-cap",
+    title: "Valuation Cap",
+    description:
+      "A valuation cap sets a maximum valuation used when converting a SAFE or convertible note into equity in a priced round. A lower cap generally means a lower conversion price and more shares for the investor.",
+    bullets: [
+      "Cap price is often modeled as cap ÷ fully diluted shares at conversion (simplified).",
+      "Caps matter most when the priced round valuation is meaningfully higher than the cap.",
+    ],
+    mistakes: [
+      "Using non-fully diluted share counts when computing cap price per share.",
+      "Assuming cap mechanics are identical across SAFEs and notes (terms vary).",
+    ],
+    relatedGuideSlugs: ["safe-guide", "convertible-note-guide"],
+    relatedCalculatorSlugs: ["safe-conversion-calculator", "convertible-note-conversion-calculator"],
+  },
+  {
+    slug: "safe",
+    title: "SAFE (Simple Agreement for Future Equity)",
+    description:
+      "A SAFE is an instrument that typically converts into equity at a future priced round. It often includes a valuation cap, a discount, or both to reward early investors.",
+    bullets: [
+      "Conversion price is often the better (lower price) of cap vs discount (terms vary).",
+      "Model conversion using fully diluted shares to avoid underestimating dilution.",
+    ],
+    mistakes: [
+      "Ignoring post-money SAFE mechanics and MFN clauses (terms vary).",
+      "Treating simplified math as legal truth without reconciling documents and cap table.",
+    ],
+    relatedGuideSlugs: ["safe-guide"],
+    relatedCalculatorSlugs: ["safe-conversion-calculator"],
+  },
+  {
+    slug: "convertible-note",
+    title: "Convertible Note",
+    description:
+      "A convertible note is debt that typically converts into equity at a future priced round. It often includes an interest rate, a maturity date, and cap/discount conversion terms.",
+    bullets: [
+      "Conversion amount may include accrued interest (terms vary).",
+      "Conversion price may be set by valuation cap, discount, or round price (terms vary).",
+    ],
+    mistakes: [
+      "Modeling interest incorrectly (simple vs compounding; check the note).",
+      "Ignoring stacked convertibles and option pool changes when estimating dilution.",
+    ],
+    relatedGuideSlugs: ["convertible-note-guide"],
+    relatedCalculatorSlugs: ["convertible-note-conversion-calculator"],
+  },
+  {
+    slug: "liquidation-preference",
+    title: "Liquidation Preference",
+    description:
+      "Liquidation preference defines what preferred shareholders receive at an exit before common shareholders. A common structure is 1× non-participating preferred.",
+    bullets: [
+      "Non-participating preferred often takes the greater of preference payout or as-converted common payout.",
+      "Multiple classes and seniority create a waterfall that requires a full model.",
+    ],
+    mistakes: [
+      "Ignoring stacked preferences and seniority across rounds.",
+      "Confusing participating and non-participating preferred (very different outcomes).",
+    ],
+    relatedGuideSlugs: ["liquidation-preference-guide"],
+    relatedCalculatorSlugs: ["liquidation-preference-calculator"],
+  },
 ];
 
 export const termsFinance: GlossaryTerm[] = seeds.map(make);

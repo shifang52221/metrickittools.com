@@ -4616,6 +4616,331 @@ export const guides: Guide[] = [
     ],
   },
   {
+    slug: "pre-money-post-money-guide",
+    title: "Pre-money vs post-money valuation: formulas, ownership, and pitfalls",
+    description:
+      "Learn pre-money vs post-money valuation, how investor ownership is estimated, and why the option pool shuffle changes effective dilution.",
+    category: "finance",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: [
+      "pre-money-post-money-calculator",
+      "option-pool-shuffle-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "pre-money-valuation",
+      "post-money-valuation",
+      "dilution",
+      "option-pool",
+    ],
+    sections: [
+      { type: "h2", text: "Definitions" },
+      {
+        type: "bullets",
+        items: [
+          "Pre-money valuation: the company value before new investment.",
+          "Post-money valuation: the company value after new investment (often pre-money + investment, simplified).",
+          "Ownership: the percent of the company after the round on a fully diluted basis (the basis matters).",
+        ],
+      },
+      { type: "h2", text: "Core formulas (simplified)" },
+      {
+        type: "bullets",
+        items: [
+          "Post-money = pre-money + investment.",
+          "Implied investor ownership ≈ investment ÷ post-money.",
+          "Existing holders’ combined ownership ≈ pre-money ÷ post-money.",
+        ],
+      },
+      { type: "h2", text: "Why founders get surprised (option pool shuffle)" },
+      {
+        type: "p",
+        text: "Many term sheets require increasing the option pool before the investment and counting the pool in the pre-money. This shifts dilution onto existing holders (founders and prior investors). The headline valuation can look the same while founder ownership drops more than expected.",
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using ownership on an issued-shares basis instead of fully diluted.",
+          "Ignoring SAFEs/notes converting in the priced round (dilution stacks).",
+          "Treating investment ÷ post-money as exact without building a cap table.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is post-money always pre-money + investment?",
+        answer:
+          "Often as a simplified framing, yes. But term details like option pool increases, convertible instruments, and fees can change effective ownership outcomes.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $20M pre-money + $5M investment",
+        calculatorSlug: "pre-money-post-money-calculator",
+        params: { preMoney: "20000000", investment: "5000000" },
+      },
+    ],
+  },
+  {
+    slug: "pro-rata-rights-guide",
+    title: "Pro rata rights: what they mean and how to estimate your check size",
+    description:
+      "A practical guide to pro rata rights: maintaining ownership, estimating dilution if you don’t participate, and common allocation pitfalls.",
+    category: "finance",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: ["pro-rata-investment-calculator"],
+    relatedGlossarySlugs: ["pro-rata-rights", "dilution", "pre-money-valuation", "post-money-valuation"],
+    sections: [
+      { type: "h2", text: "What pro rata rights are" },
+      {
+        type: "p",
+        text: "Pro rata rights (also called participation rights) allow an existing investor to buy shares in a future round to maintain their ownership percentage, subject to the round’s terms and allocation.",
+      },
+      { type: "h2", text: "Simple check-size estimate" },
+      {
+        type: "p",
+        text: "A simple rule of thumb: to keep X% ownership, invest about X% of the new money in the round (priced equity, simplified).",
+      },
+      { type: "h2", text: "What happens if you don’t participate" },
+      {
+        type: "p",
+        text: "If the company raises new money, new shares are issued. If you don’t buy any of them, your ownership typically drops. A simple approximation uses the pre-money ÷ post-money ratio to estimate dilution from the new issuance.",
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Assuming you can always take full pro rata (allocation may be capped).",
+          "Ignoring option pool increases and SAFE/note conversions.",
+          "Mixing ownership defined on different bases (fully diluted vs issued).",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Example: 5% ownership, $20M pre, $5M new money",
+        calculatorSlug: "pro-rata-investment-calculator",
+        params: { ownershipPercent: "5", preMoney: "20000000", investment: "5000000" },
+      },
+    ],
+  },
+  {
+    slug: "option-pool-shuffle-guide",
+    title: "Option pool shuffle: how it impacts founder dilution (with example)",
+    description:
+      "Understand the option pool shuffle, why it’s negotiated, and how a post-money option pool target changes dilution for existing holders.",
+    category: "finance",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: ["option-pool-shuffle-calculator", "pre-money-post-money-calculator"],
+    relatedGlossarySlugs: ["option-pool", "dilution", "pre-money-valuation", "post-money-valuation"],
+    sections: [
+      { type: "h2", text: "What the option pool shuffle is" },
+      {
+        type: "p",
+        text: "The option pool shuffle happens when the company increases the option pool before the investment and counts the pool in the pre-money. Practically, this means existing shareholders fund the pool increase via dilution.",
+      },
+      { type: "h2", text: "Why investors ask for it" },
+      {
+        type: "bullets",
+        items: [
+          "They want enough equity reserved to hire after the round.",
+          "They want the pool increase to be reflected in the pre-money, not to dilute the new investors.",
+        ],
+      },
+      { type: "h2", text: "How to model it (simplified)" },
+      {
+        type: "bullets",
+        items: [
+          "Start with current option pool % (fully diluted pre).",
+          "Choose a target option pool % post-money.",
+          "Solve for the additional pool needed, then compute the post-money split (existing vs investor vs pool).",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using pool % defined on an inconsistent basis across versions of the cap table.",
+          "Forgetting other dilutive instruments (SAFEs/notes) when estimating founder dilution.",
+          "Chasing a headline valuation instead of negotiating the full dilution package.",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $20M pre, $5M raise, pool 10% → 15% post-money target",
+        calculatorSlug: "option-pool-shuffle-calculator",
+        params: {
+          preMoney: "20000000",
+          investment: "5000000",
+          currentPoolPercent: "10",
+          targetPoolPercent: "15",
+        },
+      },
+    ],
+  },
+  {
+    slug: "safe-guide",
+    title: "SAFE: what it is, valuation cap vs discount, and conversion basics",
+    description:
+      "A practical guide to SAFEs: how valuation caps and discounts work, what converts in a priced round, and common modeling pitfalls.",
+    category: "finance",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: ["safe-conversion-calculator"],
+    relatedGlossarySlugs: ["safe", "valuation-cap", "discount-rate", "dilution"],
+    sections: [
+      { type: "h2", text: "What a SAFE is" },
+      {
+        type: "p",
+        text: "A SAFE (Simple Agreement for Future Equity) is a financing instrument that typically converts into equity at a future priced round. It usually has a valuation cap, a discount, or both.",
+      },
+      { type: "h2", text: "Cap vs discount (intuition)" },
+      {
+        type: "bullets",
+        items: [
+          "Valuation cap: sets a maximum valuation used for conversion, producing a lower conversion price if the priced round valuation is high.",
+          "Discount: converts at a percentage off the priced round price per share (e.g., 20% discount).",
+          "Many SAFEs convert at the better (lower price) of cap or discount (terms vary).",
+        ],
+      },
+      { type: "h2", text: "How to model conversion (simplified)" },
+      {
+        type: "bullets",
+        items: [
+          "Compute the priced round price per share = pre-money ÷ fully diluted shares.",
+          "Compute cap price per share = cap ÷ fully diluted shares (if applicable).",
+          "Compute discount price per share = round price × (1 − discount).",
+          "Convert SAFE amount into shares at the lowest applicable conversion price.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using shares that are not fully diluted (forgetting option pool and other convertibles).",
+          "Mixing post-money SAFE mechanics with pre-money modeling assumptions.",
+          "Treating the model as legal truth (always reconcile to the SAFE documents).",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $500k SAFE, $8M cap, 20% discount, $20M pre-money",
+        calculatorSlug: "safe-conversion-calculator",
+        params: {
+          safeAmount: "500000",
+          valuationCap: "8000000",
+          discountPercent: "20",
+          pricedRoundPreMoney: "20000000",
+          existingShares: "10000000",
+          newMoney: "5000000",
+        },
+      },
+    ],
+  },
+  {
+    slug: "convertible-note-guide",
+    title: "Convertible note: interest, cap/discount, and conversion basics",
+    description:
+      "A practical guide to convertible notes: how interest accrues, how caps and discounts affect conversion price, and common modeling pitfalls.",
+    category: "finance",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: ["convertible-note-conversion-calculator"],
+    relatedGlossarySlugs: ["convertible-note", "interest-rate", "valuation-cap", "discount-rate", "dilution"],
+    sections: [
+      { type: "h2", text: "What a convertible note is" },
+      {
+        type: "p",
+        text: "A convertible note is debt that typically converts into equity at a future priced round. Unlike a SAFE, it generally has an interest rate and a maturity date (terms vary).",
+      },
+      { type: "h2", text: "Interest and conversion amount" },
+      {
+        type: "p",
+        text: "Conversion often applies to principal plus accrued interest (depending on the note). In simple modeling, accrued interest ≈ principal × annual rate × (months ÷ 12).",
+      },
+      { type: "h2", text: "Conversion price mechanics" },
+      {
+        type: "bullets",
+        items: [
+          "Cap sets an effective valuation for conversion (lower price per share if the round valuation is high).",
+          "Discount applies a percent off the round price per share.",
+          "Many notes convert at the better (lower price) of cap or discount (terms vary).",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using the wrong interest convention (simple vs compounding; check your documents).",
+          "Ignoring multiple convertibles and the option pool increase (dilution stacks).",
+          "Treating a simplified model as exact (reconcile to legal docs and cap table).",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $500k note, 6% interest, 18 months, $8M cap, 20% discount",
+        calculatorSlug: "convertible-note-conversion-calculator",
+        params: {
+          principal: "500000",
+          annualInterestPercent: "6",
+          monthsOutstanding: "18",
+          valuationCap: "8000000",
+          discountPercent: "20",
+          pricedRoundPreMoney: "20000000",
+          existingShares: "10000000",
+          newMoney: "5000000",
+        },
+      },
+    ],
+  },
+  {
+    slug: "liquidation-preference-guide",
+    title: "Liquidation preference (1× non-participating): what it means at exit",
+    description:
+      "Understand 1× non-participating liquidation preference, when investors convert to common, and how this changes proceeds at different exit values.",
+    category: "finance",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: ["liquidation-preference-calculator"],
+    relatedGlossarySlugs: ["liquidation-preference", "equity-value"],
+    sections: [
+      { type: "h2", text: "What liquidation preference does" },
+      {
+        type: "p",
+        text: "Liquidation preference sets the payout order at an exit (sale, liquidation). With preferred stock, investors often have a preference claim ahead of common shareholders.",
+      },
+      { type: "h2", text: "1× non-participating in plain English" },
+      {
+        type: "bullets",
+        items: [
+          "Investors typically receive the greater of: (a) their preference amount (often investment × 1×) or (b) what they’d receive if they convert to common.",
+          "At low exit values, preference often dominates; at high exit values, conversion often dominates.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Ignoring multiple classes and seniority (stacked preference waterfall).",
+          "Ignoring participation features (participating preferred is different).",
+          "Using ownership % that doesn’t match the cap table at exit.",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $50M exit, $5M investment, 20% as-converted",
+        calculatorSlug: "liquidation-preference-calculator",
+        params: {
+          exitValue: "50000000",
+          investment: "5000000",
+          ownershipPercent: "20",
+          preferenceMultiple: "1",
+        },
+      },
+    ],
+  },
+  {
     slug: "unit-economics-dashboard-guide",
     title: "Unit economics dashboard: LTV, CAC, payback, and what to improve",
     description:

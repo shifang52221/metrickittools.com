@@ -9772,6 +9772,966 @@ export const calculators: CalculatorDefinition[] = [
     ],
   },
   {
+    slug: "pre-money-post-money-calculator",
+    title: "Pre-money vs Post-money Valuation Calculator",
+    description:
+      "Convert between pre-money and post-money valuation and estimate investor ownership from a financing round size.",
+    category: "finance",
+    guideSlug: "pre-money-post-money-guide",
+    relatedGlossarySlugs: ["pre-money-valuation", "post-money-valuation", "dilution"],
+    seo: {
+      intro: [
+        "Pre-money valuation is the company value before the new investment. Post-money valuation is pre-money plus the new investment (simplified).",
+        "Investor ownership in a new round is typically approximated as investment ÷ post-money (ignoring option pool changes and other instruments).",
+      ],
+      steps: [
+        "Enter pre-money valuation.",
+        "Enter new investment amount (round size).",
+        "Review post-money valuation and implied investor ownership.",
+      ],
+      pitfalls: [
+        "Ignoring option pool increases (the option pool shuffle changes effective founder dilution).",
+        "Mixing enterprise value (EV) and equity value concepts (this is an equity financing simplification).",
+        "Assuming the implied ownership is exact (term sheet details matter).",
+      ],
+    },
+    inputs: [
+      {
+        key: "preMoney",
+        label: "Pre-money valuation",
+        placeholder: "20000000",
+        prefix: "$",
+        defaultValue: "20000000",
+        min: 0,
+      },
+      {
+        key: "investment",
+        label: "New investment",
+        placeholder: "5000000",
+        prefix: "$",
+        defaultValue: "5000000",
+        min: 0,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const postMoney = values.preMoney + values.investment;
+      const investorOwnership = safeDivide(values.investment, postMoney);
+
+      if (values.preMoney <= 0) warnings.push("Pre-money valuation must be greater than 0.");
+      if (values.investment < 0) warnings.push("Investment must be 0 or greater.");
+      if (investorOwnership === null)
+        warnings.push("Post-money valuation must be greater than 0.");
+
+      return {
+        headline: {
+          key: "investorOwnership",
+          label: "Implied investor ownership",
+          value: investorOwnership ?? 0,
+          format: "percent",
+          maxFractionDigits: 2,
+          detail: "Investment ÷ post-money",
+        },
+        secondary: [
+          {
+            key: "postMoney",
+            label: "Post-money valuation",
+            value: postMoney,
+            format: "currency",
+            currency: "USD",
+            detail: "Pre-money + investment",
+          },
+        ],
+        breakdown: [
+          {
+            key: "preMoney",
+            label: "Pre-money valuation",
+            value: values.preMoney,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "investment",
+            label: "Investment",
+            value: values.investment,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "Post-money = pre-money + investment; investor % ≈ investment ÷ post-money",
+    assumptions: [
+      "Simplified equity financing model; ignores option pool changes, SAFEs/notes, and fees.",
+      "Uses valuation-based ownership approximation rather than a full cap table.",
+    ],
+    faqs: [
+      {
+        question: "Is investor ownership always investment ÷ post-money?",
+        answer:
+          "Often as a first approximation, yes. But option pool increases, SAFEs/notes converting, and share-class terms can change the final ownership.",
+      },
+      {
+        question: "What is the option pool shuffle?",
+        answer:
+          "It’s when the option pool is increased before the investment and counted in the pre-money, which dilutes existing shareholders more than the simple investment ÷ post-money calculation suggests.",
+      },
+    ],
+    guide: [
+      {
+        title: "Valuation tips",
+        bullets: [
+          "Use post-money for quick ownership math, but validate with a cap table model.",
+          "Model the option pool shuffle explicitly if you’re negotiating founder dilution.",
+          "Keep definitions consistent (pre-money, post-money, fully diluted shares).",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "pro-rata-investment-calculator",
+    title: "Pro Rata Investment Calculator",
+    description:
+      "Estimate how much you need to invest in a new round to maintain your ownership percentage (simplified).",
+    category: "finance",
+    guideSlug: "pro-rata-rights-guide",
+    relatedGlossarySlugs: [
+      "pro-rata-rights",
+      "pre-money-valuation",
+      "post-money-valuation",
+      "dilution",
+    ],
+    seo: {
+      intro: [
+        "Pro rata rights let an existing investor participate in a new round to maintain ownership (subject to terms and allocation).",
+        "A simple model can estimate ownership dilution if you don’t invest and the investment needed to keep ownership constant.",
+      ],
+      steps: [
+        "Enter your current ownership (before the new round).",
+        "Enter pre-money valuation and new investment amount.",
+        "Review your ownership if you don’t participate and your estimated pro rata check size.",
+      ],
+      pitfalls: [
+        "Ignoring option pool increases and other dilutive instruments (SAFE/notes).",
+        "Assuming you can always take full pro rata (allocation may be limited).",
+        "Using inconsistent ownership basis (fully diluted vs issued shares).",
+      ],
+    },
+    inputs: [
+      {
+        key: "ownershipPercent",
+        label: "Current ownership",
+        placeholder: "5",
+        suffix: "%",
+        defaultValue: "5",
+        min: 0,
+        step: 0.01,
+      },
+      {
+        key: "preMoney",
+        label: "Pre-money valuation",
+        placeholder: "20000000",
+        prefix: "$",
+        defaultValue: "20000000",
+        min: 0,
+      },
+      {
+        key: "investment",
+        label: "New investment (round size)",
+        placeholder: "5000000",
+        prefix: "$",
+        defaultValue: "5000000",
+        min: 0,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const ownership = values.ownershipPercent / 100;
+      const postMoney = values.preMoney + values.investment;
+      const proRataInvestment = ownership * values.investment;
+      const ownershipNoParticipate = safeDivide(ownership * values.preMoney, postMoney);
+
+      if (values.ownershipPercent < 0 || values.ownershipPercent > 100)
+        warnings.push("Ownership must be between 0% and 100%.");
+      if (values.preMoney <= 0) warnings.push("Pre-money valuation must be greater than 0.");
+      if (values.investment < 0) warnings.push("Investment must be 0 or greater.");
+      if (ownershipNoParticipate === null)
+        warnings.push("Post-money valuation must be greater than 0.");
+
+      return {
+        headline: {
+          key: "proRataInvestment",
+          label: "Estimated pro rata investment",
+          value: proRataInvestment,
+          format: "currency",
+          currency: "USD",
+          detail: "Current % × new investment",
+        },
+        secondary: [
+          {
+            key: "ownershipNoParticipate",
+            label: "Ownership if you don’t participate",
+            value: ownershipNoParticipate ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: "Current % × (pre-money ÷ post-money)",
+          },
+          {
+            key: "postMoney",
+            label: "Post-money valuation",
+            value: postMoney,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Pro rata check ≈ current ownership % × round size; ownership (no participate) ≈ current % × (pre-money ÷ post-money)",
+    assumptions: [
+      "Simplified model; ignores option pool changes, SAFEs/notes, and share-class terms.",
+      "Assumes ownership is measured on a consistent fully diluted basis before and after the round.",
+    ],
+    faqs: [
+      {
+        question: "Why is pro rata investment current % × round size?",
+        answer:
+          "If you own X% and want to keep X% after new shares are issued, you typically need to buy X% of the new issuance, which corresponds to about X% of the round size in a priced round.",
+      },
+      {
+        question: "Why does ownership drop if I don’t participate?",
+        answer:
+          "New shares are issued to new investors (and sometimes the option pool), so existing shareholders are diluted unless they buy some of the new shares.",
+      },
+    ],
+  },
+  {
+    slug: "option-pool-shuffle-calculator",
+    title: "Option Pool Shuffle Calculator",
+    description:
+      "Estimate founder dilution impact when the option pool is increased to a target percent of post-money (simplified).",
+    category: "finance",
+    guideSlug: "option-pool-shuffle-guide",
+    relatedGlossarySlugs: [
+      "option-pool",
+      "dilution",
+      "pre-money-valuation",
+      "post-money-valuation",
+    ],
+    seo: {
+      intro: [
+        "In many term sheets, the option pool is increased before the investment and counted in the pre-money. This is often called the option pool shuffle.",
+        "The shuffle can materially change effective founder dilution even if the headline pre-money valuation is unchanged.",
+      ],
+      steps: [
+        "Enter pre-money valuation and new investment amount.",
+        "Enter current option pool % (fully diluted pre) and target option pool % (post-money).",
+        "Review post-money ownership split (investor vs option pool vs existing holders).",
+      ],
+      pitfalls: [
+        "Using pool % defined on different bases (issued vs fully diluted).",
+        "Setting an impossible target pool % given the round size and pre-money.",
+        "Ignoring SAFE/note conversions that also dilute common.",
+      ],
+    },
+    inputs: [
+      {
+        key: "preMoney",
+        label: "Pre-money valuation",
+        placeholder: "20000000",
+        prefix: "$",
+        defaultValue: "20000000",
+        min: 0,
+      },
+      {
+        key: "investment",
+        label: "New investment (round size)",
+        placeholder: "5000000",
+        prefix: "$",
+        defaultValue: "5000000",
+        min: 0,
+      },
+      {
+        key: "currentPoolPercent",
+        label: "Current option pool (pre-money)",
+        help: "Percent of fully diluted shares before the round.",
+        placeholder: "10",
+        suffix: "%",
+        defaultValue: "10",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "targetPoolPercent",
+        label: "Target option pool (post-money)",
+        help: "Percent of fully diluted shares after the round.",
+        placeholder: "15",
+        suffix: "%",
+        defaultValue: "15",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      if (values.preMoney <= 0) warnings.push("Pre-money valuation must be greater than 0.");
+      if (values.investment < 0) warnings.push("Investment must be 0 or greater.");
+      if (values.currentPoolPercent < 0 || values.currentPoolPercent > 100)
+        warnings.push("Current option pool must be between 0% and 100%.");
+      if (values.targetPoolPercent < 0 || values.targetPoolPercent > 100)
+        warnings.push("Target option pool must be between 0% and 100%.");
+
+      const p0 = values.currentPoolPercent / 100;
+      const pt = values.targetPoolPercent / 100;
+      const postMoney = values.preMoney + values.investment;
+      const k = safeDivide(postMoney, values.preMoney);
+      const investorPost = safeDivide(values.investment, postMoney);
+      if (k === null || investorPost === null) {
+        return {
+          headline: {
+            key: "existingPost",
+            label: "Existing holders (post-money)",
+            value: 0,
+            format: "percent",
+          },
+          warnings,
+        };
+      }
+
+      const denom = 1 - pt * k;
+      let deltaPool = 0;
+      if (denom <= 0) {
+        warnings.push("Target option pool is too high for this pre-money and round size (no solution).");
+      } else {
+        deltaPool = (pt * k - p0) / denom;
+        if (deltaPool < 0) deltaPool = 0;
+      }
+
+      const existingPost = 1 - investorPost - pt;
+      if (existingPost < 0)
+        warnings.push("Post-money existing holders % is negative (check pool target and round size).");
+
+      return {
+        headline: {
+          key: "existingPost",
+          label: "Existing holders (post-money)",
+          value: Math.max(0, existingPost),
+          format: "percent",
+          maxFractionDigits: 2,
+          detail: "After pool top-up and investment (simplified)",
+        },
+        secondary: [
+          {
+            key: "investorPost",
+            label: "New investor (post-money)",
+            value: investorPost,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: "Investment ÷ post-money",
+          },
+          {
+            key: "poolPost",
+            label: "Option pool (post-money target)",
+            value: pt,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+        ],
+        breakdown: [
+          {
+            key: "deltaPool",
+            label: "Estimated option pool top-up (pre-money shares multiple)",
+            value: deltaPool,
+            format: "number",
+            maxFractionDigits: 4,
+            detail: "Additional pool shares relative to pre-money total shares (normalized)",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Investor % ≈ investment ÷ post-money; option pool shuffle solves for extra pool shares to reach target pool % post-money (simplified share normalization).",
+    assumptions: [
+      "Uses a simplified fully diluted share model normalized to 1 pre-money share base.",
+      "Ignores SAFE/note conversions and any share-class / liquidation preference terms.",
+      "Assumes investor ownership approximation investment ÷ post-money.",
+    ],
+    faqs: [
+      {
+        question: "Why does the option pool shuffle matter?",
+        answer:
+          "Because increasing the option pool before the investment effectively reduces the ownership left for existing holders (founders and prior investors), even if the headline valuation is unchanged.",
+      },
+      {
+        question: "Is this a full cap table model?",
+        answer:
+          "No. It’s a simplified model to estimate the direction and magnitude. For negotiation and legal accuracy, build a full cap table including SAFEs/notes and share classes.",
+      },
+    ],
+  },
+  {
+    slug: "safe-conversion-calculator",
+    title: "SAFE Conversion Calculator",
+    description:
+      "Estimate how a SAFE converts in a priced round using a valuation cap and/or discount (simplified).",
+    category: "finance",
+    guideSlug: "safe-guide",
+    relatedGlossarySlugs: ["safe", "valuation-cap", "discount-rate", "dilution", "pre-money-valuation"],
+    seo: {
+      intro: [
+        "A SAFE typically converts into equity in a priced round at the better of a valuation cap price or a discount to the round price (depending on terms).",
+        "This calculator estimates conversion price and resulting SAFE shares using a simplified priced-round model.",
+      ],
+      steps: [
+        "Enter SAFE amount and the priced round pre-money valuation.",
+        "Enter valuation cap and/or discount (set to 0 if not applicable).",
+        "Enter existing fully diluted shares and new money investment to estimate ownership.",
+      ],
+      pitfalls: [
+        "Using shares that are not fully diluted (option pool and other SAFEs matter).",
+        "Ignoring post-money SAFE mechanics and MFN clauses (terms vary).",
+        "Assuming the output matches legal documentation (simplified model).",
+      ],
+    },
+    inputs: [
+      {
+        key: "safeAmount",
+        label: "SAFE amount",
+        placeholder: "500000",
+        prefix: "$",
+        defaultValue: "500000",
+        min: 0,
+      },
+      {
+        key: "valuationCap",
+        label: "Valuation cap (optional)",
+        help: "Set to 0 if the SAFE has no cap.",
+        placeholder: "8000000",
+        prefix: "$",
+        defaultValue: "8000000",
+        min: 0,
+      },
+      {
+        key: "discountPercent",
+        label: "Discount (optional)",
+        help: "Set to 0% if the SAFE has no discount.",
+        placeholder: "20",
+        suffix: "%",
+        defaultValue: "20",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "pricedRoundPreMoney",
+        label: "Priced round pre-money valuation",
+        placeholder: "20000000",
+        prefix: "$",
+        defaultValue: "20000000",
+        min: 0,
+      },
+      {
+        key: "existingShares",
+        label: "Existing fully diluted shares",
+        placeholder: "10000000",
+        defaultValue: "10000000",
+        min: 0,
+        step: 1,
+      },
+      {
+        key: "newMoney",
+        label: "New money in priced round",
+        placeholder: "5000000",
+        prefix: "$",
+        defaultValue: "5000000",
+        min: 0,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const shares = Math.floor(values.existingShares);
+      if (values.existingShares !== shares)
+        warnings.push("Existing shares was rounded down to a whole number.");
+      if (values.safeAmount < 0) warnings.push("SAFE amount must be 0 or greater.");
+      if (values.pricedRoundPreMoney <= 0)
+        warnings.push("Priced round pre-money valuation must be greater than 0.");
+      if (shares <= 0) warnings.push("Existing shares must be greater than 0.");
+      if (values.newMoney < 0) warnings.push("New money must be 0 or greater.");
+      if (values.discountPercent < 0 || values.discountPercent > 100)
+        warnings.push("Discount must be between 0% and 100%.");
+
+      const roundPrice = safeDivide(values.pricedRoundPreMoney, shares);
+      if (roundPrice === null) {
+        return {
+          headline: {
+            key: "safeShares",
+            label: "SAFE shares",
+            value: 0,
+            format: "number",
+          },
+          warnings,
+        };
+      }
+
+      const discountFactor = 1 - values.discountPercent / 100;
+      const discountPrice = roundPrice * discountFactor;
+      const capPrice = values.valuationCap > 0 ? values.valuationCap / shares : null;
+
+      let conversionPrice = roundPrice;
+      let method = "Round price";
+      if (capPrice !== null && capPrice > 0 && capPrice < conversionPrice) {
+        conversionPrice = capPrice;
+        method = "Valuation cap";
+      }
+      if (
+        values.discountPercent > 0 &&
+        discountPrice > 0 &&
+        discountPrice < conversionPrice
+      ) {
+        conversionPrice = discountPrice;
+        method = "Discount";
+      }
+
+      const safeShares = safeDivide(values.safeAmount, conversionPrice) ?? 0;
+      const investorShares = safeDivide(values.newMoney, roundPrice) ?? 0;
+      const postShares = shares + safeShares + investorShares;
+      const safeOwnership = safeDivide(safeShares, postShares) ?? 0;
+
+      return {
+        headline: {
+          key: "safeOwnership",
+          label: "SAFE ownership (estimated)",
+          value: safeOwnership,
+          format: "percent",
+          maxFractionDigits: 2,
+          detail: "SAFE shares ÷ post-round shares (simplified)",
+        },
+        secondary: [
+          {
+            key: "conversionPrice",
+            label: "SAFE conversion price",
+            value: conversionPrice,
+            format: "currency",
+            currency: "USD",
+            detail: method,
+          },
+          {
+            key: "safeShares",
+            label: "SAFE shares (estimated)",
+            value: safeShares,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+        ],
+        breakdown: [
+          {
+            key: "roundPrice",
+            label: "Round price per share",
+            value: roundPrice,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "postShares",
+            label: "Post-round shares (estimated)",
+            value: postShares,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Round price = pre-money ÷ shares; SAFE price = min(cap price, discounted round price, round price); SAFE shares = SAFE amount ÷ SAFE price",
+    assumptions: [
+      "Simplified priced-round model; ignores option pool changes, other SAFEs/notes, and legal nuances (post-money SAFE, MFN, etc.).",
+      "Assumes existing shares input is fully diluted and matches the priced round pre-money valuation basis.",
+    ],
+    faqs: [
+      {
+        question: "Cap vs discount: which one applies?",
+        answer:
+          "Many SAFEs convert at the better (lower price) of the cap price or the discount price. Terms vary, so confirm your SAFE document.",
+      },
+      {
+        question: "Why do I need existing shares?",
+        answer:
+          "To convert valuation into a per-share price. Conversion is ultimately about how many shares the SAFE buys at a given price per share.",
+      },
+    ],
+  },
+  {
+    slug: "convertible-note-conversion-calculator",
+    title: "Convertible Note Conversion Calculator",
+    description:
+      "Estimate how a convertible note converts in a priced round with interest plus a valuation cap and/or discount (simplified).",
+    category: "finance",
+    guideSlug: "convertible-note-guide",
+    relatedGlossarySlugs: [
+      "convertible-note",
+      "valuation-cap",
+      "discount-rate",
+      "interest-rate",
+      "dilution",
+    ],
+    seo: {
+      intro: [
+        "Convertible notes usually convert into equity in a priced round. The conversion price can be set by a valuation cap, a discount, or the round price, and the note may accrue interest.",
+        "This calculator estimates total note amount (principal + interest), conversion price, and resulting shares and ownership using a simplified model.",
+      ],
+      steps: [
+        "Enter principal, interest rate, and months outstanding to compute principal + interest.",
+        "Enter valuation cap and/or discount (set to 0 if not applicable).",
+        "Enter priced round pre-money valuation, existing shares, and new money to estimate ownership.",
+      ],
+      pitfalls: [
+        "Using the wrong interest convention (simple vs compounding; actual terms vary).",
+        "Ignoring multiple notes/SAFEs and the option pool (dilution stacks).",
+        "Assuming the output equals legal documentation (simplified model).",
+      ],
+    },
+    inputs: [
+      {
+        key: "principal",
+        label: "Note principal",
+        placeholder: "500000",
+        prefix: "$",
+        defaultValue: "500000",
+        min: 0,
+      },
+      {
+        key: "annualInterestPercent",
+        label: "Annual interest rate",
+        placeholder: "6",
+        suffix: "%",
+        defaultValue: "6",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "monthsOutstanding",
+        label: "Months outstanding",
+        placeholder: "18",
+        defaultValue: "18",
+        min: 0,
+        step: 1,
+      },
+      {
+        key: "valuationCap",
+        label: "Valuation cap (optional)",
+        help: "Set to 0 if the note has no cap.",
+        placeholder: "8000000",
+        prefix: "$",
+        defaultValue: "8000000",
+        min: 0,
+      },
+      {
+        key: "discountPercent",
+        label: "Discount (optional)",
+        help: "Set to 0% if the note has no discount.",
+        placeholder: "20",
+        suffix: "%",
+        defaultValue: "20",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "pricedRoundPreMoney",
+        label: "Priced round pre-money valuation",
+        placeholder: "20000000",
+        prefix: "$",
+        defaultValue: "20000000",
+        min: 0,
+      },
+      {
+        key: "existingShares",
+        label: "Existing fully diluted shares",
+        placeholder: "10000000",
+        defaultValue: "10000000",
+        min: 0,
+        step: 1,
+      },
+      {
+        key: "newMoney",
+        label: "New money in priced round",
+        placeholder: "5000000",
+        prefix: "$",
+        defaultValue: "5000000",
+        min: 0,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const shares = Math.floor(values.existingShares);
+      if (values.existingShares !== shares)
+        warnings.push("Existing shares was rounded down to a whole number.");
+      if (values.pricedRoundPreMoney <= 0)
+        warnings.push("Priced round pre-money valuation must be greater than 0.");
+      if (shares <= 0) warnings.push("Existing shares must be greater than 0.");
+      if (values.principal < 0) warnings.push("Principal must be 0 or greater.");
+      if (values.newMoney < 0) warnings.push("New money must be 0 or greater.");
+      if (values.annualInterestPercent < 0 || values.annualInterestPercent > 100)
+        warnings.push("Interest rate must be between 0% and 100%.");
+      if (values.discountPercent < 0 || values.discountPercent > 100)
+        warnings.push("Discount must be between 0% and 100%.");
+
+      const interest =
+        values.principal *
+        (values.annualInterestPercent / 100) *
+        (values.monthsOutstanding / 12);
+      const total = values.principal + interest;
+
+      const roundPrice = safeDivide(values.pricedRoundPreMoney, shares);
+      if (roundPrice === null) {
+        return {
+          headline: {
+            key: "noteOwnership",
+            label: "Note ownership (estimated)",
+            value: 0,
+            format: "percent",
+          },
+          warnings,
+        };
+      }
+
+      const discountFactor = 1 - values.discountPercent / 100;
+      const discountPrice = roundPrice * discountFactor;
+      const capPrice = values.valuationCap > 0 ? values.valuationCap / shares : null;
+
+      let conversionPrice = roundPrice;
+      let method = "Round price";
+      if (capPrice !== null && capPrice > 0 && capPrice < conversionPrice) {
+        conversionPrice = capPrice;
+        method = "Valuation cap";
+      }
+      if (
+        values.discountPercent > 0 &&
+        discountPrice > 0 &&
+        discountPrice < conversionPrice
+      ) {
+        conversionPrice = discountPrice;
+        method = "Discount";
+      }
+
+      const noteShares = safeDivide(total, conversionPrice) ?? 0;
+      const investorShares = safeDivide(values.newMoney, roundPrice) ?? 0;
+      const postShares = shares + noteShares + investorShares;
+      const noteOwnership = safeDivide(noteShares, postShares) ?? 0;
+
+      return {
+        headline: {
+          key: "noteOwnership",
+          label: "Note ownership (estimated)",
+          value: noteOwnership,
+          format: "percent",
+          maxFractionDigits: 2,
+          detail: "Note shares ÷ post-round shares (simplified)",
+        },
+        secondary: [
+          {
+            key: "conversionPrice",
+            label: "Conversion price",
+            value: conversionPrice,
+            format: "currency",
+            currency: "USD",
+            detail: method,
+          },
+          {
+            key: "total",
+            label: "Principal + interest",
+            value: total,
+            format: "currency",
+            currency: "USD",
+            detail: "Simple interest approximation",
+          },
+        ],
+        breakdown: [
+          {
+            key: "noteShares",
+            label: "Note shares (estimated)",
+            value: noteShares,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+          {
+            key: "roundPrice",
+            label: "Round price per share",
+            value: roundPrice,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "postShares",
+            label: "Post-round shares (estimated)",
+            value: postShares,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Total note = principal + simple interest; conversion price = min(cap price, discounted round price, round price); note shares = total note ÷ conversion price",
+    assumptions: [
+      "Uses simple interest (actual note terms may compound or accrue differently).",
+      "Simplified priced-round model; ignores option pool changes, other instruments, and legal nuances.",
+      "Assumes existing shares input is fully diluted and matches the priced round valuation basis.",
+    ],
+    faqs: [
+      {
+        question: "Does interest always convert into shares?",
+        answer:
+          "Often yes, but terms vary. Some notes may pay interest in cash or have specific conversion rules. Confirm the note documents.",
+      },
+      {
+        question: "Is cap vs discount always ‘best of’?",
+        answer:
+          "Many notes apply the better (lower conversion price) of cap or discount, but terms vary; confirm the conversion mechanics in your agreement.",
+      },
+    ],
+  },
+  {
+    slug: "liquidation-preference-calculator",
+    title: "Liquidation Preference Calculator (1× Non-participating)",
+    description:
+      "Estimate investor proceeds at exit under a simple 1× non-participating liquidation preference vs converting to common (simplified).",
+    category: "finance",
+    guideSlug: "liquidation-preference-guide",
+    relatedGlossarySlugs: ["liquidation-preference", "equity-value"],
+    seo: {
+      intro: [
+        "Liquidation preference determines what investors receive at an exit before common shareholders. A common structure is 1× non-participating preferred.",
+        "With non-participating preferred, an investor typically takes the greater of (a) their preference amount or (b) what they would receive if they convert to common at their ownership percentage.",
+      ],
+      steps: [
+        "Enter the exit equity value (sale price).",
+        "Enter the investor’s original investment and their ownership if converted to common.",
+        "Review whether preference or conversion produces a higher payout.",
+      ],
+      pitfalls: [
+        "Ignoring multiple share classes and seniority (stacked preferences).",
+        "Using post-money ownership that doesn’t match the cap table at exit.",
+        "Assuming participating preferred behaves the same (it doesn’t).",
+      ],
+    },
+    inputs: [
+      {
+        key: "exitValue",
+        label: "Exit equity value",
+        placeholder: "50000000",
+        prefix: "$",
+        defaultValue: "50000000",
+        min: 0,
+      },
+      {
+        key: "investment",
+        label: "Investor investment",
+        placeholder: "5000000",
+        prefix: "$",
+        defaultValue: "5000000",
+        min: 0,
+      },
+      {
+        key: "ownershipPercent",
+        label: "Investor ownership (as-converted)",
+        placeholder: "20",
+        suffix: "%",
+        defaultValue: "20",
+        min: 0,
+        step: 0.01,
+      },
+      {
+        key: "preferenceMultiple",
+        label: "Preference multiple",
+        help: "1× is common for non-participating preferred. Set to 1 unless you have a different term.",
+        placeholder: "1",
+        defaultValue: "1",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const ownership = values.ownershipPercent / 100;
+      if (values.ownershipPercent < 0 || values.ownershipPercent > 100)
+        warnings.push("Ownership must be between 0% and 100%.");
+      if (values.exitValue < 0) warnings.push("Exit value must be 0 or greater.");
+      if (values.investment < 0) warnings.push("Investment must be 0 or greater.");
+      if (values.preferenceMultiple < 0)
+        warnings.push("Preference multiple must be 0 or greater.");
+
+      const preference = values.investment * values.preferenceMultiple;
+      const asConverted = ownership * values.exitValue;
+      const investorProceeds = Math.max(preference, asConverted);
+      const commonProceeds = Math.max(0, values.exitValue - investorProceeds);
+      const decision = investorProceeds === preference ? "Preference" : "Convert to common";
+
+      if (investorProceeds > values.exitValue)
+        warnings.push("Investor proceeds exceed exit value (check inputs).");
+
+      return {
+        headline: {
+          key: "investorProceeds",
+          label: "Investor proceeds",
+          value: investorProceeds,
+          format: "currency",
+          currency: "USD",
+          detail: decision,
+        },
+        secondary: [
+          {
+            key: "commonProceeds",
+            label: "Proceeds to common (remaining)",
+            value: commonProceeds,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "asConverted",
+            label: "Investor proceeds if converted",
+            value: asConverted,
+            format: "currency",
+            currency: "USD",
+            detail: "Ownership % × exit",
+          },
+        ],
+        breakdown: [
+          {
+            key: "preference",
+            label: "Preference payout",
+            value: preference,
+            format: "currency",
+            currency: "USD",
+            detail: "Investment × preference multiple",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Investor proceeds (1× non-participating) = max(preference multiple × investment, ownership % × exit value)",
+    assumptions: [
+      "Models a single investor class with non-participating preferred only (simplified).",
+      "Ignores stacked preferences, seniority, participation, dividends, and caps.",
+    ],
+    faqs: [
+      {
+        question: "What if there are multiple preference stacks?",
+        answer:
+          "You need a waterfall model with seniority (Series B before Series A, etc.). This calculator is a simplified single-layer version.",
+      },
+      {
+        question: "What about participating preferred?",
+        answer:
+          "Participating preferred can take preference and then also share in remaining proceeds as common. This calculator does not model participation.",
+      },
+    ],
+  },
+  {
     slug: "unit-economics-dashboard-calculator",
     title: "Unit Economics Dashboard Calculator",
     description:
