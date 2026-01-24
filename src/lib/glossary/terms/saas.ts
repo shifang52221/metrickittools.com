@@ -353,6 +353,108 @@ const seeds: Seed[] = [
     ],
   },
   {
+    slug: "dau",
+    title: "DAU (Daily Active Users)",
+    description:
+      "DAU counts unique active users on a given day. The definition of 'active' must be consistent (session vs key event).",
+    formula: "DAU = unique active users in a day",
+    bullets: [
+      "Define 'active' using a meaningful value event when possible.",
+      "Track DAU alongside MAU/WAU to understand frequency and seasonality.",
+    ],
+    mistakes: [
+      "Using DAU from one definition and MAU from another (not comparable).",
+      "Comparing DAU across segments without adjusting for expected cadence.",
+    ],
+    relatedGuideSlugs: ["dau-mau-guide"],
+    relatedCalculatorSlugs: ["dau-mau-calculator"],
+  },
+  {
+    slug: "wau",
+    title: "WAU (Weekly Active Users)",
+    description:
+      "WAU counts unique active users over a 7-day window. It’s often a better engagement signal for weekly cadence products than DAU.",
+    formula: "WAU = unique active users in a week",
+    bullets: [
+      "Use WAU/MAU for weekly workflows and B2B cadence products.",
+      "Keep 'active' definition consistent across WAU and MAU.",
+    ],
+    mistakes: [
+      "Using inconsistent windows (rolling 7 days vs calendar week) without noting it.",
+      "Comparing WAU across products with different usage expectations.",
+    ],
+    relatedGuideSlugs: ["wau-mau-guide", "dau-mau-guide"],
+    relatedCalculatorSlugs: ["wau-mau-calculator", "dau-mau-calculator"],
+  },
+  {
+    slug: "mau",
+    title: "MAU (Monthly Active Users)",
+    description:
+      "MAU counts unique active users over a month (or rolling 30 days). It measures reach and is often paired with DAU/WAU to measure frequency (stickiness).",
+    formula: "MAU = unique active users in a month",
+    bullets: [
+      "Use a consistent window (calendar month vs rolling 30 days).",
+      "Pair with DAU/WAU to measure usage frequency, not just reach.",
+    ],
+    mistakes: [
+      "Mixing rolling 30-day MAU with calendar-month MAU in trends.",
+      "Using a low-quality 'active' definition that overcounts accidental users.",
+    ],
+    relatedGuideSlugs: ["dau-mau-guide", "wau-mau-guide"],
+    relatedCalculatorSlugs: ["dau-mau-calculator", "wau-mau-calculator"],
+  },
+  {
+    slug: "stickiness",
+    title: "Stickiness (DAU/MAU, WAU/MAU)",
+    description:
+      "Stickiness measures how frequently users return. The most common versions are DAU/MAU (daily stickiness) and WAU/MAU (weekly stickiness).",
+    formula: "Stickiness = DAU ÷ MAU (or WAU ÷ MAU)",
+    bullets: [
+      "Use DAU/MAU for daily cadence products; use WAU/MAU for weekly cadence products.",
+      "Track stickiness by segment (persona/plan) for actionability.",
+    ],
+    mistakes: [
+      "Comparing DAU/MAU across products with different cadence expectations.",
+      "Using inconsistent 'active' definitions across numerator and denominator.",
+    ],
+    relatedGuideSlugs: ["dau-mau-guide", "wau-mau-guide"],
+    relatedCalculatorSlugs: ["dau-mau-calculator", "wau-mau-calculator"],
+  },
+  {
+    slug: "feature-adoption",
+    title: "Feature Adoption Rate",
+    description:
+      "Feature adoption rate measures what % of active users used a specific feature in a time window. It helps validate that users are discovering and using value-driving capabilities.",
+    formula: "Feature adoption rate = users who used feature ÷ active users",
+    bullets: [
+      "Use a meaningful usage threshold (not a one-off click).",
+      "Segment adoption by cohort and persona and connect it to retention outcomes.",
+    ],
+    mistakes: [
+      "Using total users instead of active users as the denominator.",
+      "Optimizing adoption of a feature that doesn’t drive retention or revenue.",
+    ],
+    relatedGuideSlugs: ["feature-adoption-guide"],
+    relatedCalculatorSlugs: ["feature-adoption-rate-calculator"],
+  },
+  {
+    slug: "pql-to-paid",
+    title: "PQL-to-paid Conversion",
+    description:
+      "PQL-to-paid conversion measures what % of product-qualified leads (PQLs) become paying customers. It connects product usage signals to revenue outcomes.",
+    formula: "PQL-to-paid = paid customers from PQLs ÷ PQLs",
+    bullets: [
+      "Define PQLs using signals correlated with retention, not vanity actions.",
+      "Segment by channel and persona to see where PQL quality differs.",
+    ],
+    mistakes: [
+      "Mixing cohorts/time windows when attributing paid conversions to PQLs.",
+      "Optimizing PQL volume at the expense of quality (conversion drops).",
+    ],
+    relatedGuideSlugs: ["pql-to-paid-guide"],
+    relatedCalculatorSlugs: ["pql-to-paid-calculator"],
+  },
+  {
     slug: "funnel",
     title: "Funnel",
     description:

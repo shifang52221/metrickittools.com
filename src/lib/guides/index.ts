@@ -4062,6 +4062,279 @@ export const guides: Guide[] = [
     ],
   },
   {
+    slug: "activation-rate-guide",
+    title: "Activation rate: definition, formula, and how to improve activation",
+    description:
+      "Activation rate explained: how to define activation, the activation rate formula, and practical ways to improve activation without vanity metrics.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: ["activation-rate-calculator"],
+    relatedGlossarySlugs: ["activation-rate", "conversion-rate", "funnel", "arrr-funnel"],
+    sections: [
+      { type: "h2", text: "What activation rate measures" },
+      {
+        type: "p",
+        text: "Activation rate measures what % of new users reach a meaningful value moment ('aha' event) after signup. It’s one of the best leading indicators of retention because users who don’t activate rarely stick.",
+      },
+      { type: "h2", text: "Formula" },
+      { type: "p", text: "Activation rate = activated users ÷ signups" },
+      { type: "h2", text: "How to define activation (practical)" },
+      {
+        type: "bullets",
+        items: [
+          "Pick an event that correlates with retention (validate with cohorts).",
+          "Use a threshold (e.g., created 3 items) to avoid counting one-off clicks.",
+          "Keep definitions stable; changing activation breaks trend comparability.",
+        ],
+      },
+      { type: "h2", text: "How to improve activation" },
+      {
+        type: "bullets",
+        items: [
+          "Reduce time-to-value: simplify onboarding and remove friction.",
+          "Drive users to the activation path: templates, defaults, guided steps.",
+          "Fix early lifecycle quality issues: speed, reliability, and support clarity.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using vanity events as activation (not linked to retention).",
+          "Mixing users vs accounts across periods.",
+          "Comparing activation across channels without segmenting intent and persona.",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Example: 5,000 signups, 1,200 activated",
+        calculatorSlug: "activation-rate-calculator",
+        params: { signups: "5000", activated: "1200", targetActivationPercent: "30" },
+      },
+    ],
+  },
+  {
+    slug: "trial-to-paid-guide",
+    title: "Trial-to-paid conversion: definition, formula, and how to improve it",
+    description:
+      "Trial-to-paid conversion explained: how to calculate it, choose a window, and improve conversion without harming retention.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: ["trial-to-paid-calculator"],
+    relatedGlossarySlugs: ["trial-to-paid", "conversion-rate", "funnel", "arrr-funnel"],
+    sections: [
+      { type: "h2", text: "Definition" },
+      {
+        type: "p",
+        text: "Trial-to-paid conversion rate measures what % of trial users become paying customers within a defined window. It’s a bridge metric between activation and revenue.",
+      },
+      { type: "h2", text: "Formula" },
+      { type: "p", text: "Trial-to-paid = paid conversions ÷ trials started" },
+      { type: "h2", text: "Choose a conversion window" },
+      {
+        type: "bullets",
+        items: [
+          "Self-serve trials: 7–30 days is common (depends on product complexity).",
+          "Sales-assisted conversions: track separately; windows are often longer.",
+          "Use cohorts so you don’t undercount late conversions.",
+        ],
+      },
+      { type: "h2", text: "How to improve trial-to-paid" },
+      {
+        type: "bullets",
+        items: [
+          "Improve activation and time-to-value (trial users must see value quickly).",
+          "Clarify pricing and packaging (reduce confusion and surprise).",
+          "Add conversion nudges: in-product prompts, lifecycle emails, sales follow-up for high intent.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Mixing self-serve and sales-assisted trials (different funnels).",
+          "Using a too-short window for long-cycle conversions.",
+          "Optimizing conversion while harming retention (watch churn/GRR).",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Example: 2,000 trials, 180 paid (target 12%)",
+        calculatorSlug: "trial-to-paid-calculator",
+        params: { trialsStarted: "2000", paidConversions: "180", targetPercent: "12" },
+      },
+    ],
+  },
+  {
+    slug: "dau-mau-guide",
+    title: "DAU/MAU (stickiness): definition, how to calculate, and benchmarks",
+    description:
+      "DAU/MAU explained: what it measures, how to compute it correctly, and how to interpret stickiness for different product cadences.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: ["dau-mau-calculator", "wau-mau-calculator"],
+    relatedGlossarySlugs: ["dau", "mau", "wau", "stickiness"],
+    sections: [
+      { type: "h2", text: "What DAU/MAU measures" },
+      {
+        type: "p",
+        text: "DAU/MAU is a stickiness metric: how many monthly active users are active on a typical day. It’s useful for engagement tracking, but it depends heavily on how you define 'active' and your product’s natural cadence.",
+      },
+      { type: "h2", text: "Formula" },
+      { type: "p", text: "DAU/MAU = DAU ÷ MAU" },
+      { type: "h2", text: "How to use it" },
+      {
+        type: "bullets",
+        items: [
+          "Keep a stable 'active' definition (e.g., key event) for comparability.",
+          "Track by segment (persona/plan) to avoid blended averages hiding issues.",
+          "Use WAU/MAU for weekly cadence products; DAU/MAU can be too noisy otherwise.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Comparing DAU/MAU across products with different usage frequency expectations.",
+          "Using DAU and MAU from different date ranges or definitions.",
+          "Treating stickiness as the only goal (retention and revenue still matter).",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Example: 1,200 DAU, 8,000 MAU (target 20%)",
+        calculatorSlug: "dau-mau-calculator",
+        params: { dau: "1200", mau: "8000", targetPercent: "20" },
+      },
+    ],
+  },
+  {
+    slug: "wau-mau-guide",
+    title: "WAU/MAU: a weekly stickiness metric for B2B and weekly workflows",
+    description:
+      "WAU/MAU explained: when to use it instead of DAU/MAU, how to calculate it correctly, and how to interpret it.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: ["wau-mau-calculator", "dau-mau-calculator"],
+    relatedGlossarySlugs: ["wau", "mau", "stickiness"],
+    sections: [
+      { type: "h2", text: "Why WAU/MAU exists" },
+      {
+        type: "p",
+        text: "Many B2B products are used weekly rather than daily (planning, reporting, reviews). WAU/MAU can be a more meaningful engagement signal than DAU/MAU for weekly cadence products.",
+      },
+      { type: "h2", text: "Formula" },
+      { type: "p", text: "WAU/MAU = WAU ÷ MAU" },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using different active definitions for WAU vs MAU.",
+          "Comparing segments with different cadences and calling one 'better'.",
+          "Ignoring seasonality (weekly usage can spike around business cycles).",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Example: 3,000 WAU, 8,000 MAU (target 50%)",
+        calculatorSlug: "wau-mau-calculator",
+        params: { wau: "3000", mau: "8000", targetPercent: "50" },
+      },
+    ],
+  },
+  {
+    slug: "feature-adoption-guide",
+    title: "Feature adoption rate: definition, how to measure adoption, and pitfalls",
+    description:
+      "Feature adoption explained: how to define adoption events, choose the right denominator, and use adoption to improve activation and retention.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: ["feature-adoption-rate-calculator"],
+    relatedGlossarySlugs: ["feature-adoption", "activation-rate", "conversion-rate"],
+    sections: [
+      { type: "h2", text: "What feature adoption measures" },
+      {
+        type: "p",
+        text: "Feature adoption rate measures what % of active users used a specific feature within a time window. It helps you validate that users are discovering and repeatedly using the product capabilities that drive value and retention.",
+      },
+      { type: "h2", text: "Formula" },
+      { type: "p", text: "Feature adoption rate = users who used feature ÷ active users" },
+      { type: "h2", text: "How to measure adoption well" },
+      {
+        type: "bullets",
+        items: [
+          "Define a meaningful usage threshold (not a one-off click).",
+          "Use active users as the denominator (not total signups).",
+          "Segment by persona and cohort to connect adoption to retention outcomes.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Counting the wrong event (vanity usage).",
+          "Comparing adoption across periods while changing tracking instrumentation.",
+          "Optimizing adoption of a feature that doesn’t drive retention or revenue.",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Example: 8,000 active users, 2,400 used feature (target 40%)",
+        calculatorSlug: "feature-adoption-rate-calculator",
+        params: { activeUsers: "8000", usersUsedFeature: "2400", targetPercent: "40" },
+      },
+    ],
+  },
+  {
+    slug: "pql-to-paid-guide",
+    title: "PQL to paid: how to define PQLs and track conversion to revenue",
+    description:
+      "A practical guide to PQL-to-paid conversion: define predictive PQL events, measure cohorts, and use segmentation to improve conversion and retention.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: ["pql-to-paid-calculator"],
+    relatedGlossarySlugs: ["pql", "pql-to-paid", "trial-to-paid", "conversion-rate"],
+    sections: [
+      { type: "h2", text: "What PQL-to-paid measures" },
+      {
+        type: "p",
+        text: "PQL-to-paid conversion measures what % of product-qualified leads become paying customers. It connects product usage signals to revenue outcomes and helps prioritize onboarding, activation, and sales follow-up.",
+      },
+      { type: "h2", text: "Formula" },
+      { type: "p", text: "PQL-to-paid = paid customers from PQLs ÷ PQLs" },
+      { type: "h2", text: "How to define PQLs" },
+      {
+        type: "bullets",
+        items: [
+          "Use signals that correlate with conversion and retention (validate with cohorts).",
+          "Separate self-serve vs sales-assisted PQL paths if they behave differently.",
+          "Revisit PQL definitions when product changes; keep the trend comparable.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Defining PQLs using vanity events.",
+          "Mixing cohorts/time windows (PQLs from one month, conversions from another).",
+          "Optimizing PQL volume and destroying quality (conversion drops).",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Example: 900 PQLs, 90 paid, target 120 paid",
+        calculatorSlug: "pql-to-paid-calculator",
+        params: { pqls: "900", paidCustomers: "90", targetPaid: "120" },
+      },
+    ],
+  },
+  {
     slug: "marginal-roas-guide",
     title: "Marginal ROAS: how to scale ads with diminishing returns",
     description:

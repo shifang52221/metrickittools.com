@@ -13433,6 +13433,648 @@ export const calculators: CalculatorDefinition[] = [
     ],
   },
   {
+    slug: "activation-rate-calculator",
+    title: "Activation Rate Calculator",
+    description:
+      "Compute activation rate: what % of new signups reach your activation event (and what you need to hit a target).",
+    category: "saas-metrics",
+    guideSlug: "activation-rate-guide",
+    relatedGlossarySlugs: ["activation-rate", "conversion-rate", "funnel", "arrr-funnel"],
+    seo: {
+      intro: [
+        "Activation is a leading indicator of retention. If users don’t reach an 'aha moment', they’re unlikely to stick.",
+        "This calculator computes activation rate from signups and activated users, and optionally computes the activated users needed to hit a target activation rate.",
+      ],
+      steps: [
+        "Enter new signups for the time window.",
+        "Enter activated users (as defined by your activation event).",
+        "Optionally enter a target activation rate to compute the required activated users.",
+      ],
+      pitfalls: [
+        "Using vanity events as activation (not linked to retention).",
+        "Mixing denominators (users vs accounts) across periods.",
+        "Comparing activation rates across channels without segmenting intent.",
+      ],
+    },
+    inputs: [
+      {
+        key: "signups",
+        label: "New signups",
+        placeholder: "5000",
+        defaultValue: "5000",
+        min: 0,
+        step: 1,
+      },
+      {
+        key: "activated",
+        label: "Activated users",
+        placeholder: "1200",
+        defaultValue: "1200",
+        min: 0,
+        step: 1,
+      },
+      {
+        key: "targetActivationPercent",
+        label: "Target activation rate (optional)",
+        help: "Set 0 to disable target calculation.",
+        placeholder: "30",
+        suffix: "%",
+        defaultValue: "30",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const signups = Math.floor(values.signups);
+      const activated = Math.floor(values.activated);
+      if (signups < 0) warnings.push("New signups must be 0 or greater.");
+      if (activated < 0) warnings.push("Activated users must be 0 or greater.");
+      if (activated > signups)
+        warnings.push("Activated users exceeds signups (check definitions/time window).");
+
+      const rate = signups > 0 ? activated / signups : null;
+      const target = values.targetActivationPercent / 100;
+      const requiredActivated =
+        values.targetActivationPercent > 0 ? Math.ceil(signups * target) : null;
+
+      return {
+        headline: {
+          key: "activationRate",
+          label: "Activation rate",
+          value: rate ?? 0,
+          format: "percent",
+          maxFractionDigits: 2,
+          detail: "Activated ÷ signups",
+        },
+        secondary: [
+          {
+            key: "requiredActivated",
+            label: "Activated users needed for target",
+            value: requiredActivated ?? 0,
+            format: "number",
+            maxFractionDigits: 0,
+            detail:
+              requiredActivated === null ? "Target disabled" : `${values.targetActivationPercent}% × signups`,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "Activation rate = activated users ÷ signups",
+    assumptions: [
+      "Activation is defined by a single event/threshold (custom per product).",
+      "Inputs reflect the same cohort and time window.",
+    ],
+    faqs: [
+      {
+        question: "What should count as 'activated'?",
+        answer:
+          "Use an event that correlates with retention and value (the 'aha' moment). Avoid vanity events like 'visited settings' unless they predict long-term use.",
+      },
+      {
+        question: "Should I measure activation by account instead of user?",
+        answer:
+          "If your product is sold per account, account-level activation is often more meaningful. The key is choosing a denominator that matches your business model and staying consistent.",
+      },
+    ],
+  },
+  {
+    slug: "trial-to-paid-calculator",
+    title: "Trial-to-paid Conversion Calculator",
+    description:
+      "Compute trial-to-paid conversion rate and estimate required conversions to hit a target.",
+    category: "saas-metrics",
+    guideSlug: "trial-to-paid-guide",
+    relatedGlossarySlugs: ["trial-to-paid", "conversion-rate", "funnel", "arrr-funnel"],
+    seo: {
+      intro: [
+        "Trial-to-paid measures the % of trial users who become paying customers within a defined window.",
+        "Track by cohort and channel to understand lead quality and where onboarding or pricing friction is blocking conversion.",
+      ],
+      steps: [
+        "Enter trials started for the cohort/window.",
+        "Enter trials that converted to paid within the window.",
+        "Optionally enter a target trial-to-paid rate to compute required paid conversions.",
+      ],
+      pitfalls: [
+        "Using a window that’s too short (under-counts conversions for long sales cycles).",
+        "Mixing self-serve and sales-assisted trials (different funnels).",
+        "Changing trial definitions and comparing rates as if equal.",
+      ],
+    },
+    inputs: [
+      {
+        key: "trialsStarted",
+        label: "Trials started",
+        placeholder: "2000",
+        defaultValue: "2000",
+        min: 0,
+        step: 1,
+      },
+      {
+        key: "paidConversions",
+        label: "Trials converted to paid",
+        placeholder: "180",
+        defaultValue: "180",
+        min: 0,
+        step: 1,
+      },
+      {
+        key: "targetPercent",
+        label: "Target trial-to-paid (optional)",
+        help: "Set 0 to disable target calculation.",
+        placeholder: "12",
+        suffix: "%",
+        defaultValue: "12",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const trials = Math.floor(values.trialsStarted);
+      const paid = Math.floor(values.paidConversions);
+      if (trials < 0) warnings.push("Trials started must be 0 or greater.");
+      if (paid < 0) warnings.push("Paid conversions must be 0 or greater.");
+      if (paid > trials) warnings.push("Paid conversions exceeds trials (check inputs).");
+
+      const rate = trials > 0 ? paid / trials : null;
+      const target = values.targetPercent / 100;
+      const requiredPaid =
+        values.targetPercent > 0 ? Math.ceil(trials * target) : null;
+
+      return {
+        headline: {
+          key: "trialToPaid",
+          label: "Trial-to-paid conversion",
+          value: rate ?? 0,
+          format: "percent",
+          maxFractionDigits: 2,
+          detail: "Paid ÷ trials",
+        },
+        secondary: [
+          {
+            key: "requiredPaid",
+            label: "Paid conversions needed for target",
+            value: requiredPaid ?? 0,
+            format: "number",
+            maxFractionDigits: 0,
+            detail: requiredPaid === null ? "Target disabled" : `${values.targetPercent}% × trials`,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "Trial-to-paid = paid conversions ÷ trials started",
+    assumptions: [
+      "Uses a single conversion window; use cohorts for long sales cycles.",
+      "Trials and paid conversions reflect the same cohort definition.",
+    ],
+    faqs: [
+      {
+        question: "What window should I use (7/14/30 days)?",
+        answer:
+          "Use a window that matches your typical conversion lag. If sales-assisted conversions take longer, track them separately or extend the window so you don’t undercount conversions.",
+      },
+      {
+        question: "Should I include free users in trials?",
+        answer:
+          "Only if the definition is consistent. Many teams separate free-to-paid and trial-to-paid because the activation and conversion behavior differs.",
+      },
+    ],
+  },
+  {
+    slug: "dau-mau-calculator",
+    title: "DAU/MAU (Stickiness) Calculator",
+    description:
+      "Compute DAU/MAU stickiness and translate it into implied active days per month.",
+    category: "saas-metrics",
+    guideSlug: "dau-mau-guide",
+    relatedGlossarySlugs: ["dau", "mau", "stickiness"],
+    seo: {
+      intro: [
+        "DAU/MAU is a common stickiness metric: how frequently monthly active users are active on a typical day.",
+        "It’s useful for product engagement, but it depends on how you define 'active' and can vary widely by product type.",
+      ],
+      steps: [
+        "Enter DAU and MAU for the same period and same 'active' definition.",
+        "Review DAU/MAU and implied active days per month.",
+      ],
+      pitfalls: [
+        "Using inconsistent 'active' definitions (sessions vs key event).",
+        "Comparing across products with different usage cadences (daily vs weekly).",
+        "Using DAU and MAU from different date ranges.",
+      ],
+    },
+    inputs: [
+      {
+        key: "dau",
+        label: "DAU",
+        placeholder: "1200",
+        defaultValue: "1200",
+        min: 0,
+        step: 1,
+      },
+      {
+        key: "mau",
+        label: "MAU",
+        placeholder: "8000",
+        defaultValue: "8000",
+        min: 0.01,
+        step: 1,
+      },
+      {
+        key: "targetPercent",
+        label: "Target DAU/MAU (optional)",
+        help: "Set 0 to disable target calculation.",
+        placeholder: "20",
+        suffix: "%",
+        defaultValue: "20",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const dau = Math.floor(values.dau);
+      const mau = Math.floor(values.mau);
+      if (dau < 0) warnings.push("DAU must be 0 or greater.");
+      if (mau <= 0) warnings.push("MAU must be greater than 0.");
+      if (dau > mau) warnings.push("DAU exceeds MAU (check measurement definitions).");
+
+      const ratio = safeDivide(dau, mau);
+      const activeDaysPerMonth = (ratio ?? 0) * 30;
+      const target = values.targetPercent / 100;
+      const requiredDau = values.targetPercent > 0 ? Math.ceil(mau * target) : null;
+
+      return {
+        headline: {
+          key: "stickiness",
+          label: "DAU/MAU (stickiness)",
+          value: ratio ?? 0,
+          format: "percent",
+          maxFractionDigits: 2,
+          detail: "DAU ÷ MAU",
+        },
+        secondary: [
+          {
+            key: "activeDays",
+            label: "Implied active days per month",
+            value: activeDaysPerMonth,
+            format: "number",
+            maxFractionDigits: 1,
+            detail: "DAU/MAU × 30",
+          },
+          {
+            key: "requiredDau",
+            label: "DAU needed for target",
+            value: requiredDau ?? 0,
+            format: "number",
+            maxFractionDigits: 0,
+            detail: requiredDau === null ? "Target disabled" : `${values.targetPercent}% × MAU`,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "DAU/MAU = DAU ÷ MAU",
+    assumptions: [
+      "DAU and MAU use the same 'active' definition and time period.",
+      "Implied active days per month uses a 30-day approximation.",
+    ],
+    faqs: [
+      {
+        question: "What is a good DAU/MAU?",
+        answer:
+          "It depends on product cadence. Daily tools can be 20–60%+; weekly workflows may be lower. Track trends and segment by persona/plan for actionability.",
+      },
+      {
+        question: "Should I use WAU/MAU instead?",
+        answer:
+          "If your product is naturally weekly (not daily), WAU/MAU can be a better stickiness metric and less noisy than DAU/MAU.",
+      },
+    ],
+  },
+  {
+    slug: "wau-mau-calculator",
+    title: "WAU/MAU Calculator",
+    description:
+      "Compute WAU/MAU and translate it into implied active weeks per month.",
+    category: "saas-metrics",
+    guideSlug: "wau-mau-guide",
+    relatedGlossarySlugs: ["wau", "mau", "stickiness"],
+    seo: {
+      intro: [
+        "WAU/MAU measures weekly engagement within the month and is often better for products with weekly usage cadence.",
+        "It reduces daily noise and can align better with weekly workflows and B2B usage patterns.",
+      ],
+      steps: [
+        "Enter WAU and MAU for the same period and same 'active' definition.",
+        "Review WAU/MAU and implied active weeks per month.",
+      ],
+      pitfalls: [
+        "Mixing different 'active' definitions between WAU and MAU.",
+        "Comparing across segments with different usage frequency expectations.",
+        "Using WAU from a different month than MAU.",
+      ],
+    },
+    inputs: [
+      {
+        key: "wau",
+        label: "WAU",
+        placeholder: "3000",
+        defaultValue: "3000",
+        min: 0,
+        step: 1,
+      },
+      {
+        key: "mau",
+        label: "MAU",
+        placeholder: "8000",
+        defaultValue: "8000",
+        min: 0.01,
+        step: 1,
+      },
+      {
+        key: "targetPercent",
+        label: "Target WAU/MAU (optional)",
+        help: "Set 0 to disable target calculation.",
+        placeholder: "50",
+        suffix: "%",
+        defaultValue: "50",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const wau = Math.floor(values.wau);
+      const mau = Math.floor(values.mau);
+      if (wau < 0) warnings.push("WAU must be 0 or greater.");
+      if (mau <= 0) warnings.push("MAU must be greater than 0.");
+      if (wau > mau) warnings.push("WAU exceeds MAU (check measurement definitions).");
+
+      const ratio = safeDivide(wau, mau);
+      const weeksPerMonth = (ratio ?? 0) * 4.33;
+      const target = values.targetPercent / 100;
+      const requiredWau = values.targetPercent > 0 ? Math.ceil(mau * target) : null;
+
+      return {
+        headline: {
+          key: "wauMau",
+          label: "WAU/MAU",
+          value: ratio ?? 0,
+          format: "percent",
+          maxFractionDigits: 2,
+          detail: "WAU ÷ MAU",
+        },
+        secondary: [
+          {
+            key: "weeksPerMonth",
+            label: "Implied active weeks per month",
+            value: weeksPerMonth,
+            format: "number",
+            maxFractionDigits: 2,
+            detail: "WAU/MAU × 4.33",
+          },
+          {
+            key: "requiredWau",
+            label: "WAU needed for target",
+            value: requiredWau ?? 0,
+            format: "number",
+            maxFractionDigits: 0,
+            detail: requiredWau === null ? "Target disabled" : `${values.targetPercent}% × MAU`,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "WAU/MAU = WAU ÷ MAU",
+    assumptions: [
+      "WAU and MAU use the same 'active' definition and time period.",
+      "Implied active weeks per month uses a 4.33-week approximation.",
+    ],
+    faqs: [
+      {
+        question: "When should I use WAU/MAU instead of DAU/MAU?",
+        answer:
+          "Use WAU/MAU when usage is naturally weekly (e.g., planning, reporting). It’s often a more stable signal than DAU/MAU for weekly cadence products.",
+      },
+      {
+        question: "Can WAU/MAU be above 100%?",
+        answer:
+          "No, not with consistent definitions. If it happens, it usually indicates you’re using mismatched denominators or date ranges.",
+      },
+    ],
+  },
+  {
+    slug: "feature-adoption-rate-calculator",
+    title: "Feature Adoption Rate Calculator",
+    description:
+      "Compute feature adoption: what % of active users used a specific feature in a time window.",
+    category: "saas-metrics",
+    guideSlug: "feature-adoption-guide",
+    relatedGlossarySlugs: ["feature-adoption", "activation-rate", "conversion-rate"],
+    seo: {
+      intro: [
+        "Feature adoption measures whether users are using a specific feature that drives value (and often retention).",
+        "Use adoption by cohort and persona to find where onboarding and product discovery are failing.",
+      ],
+      steps: [
+        "Define the feature event (what counts as 'used').",
+        "Enter active users for the window and users who used the feature.",
+        "Review adoption % and required users to hit a target adoption.",
+      ],
+      pitfalls: [
+        "Counting one-time clicks as adoption (use meaningful usage thresholds).",
+        "Using total users instead of active users as the denominator.",
+        "Comparing adoption across versions without aligning event tracking.",
+      ],
+    },
+    inputs: [
+      {
+        key: "activeUsers",
+        label: "Active users (window)",
+        placeholder: "8000",
+        defaultValue: "8000",
+        min: 0.01,
+        step: 1,
+      },
+      {
+        key: "usersUsedFeature",
+        label: "Users who used the feature",
+        placeholder: "2400",
+        defaultValue: "2400",
+        min: 0,
+        step: 1,
+      },
+      {
+        key: "targetPercent",
+        label: "Target adoption (optional)",
+        help: "Set 0 to disable target calculation.",
+        placeholder: "40",
+        suffix: "%",
+        defaultValue: "40",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const active = Math.floor(values.activeUsers);
+      const used = Math.floor(values.usersUsedFeature);
+      if (active <= 0) warnings.push("Active users must be greater than 0.");
+      if (used < 0) warnings.push("Users who used feature must be 0 or greater.");
+      if (used > active) warnings.push("Users who used feature exceeds active users (check definitions).");
+
+      const adoption = safeDivide(used, active);
+      const target = values.targetPercent / 100;
+      const requiredUsers = values.targetPercent > 0 ? Math.ceil(active * target) : null;
+
+      return {
+        headline: {
+          key: "adoption",
+          label: "Feature adoption rate",
+          value: adoption ?? 0,
+          format: "percent",
+          maxFractionDigits: 2,
+          detail: "Users who used ÷ active users",
+        },
+        secondary: [
+          {
+            key: "requiredUsers",
+            label: "Users needed for target",
+            value: requiredUsers ?? 0,
+            format: "number",
+            maxFractionDigits: 0,
+            detail: requiredUsers === null ? "Target disabled" : `${values.targetPercent}% × active users`,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "Feature adoption rate = users who used feature ÷ active users",
+    assumptions: [
+      "Active users and feature users are measured over the same window and same identity (user/account).",
+      "Feature usage threshold is meaningful (define it clearly).",
+    ],
+    faqs: [
+      {
+        question: "Should I measure adoption by user or account?",
+        answer:
+          "Use the unit that matches how value is realized. In B2B tools, account-level adoption can be more meaningful than user-level adoption for expansion and retention.",
+      },
+      {
+        question: "What’s the difference between adoption and activation?",
+        answer:
+          "Activation is the first meaningful value moment early in the lifecycle. Adoption usually means ongoing usage of a feature over time (often after activation).",
+      },
+    ],
+  },
+  {
+    slug: "pql-to-paid-calculator",
+    title: "PQL to Paid Conversion Calculator",
+    description:
+      "Compute PQL-to-paid conversion rate and the number of paid customers implied by PQL volume.",
+    category: "saas-metrics",
+    guideSlug: "pql-to-paid-guide",
+    relatedGlossarySlugs: ["pql", "pql-to-paid", "trial-to-paid", "conversion-rate"],
+    seo: {
+      intro: [
+        "PQLs (product-qualified leads) are users/accounts that show product usage signals correlated with conversion and retention.",
+        "Tracking PQL-to-paid conversion helps connect product usage to revenue outcomes and improves prioritization between activation and sales follow-up.",
+      ],
+      steps: [
+        "Enter PQLs generated in a period/cohort.",
+        "Enter paid customers that originated from those PQLs (same window definition).",
+        "Optionally enter a target paid count to compute required PQL-to-paid rate.",
+      ],
+      pitfalls: [
+        "Defining PQLs using vanity actions (not predictive of retention).",
+        "Mixing cohorts (PQLs from one month, paid conversions from another).",
+        "Not separating self-serve vs sales-assisted conversion paths.",
+      ],
+    },
+    inputs: [
+      {
+        key: "pqls",
+        label: "PQLs",
+        placeholder: "900",
+        defaultValue: "900",
+        min: 0,
+        step: 1,
+      },
+      {
+        key: "paidCustomers",
+        label: "Paid customers from PQLs",
+        placeholder: "90",
+        defaultValue: "90",
+        min: 0,
+        step: 1,
+      },
+      {
+        key: "targetPaid",
+        label: "Target paid customers (optional)",
+        help: "Set 0 to disable target rate calculation.",
+        placeholder: "120",
+        defaultValue: "120",
+        min: 0,
+        step: 1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const pqls = Math.floor(values.pqls);
+      const paid = Math.floor(values.paidCustomers);
+      if (pqls < 0) warnings.push("PQLs must be 0 or greater.");
+      if (paid < 0) warnings.push("Paid customers must be 0 or greater.");
+      if (paid > pqls) warnings.push("Paid customers exceeds PQLs (check definitions).");
+
+      const rate = pqls > 0 ? paid / pqls : null;
+      const requiredRate = values.targetPaid > 0 ? safeDivide(values.targetPaid, pqls) : null;
+
+      return {
+        headline: {
+          key: "pqlToPaid",
+          label: "PQL-to-paid conversion",
+          value: rate ?? 0,
+          format: "percent",
+          maxFractionDigits: 2,
+          detail: "Paid ÷ PQLs",
+        },
+        secondary: [
+          {
+            key: "requiredRate",
+            label: "Required conversion rate for target paid",
+            value: requiredRate ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: requiredRate === null ? "Target disabled" : "Target paid ÷ PQLs",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "PQL-to-paid = paid customers from PQLs ÷ PQLs",
+    assumptions: [
+      "PQL definition is stable and predictive (not vanity).",
+      "Paid customers are attributed back to the originating PQL cohort consistently.",
+    ],
+    faqs: [
+      {
+        question: "What should define a PQL?",
+        answer:
+          "Use product signals that correlate with conversion and retention (e.g., invited teammates, created X items, integrated Y). Validate PQL definitions by cohort outcomes.",
+      },
+      {
+        question: "Should I track PQL-to-paid by channel?",
+        answer:
+          "Yes. PQL quality varies by channel and persona. Segmenting helps you invest in channels that produce PQLs that convert and retain.",
+      },
+    ],
+  },
+  {
     slug: "gross-margin-impact-calculator",
     title: "Gross Margin Impact Calculator",
     description:
