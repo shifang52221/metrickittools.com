@@ -73,6 +73,8 @@ const seeds: Seed[] = [
       "Use CPC with CTR and CVR to locate bottlenecks (creative vs landing page).",
       "Compare CPC within similar audiences and placements.",
     ],
+    relatedGuideSlugs: ["max-cpc-guide", "paid-ads-funnel-guide"],
+    relatedCalculatorSlugs: ["max-cpc-calculator", "paid-ads-funnel-calculator"],
   },
   {
     slug: "cpm",
@@ -80,6 +82,22 @@ const seeds: Seed[] = [
     description:
       "CPM is the cost per 1,000 impressions. It varies by audience, placement, seasonality, and competition.",
     formula: "CPM = (ad spend ÷ impressions) × 1000",
+  },
+  {
+    slug: "max-cpc",
+    title: "Max CPC",
+    description:
+      "Max CPC is the maximum cost per click you can pay while still meeting your unit economics target (break-even or with a profit buffer).",
+    bullets: [
+      "Compute max CPC from target CPA and click-to-conversion rate (CVR): CPC = CPA × CVR.",
+      "Use contribution margin (not revenue) to avoid overstating allowable spend.",
+    ],
+    mistakes: [
+      "Mixing session-based CVR with click-based CPC (denominator mismatch).",
+      "Using short-window attribution without validating incrementality at scale.",
+    ],
+    relatedGuideSlugs: ["max-cpc-guide"],
+    relatedCalculatorSlugs: ["max-cpc-calculator"],
   },
   {
     slug: "ctr",

@@ -3249,6 +3249,222 @@ export const guides: Guide[] = [
       },
     ],
   },
+  {
+    slug: "revenue-retention-curve-guide",
+    title: "Revenue retention curves: GRR vs NRR over time (how to model)",
+    description:
+      "A practical guide to revenue retention curves: how GRR and NRR compound, how to interpret expansion vs churn, and how to avoid common mistakes.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["revenue-retention-curve-calculator", "nrr-calculator", "grr-calculator"],
+    relatedGlossarySlugs: [
+      "nrr",
+      "grr",
+      "net-retention",
+      "gross-retention",
+      "expansion-mrr",
+      "contraction-mrr",
+      "churned-mrr",
+      "revenue-churn",
+    ],
+    sections: [
+      { type: "h2", text: "Why retention curves matter" },
+      {
+        type: "p",
+        text: "NRR and GRR are often reported as a snapshot, but the compounding effect over 12–24 months is what drives growth quality. A retention curve makes that compounding visible and helps you see which lever matters: expansion vs churn/contraction.",
+      },
+      { type: "h2", text: "GRR vs NRR (quick recap)" },
+      {
+        type: "bullets",
+        items: [
+          "GRR excludes expansion; it answers how leaky the bucket is after churn and downgrades.",
+          "NRR includes expansion; it can exceed 100% when upgrades outweigh churn/contraction.",
+          "Both can be true: strong NRR can hide weak GRR (expansion masking churn).",
+        ],
+      },
+      { type: "h2", text: "Modeling approach (simple monthly compounding)" },
+      {
+        type: "bullets",
+        items: [
+          "Start with cohort MRR.",
+          "Apply churn and contraction to get GRR.",
+          "Apply expansion (and contraction/churn) to get NRR.",
+          "Compound monthly to see 12–24 month outcomes.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using blended averages across segments (plan/channel) and hiding weak cohorts.",
+          "Mixing time units (annual NRR used as monthly rates).",
+          "Confusing logo churn with revenue churn (different denominators).",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "What’s a good GRR?",
+        answer:
+          "It depends on segment and stage, but GRR is a 'leakiness' metric: higher is better. Track GRR over time and by segment; improvement is often driven by product quality and customer success.",
+      },
+      {
+        question: "Can I forecast growth using NRR alone?",
+        answer:
+          "NRR is only the existing base. Overall growth also depends on new customer MRR. Use an MRR forecast model that combines new MRR with retention and expansion.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $100k MRR, 2% expansion, 0.5% contraction, 1.5% churn, 24 months",
+        calculatorSlug: "revenue-retention-curve-calculator",
+        params: {
+          startingMrr: "100000",
+          monthlyExpansionPercent: "2",
+          monthlyContractionPercent: "0.5",
+          monthlyChurnPercent: "1.5",
+          months: "24",
+        },
+      },
+    ],
+  },
+  {
+    slug: "max-cpc-guide",
+    title: "Max CPC and break-even CPC: how to set bidding targets from margin",
+    description:
+      "A practical guide to max CPC: translate AOV, CVR, and contribution margin into break-even CPC and a target CPC with buffer.",
+    category: "paid-ads",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["max-cpc-calculator", "target-cpa-ltv-calculator", "break-even-roas-calculator"],
+    relatedGlossarySlugs: ["cpc", "cpa", "cvr", "aov", "contribution-margin", "break-even-roas"],
+    sections: [
+      { type: "h2", text: "What max CPC answers" },
+      {
+        type: "p",
+        text: "Max CPC answers a simple question: how much can you pay per click and still hit your unit economics targets? It’s derived from the max CPA you can afford and your click-to-conversion rate (CVR).",
+      },
+      { type: "h2", text: "Core relationships" },
+      {
+        type: "bullets",
+        items: [
+          "Contribution per conversion ≈ AOV × contribution margin.",
+          "Break-even CPA = contribution per conversion.",
+          "CPA = CPC ÷ CVR, so max CPC = target CPA × CVR.",
+          "If you buy impressions (CPM): CPM = CPC × CTR × 1000.",
+        ],
+      },
+      { type: "h2", text: "Best practices" },
+      {
+        type: "bullets",
+        items: [
+          "Use click-based CVR when computing CPC targets (avoid denominator mismatch).",
+          "Add buffer for refunds/returns and tracking error; don’t run at break-even.",
+          "For subscription businesses, prefer LTV-based targets rather than single-order AOV.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Mixing session CVR with click CPC (inconsistent measurement).",
+          "Ignoring variable costs (fees, shipping, returns) and overstating margin.",
+          "Scaling based on short-window ROAS without incrementality validation.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Should I set bids to max CPC?",
+        answer:
+          "Usually you bid below max CPC so you have buffer. Use max CPC as a ceiling and then optimize using marginal ROAS and incrementality as spend scales.",
+      },
+      {
+        question: "What if my funnel has multiple steps?",
+        answer:
+          "Convert CVR to 'click → purchase' (or click → customer) by multiplying stage conversion rates. Alternatively use a funnel calculator and LTV-based targets for more accuracy.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $80 AOV, 40% margin, 2.5% CVR, 20% buffer, CTR disabled",
+        calculatorSlug: "max-cpc-calculator",
+        params: {
+          aov: "80",
+          contributionMarginPercent: "40",
+          conversionRatePercent: "2.5",
+          profitBufferPercent: "20",
+          ctrPercent: "0",
+        },
+      },
+    ],
+  },
+  {
+    slug: "equity-value-guide",
+    title: "Enterprise value vs equity value: how to bridge EV to equity",
+    description:
+      "A practical guide to converting enterprise value (EV) into equity value using net debt and other claims (and avoiding common valuation mix-ups).",
+    category: "finance",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["equity-value-calculator", "dcf-valuation-calculator"],
+    relatedGlossarySlugs: ["enterprise-value", "equity-value", "net-debt", "dcf", "wacc"],
+    sections: [
+      { type: "h2", text: "Why this bridge matters" },
+      {
+        type: "p",
+        text: "Valuation outputs are often quoted as enterprise value (EV), especially from DCF models that discount unlevered free cash flows. Investors care about equity value (what’s left for shareholders), which requires adjusting EV for net debt and other claims.",
+      },
+      { type: "h2", text: "Core bridge" },
+      {
+        type: "p",
+        text: "Equity value = EV + cash - debt - preferred stock - minority interest + other adjustments.",
+      },
+      { type: "h2", text: "Common pitfalls" },
+      {
+        type: "bullets",
+        items: [
+          "Using EV/Revenue multiples but comparing to equity value market cap (mismatch).",
+          "Using stale balance sheet numbers with a current EV estimate (date mismatch).",
+          "Ignoring other claims (leases, pensions, non-operating assets/liabilities) when material.",
+        ],
+      },
+      { type: "h2", text: "Practical checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Make sure EV and balance sheet inputs are from the same date/time frame.",
+          "Cross-check: equity value should be roughly market cap (if public) after adjustments.",
+          "Use scenarios: EV can change a lot with discount rate and terminal assumptions.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "If I have equity value, how do I get EV?",
+        answer:
+          "Reverse the bridge: EV = equity value + net debt + preferred + minority - other adjustments (depending on how you define adjustments). Consistency in definitions matters more than formulas.",
+      },
+      {
+        question: "Do I include cash in EV?",
+        answer:
+          "By convention, EV represents the operating business value excluding excess cash. That’s why cash is added when converting EV to equity value.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $50M EV, $8M cash, $12M debt",
+        calculatorSlug: "equity-value-calculator",
+        params: {
+          enterpriseValue: "50000000",
+          cash: "8000000",
+          debt: "12000000",
+          preferredStock: "0",
+          minorityInterest: "0",
+          otherAdjustments: "0",
+          sharesOutstanding: "0",
+        },
+      },
+    ],
+  },
 ];
 
 export function getGuide(slug: string): Guide | undefined {

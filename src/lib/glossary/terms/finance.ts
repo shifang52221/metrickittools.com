@@ -135,6 +135,40 @@ const seeds: Seed[] = [
     relatedCalculatorSlugs: ["investment-decision-calculator"],
   },
   {
+    slug: "enterprise-value",
+    title: "Enterprise Value (EV)",
+    description:
+      "Enterprise value (EV) represents the value of the operating business available to all capital providers (debt and equity). DCF models that discount unlevered free cash flows typically produce EV.",
+    bullets: [
+      "EV is often bridged to equity value by adjusting for net debt and other claims.",
+      "EV multiples (EV/Revenue, EV/EBITDA) are not the same as equity multiples (P/E).",
+    ],
+    relatedGuideSlugs: ["equity-value-guide", "dcf-valuation-guide"],
+    relatedCalculatorSlugs: ["equity-value-calculator", "dcf-valuation-calculator"],
+  },
+  {
+    slug: "equity-value",
+    title: "Equity Value",
+    description:
+      "Equity value is the value attributable to shareholders after subtracting debt and other senior claims and adding cash (relative to enterprise value). Public-market equity value is often approximated by market capitalization.",
+    formula: "Equity value = EV + cash - debt - preferred - minority + adjustments",
+    mistakes: [
+      "Comparing equity value (market cap) to EV multiples (mismatch).",
+      "Using inconsistent dates for EV and balance sheet inputs.",
+    ],
+    relatedGuideSlugs: ["equity-value-guide"],
+    relatedCalculatorSlugs: ["equity-value-calculator"],
+  },
+  {
+    slug: "net-debt",
+    title: "Net Debt",
+    description:
+      "Net debt is debt minus cash. It is a common bridge item between enterprise value and equity value.",
+    formula: "Net debt = debt - cash",
+    relatedGuideSlugs: ["equity-value-guide"],
+    relatedCalculatorSlugs: ["equity-value-calculator"],
+  },
+  {
     slug: "gross-margin",
     title: "Gross Margin",
     description:

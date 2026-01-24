@@ -6606,4 +6606,633 @@ export const calculators: CalculatorDefinition[] = [
       },
     ],
   },
+  {
+    slug: "revenue-retention-curve-calculator",
+    title: "Revenue Retention Curve Calculator",
+    description:
+      "Model GRR and NRR over time from monthly expansion, contraction, and churn assumptions (existing cohort only).",
+    category: "saas-metrics",
+    guideSlug: "revenue-retention-curve-guide",
+    relatedGlossarySlugs: [
+      "nrr",
+      "grr",
+      "net-retention",
+      "gross-retention",
+      "churned-mrr",
+      "expansion-mrr",
+      "contraction-mrr",
+      "revenue-churn",
+    ],
+    seo: {
+      intro: [
+        "Revenue retention curves show how dollars retained change over time. They’re more actionable than a single NRR/GRR snapshot because they reveal compounding effects.",
+        "This calculator models a simple monthly retention process for an existing cohort: GRR excludes expansion; NRR includes expansion and contraction.",
+      ],
+      steps: [
+        "Enter starting MRR for a cohort (existing base).",
+        "Set monthly expansion, contraction, and churn rates.",
+        "Choose a horizon and review NRR/GRR at key checkpoints and ending cohort MRR.",
+      ],
+      pitfalls: [
+        "Mixing time windows (annual NRR used as monthly rates).",
+        "Using blended rates across segments and hiding weak cohorts.",
+        "Confusing logo churn with revenue churn (different denominators).",
+      ],
+    },
+    inputs: [
+      {
+        key: "startingMrr",
+        label: "Starting MRR (cohort)",
+        placeholder: "100000",
+        prefix: "$",
+        defaultValue: "100000",
+        min: 0,
+      },
+      {
+        key: "monthlyExpansionPercent",
+        label: "Monthly expansion rate",
+        placeholder: "2",
+        suffix: "%",
+        defaultValue: "2",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "monthlyContractionPercent",
+        label: "Monthly contraction rate",
+        placeholder: "0.5",
+        suffix: "%",
+        defaultValue: "0.5",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "monthlyChurnPercent",
+        label: "Monthly churn rate (revenue)",
+        placeholder: "1.5",
+        suffix: "%",
+        defaultValue: "1.5",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "months",
+        label: "Months to model",
+        placeholder: "24",
+        defaultValue: "24",
+        min: 1,
+        step: 1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const months = Math.max(1, Math.floor(values.months));
+      if (values.months !== months)
+        warnings.push("Months was rounded down to a whole number.");
+
+      const e = values.monthlyExpansionPercent / 100;
+      const c = values.monthlyContractionPercent / 100;
+      const ch = values.monthlyChurnPercent / 100;
+      if (values.startingMrr <= 0) warnings.push("Starting MRR must be greater than 0.");
+      if (e < 0 || e >= 1) warnings.push("Expansion rate must be between 0% and 99.9%.");
+      if (c < 0 || c >= 1) warnings.push("Contraction rate must be between 0% and 99.9%.");
+      if (ch < 0 || ch >= 1) warnings.push("Churn rate must be between 0% and 99.9%.");
+
+      const starting = Math.max(0, values.startingMrr);
+
+      let nrrMrr = starting;
+      let grrMrr = starting;
+      let sumNrr = 0;
+      let sumGrr = 0;
+
+      const nrrMultiplier = 1 + e - c - ch;
+      const grrMultiplier = 1 - c - ch;
+      if (nrrMultiplier < 0) warnings.push("NRR multiplier is negative; NRR is floored at $0.");
+      if (grrMultiplier < 0) warnings.push("GRR multiplier is negative; GRR is floored at $0.");
+
+      const checkpoints = new Set([3, 6, 12, 24, months]);
+      const checkpointNrr: Record<number, number> = {};
+      const checkpointGrr: Record<number, number> = {};
+
+      for (let m = 1; m <= months; m++) {
+        sumNrr += nrrMrr;
+        sumGrr += grrMrr;
+
+        nrrMrr = Math.max(0, nrrMrr * nrrMultiplier);
+        grrMrr = Math.max(0, grrMrr * grrMultiplier);
+
+        if (checkpoints.has(m)) {
+          checkpointNrr[m] = starting > 0 ? nrrMrr / starting : 0;
+          checkpointGrr[m] = starting > 0 ? grrMrr / starting : 0;
+        }
+      }
+
+      const nrrAt = checkpointNrr[months] ?? (starting > 0 ? nrrMrr / starting : 0);
+      const grrAt = checkpointGrr[months] ?? (starting > 0 ? grrMrr / starting : 0);
+
+      return {
+        headline: {
+          key: "nrr",
+          label: `NRR after ${months} months`,
+          value: nrrAt,
+          format: "percent",
+          maxFractionDigits: 1,
+          detail: "Existing cohort dollars including expansion",
+        },
+        secondary: [
+          {
+            key: "grr",
+            label: `GRR after ${months} months`,
+            value: grrAt,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail: "Existing cohort dollars excluding expansion",
+          },
+          {
+            key: "endingNrrMrr",
+            label: `Ending cohort MRR (NRR, month ${months})`,
+            value: nrrMrr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "endingGrrMrr",
+            label: `Ending cohort MRR (GRR, month ${months})`,
+            value: grrMrr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "nrr12",
+            label: "NRR after 12 months",
+            value: checkpointNrr[12] ?? 0,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail: checkpointNrr[12] === undefined ? "Horizon < 12 months" : undefined,
+          },
+          {
+            key: "grr12",
+            label: "GRR after 12 months",
+            value: checkpointGrr[12] ?? 0,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail: checkpointGrr[12] === undefined ? "Horizon < 12 months" : undefined,
+          },
+          {
+            key: "sumNrr",
+            label: `Total revenue retained (NRR) over ${months} months`,
+            value: sumNrr,
+            format: "currency",
+            currency: "USD",
+            detail: "Sum of monthly cohort MRR (approx)",
+          },
+          {
+            key: "sumGrr",
+            label: `Total revenue retained (GRR) over ${months} months`,
+            value: sumGrr,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        breakdown: [
+          {
+            key: "startingMrr",
+            label: "Starting MRR",
+            value: starting,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "expansion",
+            label: "Expansion rate",
+            value: e,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "contraction",
+            label: "Contraction rate",
+            value: c,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "churn",
+            label: "Churn rate",
+            value: ch,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "NRR_month = 1 + expansion - contraction - churn; GRR_month = 1 - contraction - churn (compounded monthly)",
+    assumptions: [
+      "Rates are constant and applied to the current cohort MRR each month (simplification).",
+      "Excludes new customer MRR; this is an existing-cohort retention model.",
+      "Monthly sum approximates retained revenue (ignores within-month timing).",
+    ],
+    faqs: [
+      {
+        question: "Why can NRR be above 100% while GRR is below 100%?",
+        answer:
+          "GRR excludes expansion, so churn and downgrades drive it down. NRR includes expansion, so upgrades can offset (or exceed) churn and contraction, pushing NRR above 100%.",
+      },
+      {
+        question: "How do I make this more accurate?",
+        answer:
+          "Use real cohort curves segmented by plan/channel and model expansion and churn as time-varying (often higher early and lower later). This tool is a planning shortcut and scenario tester.",
+      },
+    ],
+  },
+  {
+    slug: "max-cpc-calculator",
+    title: "Max CPC Calculator",
+    description:
+      "Compute break-even and target CPC (and optional CPM) from CVR, AOV, and contribution margin assumptions.",
+    category: "paid-ads",
+    guideSlug: "max-cpc-guide",
+    relatedGlossarySlugs: [
+      "cpc",
+      "cpa",
+      "cvr",
+      "aov",
+      "contribution-margin",
+      "break-even-roas",
+    ],
+    seo: {
+      intro: [
+        "Max CPC answers: how much can you pay per click and still break even (or hit a profit target) given your conversion rate and order economics?",
+        "This calculator translates AOV and contribution margin into break-even CPA, then converts it into max CPC using CVR. If you also enter CTR, it estimates max CPM.",
+      ],
+      steps: [
+        "Enter AOV, contribution margin, and conversion rate (CVR).",
+        "Add a profit buffer to compute a target CPC (more conservative than break-even).",
+        "Optionally enter CTR to translate max CPC into max CPM.",
+      ],
+      pitfalls: [
+        "Using session CVR while using click-based CPC (mismatch).",
+        "Ignoring returns, discounts, shipping, and fees (use contribution margin).",
+        "Using platform CVR without incrementality validation for scale decisions.",
+      ],
+    },
+    inputs: [
+      {
+        key: "aov",
+        label: "Average order value (AOV)",
+        placeholder: "80",
+        prefix: "$",
+        defaultValue: "80",
+        min: 0,
+      },
+      {
+        key: "contributionMarginPercent",
+        label: "Contribution margin",
+        placeholder: "40",
+        suffix: "%",
+        defaultValue: "40",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "conversionRatePercent",
+        label: "Conversion rate (CVR)",
+        help: "Conversions ÷ clicks (use click-based CVR if possible).",
+        placeholder: "2.5",
+        suffix: "%",
+        defaultValue: "2.5",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "profitBufferPercent",
+        label: "Profit buffer",
+        help: "Buffer as % of contribution per conversion (e.g., 20% means spend ≤ 80% of contribution).",
+        placeholder: "20",
+        suffix: "%",
+        defaultValue: "20",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "ctrPercent",
+        label: "Click-through rate (optional)",
+        help: "If provided, computes max CPM from max CPC. Set 0 to disable.",
+        placeholder: "1.5",
+        suffix: "%",
+        defaultValue: "0",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const margin = values.contributionMarginPercent / 100;
+      const cvr = values.conversionRatePercent / 100;
+      const buffer = values.profitBufferPercent / 100;
+      const ctr = values.ctrPercent / 100;
+
+      if (values.aov <= 0) warnings.push("AOV must be greater than 0.");
+      if (margin <= 0) warnings.push("Contribution margin must be greater than 0%.");
+      if (cvr <= 0) warnings.push("CVR must be greater than 0%.");
+
+      const contributionPerConversion = values.aov * margin;
+      const breakEvenCpa = contributionPerConversion;
+      const targetCpa = contributionPerConversion * Math.max(0, 1 - buffer);
+
+      const breakEvenCpc = breakEvenCpa * cvr;
+      const targetCpc = targetCpa * cvr;
+
+      const breakEvenCpm = ctr > 0 ? breakEvenCpc * 1000 * ctr : null;
+      const targetCpm = ctr > 0 ? targetCpc * 1000 * ctr : null;
+
+      return {
+        headline: {
+          key: "targetCpc",
+          label: "Target CPC",
+          value: targetCpc,
+          format: "currency",
+          currency: "USD",
+          detail: "Max CPC with profit buffer",
+        },
+        secondary: [
+          {
+            key: "breakEvenCpc",
+            label: "Break-even CPC",
+            value: breakEvenCpc,
+            format: "currency",
+            currency: "USD",
+            detail: "Max CPC where profit = 0 (variable economics)",
+          },
+          {
+            key: "targetCpa",
+            label: "Target CPA",
+            value: targetCpa,
+            format: "currency",
+            currency: "USD",
+            detail: "Contribution per conversion × (1 - buffer)",
+          },
+          {
+            key: "breakEvenCpa",
+            label: "Break-even CPA",
+            value: breakEvenCpa,
+            format: "currency",
+            currency: "USD",
+            detail: "Contribution per conversion (AOV × margin)",
+          },
+          {
+            key: "breakEvenCpm",
+            label: "Break-even CPM (if CTR provided)",
+            value: breakEvenCpm ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: breakEvenCpm === null ? "CTR is 0%" : "CPC × CTR × 1000",
+          },
+          {
+            key: "targetCpm",
+            label: "Target CPM (if CTR provided)",
+            value: targetCpm ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: targetCpm === null ? "CTR is 0%" : "Target CPC × CTR × 1000",
+          },
+        ],
+        breakdown: [
+          {
+            key: "aov",
+            label: "AOV",
+            value: values.aov,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "margin",
+            label: "Contribution margin",
+            value: margin,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "cvr",
+            label: "CVR",
+            value: cvr,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "buffer",
+            label: "Profit buffer",
+            value: buffer,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Contribution/conversion = AOV×margin; Break-even CPA = contribution; Break-even CPC = CPA×CVR; CPM = CPC×CTR×1000",
+    assumptions: [
+      "Uses contribution margin as a simplified variable-profit proxy per conversion.",
+      "CVR is click-based (conversions ÷ clicks).",
+      "Ignores fixed costs and long-term LTV (use LTV-based targets for subscription).",
+    ],
+    faqs: [
+      {
+        question: "Should I use this for SaaS trials/leads?",
+        answer:
+          "If your conversion is a lead or trial (not a purchase), this is still useful, but you must adjust AOV to expected value per lead/trial (lead value), or use an LTV-based target CPA instead.",
+      },
+      {
+        question: "Why does CPC depend on CVR?",
+        answer:
+          "Because CPA = CPC ÷ CVR. If CVR drops, the same CPC produces a higher CPA, so your max CPC must fall to stay within your CPA target.",
+      },
+    ],
+  },
+  {
+    slug: "equity-value-calculator",
+    title: "Equity Value Calculator",
+    description:
+      "Convert enterprise value (EV) into equity value using cash, debt, and other adjustments (optionally per share).",
+    category: "finance",
+    guideSlug: "equity-value-guide",
+    relatedGlossarySlugs: ["enterprise-value", "equity-value", "net-debt", "dcf", "wacc"],
+    seo: {
+      intro: [
+        "DCF and multiples often produce enterprise value (EV), which represents the value of the operating business. To get equity value, you adjust EV for net debt and other claims.",
+        "This calculator computes equity value from EV, cash, debt, and optional preferred/minority/other adjustments, and can compute an implied value per share.",
+      ],
+      steps: [
+        "Enter enterprise value (from DCF or multiples).",
+        "Enter cash and debt to compute net debt adjustment.",
+        "Optionally add preferred stock, minority interest, and other adjustments.",
+        "Optionally enter shares outstanding to compute implied value per share.",
+      ],
+      pitfalls: [
+        "Mixing enterprise value and equity value multiples (different denominators).",
+        "Forgetting off-balance-sheet items or other claims (simplified model).",
+        "Using inconsistent dates for EV and balance sheet inputs.",
+      ],
+    },
+    inputs: [
+      {
+        key: "enterpriseValue",
+        label: "Enterprise value (EV)",
+        placeholder: "50000000",
+        prefix: "$",
+        defaultValue: "50000000",
+        min: 0,
+      },
+      {
+        key: "cash",
+        label: "Cash (and cash equivalents)",
+        placeholder: "8000000",
+        prefix: "$",
+        defaultValue: "8000000",
+        min: 0,
+      },
+      {
+        key: "debt",
+        label: "Total debt",
+        placeholder: "12000000",
+        prefix: "$",
+        defaultValue: "12000000",
+        min: 0,
+      },
+      {
+        key: "preferredStock",
+        label: "Preferred stock (optional)",
+        placeholder: "0",
+        prefix: "$",
+        defaultValue: "0",
+        min: 0,
+      },
+      {
+        key: "minorityInterest",
+        label: "Minority interest (optional)",
+        placeholder: "0",
+        prefix: "$",
+        defaultValue: "0",
+        min: 0,
+      },
+      {
+        key: "otherAdjustments",
+        label: "Other adjustments (optional)",
+        help: "Positive increases equity value; negative decreases (e.g., unfunded liabilities).",
+        placeholder: "0",
+        defaultValue: "0",
+        step: 1000,
+      },
+      {
+        key: "sharesOutstanding",
+        label: "Shares outstanding (optional)",
+        placeholder: "0",
+        defaultValue: "0",
+        min: 0,
+        step: 1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const netDebt = values.debt - values.cash;
+      const equityValue =
+        values.enterpriseValue - netDebt - values.preferredStock - values.minorityInterest + values.otherAdjustments;
+
+      let perShare: number | null = null;
+      const shares = Math.floor(values.sharesOutstanding);
+      if (values.sharesOutstanding !== shares)
+        warnings.push("Shares outstanding was rounded down to a whole number.");
+      if (shares > 0) perShare = equityValue / shares;
+
+      if (equityValue < 0)
+        warnings.push("Equity value is negative with these inputs (check EV and balance sheet values).");
+
+      return {
+        headline: {
+          key: "equityValue",
+          label: "Equity value",
+          value: equityValue,
+          format: "currency",
+          currency: "USD",
+          detail: "EV - net debt - other claims + adjustments",
+        },
+        secondary: [
+          {
+            key: "netDebt",
+            label: "Net debt",
+            value: netDebt,
+            format: "currency",
+            currency: "USD",
+            detail: "Debt - cash",
+          },
+          {
+            key: "perShare",
+            label: "Implied value per share",
+            value: perShare ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: perShare === null ? "Enter shares outstanding to calculate" : undefined,
+          },
+        ],
+        breakdown: [
+          {
+            key: "enterpriseValue",
+            label: "Enterprise value",
+            value: values.enterpriseValue,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "cash",
+            label: "Cash",
+            value: values.cash,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "debt",
+            label: "Debt",
+            value: values.debt,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "preferredStock",
+            label: "Preferred stock",
+            value: values.preferredStock,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "minorityInterest",
+            label: "Minority interest",
+            value: values.minorityInterest,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "Equity value = enterprise value + cash - debt - preferred - minority + other adjustments",
+    assumptions: [
+      "Treats cash and debt as the primary bridge from EV to equity value.",
+      "Preferred stock and minority interest are modeled as claims ahead of common equity (simplified).",
+      "Other adjustments can represent items like pensions, leases, or non-operating assets/liabilities (simplified).",
+    ],
+    faqs: [
+      {
+        question: "Why does DCF give enterprise value instead of equity value?",
+        answer:
+          "Many DCFs discount unlevered free cash flows (available to all capital providers), producing EV. You then bridge to equity value using net debt and other claims.",
+      },
+      {
+        question: "What about working capital, leases, and other liabilities?",
+        answer:
+          "A full valuation model would treat those explicitly. This tool keeps the bridge simple; use 'other adjustments' for major non-standard items and rely on a full model for precision.",
+      },
+    ],
+  },
 ];
