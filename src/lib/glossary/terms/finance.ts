@@ -169,6 +169,22 @@ const seeds: Seed[] = [
     relatedCalculatorSlugs: ["equity-value-calculator"],
   },
   {
+    slug: "sensitivity-analysis",
+    title: "Sensitivity Analysis",
+    description:
+      "Sensitivity analysis shows how outputs change when key inputs vary within a reasonable range. In valuation, it’s used to test how fragile a DCF is to discount rate and terminal assumptions.",
+    bullets: [
+      "Use sensitivity grids to avoid false precision from single-point estimates.",
+      "Pick ranges that reflect uncertainty (not just tiny deltas).",
+    ],
+    mistakes: [
+      "Picking ranges that are too narrow and concluding the result is certain.",
+      "Changing many inputs at once without tracking what drove the change.",
+    ],
+    relatedGuideSlugs: ["dcf-sensitivity-guide"],
+    relatedCalculatorSlugs: ["dcf-sensitivity-calculator"],
+  },
+  {
     slug: "gross-margin",
     title: "Gross Margin",
     description:

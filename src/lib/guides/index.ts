@@ -3669,6 +3669,215 @@ export const guides: Guide[] = [
       },
     ],
   },
+  {
+    slug: "cohort-payback-curve-guide",
+    title: "Cohort payback curves: how to model payback with early churn",
+    description:
+      "A practical guide to cohort payback: why payback matters for survival, how early churn affects payback, and how to improve it.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: [
+      "cohort-payback-curve-calculator",
+      "two-stage-retention-curve-calculator",
+      "cash-runway-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "payback-period",
+      "cac",
+      "retention-rate",
+      "logo-churn",
+      "arpa",
+      "gross-margin",
+      "cohorted-ltv",
+      "expansion-mrr",
+      "runway",
+    ],
+    sections: [
+      { type: "h2", text: "Why payback is a cash constraint" },
+      {
+        type: "p",
+        text: "Payback asks how long it takes to recover CAC using gross profit from the customer. Even if LTV is high, long payback can be fatal if you run out of cash before the cohort pays back.",
+      },
+      { type: "h2", text: "Early churn is the main lever" },
+      {
+        type: "bullets",
+        items: [
+          "Early churn reduces the number of customers who generate month 6+ value.",
+          "Improving activation/onboarding can reduce payback faster than improving steady-state churn.",
+          "Expansion compounds on the customers you keep, so retention improvements amplify expansion.",
+        ],
+      },
+      { type: "h2", text: "How to use a payback curve" },
+      {
+        type: "bullets",
+        items: [
+          "Model optimistic/base/conservative retention scenarios.",
+          "Track payback by channel and plan (cohorts differ).",
+          "Pair payback with runway to decide how aggressively you can scale acquisition.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using revenue instead of gross profit (ignores margin and variable costs).",
+          "Using blended churn rates across segments.",
+          "Ignoring expansion and downgrades when revenue per account changes materially.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "What payback is 'good'?",
+        answer:
+          "It depends on your cash position and growth model. Many SaaS teams aim for ~6–18 months, but earlier-stage or lower-margin businesses often need faster payback.",
+      },
+      {
+        question: "Should I include sales salaries in CAC?",
+        answer:
+          "For planning, yes (blended CAC). For channel optimization, teams often track paid CAC separately. Be consistent in the definition you use to judge payback.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $6k CAC, $800 ARPA, 80% margin, 6% early churn (3 months), 1% steady churn, 0.5% expansion",
+        calculatorSlug: "cohort-payback-curve-calculator",
+        params: {
+          cac: "6000",
+          arpaMonthly: "800",
+          grossMarginPercent: "80",
+          earlyMonthlyChurnPercent: "6",
+          earlyMonths: "3",
+          steadyMonthlyChurnPercent: "1",
+          monthlyExpansionPercent: "0.5",
+          months: "36",
+        },
+      },
+    ],
+  },
+  {
+    slug: "break-even-ctr-guide",
+    title: "Break-even CTR: required CTR at a given CPM (with buffer)",
+    description:
+      "A practical guide to break-even CTR: how to compute required CTR from CPM, CVR, AOV, and margin, and how to use it for creative targets.",
+    category: "paid-ads",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["break-even-ctr-calculator", "break-even-cpm-calculator"],
+    relatedGlossarySlugs: ["ctr", "cpm", "cvr", "aov", "contribution-margin", "break-even-cpm"],
+    sections: [
+      { type: "h2", text: "Why CTR targets matter" },
+      {
+        type: "p",
+        text: "For impression-buying, CTR is a first-order lever. If your CTR is too low, you won't generate enough clicks and conversions per 1,000 impressions to cover CPM at your CVR and margin.",
+      },
+      { type: "h2", text: "Core math (quick reference)" },
+      {
+        type: "bullets",
+        items: [
+          "Conversions/1000 = 1000×CTR×CVR.",
+          "Contribution/conversion ≈ AOV×margin.",
+          "Break-even CPM = conversions/1000 × contribution/conversion.",
+          "Break-even CTR = CPM ÷ (1000×CVR×AOV×margin).",
+        ],
+      },
+      { type: "h2", text: "How to use it" },
+      {
+        type: "bullets",
+        items: [
+          "Use required CTR as a creative-quality target for a placement mix.",
+          "If required CTR is unrealistic, you need better CVR, higher AOV, better margin, or lower CPM.",
+          "Add a buffer; operating at break-even is fragile.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "What if my CTR is high but I still lose money?",
+        answer:
+          "Then the bottleneck is likely CVR or margin. CTR only gets you clicks; conversion quality and economics determine profitability.",
+      },
+      {
+        question: "Should I use click CVR or session CVR?",
+        answer:
+          "Use click-based CVR when computing CTR/CPC economics to avoid denominator mismatch. If you only have session CVR, treat results as directional.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $12 CPM, 2.5% CVR, $80 AOV, 40% margin, 20% buffer",
+        calculatorSlug: "break-even-ctr-calculator",
+        params: {
+          cpm: "12",
+          cvrPercent: "2.5",
+          aov: "80",
+          contributionMarginPercent: "40",
+          profitBufferPercent: "20",
+        },
+      },
+    ],
+  },
+  {
+    slug: "dcf-sensitivity-guide",
+    title: "DCF sensitivity: discount rate vs terminal growth (how to read it)",
+    description:
+      "A practical guide to DCF sensitivity analysis: why valuations swing, how to pick ranges, and how to avoid terminal value traps.",
+    category: "finance",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["dcf-sensitivity-calculator", "dcf-valuation-calculator", "wacc-calculator"],
+    relatedGlossarySlugs: ["dcf", "wacc", "discount-rate", "terminal-value", "sensitivity-analysis"],
+    sections: [
+      { type: "h2", text: "Why sensitivity matters" },
+      {
+        type: "p",
+        text: "DCF valuation is highly sensitive to discount rate and terminal assumptions. Sensitivity analysis shows how robust your conclusion is to reasonable ranges of inputs.",
+      },
+      { type: "h2", text: "How to pick ranges" },
+      {
+        type: "bullets",
+        items: [
+          "Discount rate: start with WACC as a base, then test ±1–3%.",
+          "Terminal growth: test conservative long-run rates (often 0–4% depending on context).",
+          "If terminal dominates EV, consider extending the forecast or making assumptions more conservative.",
+        ],
+      },
+      { type: "h2", text: "Common traps" },
+      {
+        type: "bullets",
+        items: [
+          "Terminal growth ≥ discount rate (invalid in perpetuity model).",
+          "Picking a range that’s too narrow and creating false confidence.",
+          "Using accounting earnings instead of cash flow for valuation.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Why does EV change so much when discount rate moves 1%?",
+        answer:
+          "Discounting compounds over time and terminal value is sensitive to (r - g). Small changes can meaningfully affect present value, especially for long-duration cash flows.",
+      },
+      {
+        question: "Is a 3×3 grid enough?",
+        answer:
+          "It’s a quick sanity check. For important decisions, expand to more scenarios and also test key operating assumptions (margin, reinvestment, growth fade).",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $5M FCF, 5 years @ 15% growth, base 12% discount ±2%, base 3% terminal ±1%",
+        calculatorSlug: "dcf-sensitivity-calculator",
+        params: {
+          annualFcf: "5000000",
+          forecastYears: "5",
+          forecastGrowthPercent: "15",
+          baseDiscountRatePercent: "12",
+          discountRateStepPercent: "2",
+          baseTerminalGrowthPercent: "3",
+          terminalGrowthStepPercent: "1",
+        },
+      },
+    ],
+  },
 ];
 
 export function getGuide(slug: string): Guide | undefined {

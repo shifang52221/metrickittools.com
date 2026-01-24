@@ -3,8 +3,11 @@ import { calculators, categories } from "@/lib/calculators";
 import { guides } from "@/lib/guides";
 import { glossaryTerms } from "@/lib/glossary";
 import { siteConfig } from "@/lib/site";
+import { validateContentOrThrow } from "@/lib/validateContent";
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  validateContentOrThrow();
+
   const staticRoutes = [
     "/",
     "/about",

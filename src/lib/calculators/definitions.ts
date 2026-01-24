@@ -7807,4 +7807,645 @@ export const calculators: CalculatorDefinition[] = [
       },
     ],
   },
+  {
+    slug: "cohort-payback-curve-calculator",
+    title: "Cohort Payback Curve Calculator",
+    description:
+      "Estimate when a cohort pays back CAC using a simple retention curve (two-stage churn) and optional expansion.",
+    category: "saas-metrics",
+    guideSlug: "cohort-payback-curve-guide",
+    relatedGlossarySlugs: [
+      "payback-period",
+      "cac",
+      "cohorted-ltv",
+      "retention-rate",
+      "logo-churn",
+      "arpa",
+      "gross-margin",
+      "expansion-mrr",
+    ],
+    seo: {
+      intro: [
+        "Payback is a cash reality check. Even if LTV is high, you can still fail if payback is too slow for your cash runway.",
+        "This calculator estimates cohort payback using a two-stage retention model (higher churn early, lower churn later) and optional expansion on surviving customers.",
+      ],
+      steps: [
+        "Enter ARPA and gross margin to compute monthly gross profit per active customer.",
+        "Enter CAC per new customer and your early vs steady-state churn assumptions.",
+        "Optionally add monthly expansion to model upgrades/seat growth.",
+        "Review the payback month and cumulative gross profit over the horizon.",
+      ],
+      pitfalls: [
+        "Using blended churn across segments (plan/channel) and hiding weak cohorts.",
+        "Using revenue instead of gross profit for payback (costs matter).",
+        "Assuming churn is constant; early churn often dominates payback.",
+      ],
+    },
+    inputs: [
+      {
+        key: "cac",
+        label: "CAC (per new customer)",
+        placeholder: "6000",
+        prefix: "$",
+        defaultValue: "6000",
+        min: 0,
+      },
+      {
+        key: "arpaMonthly",
+        label: "ARPA (monthly)",
+        placeholder: "800",
+        prefix: "$",
+        defaultValue: "800",
+        min: 0,
+      },
+      {
+        key: "grossMarginPercent",
+        label: "Gross margin",
+        placeholder: "80",
+        suffix: "%",
+        defaultValue: "80",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "earlyMonthlyChurnPercent",
+        label: "Early monthly churn",
+        placeholder: "6",
+        suffix: "%",
+        defaultValue: "6",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "earlyMonths",
+        label: "Early phase months",
+        placeholder: "3",
+        defaultValue: "3",
+        min: 1,
+        step: 1,
+      },
+      {
+        key: "steadyMonthlyChurnPercent",
+        label: "Steady-state monthly churn",
+        placeholder: "1",
+        suffix: "%",
+        defaultValue: "1",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "monthlyExpansionPercent",
+        label: "Monthly expansion (optional)",
+        help: "Expansion applied to surviving customers (set 0 to disable).",
+        placeholder: "0.5",
+        suffix: "%",
+        defaultValue: "0.5",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "months",
+        label: "Months to model",
+        placeholder: "36",
+        defaultValue: "36",
+        min: 1,
+        step: 1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const horizon = Math.max(1, Math.floor(values.months));
+      const earlyMonths = Math.max(1, Math.floor(values.earlyMonths));
+      if (values.months !== horizon)
+        warnings.push("Months was rounded down to a whole number.");
+      if (values.earlyMonths !== earlyMonths)
+        warnings.push("Early phase months was rounded down to a whole number.");
+
+      const churnEarly = values.earlyMonthlyChurnPercent / 100;
+      const churnSteady = values.steadyMonthlyChurnPercent / 100;
+      const expansion = values.monthlyExpansionPercent / 100;
+      const margin = values.grossMarginPercent / 100;
+
+      if (values.cac <= 0) warnings.push("CAC must be greater than 0.");
+      if (values.arpaMonthly <= 0) warnings.push("ARPA must be greater than 0.");
+      if (margin <= 0) warnings.push("Gross margin must be greater than 0%.");
+      if (churnEarly < 0 || churnEarly >= 1)
+        warnings.push("Early churn must be between 0% and 99.9%.");
+      if (churnSteady < 0 || churnSteady >= 1)
+        warnings.push("Steady churn must be between 0% and 99.9%.");
+      if (expansion < 0 || expansion >= 1)
+        warnings.push("Expansion must be between 0% and 99.9%.");
+
+      const retentionAt = (m: number) => {
+        const early = Math.min(m, earlyMonths);
+        const late = Math.max(0, m - earlyMonths);
+        return (
+          Math.pow(1 - churnEarly, early) * Math.pow(1 - churnSteady, late)
+        );
+      };
+
+      let cumulativeGrossProfit = 0;
+      let paybackMonth: number | null = null;
+      let gp12 = 0;
+      let gp24 = 0;
+
+      for (let month = 1; month <= horizon; month++) {
+        const active = retentionAt(month - 1);
+        const arpa = values.arpaMonthly * Math.pow(1 + expansion, month - 1);
+        const grossProfit = active * arpa * margin;
+        cumulativeGrossProfit += grossProfit;
+
+        if (month === 12) gp12 = cumulativeGrossProfit;
+        if (month === 24) gp24 = cumulativeGrossProfit;
+
+        if (paybackMonth === null && cumulativeGrossProfit >= values.cac) {
+          const prevCumulative = cumulativeGrossProfit - grossProfit;
+          const remaining = values.cac - prevCumulative;
+          const fraction = grossProfit > 0 ? remaining / grossProfit : 0;
+          paybackMonth = (month - 1) + fraction;
+        }
+      }
+
+      if (paybackMonth === null) {
+        warnings.push("Payback not reached within the chosen horizon.");
+      }
+
+      const ltvToCac = values.cac > 0 ? cumulativeGrossProfit / values.cac : 0;
+
+      return {
+        headline: {
+          key: "payback",
+          label: "Estimated payback (months)",
+          value: paybackMonth ?? 0,
+          format: "months",
+          maxFractionDigits: 1,
+          detail: paybackMonth === null ? "Not reached in horizon" : "Cumulative gross profit ≥ CAC",
+        },
+        secondary: [
+          {
+            key: "cumulativeGrossProfit",
+            label: `Cumulative gross profit (${horizon} months)`,
+            value: cumulativeGrossProfit,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "ltvToCac",
+            label: "Gross profit LTV:CAC (over horizon)",
+            value: ltvToCac,
+            format: "multiple",
+            maxFractionDigits: 2,
+            detail: "Cumulative gross profit ÷ CAC",
+          },
+          {
+            key: "gp12",
+            label: "Cumulative gross profit (12 months)",
+            value: gp12,
+            format: "currency",
+            currency: "USD",
+            detail: horizon < 12 ? "Horizon < 12 months" : undefined,
+          },
+          {
+            key: "gp24",
+            label: "Cumulative gross profit (24 months)",
+            value: gp24,
+            format: "currency",
+            currency: "USD",
+            detail: horizon < 24 ? "Horizon < 24 months" : undefined,
+          },
+        ],
+        breakdown: [
+          {
+            key: "cac",
+            label: "CAC",
+            value: values.cac,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "arpaMonthly",
+            label: "ARPA (monthly)",
+            value: values.arpaMonthly,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "grossMargin",
+            label: "Gross margin",
+            value: margin,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "expansion",
+            label: "Monthly expansion",
+            value: expansion,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Cumulative gross profit = Σ(retained_customers_t × ARPA_t × gross margin); Payback occurs when cumulative gross profit ≥ CAC",
+    assumptions: [
+      "Two-stage logo churn (early vs steady-state).",
+      "Expansion applies to surviving customers' revenue each month (simplified).",
+      "Gross margin is constant and used as a proxy for gross profit.",
+    ],
+    faqs: [
+      {
+        question: "Why model early churn separately?",
+        answer:
+          "Because early churn often dominates payback. Improving activation and onboarding can dramatically reduce payback even if steady-state churn is unchanged.",
+      },
+      {
+        question: "Should I use logo churn or revenue churn?",
+        answer:
+          "Payback is about cash from customers. If expansion and downgrades matter, model revenue retention curves (NRR/GRR). Logo churn is still useful for intuition but can miss dollar effects.",
+      },
+    ],
+  },
+  {
+    slug: "break-even-ctr-calculator",
+    title: "Break-even CTR Calculator",
+    description:
+      "Compute the CTR required to break even (and hit a target) given CPM, CVR, AOV, and contribution margin.",
+    category: "paid-ads",
+    guideSlug: "break-even-ctr-guide",
+    relatedGlossarySlugs: [
+      "ctr",
+      "cpm",
+      "cvr",
+      "aov",
+      "contribution-margin",
+      "break-even-cpm",
+    ],
+    seo: {
+      intro: [
+        "When buying impressions, CTR is a key lever: it determines how many clicks you generate per 1,000 impressions and therefore how many conversions you can drive at a given CVR.",
+        "This calculator computes the break-even CTR required for a given CPM, and a target CTR that includes a profit buffer.",
+      ],
+      steps: [
+        "Enter CPM, CVR, AOV, and contribution margin.",
+        "Compute break-even CTR and add a buffer to get target CTR.",
+        "Use this to sanity-check creative/placement performance targets.",
+      ],
+      pitfalls: [
+        "Mixing click CVR with session CVR (denominator mismatch).",
+        "Using revenue instead of contribution margin economics.",
+        "Ignoring incrementality at scale (CTR and CVR can be inflated by retargeting).",
+      ],
+    },
+    inputs: [
+      {
+        key: "cpm",
+        label: "CPM",
+        placeholder: "12",
+        prefix: "$",
+        defaultValue: "12",
+        min: 0,
+        step: 0.01,
+      },
+      {
+        key: "cvrPercent",
+        label: "CVR (click → conversion)",
+        placeholder: "2.5",
+        suffix: "%",
+        defaultValue: "2.5",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "aov",
+        label: "AOV",
+        placeholder: "80",
+        prefix: "$",
+        defaultValue: "80",
+        min: 0,
+      },
+      {
+        key: "contributionMarginPercent",
+        label: "Contribution margin",
+        placeholder: "40",
+        suffix: "%",
+        defaultValue: "40",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "profitBufferPercent",
+        label: "Profit buffer",
+        placeholder: "20",
+        suffix: "%",
+        defaultValue: "20",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const cvr = values.cvrPercent / 100;
+      const margin = values.contributionMarginPercent / 100;
+      const buffer = values.profitBufferPercent / 100;
+
+      if (values.cpm <= 0) warnings.push("CPM must be greater than 0.");
+      if (cvr <= 0) warnings.push("CVR must be greater than 0%.");
+      if (values.aov <= 0) warnings.push("AOV must be greater than 0.");
+      if (margin <= 0) warnings.push("Contribution margin must be greater than 0%.");
+
+      const denom = 1000 * cvr * values.aov * margin;
+      const breakEvenCtr = denom > 0 ? values.cpm / denom : 0;
+      const targetCtr =
+        denom > 0 ? values.cpm / (denom * Math.max(0.0001, 1 - buffer)) : 0;
+
+      const breakEvenCpc = breakEvenCtr > 0 ? values.cpm / (1000 * breakEvenCtr) : 0;
+      const targetCpc = targetCtr > 0 ? values.cpm / (1000 * targetCtr) : 0;
+
+      return {
+        headline: {
+          key: "targetCtr",
+          label: "Target CTR",
+          value: targetCtr,
+          format: "percent",
+          maxFractionDigits: 2,
+          detail: "CTR needed to hit profit buffer at this CPM",
+        },
+        secondary: [
+          {
+            key: "breakEvenCtr",
+            label: "Break-even CTR",
+            value: breakEvenCtr,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: "CTR needed where profit = 0 (variable economics)",
+          },
+          {
+            key: "breakEvenCpc",
+            label: "Implied break-even CPC",
+            value: breakEvenCpc,
+            format: "currency",
+            currency: "USD",
+            detail: "CPC implied by CPM and break-even CTR",
+          },
+          {
+            key: "targetCpc",
+            label: "Implied target CPC",
+            value: targetCpc,
+            format: "currency",
+            currency: "USD",
+            detail: "CPC implied by CPM and target CTR",
+          },
+        ],
+        breakdown: [
+          {
+            key: "cpm",
+            label: "CPM",
+            value: values.cpm,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "cvr",
+            label: "CVR",
+            value: cvr,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "aov",
+            label: "AOV",
+            value: values.aov,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "margin",
+            label: "Contribution margin",
+            value: margin,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Break-even CTR = CPM / (1000×CVR×AOV×margin); Target CTR = break-even / (1 - buffer)",
+    assumptions: [
+      "CVR is click-based (conversions ÷ clicks).",
+      "Margin reflects variable economics (contribution margin).",
+      "Ignores long-term LTV; best for one-time purchase economics.",
+    ],
+    faqs: [
+      {
+        question: "Why does required CTR increase when margin is lower?",
+        answer:
+          "Lower margin means less contribution per conversion. To cover the same CPM, you need more conversions per 1,000 impressions, which requires higher CTR (or higher CVR).",
+      },
+      {
+        question: "Should I use this for subscription products?",
+        answer:
+          "Use it as a first-order sanity check, but subscription businesses should typically use LTV-based targets (because value is not captured in a single purchase AOV).",
+      },
+    ],
+  },
+  {
+    slug: "dcf-sensitivity-calculator",
+    title: "DCF Sensitivity Calculator",
+    description:
+      "Estimate how enterprise value changes with discount rate and terminal growth assumptions (simple 3×3 sensitivity).",
+    category: "finance",
+    guideSlug: "dcf-sensitivity-guide",
+    relatedGlossarySlugs: ["dcf", "discount-rate", "terminal-value", "wacc", "sensitivity-analysis"],
+    seo: {
+      intro: [
+        "Most DCFs are dominated by discount rate and terminal value assumptions. A sensitivity grid helps you see how fragile (or robust) your valuation is.",
+        "This calculator computes enterprise value at a 3×3 grid around your base discount rate and terminal growth assumptions.",
+      ],
+      steps: [
+        "Enter current annual free cash flow (FCF) and a simple forecast (years + growth).",
+        "Enter base discount rate and terminal growth.",
+        "Enter steps for discount rate and terminal growth to generate a 3×3 grid.",
+      ],
+      pitfalls: [
+        "Terminal growth ≥ discount rate (invalid in perpetuity model).",
+        "Treating a single scenario as precise (false precision).",
+        "Using accounting profit instead of free cash flow.",
+      ],
+    },
+    inputs: [
+      {
+        key: "annualFcf",
+        label: "Current annual free cash flow (FCF)",
+        placeholder: "5000000",
+        prefix: "$",
+        defaultValue: "5000000",
+        min: 0,
+      },
+      {
+        key: "forecastYears",
+        label: "Forecast years",
+        placeholder: "5",
+        defaultValue: "5",
+        min: 1,
+        step: 1,
+      },
+      {
+        key: "forecastGrowthPercent",
+        label: "Forecast growth (annual)",
+        placeholder: "15",
+        suffix: "%",
+        defaultValue: "15",
+        min: -100,
+        step: 0.1,
+      },
+      {
+        key: "baseDiscountRatePercent",
+        label: "Base discount rate",
+        placeholder: "12",
+        suffix: "%",
+        defaultValue: "12",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "discountRateStepPercent",
+        label: "Discount rate step",
+        placeholder: "2",
+        suffix: "%",
+        defaultValue: "2",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "baseTerminalGrowthPercent",
+        label: "Base terminal growth",
+        placeholder: "3",
+        suffix: "%",
+        defaultValue: "3",
+        min: -50,
+        step: 0.1,
+      },
+      {
+        key: "terminalGrowthStepPercent",
+        label: "Terminal growth step",
+        placeholder: "1",
+        suffix: "%",
+        defaultValue: "1",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const years = Math.max(1, Math.floor(values.forecastYears));
+      if (values.forecastYears !== years)
+        warnings.push("Forecast years was rounded down to a whole number.");
+
+      const g = values.forecastGrowthPercent / 100;
+      const baseR = values.baseDiscountRatePercent / 100;
+      const rStep = values.discountRateStepPercent / 100;
+      const baseTg = values.baseTerminalGrowthPercent / 100;
+      const tgStep = values.terminalGrowthStepPercent / 100;
+
+      if (values.annualFcf <= 0) warnings.push("FCF should be greater than 0 for valuation.");
+      if (baseR <= 0) warnings.push("Discount rate must be greater than 0%.");
+
+      const evAt = (r: number, tg: number) => {
+        let pvForecast = 0;
+        let fcf = values.annualFcf;
+        for (let t = 1; t <= years; t++) {
+          fcf = fcf * (1 + g);
+          pvForecast += fcf / Math.pow(1 + r, t);
+        }
+        const fcfTerminal = fcf * (1 + tg);
+        if (tg >= r) return null;
+        const terminalValue = fcfTerminal / (r - tg);
+        const pvTerminal = terminalValue / Math.pow(1 + r, years);
+        return pvForecast + pvTerminal;
+      };
+
+      const rLow = Math.max(0.0001, baseR - rStep);
+      const rMid = baseR;
+      const rHigh = baseR + rStep;
+
+      const tgLow = baseTg - tgStep;
+      const tgMid = baseTg;
+      const tgHigh = baseTg + tgStep;
+
+      const baseEv = evAt(rMid, tgMid);
+      if (baseEv === null) warnings.push("Base inputs are invalid: terminal growth must be less than discount rate.");
+
+      const grid: Array<{ key: string; label: string; value: number }> = [];
+      const points: Array<[string, number, number]> = [
+        ["ev_rLow_tgLow", rLow, tgLow],
+        ["ev_rLow_tgMid", rLow, tgMid],
+        ["ev_rLow_tgHigh", rLow, tgHigh],
+        ["ev_rMid_tgLow", rMid, tgLow],
+        ["ev_rMid_tgMid", rMid, tgMid],
+        ["ev_rMid_tgHigh", rMid, tgHigh],
+        ["ev_rHigh_tgLow", rHigh, tgLow],
+        ["ev_rHigh_tgMid", rHigh, tgMid],
+        ["ev_rHigh_tgHigh", rHigh, tgHigh],
+      ];
+
+      for (const [key, r, tg] of points) {
+        const ev = evAt(r, tg);
+        if (ev === null) continue;
+        grid.push({
+          key,
+          label: `EV @ ${(r * 100).toFixed(1)}% / ${(tg * 100).toFixed(1)}%`,
+          value: ev,
+        });
+      }
+
+      if (grid.length < 5) {
+        warnings.push(
+          "Many grid points are invalid because terminal growth is too close to or above the discount rate. Reduce terminal growth or increase discount rate.",
+        );
+      }
+
+      const headlineEv = baseEv ?? (grid[0]?.value ?? 0);
+
+      return {
+        headline: {
+          key: "evBase",
+          label: "Enterprise value (base case)",
+          value: headlineEv,
+          format: "currency",
+          currency: "USD",
+          detail: `Base: ${values.baseDiscountRatePercent}% / ${values.baseTerminalGrowthPercent}%`,
+        },
+        secondary: grid.map((g) => ({
+          key: g.key,
+          label: g.label,
+          value: g.value,
+          format: "currency",
+          currency: "USD",
+        })),
+        warnings,
+      };
+    },
+    formula:
+      "EV = Σ(FCF_t/(1+r)^t) + (FCF_(n+1)/(r - g_terminal))/(1+r)^n; Sensitivity varies r and g_terminal",
+    assumptions: [
+      "Uses a simple constant growth forecast during the explicit period.",
+      "Terminal value uses a perpetuity growth model.",
+      "Only shows a small grid; use broader scenarios for full sensitivity analysis.",
+    ],
+    faqs: [
+      {
+        question: "Why do some grid points disappear?",
+        answer:
+          "Because the perpetuity model requires terminal growth to be less than the discount rate (r > g). When g is too high relative to r, the terminal value becomes mathematically invalid.",
+      },
+      {
+        question: "How should I pick the steps?",
+        answer:
+          "A common starting point is ±1–3% for discount rate and ±0.5–1% for terminal growth. If valuation changes wildly, you need more conservative assumptions and/or better forecasting detail.",
+      },
+    ],
+  },
 ];

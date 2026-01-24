@@ -68,6 +68,28 @@ const seeds: Seed[] = [
     relatedCalculatorSlugs: ["arpu-calculator", "cac-payback-period-calculator"],
   },
   {
+    slug: "cac-payback-period",
+    title: "CAC Payback Period",
+    description:
+      "CAC payback period estimates how long it takes to recover customer acquisition cost (CAC) using the gross profit generated each month by a customer/account.",
+    formula: "Payback (months) ≈ CAC ÷ (ARPA × gross margin)",
+    bullets: [
+      "Shorter payback reduces cash risk and improves your ability to scale acquisition.",
+      "Use gross profit (margin) rather than revenue to avoid overstating payback speed.",
+      "Track payback by channel and plan; blended payback can hide weak cohorts.",
+    ],
+    mistakes: [
+      "Using revenue payback while CAC includes fully-loaded spend (mismatch).",
+      "Mixing monthly ARPA with annual churn or annual CAC (time window mismatch).",
+      "Ignoring early churn and assuming steady-state behavior from day 1.",
+    ],
+    relatedGuideSlugs: ["cac-payback-guide", "cohort-payback-curve-guide"],
+    relatedCalculatorSlugs: [
+      "cac-payback-period-calculator",
+      "cohort-payback-curve-calculator",
+    ],
+  },
+  {
     slug: "arr-vs-bookings",
     title: "Bookings vs ARR",
     description:
@@ -146,6 +168,25 @@ const seeds: Seed[] = [
     ],
     relatedGuideSlugs: ["retention-curve-guide", "cohort-vs-aggregate-guide"],
     relatedCalculatorSlugs: ["retention-rate-calculator", "retention-curve-calculator"],
+  },
+  {
+    slug: "churn-rate",
+    title: "Churn Rate",
+    description:
+      "Churn rate measures the fraction of customers (logo churn) or recurring revenue (revenue churn) lost over a period. It is one of the most important drivers of LTV and payback.",
+    formula: "Churn rate = losses ÷ starting base (customers or revenue)",
+    bullets: [
+      "Specify whether churn is logo churn (count) or revenue churn (dollars).",
+      "Keep time units consistent (monthly vs annual) when using churn in formulas.",
+      "Use cohort curves to see how churn changes over time rather than relying on a single average.",
+    ],
+    mistakes: [
+      "Mixing logo churn with revenue retention metrics (NRR/GRR).",
+      "Using annual churn as if it were monthly churn (time unit mismatch).",
+      "Relying on blended churn when segments behave differently.",
+    ],
+    relatedGuideSlugs: ["retention-curve-guide", "cohort-ltv-forecast-guide"],
+    relatedCalculatorSlugs: ["churn-rate-calculator", "retention-rate-calculator"],
   },
   {
     slug: "net-new-mrr",

@@ -102,6 +102,18 @@ const seeds: Seed[] = [
     relatedCalculatorSlugs: ["max-cpc-calculator"],
   },
   {
+    slug: "break-even-cpm",
+    title: "Break-even CPM",
+    description:
+      "Break-even CPM is the maximum cost per 1,000 impressions you can pay while still breaking even on variable economics at your CTR, CVR, and contribution margin.",
+    bullets: [
+      "Break-even CPM increases with CTR, CVR, AOV, and margin.",
+      "Use a buffer; break-even is fragile under noise and attribution error.",
+    ],
+    relatedGuideSlugs: ["break-even-cpm-guide", "break-even-ctr-guide"],
+    relatedCalculatorSlugs: ["break-even-cpm-calculator", "break-even-ctr-calculator"],
+  },
+  {
     slug: "ctr",
     title: "CTR (Click-Through Rate)",
     description: "CTR is the fraction of impressions that become clicks.",
@@ -110,6 +122,8 @@ const seeds: Seed[] = [
       "Optimizing CTR alone (without conversion quality).",
       "Comparing CTR across very different placements (feed vs search).",
     ],
+    relatedGuideSlugs: ["break-even-ctr-guide", "paid-ads-funnel-guide"],
+    relatedCalculatorSlugs: ["break-even-ctr-calculator", "paid-ads-funnel-calculator"],
   },
   {
     slug: "cvr",
