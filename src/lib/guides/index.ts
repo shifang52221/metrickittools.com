@@ -3046,6 +3046,209 @@ export const guides: Guide[] = [
       },
     ],
   },
+  {
+    slug: "wacc-guide",
+    title: "WACC explained: how to estimate a discount rate for DCF",
+    description:
+      "A practical guide to WACC: what it is, how to compute it, and how to use it (carefully) as a DCF discount rate.",
+    category: "finance",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["wacc-calculator", "dcf-valuation-calculator"],
+    relatedGlossarySlugs: ["wacc", "discount-rate", "cost-of-equity", "cost-of-debt", "terminal-value"],
+    sections: [
+      { type: "h2", text: "What WACC means" },
+      {
+        type: "p",
+        text: "WACC (weighted average cost of capital) is the blended required return of capital providers: equity holders and debt holders. Debt is adjusted for taxes because interest is often tax deductible.",
+      },
+      { type: "h2", text: "Core formula" },
+      {
+        type: "p",
+        text: "WACC = w_e×k_e + w_d×k_d×(1 - tax rate)",
+      },
+      { type: "h2", text: "How to choose inputs (practical)" },
+      {
+        type: "bullets",
+        items: [
+          "Weights: use market-value capital structure when possible (not book values).",
+          "Cost of equity: often estimated via CAPM as a starting point (risk-free + beta×equity risk premium).",
+          "Cost of debt: current borrowing rate for the firm’s risk profile.",
+          "Tax rate: marginal corporate tax rate applicable to interest deductions.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using WACC for projects with different risk than the business.",
+          "Using a single-point WACC without sensitivity analysis.",
+          "Letting terminal value dominate because discount rate is too low.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is WACC the same as discount rate?",
+        answer:
+          "WACC is often used as a discount rate proxy for valuing the overall firm. But the correct discount rate should match the risk of the cash flows being discounted.",
+      },
+      {
+        question: "Should I use after-tax or pre-tax cash flows?",
+        answer:
+          "Be consistent. Most DCFs discount after-tax free cash flows and use WACC as an after-tax rate proxy. Mixing pre-tax cash flows with after-tax discount rates can distort valuation.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: 70% equity, 30% debt, 15% cost of equity, 7% cost of debt, 25% tax",
+        calculatorSlug: "wacc-calculator",
+        params: {
+          equityWeightPercent: "70",
+          debtWeightPercent: "30",
+          costOfEquityPercent: "15",
+          costOfDebtPercent: "7",
+          taxRatePercent: "25",
+        },
+      },
+    ],
+  },
+  {
+    slug: "mer-guide",
+    title: "MER (blended ROAS): how to use it without fooling yourself",
+    description:
+      "A practical guide to MER: what it is, how it differs from ROAS, how to compute break-even/target MER, and common pitfalls.",
+    category: "paid-ads",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["mer-calculator", "break-even-roas-calculator", "marginal-roas-calculator"],
+    relatedGlossarySlugs: ["mer", "blended-roas", "roas", "contribution-margin", "incrementality", "attribution-window"],
+    sections: [
+      { type: "h2", text: "What MER is" },
+      {
+        type: "p",
+        text: "MER (marketing efficiency ratio) is total revenue ÷ total marketing spend over the same period. It’s a top-down metric that reduces attribution noise, but it hides channel-level performance.",
+      },
+      { type: "h2", text: "Break-even and target MER" },
+      {
+        type: "bullets",
+        items: [
+          "Break-even MER ≈ 1 ÷ contribution margin (variable economics).",
+          "Target MER should be higher than break-even to leave buffer for uncertainty, overhead, and measurement error.",
+        ],
+      },
+      { type: "h2", text: "How to use MER in practice" },
+      {
+        type: "bullets",
+        items: [
+          "Track MER for overall health and directional trends.",
+          "Use channel-level ROAS/CPA and incrementality for optimization decisions.",
+          "Adjust analysis for seasonality, promos, pricing changes, and returns.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Optimizing to MER alone (can hide wasted spend).",
+          "Comparing periods with different attribution windows or delayed revenue recognition.",
+          "Using gross revenue without netting refunds/returns where meaningful.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is MER better than ROAS?",
+        answer:
+          "They’re different tools. MER is better for a top-down check across channels. ROAS (and CPA) are better for within-channel optimization, especially when paired with incrementality tests.",
+      },
+      {
+        question: "What period should I use?",
+        answer:
+          "Use a consistent window that matches your business cycle (weekly for fast ecommerce, monthly for many teams). Make sure revenue and spend are aligned in time.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $500k revenue, $100k marketing spend, 40% margin, 20% buffer",
+        calculatorSlug: "mer-calculator",
+        params: {
+          totalRevenue: "500000",
+          totalMarketingSpend: "100000",
+          contributionMarginPercent: "40",
+          profitBufferPercent: "20",
+        },
+      },
+    ],
+  },
+  {
+    slug: "two-stage-retention-guide",
+    title: "Two-stage churn: modeling early drop-off vs steady-state retention",
+    description:
+      "A practical guide to two-stage churn models: why early churn matters, how to model it, and how to connect retention improvements to LTV.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["two-stage-retention-curve-calculator", "retention-curve-calculator", "cohort-ltv-forecast-calculator"],
+    relatedGlossarySlugs: ["retention-rate", "logo-churn", "activation-rate", "customer-lifetime", "cohorted-ltv", "arpa", "gross-margin"],
+    sections: [
+      { type: "h2", text: "Why two-stage churn is common" },
+      {
+        type: "p",
+        text: "Many products lose a meaningful share of customers early (activation/onboarding), then settle into a lower steady-state churn rate among customers who achieved product-market fit. A two-stage model captures that pattern better than constant churn.",
+      },
+      { type: "h2", text: "Model structure" },
+      {
+        type: "bullets",
+        items: [
+          "Early phase churn: higher churn for the first N months.",
+          "Steady-state churn: lower churn after customers survive the early phase.",
+          "Translate retention into value using ARPA and gross margin.",
+        ],
+      },
+      { type: "h2", text: "How to use it for strategy" },
+      {
+        type: "bullets",
+        items: [
+          "Improving early churn often has outsized impact because it increases the base that can expand later.",
+          "Segment by channel/plan to identify cohorts with steep early drop-off.",
+          "Use sensitivity: small changes in early churn can compound over 12–24 months.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Applying blended churn to all segments (hides pockets of weak retention).",
+          "Assuming steady-state churn never changes (it can worsen with product changes).",
+          "Ignoring expansion and contraction when revenue retention is the real driver.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "How do I pick early months?",
+        answer:
+          "Use your cohort curve: the early months are where retention drops most steeply. For many products it’s months 1–3, but it varies by onboarding and purchase cycle.",
+      },
+      {
+        question: "Should I use logo churn or revenue churn?",
+        answer:
+          "For customer survival curves, use logo churn. For revenue planning, also model GRR/NRR and expansion. Both are useful but answer different questions.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: 6% early churn for 3 months, then 1% steady churn, $800 ARPA, 80% margin, 36 months",
+        calculatorSlug: "two-stage-retention-curve-calculator",
+        params: {
+          earlyMonthlyChurnPercent: "6",
+          earlyMonths: "3",
+          steadyMonthlyChurnPercent: "1",
+          arpaMonthly: "800",
+          grossMarginPercent: "80",
+          months: "36",
+        },
+      },
+    ],
+  },
 ];
 
 export function getGuide(slug: string): Guide | undefined {

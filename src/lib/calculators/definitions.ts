@@ -6022,4 +6022,588 @@ export const calculators: CalculatorDefinition[] = [
       },
     ],
   },
+  {
+    slug: "wacc-calculator",
+    title: "WACC Calculator",
+    description:
+      "Calculate WACC (Weighted Average Cost of Capital) from capital structure, cost of equity, cost of debt, and tax rate.",
+    category: "finance",
+    guideSlug: "wacc-guide",
+    relatedGlossarySlugs: [
+      "wacc",
+      "discount-rate",
+      "cost-of-equity",
+      "cost-of-debt",
+      "terminal-value",
+    ],
+    seo: {
+      intro: [
+        "WACC is a common discount rate proxy for DCF valuation. It blends the required return of equity holders and debt holders, adjusting debt for the tax shield.",
+        "This calculator computes WACC and the after-tax cost of debt from your inputs (and normalizes weights if they don't sum to 100%).",
+      ],
+      steps: [
+        "Enter equity and debt weights (or percentages).",
+        "Enter cost of equity, cost of debt, and corporate tax rate.",
+        "Use WACC as a discount rate input for a DCF (with sensitivity analysis).",
+      ],
+      pitfalls: [
+        "Using WACC for projects with different risk than the overall business.",
+        "Mixing market-value weights with book-value costs (inconsistent inputs).",
+        "Treating WACC as precise; it’s an estimate that should be scenario tested.",
+      ],
+    },
+    inputs: [
+      {
+        key: "equityWeightPercent",
+        label: "Equity weight",
+        placeholder: "70",
+        suffix: "%",
+        defaultValue: "70",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "debtWeightPercent",
+        label: "Debt weight",
+        placeholder: "30",
+        suffix: "%",
+        defaultValue: "30",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "costOfEquityPercent",
+        label: "Cost of equity",
+        placeholder: "15",
+        suffix: "%",
+        defaultValue: "15",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "costOfDebtPercent",
+        label: "Cost of debt",
+        placeholder: "7",
+        suffix: "%",
+        defaultValue: "7",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "taxRatePercent",
+        label: "Corporate tax rate",
+        placeholder: "25",
+        suffix: "%",
+        defaultValue: "25",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const weRaw = values.equityWeightPercent / 100;
+      const wdRaw = values.debtWeightPercent / 100;
+      const sum = weRaw + wdRaw;
+
+      let we = weRaw;
+      let wd = wdRaw;
+      if (sum <= 0) {
+        warnings.push("Equity weight + debt weight must be greater than 0.");
+        we = 1;
+        wd = 0;
+      } else if (Math.abs(sum - 1) > 1e-6) {
+        warnings.push("Weights were normalized to sum to 100%.");
+        we = weRaw / sum;
+        wd = wdRaw / sum;
+      }
+
+      const ke = values.costOfEquityPercent / 100;
+      const kd = values.costOfDebtPercent / 100;
+      const tax = values.taxRatePercent / 100;
+
+      const afterTaxDebt = kd * (1 - tax);
+      const wacc = we * ke + wd * afterTaxDebt;
+
+      return {
+        headline: {
+          key: "wacc",
+          label: "WACC",
+          value: wacc,
+          format: "percent",
+          maxFractionDigits: 2,
+          detail: "Weighted cost of capital (after-tax debt)",
+        },
+        secondary: [
+          {
+            key: "afterTaxDebt",
+            label: "After-tax cost of debt",
+            value: afterTaxDebt,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: "Cost of debt × (1 - tax rate)",
+          },
+          {
+            key: "equityWeight",
+            label: "Equity weight (normalized)",
+            value: we,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "debtWeight",
+            label: "Debt weight (normalized)",
+            value: wd,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+        ],
+        breakdown: [
+          {
+            key: "costOfEquity",
+            label: "Cost of equity",
+            value: ke,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "costOfDebt",
+            label: "Cost of debt",
+            value: kd,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "taxRate",
+            label: "Tax rate",
+            value: tax,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "WACC = w_e×k_e + w_d×k_d×(1 - tax rate)",
+    assumptions: [
+      "Debt benefit is modeled via the interest tax shield (after-tax cost of debt).",
+      "Weights should ideally reflect market value capital structure.",
+      "WACC is an estimate; use sensitivity analysis.",
+    ],
+    faqs: [
+      {
+        question: "Should I use WACC as my DCF discount rate?",
+        answer:
+          "Often yes as a starting point for valuing the overall firm. For projects with different risk than the core business, use a risk-adjusted discount rate instead of the company WACC.",
+      },
+      {
+        question: "Why do we adjust debt for taxes?",
+        answer:
+          "Interest expense is often tax deductible, so debt financing has a tax shield. Using after-tax cost of debt reflects that benefit in WACC.",
+      },
+    ],
+  },
+  {
+    slug: "mer-calculator",
+    title: "MER Calculator",
+    description:
+      "Calculate MER (Marketing Efficiency Ratio / blended ROAS) and estimate break-even and target MER from margin assumptions.",
+    category: "paid-ads",
+    guideSlug: "mer-guide",
+    relatedGlossarySlugs: [
+      "mer",
+      "blended-roas",
+      "contribution-margin",
+      "gross-margin",
+      "roas",
+      "incrementality",
+    ],
+    seo: {
+      intro: [
+        "MER (marketing efficiency ratio) is total revenue divided by total marketing spend over the same period. It’s a useful top-down health metric that reduces channel attribution noise.",
+        "To make MER decision-useful, translate it into profit using contribution margin and compute break-even and target MER thresholds.",
+      ],
+      steps: [
+        "Enter total revenue and total marketing spend for the same window.",
+        "Enter contribution margin to estimate gross profit after variable costs.",
+        "Optionally set a profit buffer to compute a target MER (more conservative than break-even).",
+      ],
+      pitfalls: [
+        "Using MER alone to optimize channel budgets (it hides what’s working).",
+        "Mixing time windows (weekly spend with monthly revenue).",
+        "Ignoring promos/seasonality and concluding performance changed structurally.",
+      ],
+    },
+    inputs: [
+      {
+        key: "totalRevenue",
+        label: "Total revenue (same period)",
+        placeholder: "500000",
+        prefix: "$",
+        defaultValue: "500000",
+        min: 0,
+      },
+      {
+        key: "totalMarketingSpend",
+        label: "Total marketing spend (same period)",
+        placeholder: "100000",
+        prefix: "$",
+        defaultValue: "100000",
+        min: 0,
+      },
+      {
+        key: "contributionMarginPercent",
+        label: "Contribution margin (optional)",
+        help: "Used to estimate profit and break-even/target MER.",
+        placeholder: "40",
+        suffix: "%",
+        defaultValue: "40",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "profitBufferPercent",
+        label: "Profit buffer (optional)",
+        help: "Percent of gross profit to keep as profit (target MER increases as buffer increases).",
+        placeholder: "20",
+        suffix: "%",
+        defaultValue: "20",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      if (values.totalMarketingSpend <= 0)
+        warnings.push("Marketing spend must be greater than 0.");
+
+      const mer = safeDivide(values.totalRevenue, values.totalMarketingSpend) ?? 0;
+
+      const margin = values.contributionMarginPercent / 100;
+      const grossProfit = values.totalRevenue * margin;
+      const profitAfterSpend = grossProfit - values.totalMarketingSpend;
+
+      const breakEvenMer = margin > 0 ? 1 / margin : null;
+      const buffer = values.profitBufferPercent / 100;
+      const targetMer = margin > 0 ? 1 / (margin * Math.max(0.0001, 1 - buffer)) : null;
+
+      if (margin <= 0) {
+        warnings.push("Enter a contribution margin above 0% to compute profit and MER thresholds.");
+      }
+
+      return {
+        headline: {
+          key: "mer",
+          label: "MER (blended ROAS)",
+          value: mer,
+          format: "multiple",
+          maxFractionDigits: 2,
+          detail: "Total revenue ÷ total marketing spend",
+        },
+        secondary: [
+          {
+            key: "profitAfterSpend",
+            label: "Estimated profit after marketing spend",
+            value: profitAfterSpend,
+            format: "currency",
+            currency: "USD",
+            detail: "Revenue × margin - marketing spend",
+          },
+          {
+            key: "grossProfit",
+            label: "Gross profit (from margin)",
+            value: grossProfit,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "breakEvenMer",
+            label: "Break-even MER",
+            value: breakEvenMer ?? 0,
+            format: "multiple",
+            maxFractionDigits: 2,
+            detail: breakEvenMer === null ? "Margin is 0%" : "1 ÷ margin",
+          },
+          {
+            key: "targetMer",
+            label: "Target MER (with profit buffer)",
+            value: targetMer ?? 0,
+            format: "multiple",
+            maxFractionDigits: 2,
+            detail: targetMer === null ? "Margin is 0%" : "1 ÷ (margin × (1 - buffer))",
+          },
+        ],
+        breakdown: [
+          {
+            key: "totalRevenue",
+            label: "Total revenue",
+            value: values.totalRevenue,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "totalMarketingSpend",
+            label: "Total marketing spend",
+            value: values.totalMarketingSpend,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "margin",
+            label: "Contribution margin",
+            value: margin,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "MER = revenue ÷ marketing spend; Profit ≈ revenue×margin - spend; Break-even MER = 1 ÷ margin",
+    assumptions: [
+      "Uses contribution margin as a simplified proxy for gross profit after variable costs.",
+      "Revenue and spend are measured over the same period and on the same attribution basis.",
+      "MER is top-down; use channel-level metrics for optimization.",
+    ],
+    faqs: [
+      {
+        question: "Is MER the same as ROAS?",
+        answer:
+          "It’s a blended version. ROAS is often channel/campaign-level attributed revenue ÷ spend. MER uses total revenue ÷ total marketing spend, which reduces attribution noise but hides what’s driving performance.",
+      },
+      {
+        question: "How do I pick a profit buffer?",
+        answer:
+          "Start with 10–30% of gross profit as buffer for uncertainty, overhead, refunds, and measurement error. More volatility and longer payback generally require a larger buffer.",
+      },
+    ],
+  },
+  {
+    slug: "two-stage-retention-curve-calculator",
+    title: "Two-stage Retention Curve Calculator",
+    description:
+      "Model a retention curve with different churn rates for early months vs steady-state, and estimate expected value over time.",
+    category: "saas-metrics",
+    guideSlug: "two-stage-retention-guide",
+    relatedGlossarySlugs: [
+      "retention-rate",
+      "logo-churn",
+      "activation-rate",
+      "customer-lifetime",
+      "cohorted-ltv",
+      "arpa",
+      "gross-margin",
+    ],
+    seo: {
+      intro: [
+        "Many products have high early churn (activation/onboarding) and lower steady-state churn later. A two-stage model can match reality better than constant churn.",
+        "This calculator builds a simple retention curve with separate early and steady-state churn rates and estimates expected revenue and gross profit per original customer.",
+      ],
+      steps: [
+        "Set an early churn rate and how many months it applies (e.g., months 1–3).",
+        "Set a steady-state churn rate for later months.",
+        "Enter ARPA and gross margin to convert retention into expected value.",
+      ],
+      pitfalls: [
+        "Using churn rates from blended segments (plan/channel).",
+        "Treating this as a substitute for real cohort curves; use it for planning and sensitivity.",
+        "Ignoring expansion (revenue retention) when it’s a major driver of value.",
+      ],
+    },
+    inputs: [
+      {
+        key: "earlyMonthlyChurnPercent",
+        label: "Early monthly churn",
+        placeholder: "6",
+        suffix: "%",
+        defaultValue: "6",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "earlyMonths",
+        label: "Early phase months",
+        placeholder: "3",
+        defaultValue: "3",
+        min: 1,
+        step: 1,
+      },
+      {
+        key: "steadyMonthlyChurnPercent",
+        label: "Steady-state monthly churn",
+        placeholder: "1",
+        suffix: "%",
+        defaultValue: "1",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "arpaMonthly",
+        label: "ARPA (monthly)",
+        placeholder: "800",
+        prefix: "$",
+        defaultValue: "800",
+        min: 0,
+      },
+      {
+        key: "grossMarginPercent",
+        label: "Gross margin",
+        placeholder: "80",
+        suffix: "%",
+        defaultValue: "80",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "months",
+        label: "Months to model",
+        placeholder: "36",
+        defaultValue: "36",
+        min: 1,
+        step: 1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const horizon = Math.max(1, Math.floor(values.months));
+      const earlyMonths = Math.max(1, Math.floor(values.earlyMonths));
+      if (values.months !== horizon)
+        warnings.push("Months was rounded down to a whole number.");
+      if (values.earlyMonths !== earlyMonths)
+        warnings.push("Early phase months was rounded down to a whole number.");
+
+      const churnEarly = values.earlyMonthlyChurnPercent / 100;
+      const churnSteady = values.steadyMonthlyChurnPercent / 100;
+      if (churnEarly < 0 || churnEarly >= 1)
+        warnings.push("Early churn must be between 0% and 99.9%.");
+      if (churnSteady < 0 || churnSteady >= 1)
+        warnings.push("Steady churn must be between 0% and 99.9%.");
+
+      const margin = values.grossMarginPercent / 100;
+      if (values.arpaMonthly <= 0) warnings.push("ARPA must be greater than 0.");
+      if (margin <= 0) warnings.push("Gross margin must be greater than 0%.");
+
+      const retentionAt = (m: number) => {
+        const early = Math.min(m, earlyMonths);
+        const late = Math.max(0, m - earlyMonths);
+        return (
+          Math.pow(1 - churnEarly, early) * Math.pow(1 - churnSteady, late)
+        );
+      };
+
+      const r3 = retentionAt(3);
+      const r6 = retentionAt(6);
+      const r12 = retentionAt(12);
+      const r24 = retentionAt(24);
+
+      let expectedRevenue = 0;
+      let expectedGrossProfit = 0;
+      for (let m = 1; m <= horizon; m++) {
+        const expectedActive = retentionAt(m - 1);
+        const rev = expectedActive * values.arpaMonthly;
+        expectedRevenue += rev;
+        expectedGrossProfit += rev * margin;
+      }
+
+      const retentionAfterEarly = retentionAt(earlyMonths);
+
+      return {
+        headline: {
+          key: "retention12",
+          label: "Logo retention after 12 months",
+          value: r12,
+          format: "percent",
+          maxFractionDigits: 1,
+          detail: "Two-stage churn model",
+        },
+        secondary: [
+          {
+            key: "retention3",
+            label: "Retention after 3 months",
+            value: r3,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "retention6",
+            label: "Retention after 6 months",
+            value: r6,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "retention24",
+            label: "Retention after 24 months",
+            value: r24,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "retentionAfterEarly",
+            label: `Retention after early phase (month ${earlyMonths})`,
+            value: retentionAfterEarly,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "expectedRevenue",
+            label: `Expected revenue per original customer (${horizon} months)`,
+            value: expectedRevenue,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "expectedGrossProfit",
+            label: `Expected gross profit per original customer (${horizon} months)`,
+            value: expectedGrossProfit,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        breakdown: [
+          {
+            key: "churnEarly",
+            label: "Early churn",
+            value: churnEarly,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "earlyMonths",
+            label: "Early phase months",
+            value: earlyMonths,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+          {
+            key: "churnSteady",
+            label: "Steady-state churn",
+            value: churnSteady,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Retention(m) = (1 - churn_early)^(min(m, earlyMonths)) × (1 - churn_steady)^(max(0, m - earlyMonths))",
+    assumptions: [
+      "Logo churn is modeled in two phases (early vs steady-state).",
+      "ARPA and gross margin are constant over the horizon.",
+      "Outputs are per original customer/account (expected value).",
+    ],
+    faqs: [
+      {
+        question: "When should I use two-stage churn?",
+        answer:
+          "When you observe a clear activation/onboarding drop early and much lower churn later. Two-stage models let you stress-test the impact of improving early retention vs improving steady-state retention.",
+      },
+      {
+        question: "Does this replace cohort analysis?",
+        answer:
+          "No. It’s a planning shortcut. Real cohort curves (by segment) are the gold standard for understanding retention dynamics and forecasting LTV.",
+      },
+    ],
+  },
 ];

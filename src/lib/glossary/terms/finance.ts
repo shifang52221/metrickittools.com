@@ -83,8 +83,40 @@ const seeds: Seed[] = [
       "Higher WACC lowers present value; lower WACC raises it.",
       "WACC depends on capital structure, market risk, and interest rates.",
     ],
-    relatedGuideSlugs: ["dcf-valuation-guide"],
-    relatedCalculatorSlugs: ["dcf-valuation-calculator"],
+    relatedGuideSlugs: ["wacc-guide", "dcf-valuation-guide"],
+    relatedCalculatorSlugs: ["wacc-calculator", "dcf-valuation-calculator"],
+  },
+  {
+    slug: "cost-of-equity",
+    title: "Cost of Equity",
+    description:
+      "Cost of equity is the return equity investors require for the risk of owning the business. It is a key input to WACC and discount rate selection.",
+    bullets: [
+      "Often estimated using CAPM as a starting point: risk-free rate + beta × equity risk premium.",
+      "Higher risk implies higher cost of equity and lower present value in a DCF.",
+    ],
+    mistakes: [
+      "Using a single-point estimate without sensitivity analysis.",
+      "Mixing short-term market moves into long-term discount assumptions without context.",
+    ],
+    relatedGuideSlugs: ["wacc-guide", "dcf-valuation-guide"],
+    relatedCalculatorSlugs: ["wacc-calculator"],
+  },
+  {
+    slug: "cost-of-debt",
+    title: "Cost of Debt",
+    description:
+      "Cost of debt is the effective interest rate a company pays on its borrowings. In WACC, debt is often adjusted for taxes because interest can be tax deductible.",
+    bullets: [
+      "Use the company’s current borrowing rate for similar maturity and risk.",
+      "After-tax cost of debt ≈ cost of debt × (1 - tax rate).",
+    ],
+    mistakes: [
+      "Using old debt coupons when the firm’s risk or rates have changed.",
+      "Forgetting the tax shield when using WACC as a discount rate proxy.",
+    ],
+    relatedGuideSlugs: ["wacc-guide"],
+    relatedCalculatorSlugs: ["wacc-calculator"],
   },
   {
     slug: "profitability-index",

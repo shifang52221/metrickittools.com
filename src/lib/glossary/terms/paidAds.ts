@@ -143,6 +143,8 @@ const seeds: Seed[] = [
       "Using MER alone to optimize channel budgets (it hides what's working).",
       "Not adjusting for seasonality, promos, and pricing changes.",
     ],
+    relatedGuideSlugs: ["mer-guide"],
+    relatedCalculatorSlugs: ["mer-calculator"],
   },
   {
     slug: "blended-roas",
