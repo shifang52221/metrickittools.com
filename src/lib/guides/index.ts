@@ -732,8 +732,15 @@ export const guides: Guide[] = [
     description:
       "A guide to churn rate: customer churn vs revenue churn, measurement choices, and how to track churn by cohort.",
     category: "saas-metrics",
-    updatedAt: "2026-01-05",
-    relatedCalculatorSlugs: ["churn-rate-calculator", "retention-rate-calculator"],
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: [
+      "churn-rate-calculator",
+      "retention-rate-calculator",
+      "mrr-churn-rate-calculator",
+      "nrr-calculator",
+      "grr-calculator",
+    ],
+    relatedGlossarySlugs: ["churn-rate", "logo-churn", "revenue-churn", "nrr", "grr", "mrr"],
     sections: [
       { type: "h2", text: "Customer churn vs revenue churn" },
       {
@@ -742,6 +749,15 @@ export const guides: Guide[] = [
           "Customer churn = customers lost / customers at start.",
           "Revenue churn looks at MRR lost; NRR/GRR capture expansion and contraction.",
           "Use customer churn for product retention; use revenue churn for business health.",
+        ],
+      },
+      { type: "h2", text: "Logo churn vs MRR churn" },
+      {
+        type: "bullets",
+        items: [
+          "Logo churn (customer churn) counts customers lost, regardless of size.",
+          "MRR churn measures lost recurring revenue (churned MRR) ÷ starting MRR.",
+          "They diverge when large customers churn less (or more) than small customers.",
         ],
       },
       { type: "h2", text: "Choose a consistent period" },
@@ -762,6 +778,15 @@ export const guides: Guide[] = [
           "Separate involuntary churn (failed payments) from voluntary churn.",
         ],
       },
+      { type: "h2", text: "Pair churn with retention metrics" },
+      {
+        type: "bullets",
+        items: [
+          "GRR isolates churn and downgrades (durability without expansion).",
+          "NRR includes expansion and can mask churn if upsells are strong.",
+          "Use both, and always segment by customer size/plan for diagnostics.",
+        ],
+      },
     ],
     faqs: [
       {
@@ -775,6 +800,11 @@ export const guides: Guide[] = [
         label: "Monthly churn example (start 1,000; lost 30)",
         calculatorSlug: "churn-rate-calculator",
         params: { startingCustomers: "1000", lostCustomers: "30" },
+      },
+      {
+        label: "MRR churn example (start $200k; churned $8k; 1 month)",
+        calculatorSlug: "mrr-churn-rate-calculator",
+        params: { startingMrr: "200000", churnedMrr: "8000", periodMonths: "1" },
       },
     ],
   },
@@ -1014,31 +1044,112 @@ export const guides: Guide[] = [
     description:
       "A guide to MRR: definitions, what to include/exclude, and how to decompose MRR changes over time.",
     category: "saas-metrics",
-    updatedAt: "2026-01-05",
-    relatedCalculatorSlugs: ["mrr-calculator", "arr-calculator"],
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: [
+      "mrr-calculator",
+      "mrr-waterfall-calculator",
+      "net-new-mrr-calculator",
+      "mrr-growth-rate-calculator",
+      "mrr-churn-rate-calculator",
+      "arr-vs-mrr-calculator",
+      "arr-calculator",
+    ],
+    relatedGlossarySlugs: ["mrr", "arr", "net-new-mrr", "quick-ratio", "cmgr"],
     sections: [
       { type: "h2", text: "Definition" },
       {
         type: "p",
         text: "MRR (Monthly Recurring Revenue) is the recurring revenue you expect from active subscriptions in a month. It's the standard momentum metric for subscription businesses.",
       },
-      { type: "h2", text: "What to include" },
+      { type: "h2", text: "What to include (and exclude)" },
       {
         type: "bullets",
         items: [
           "Recurring subscription charges (normalized to monthly).",
-          "Exclude one-time fees and services revenue from MRR.",
+          "Exclude one-time fees, services, setup, and usage spikes that are not recurring.",
           "For annual plans, count monthly equivalent (annual price / 12).",
         ],
       },
-      { type: "h2", text: "MRR movement breakdown" },
+      { type: "h2", text: "MRR movement breakdown (the waterfall)" },
       {
         type: "bullets",
         items: [
           "New MRR, Expansion MRR, Contraction MRR, Churned MRR.",
-          "Track net new MRR to understand growth rate and efficiency.",
-          "Cohort MRR helps separate price/upsell from retention effects.",
+          "Net new MRR = new + expansion − contraction − churn.",
+          "Ending MRR = starting MRR + net new MRR (reconciliation).",
         ],
+      },
+      { type: "h2", text: "MRR vs ARR" },
+      {
+        type: "bullets",
+        items: [
+          "MRR is monthly run-rate; ARR is the same run-rate annualized (usually MRR × 12).",
+          "Use MRR for monthly momentum and decomposition; use ARR for scale and many efficiency metrics (burn multiple, magic number).",
+          "Both are run-rate snapshots, not recognized revenue.",
+        ],
+      },
+      { type: "h2", text: "MRR growth rate" },
+      {
+        type: "bullets",
+        items: [
+          "MRR growth (period) = (end MRR − start MRR) ÷ start MRR.",
+          "Use CMGR to compare growth across different time horizons.",
+          "If you don’t know what drove growth, use an MRR waterfall (new vs expansion vs churn).",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Mixing MRR with bookings, billings, cash receipts, or recognized revenue (different timing).",
+          "Changing the MRR definition month-to-month (breaks trends).",
+          "Using blended MRR movements without segmenting by plan or customer size.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Does MRR include one-time fees?",
+        answer:
+          "Typically no. MRR is meant to reflect recurring run-rate only. Track one-time fees separately so you don't distort growth trends.",
+      },
+      {
+        question: "What is net new MRR?",
+        answer:
+          "Net new MRR is the net change in MRR for a period: new + expansion − contraction − churn. It explains whether growth is driven by acquisition or retention/expansion.",
+      },
+      {
+        question: "Is MRR the same as revenue?",
+        answer:
+          "No. MRR is a run-rate snapshot. Revenue is recognized over time and can include non-recurring items.",
+      },
+    ],
+    examples: [
+      {
+        label: "MRR example (250 customers; $200 ARPA/month)",
+        calculatorSlug: "mrr-calculator",
+        params: { customers: "250", arpaMonthly: "200" },
+      },
+      {
+        label: "MRR waterfall example (start $200k; +$12k new; +$8k expansion; −$3k contraction; −$5k churn)",
+        calculatorSlug: "mrr-waterfall-calculator",
+        params: {
+          startingMrr: "200000",
+          newMrr: "12000",
+          expansionMrr: "8000",
+          contractionMrr: "3000",
+          churnedMrr: "5000",
+        },
+      },
+      {
+        label: "MRR churn rate example (start $200k; churned $8k; 1 month)",
+        calculatorSlug: "mrr-churn-rate-calculator",
+        params: { startingMrr: "200000", churnedMrr: "8000", periodMonths: "1" },
+      },
+      {
+        label: "MRR growth rate example (start $200k → end $240k over 6 months)",
+        calculatorSlug: "mrr-growth-rate-calculator",
+        params: { startMrr: "200000", endMrr: "240000", months: "6" },
       },
     ],
   },
@@ -1104,13 +1215,134 @@ export const guides: Guide[] = [
     ],
   },
   {
+    slug: "mrr-growth-rate-guide",
+    title: "MRR growth rate: how to measure recurring momentum",
+    description:
+      "A practical MRR growth guide: compute period growth, CMGR, and annualized growth (CAGR) from start and end MRR.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: ["mrr-growth-rate-calculator", "mrr-calculator", "mrr-waterfall-calculator"],
+    relatedGlossarySlugs: ["mrr", "cmgr"],
+    sections: [
+      { type: "h2", text: "What MRR growth rate measures" },
+      {
+        type: "p",
+        text: "MRR growth rate tracks how your recurring run-rate changed from one point in time to another. It’s a clean momentum metric when you keep the MRR definition consistent.",
+      },
+      { type: "h2", text: "Key formulas" },
+      {
+        type: "bullets",
+        items: [
+          "Period growth = (end MRR − start MRR) ÷ start MRR.",
+          "CMGR = (end/start)^(1/months) − 1 (compounded monthly).",
+          "Annualized growth = (end/start)^(12/months) − 1.",
+        ],
+      },
+      { type: "h2", text: "How to make the metric actionable" },
+      {
+        type: "bullets",
+        items: [
+          "Use an MRR waterfall to explain what drove growth (new vs expansion vs churn).",
+          "Segment by plan and customer size to avoid blended averages hiding churn pockets.",
+          "Pair growth with retention metrics (NRR/GRR) and payback for quality.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Changing the MRR definition between snapshots (one-time items included sometimes).",
+          "Comparing very short windows without seasonality context.",
+          "Mixing run-rate metrics (MRR) with recognized revenue (accounting).",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "MRR growth example (start $200k → end $240k over 6 months)",
+        calculatorSlug: "mrr-growth-rate-calculator",
+        params: { startMrr: "200000", endMrr: "240000", months: "6" },
+      },
+    ],
+  },
+  {
+    slug: "mrr-churn-rate-guide",
+    title: "MRR churn rate: definition, formula, and monthly-equivalent conversion",
+    description:
+      "MRR churn rate explained: churned MRR ÷ starting MRR, plus how to convert non-monthly windows into a monthly-equivalent rate.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: ["mrr-churn-rate-calculator", "mrr-waterfall-calculator", "grr-calculator", "nrr-calculator"],
+    relatedGlossarySlugs: ["mrr", "mrr-churn-rate", "grr", "nrr"],
+    sections: [
+      { type: "h2", text: "Definition" },
+      {
+        type: "p",
+        text: "MRR churn rate measures lost recurring revenue from cancellations (churned MRR) as a percentage of starting MRR for a period. It is a revenue churn metric (not customer churn).",
+      },
+      { type: "h2", text: "Formula" },
+      { type: "p", text: "MRR churn rate (period) = churned MRR ÷ starting MRR" },
+      { type: "h2", text: "Monthly-equivalent churn (for non-monthly windows)" },
+      {
+        type: "p",
+        text: "Monthly-equivalent churn = 1 − (1 − period churn)^(1/period months).",
+      },
+      { type: "h2", text: "How to use it" },
+      {
+        type: "bullets",
+        items: [
+          "Track churned MRR and contraction MRR separately, then track GRR/NRR for the full picture.",
+          "Use an MRR waterfall to explain whether growth is acquisition-driven or retention-driven.",
+          "Segment by customer size and plan (blended churn hides weak cohorts).",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Mixing logo churn (customers lost) with MRR churn (revenue lost).",
+          "Using ending MRR as the denominator instead of starting MRR.",
+          "Combining downgrades into churn without labeling (contraction vs churn).",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "MRR churn example (start $200k; churned $8k; 1 month)",
+        calculatorSlug: "mrr-churn-rate-calculator",
+        params: { startingMrr: "200000", churnedMrr: "8000", periodMonths: "1" },
+      },
+      {
+        label: "Quarterly-to-monthly conversion example (start $600k; churned $45k; 3 months)",
+        calculatorSlug: "mrr-churn-rate-calculator",
+        params: { startingMrr: "600000", churnedMrr: "45000", periodMonths: "3" },
+      },
+    ],
+  },
+  {
     slug: "arr-guide",
     title: "Bookings vs ARR: what ARR means (and what it doesn't)",
     description:
       "Bookings vs ARR explained: what ARR is (and isn't), plus how it differs from bookings and cash receipts.",
     category: "saas-metrics",
-    updatedAt: "2026-01-05",
-    relatedCalculatorSlugs: ["arr-calculator", "mrr-calculator"],
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: [
+      "arr-calculator",
+      "arr-vs-mrr-calculator",
+      "arr-growth-rate-calculator",
+      "arr-waterfall-calculator",
+      "net-new-arr-calculator",
+      "bookings-vs-arr-calculator",
+      "mrr-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "arr",
+      "mrr",
+      "arr-vs-bookings",
+      "billings",
+      "recognized-revenue",
+      "deferred-revenue",
+    ],
     sections: [
       { type: "h2", text: "Definition" },
       {
@@ -1124,6 +1356,24 @@ export const guides: Guide[] = [
           "ARR measures recurring run-rate; bookings measure contracted value; cash measures receipts.",
           "For annual prepay, cash can be high while ARR grows more steadily.",
           "Use ARR for comparability across SaaS businesses; use cash for runway planning.",
+        ],
+      },
+      { type: "h2", text: "ARR vs MRR" },
+      {
+        type: "bullets",
+        items: [
+          "MRR is monthly run-rate; ARR is typically MRR × 12 (same run-rate, different time unit).",
+          "Use MRR for monthly momentum and waterfalls; use ARR for scale comparisons and many efficiency metrics.",
+          "If ARR and MRR don’t reconcile, definitions or timestamps likely differ.",
+        ],
+      },
+      { type: "h2", text: "ARR movements (net new ARR)" },
+      {
+        type: "bullets",
+        items: [
+          "Net new ARR = new + expansion − contraction − churned ARR.",
+          "Use an ARR waterfall to reconcile starting ARR to ending ARR for a period.",
+          "Segment by plan/channel/customer size to avoid blended averages hiding churn pockets.",
         ],
       },
       { type: "h2", text: "Bookings vs ARR vs cash: quick comparison" },
@@ -1157,6 +1407,7 @@ export const guides: Guide[] = [
         items: [
           "Counting services revenue as ARR inflates true recurring run-rate.",
           "Ignoring churn/retention when annualizing short-term MRR spikes.",
+          "Treating bookings/billings/cash timing as ARR growth (different concepts).",
         ],
       },
       { type: "h2", text: "Examples (annual prepay vs monthly)" },
@@ -1685,6 +1936,59 @@ export const guides: Guide[] = [
         label: "ARR growth example (start $1.2M → end $1.8M over 12 months)",
         calculatorSlug: "arr-growth-rate-calculator",
         params: { startArr: "1200000", endArr: "1800000", months: "12" },
+      },
+    ],
+  },
+  {
+    slug: "arr-waterfall-guide",
+    title: "ARR waterfall: reconcile starting ARR to ending ARR (net new ARR)",
+    description:
+      "A practical ARR waterfall guide: starting ARR + new + expansion − contraction − churn = ending ARR, with examples and pitfalls.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: ["arr-waterfall-calculator", "net-new-arr-calculator", "burn-multiple-calculator"],
+    relatedGlossarySlugs: ["arr", "net-new-arr", "arr-waterfall", "burn-multiple"],
+    sections: [
+      { type: "h2", text: "What an ARR waterfall shows" },
+      {
+        type: "p",
+        text: "An ARR waterfall is a reconciliation. It explains how you moved from a starting ARR snapshot to an ending ARR snapshot by breaking the change into new, expansion, contraction, and churned ARR.",
+      },
+      { type: "h2", text: "Core formula" },
+      {
+        type: "p",
+        text: "Ending ARR = starting ARR + new ARR + expansion ARR − contraction ARR − churned ARR.",
+      },
+      { type: "h2", text: "How to use it" },
+      {
+        type: "bullets",
+        items: [
+          "Use it quarterly if monthly ARR snapshots are noisy due to deal timing.",
+          "Segment by plan/channel/customer size when blended numbers hide churn pockets.",
+          "Use net new ARR as a consistent input to burn multiple (same period).",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Mixing bookings/cash with ARR movements (different timing and definitions).",
+          "Including one-time items or services in ARR movements.",
+          "Using inconsistent time windows for ARR movements vs burn/spend metrics.",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "ARR waterfall example (start $2.4M; +$240k new; +$160k expansion; −$60k contraction; −$100k churn)",
+        calculatorSlug: "arr-waterfall-calculator",
+        params: {
+          startingArr: "2400000",
+          newArr: "240000",
+          expansionArr: "160000",
+          contractionArr: "60000",
+          churnedArr: "100000",
+        },
       },
     ],
   },

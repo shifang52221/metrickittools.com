@@ -499,6 +499,54 @@ const seeds: Seed[] = [
     ],
   },
   {
+    slug: "mrr-churn-rate",
+    title: "MRR Churn Rate",
+    description:
+      "MRR churn rate measures churned MRR (lost recurring revenue from cancellations) as a percentage of starting MRR for a period.",
+    formula: "MRR churn rate = churned MRR ÷ starting MRR",
+    bullets: [
+      "MRR churn is revenue churn (not customer/logo churn).",
+      "Track churned MRR and contraction MRR separately, then use GRR/NRR for the full picture.",
+      "Convert longer windows to monthly-equivalent churn to compare periods consistently.",
+    ],
+    mistakes: [
+      "Mixing churned MRR with contraction MRR without labeling.",
+      "Using ending MRR as the denominator instead of starting MRR.",
+      "Mixing billings/cash with run-rate churn metrics.",
+    ],
+    relatedGuideSlugs: ["mrr-churn-rate-guide", "churn-guide", "mrr-guide"],
+    relatedCalculatorSlugs: ["mrr-churn-rate-calculator", "mrr-waterfall-calculator"],
+  },
+  {
+    slug: "mrr-growth-rate",
+    title: "MRR Growth Rate",
+    description:
+      "MRR growth rate measures how MRR changed between two points in time. It can be expressed as period growth, CMGR, or annualized growth.",
+    formula: "MRR growth (period) = (end MRR − start MRR) ÷ start MRR",
+    bullets: [
+      "Use CMGR to compare growth across different horizons.",
+      "Use an MRR waterfall to explain drivers (new vs expansion vs churn).",
+      "Pair growth with retention (NRR/GRR) and payback to judge quality.",
+    ],
+    relatedGuideSlugs: ["mrr-growth-rate-guide", "mrr-guide"],
+    relatedCalculatorSlugs: ["mrr-growth-rate-calculator", "mrr-waterfall-calculator"],
+  },
+  {
+    slug: "arr-waterfall",
+    title: "ARR Waterfall",
+    description:
+      "An ARR waterfall reconciles starting ARR to ending ARR using new, expansion, contraction, and churned ARR movements.",
+    formula:
+      "Ending ARR = starting ARR + new ARR + expansion ARR − contraction ARR − churned ARR",
+    bullets: [
+      "Use it as a reporting bridge to compute net new ARR and ARR growth.",
+      "Segment by plan/channel/customer size to avoid blended averages hiding churn pockets.",
+      "Use net new ARR as the numerator base for burn multiple (same period).",
+    ],
+    relatedGuideSlugs: ["arr-waterfall-guide", "net-new-arr-guide"],
+    relatedCalculatorSlugs: ["arr-waterfall-calculator", "net-new-arr-calculator"],
+  },
+  {
     slug: "customer-lifetime",
     title: "Customer Lifetime",
     description:

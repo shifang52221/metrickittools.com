@@ -1991,6 +1991,311 @@ export const calculators: CalculatorDefinition[] = [
     ],
   },
   {
+    slug: "mrr-growth-rate-calculator",
+    title: "MRR Growth Rate Calculator",
+    description:
+      "Calculate MRR growth over a period and convert it to CMGR and annualized growth (CAGR).",
+    category: "saas-metrics",
+    guideSlug: "mrr-growth-rate-guide",
+    relatedGlossarySlugs: ["mrr", "cmgr"],
+    seo: {
+      intro: [
+        "MRR growth is a fast way to track subscription momentum. For comparisons across different horizons, convert it to CMGR (monthly compounded growth) and annualized growth.",
+      ],
+      steps: [
+        "Enter start MRR and end MRR for the period.",
+        "Enter the number of months between the two points.",
+        "Review period growth, CMGR, and annualized growth.",
+      ],
+      pitfalls: [
+        "Using start/end MRR from different definitions (one-time items included sometimes).",
+        "Comparing very short windows without seasonality context.",
+        "Mixing run-rate metrics (MRR) with recognized revenue (accounting).",
+      ],
+    },
+    inputs: [
+      {
+        key: "startMrr",
+        label: "Start MRR",
+        placeholder: "200000",
+        prefix: "$",
+        defaultValue: "200000",
+        min: 0,
+      },
+      {
+        key: "endMrr",
+        label: "End MRR",
+        placeholder: "240000",
+        prefix: "$",
+        defaultValue: "240000",
+        min: 0,
+      },
+      {
+        key: "months",
+        label: "Months between points",
+        placeholder: "6",
+        defaultValue: "6",
+        min: 1,
+        step: 1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const months = Math.max(1, Math.floor(values.months));
+      if (values.months !== months)
+        warnings.push("Months was rounded down to a whole number.");
+
+      if (values.startMrr <= 0)
+        warnings.push("Start MRR must be greater than 0 to compute growth rates.");
+      if (values.endMrr < 0) warnings.push("End MRR must be 0 or greater.");
+
+      const netNewMrr = values.endMrr - values.startMrr;
+      const periodGrowth = safeDivide(netNewMrr, values.startMrr);
+
+      const cmgr =
+        values.startMrr > 0
+          ? Math.pow(values.endMrr / values.startMrr, 1 / months) - 1
+          : null;
+
+      const annualized =
+        values.startMrr > 0
+          ? Math.pow(values.endMrr / values.startMrr, 12 / months) - 1
+          : null;
+
+      return {
+        headline: {
+          key: "periodGrowth",
+          label: "MRR growth (period)",
+          value: periodGrowth ?? 0,
+          format: "percent",
+          maxFractionDigits: 2,
+          detail: "ΔMRR ÷ start MRR",
+        },
+        secondary: [
+          {
+            key: "netNewMrr",
+            label: "Net new MRR (ΔMRR)",
+            value: netNewMrr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "cmgr",
+            label: "CMGR (monthly compounded)",
+            value: cmgr ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: cmgr === null ? "Requires start MRR > 0" : "Compounded monthly",
+          },
+          {
+            key: "annualized",
+            label: "Annualized growth (CAGR)",
+            value: annualized ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: annualized === null ? "Requires start MRR > 0" : "Annualized from period",
+          },
+        ],
+        breakdown: [
+          {
+            key: "startMrr",
+            label: "Start MRR",
+            value: values.startMrr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "endMrr",
+            label: "End MRR",
+            value: values.endMrr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "months",
+            label: "Months",
+            value: months,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Period growth = (end MRR − start MRR) ÷ start MRR; CMGR = (end/start)^(1/months) − 1; CAGR = (end/start)^(12/months) − 1",
+    assumptions: [
+      "Start and end MRR use the same MRR definition (clean recurring run-rate).",
+      "CMGR assumes smooth compounding; use it for comparison and planning, not as a guarantee.",
+    ],
+    faqs: [
+      {
+        question: "Is MRR growth the same as revenue growth?",
+        answer:
+          "Not necessarily. MRR is a recurring run-rate snapshot. Revenue is what you recognize over time and can include non-recurring items.",
+      },
+      {
+        question: "Should I use CMGR or YoY growth?",
+        answer:
+          "Use YoY for seasonal comparisons and external benchmarks. Use CMGR for planning and for comparing scenarios over different horizons.",
+      },
+    ],
+    guide: [
+      {
+        title: "MRR growth tips",
+        bullets: [
+          "Use consistent snapshots (start/end of the period) and a stable MRR definition.",
+          "Pair with an MRR waterfall to explain what drove growth (new vs expansion vs churn).",
+          "Pair with retention (NRR/GRR) and payback to judge growth quality.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "mrr-churn-rate-calculator",
+    title: "MRR Churn Rate Calculator",
+    description:
+      "Calculate MRR churn rate from churned MRR and starting MRR (with monthly-equivalent conversion).",
+    category: "saas-metrics",
+    guideSlug: "mrr-churn-rate-guide",
+    relatedGlossarySlugs: ["mrr", "mrr-churn-rate"],
+    seo: {
+      intro: [
+        "MRR churn rate measures lost recurring revenue from cancellations (churned MRR) as a percentage of starting MRR for a period.",
+        "If your measurement window is not a month, convert to a monthly-equivalent churn rate so you can compare periods consistently.",
+      ],
+      steps: [
+        "Enter starting MRR and churned MRR for the same period.",
+        "Enter the number of months in the period (1 for monthly reporting).",
+        "Review the period churn rate and the monthly-equivalent rate.",
+      ],
+      pitfalls: [
+        "Mixing churned MRR with contraction MRR (downgrades) without labeling.",
+        "Using ending MRR as the base instead of starting MRR (definition drift).",
+        "Mixing MRR churn (revenue churn) with logo churn (customer churn).",
+      ],
+    },
+    inputs: [
+      {
+        key: "startingMrr",
+        label: "Starting MRR",
+        placeholder: "200000",
+        prefix: "$",
+        defaultValue: "200000",
+        min: 0,
+      },
+      {
+        key: "churnedMrr",
+        label: "Churned MRR (lost)",
+        placeholder: "8000",
+        prefix: "$",
+        defaultValue: "8000",
+        min: 0,
+      },
+      {
+        key: "periodMonths",
+        label: "Period length (months)",
+        help: "Use 1 for monthly churn; 3 for quarterly, etc.",
+        placeholder: "1",
+        defaultValue: "1",
+        min: 1,
+        step: 1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const months = Math.max(1, Math.floor(values.periodMonths));
+      if (values.periodMonths !== months)
+        warnings.push("Period months was rounded down to a whole number.");
+
+      if (values.startingMrr <= 0)
+        warnings.push("Starting MRR must be greater than 0 to compute churn rate.");
+      if (values.churnedMrr < 0) warnings.push("Churned MRR must be 0 or greater.");
+      if (values.churnedMrr > values.startingMrr && values.startingMrr > 0)
+        warnings.push("Churned MRR is greater than starting MRR (check inputs).");
+
+      const periodChurn = safeDivide(values.churnedMrr, values.startingMrr);
+
+      const monthlyEquivalent =
+        periodChurn !== null && months > 0
+          ? 1 - Math.pow(1 - Math.min(1, Math.max(0, periodChurn)), 1 / months)
+          : null;
+
+      return {
+        headline: {
+          key: "periodChurn",
+          label: "MRR churn rate (period)",
+          value: periodChurn ?? 0,
+          format: "percent",
+          maxFractionDigits: 2,
+          detail: "Churned MRR ÷ starting MRR",
+        },
+        secondary: [
+          {
+            key: "monthlyEquivalent",
+            label: "Monthly-equivalent MRR churn rate",
+            value: monthlyEquivalent ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: monthlyEquivalent === null ? "Requires valid inputs" : `Converted from ${months} month period`,
+          },
+        ],
+        breakdown: [
+          {
+            key: "startingMrr",
+            label: "Starting MRR",
+            value: values.startingMrr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "churnedMrr",
+            label: "Churned MRR",
+            value: values.churnedMrr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "periodMonths",
+            label: "Period months",
+            value: months,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Period MRR churn = churned MRR ÷ starting MRR; Monthly-equivalent churn = 1 − (1 − period churn)^(1/period months)",
+    assumptions: [
+      "Uses starting MRR as the denominator (standard for churn rates).",
+      "Monthly-equivalent conversion assumes churn compounds smoothly across the period (approximation).",
+    ],
+    faqs: [
+      {
+        question: "Is MRR churn the same as customer churn?",
+        answer:
+          "No. MRR churn is revenue churn (lost recurring revenue). Customer churn is logo churn (lost customers). They can move differently if account sizes vary.",
+      },
+      {
+        question: "Should I include downgrades in churned MRR?",
+        answer:
+          "Typically churned MRR is cancellations. Downgrades are contraction MRR. You can combine them as 'gross MRR churn' if you label it clearly.",
+      },
+    ],
+    guide: [
+      {
+        title: "MRR churn tips",
+        bullets: [
+          "Track churned MRR and contraction MRR separately, then also track GRR/NRR for the full retention picture.",
+          "Segment by plan and customer size; blended churn can hide weak cohorts.",
+          "Pair churn with net new MRR and an MRR waterfall to see what’s driving growth.",
+        ],
+      },
+    ],
+  },
+  {
     slug: "arr-calculator",
     title: "ARR Calculator",
     description: "Estimate Annual Recurring Revenue (ARR) from customers and ARPA.",
@@ -3386,6 +3691,196 @@ export const calculators: CalculatorDefinition[] = [
           "Compute it on a consistent cadence (quarterly is common) to reduce noise.",
           "Segment by plan/channel to avoid blended numbers hiding churn pockets.",
           "Pair with retention (NRR/GRR) and payback to judge growth quality.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "arr-waterfall-calculator",
+    title: "ARR Waterfall Calculator",
+    description:
+      "Build an ARR waterfall: starting ARR + new + expansion − contraction − churn = ending ARR.",
+    category: "saas-metrics",
+    guideSlug: "arr-waterfall-guide",
+    relatedGlossarySlugs: ["arr", "net-new-arr", "arr-waterfall"],
+    seo: {
+      intro: [
+        "An ARR waterfall reconciles a starting ARR snapshot to an ending ARR snapshot using ARR movements: new, expansion, contraction, and churned ARR.",
+        "It’s a practical reporting template and a clean way to compute net new ARR and ARR growth for a period.",
+      ],
+      steps: [
+        "Enter starting ARR for the period.",
+        "Enter ARR movements: new, expansion, contraction, churned.",
+        "Review ending ARR, net new ARR, and ARR growth rate.",
+      ],
+      pitfalls: [
+        "Mixing bookings/cash with ARR movements (different timing and definitions).",
+        "Using inconsistent definitions for 'recurring' ARR across periods.",
+        "Hiding segment problems with blended numbers (segment by plan/channel).",
+      ],
+    },
+    inputs: [
+      {
+        key: "startingArr",
+        label: "Starting ARR (beginning of period)",
+        placeholder: "2400000",
+        prefix: "$",
+        defaultValue: "2400000",
+        min: 0,
+      },
+      {
+        key: "newArr",
+        label: "New ARR",
+        placeholder: "240000",
+        prefix: "$",
+        defaultValue: "240000",
+        min: 0,
+      },
+      {
+        key: "expansionArr",
+        label: "Expansion ARR",
+        placeholder: "160000",
+        prefix: "$",
+        defaultValue: "160000",
+        min: 0,
+      },
+      {
+        key: "contractionArr",
+        label: "Contraction ARR",
+        placeholder: "60000",
+        prefix: "$",
+        defaultValue: "60000",
+        min: 0,
+      },
+      {
+        key: "churnedArr",
+        label: "Churned ARR",
+        placeholder: "100000",
+        prefix: "$",
+        defaultValue: "100000",
+        min: 0,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      if (values.startingArr < 0) warnings.push("Starting ARR must be 0 or greater.");
+      if (values.newArr < 0) warnings.push("New ARR must be 0 or greater.");
+      if (values.expansionArr < 0) warnings.push("Expansion ARR must be 0 or greater.");
+      if (values.contractionArr < 0) warnings.push("Contraction ARR must be 0 or greater.");
+      if (values.churnedArr < 0) warnings.push("Churned ARR must be 0 or greater.");
+
+      const grossAdditions = values.newArr + values.expansionArr;
+      const grossLosses = values.contractionArr + values.churnedArr;
+      const netNewArr = grossAdditions - grossLosses;
+      const endingArr = values.startingArr + netNewArr;
+
+      const growthRate = safeDivide(netNewArr, values.startingArr);
+      if (values.startingArr <= 0)
+        warnings.push("Starting ARR must be greater than 0 to compute growth rate.");
+
+      const quickRatio = safeDivide(grossAdditions, grossLosses);
+      if (grossLosses <= 0) warnings.push("Losses (contraction + churn) must be greater than 0 to compute ratio.");
+
+      return {
+        headline: {
+          key: "endingArr",
+          label: "Ending ARR",
+          value: endingArr,
+          format: "currency",
+          currency: "USD",
+          detail: "Starting + net new",
+        },
+        secondary: [
+          {
+            key: "netNewArr",
+            label: "Net new ARR",
+            value: netNewArr,
+            format: "currency",
+            currency: "USD",
+            detail: "New + Expansion − Contraction − Churn",
+          },
+          {
+            key: "growthRate",
+            label: "ARR growth rate (net new ÷ starting)",
+            value: growthRate ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: growthRate === null ? "Starting ARR must be > 0" : undefined,
+          },
+          {
+            key: "ratio",
+            label: "ARR quick ratio (additions ÷ losses)",
+            value: quickRatio ?? 0,
+            format: "ratio",
+            maxFractionDigits: 2,
+            detail: quickRatio === null ? "Losses must be > 0" : "(New + Expansion) ÷ (Contraction + Churn)",
+          },
+        ],
+        breakdown: [
+          {
+            key: "startingArr",
+            label: "Starting ARR",
+            value: values.startingArr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "newArr",
+            label: "New ARR",
+            value: values.newArr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "expansionArr",
+            label: "Expansion ARR",
+            value: values.expansionArr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "contractionArr",
+            label: "Contraction ARR",
+            value: values.contractionArr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "churnedArr",
+            label: "Churned ARR",
+            value: values.churnedArr,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Ending ARR = starting ARR + new + expansion − contraction − churn; Net new ARR = new + expansion − contraction − churn",
+    assumptions: [
+      "All inputs represent the same period and use the same ARR definition (clean recurring run-rate).",
+      "This is a reporting bridge; it does not model intra-period timing or cohort curves.",
+    ],
+    faqs: [
+      {
+        question: "Is net new ARR the same as ARR growth?",
+        answer:
+          "Net new ARR is a dollar amount (ΔARR). ARR growth rate is net new ARR divided by starting ARR for the period.",
+      },
+      {
+        question: "Should I segment the waterfall?",
+        answer:
+          "Yes when possible. Segment by plan, channel, and customer size so blended numbers don’t hide churn pockets or weak cohorts.",
+      },
+    ],
+    guide: [
+      {
+        title: "ARR waterfall tips",
+        bullets: [
+          "Use it quarterly if monthly snapshots are noisy due to deal timing.",
+          "Pair ARR movement with retention (NRR/GRR) to judge durability.",
+          "Pair with burn multiple and payback to judge cash efficiency.",
         ],
       },
     ],
