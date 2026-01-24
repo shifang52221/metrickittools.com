@@ -1,4 +1,4 @@
-import type { GlossarySection, GlossaryTerm } from "../types";
+import type { GlossaryFaq, GlossarySection, GlossaryTerm } from "../types";
 
 type Seed = {
   slug: string;
@@ -8,6 +8,7 @@ type Seed = {
   example?: string;
   bullets?: string[];
   mistakes?: string[];
+  faqs?: GlossaryFaq[];
   relatedGuideSlugs?: string[];
   relatedCalculatorSlugs?: string[];
 };
@@ -44,6 +45,7 @@ function make(seed: Seed): GlossaryTerm {
     category: "paid-ads",
     updatedAt: "2026-01-23",
     sections: sectionsFor(seed),
+    faqs: seed.faqs,
     relatedGuideSlugs: seed.relatedGuideSlugs,
     relatedCalculatorSlugs: seed.relatedCalculatorSlugs,
   };
@@ -134,10 +136,28 @@ const seeds: Seed[] = [
     slug: "cpc",
     title: "CPC (Cost Per Click)",
     description: "CPC measures how much you pay for each click on your ads.",
-    formula: "CPC = ad spend ÷ clicks",
+    formula: "CPC = ad spend / clicks",
+    example:
+      "If you spent $1,000 and got 800 clicks, CPC = $1,000 / 800 = $1.25.",
     bullets: [
       "Use CPC with CTR and CVR to locate bottlenecks (creative vs landing page).",
       "Compare CPC within similar audiences and placements.",
+    ],
+    mistakes: [
+      "Comparing CPC across placements with very different intent (e.g., prospecting vs retargeting).",
+      "Optimizing CPC without checking CPA and contribution margin (profit).",
+    ],
+    faqs: [
+      {
+        question: "How is CPC related to CPM and CTR?",
+        answer:
+          "When CTR is a fraction (not percent), CPC ≈ CPM / (1000 * CTR). Higher CTR usually lowers CPC for a given CPM.",
+      },
+      {
+        question: "Should I always optimize for lower CPC?",
+        answer:
+          "No. Lower CPC can come from lower-intent clicks that convert poorly, increasing CPA and reducing profit.",
+      },
     ],
     relatedGuideSlugs: ["max-cpc-guide", "paid-ads-funnel-guide"],
     relatedCalculatorSlugs: ["max-cpc-calculator", "paid-ads-funnel-calculator"],
@@ -147,7 +167,25 @@ const seeds: Seed[] = [
     title: "CPM (Cost Per Mille)",
     description:
       "CPM is the cost per 1,000 impressions. It varies by audience, placement, seasonality, and competition.",
-    formula: "CPM = (ad spend ÷ impressions) × 1000",
+    formula: "CPM = (ad spend / impressions) * 1000",
+    example:
+      "If you spent $1,200 for 100,000 impressions, CPM = ($1,200 / 100,000) * 1000 = $12.",
+    bullets: [
+      "Use CPM with CTR to estimate CPC, then with CVR to estimate CPA.",
+      "Judge CPM against your economics, not as a standalone KPI.",
+    ],
+    faqs: [
+      {
+        question: "Is a high CPM always bad?",
+        answer:
+          "Not necessarily. High CPM can be normal in competitive auctions or premium audiences. What matters is the full funnel: CPM → CTR → CVR → CPA/ROAS.",
+      },
+      {
+        question: "Why does CPM fluctuate so much?",
+        answer:
+          "CPM changes with auction pressure (seasonality), audience size, placement mix, and creative relevance.",
+      },
+    ],
     relatedGuideSlugs: ["break-even-cpm-guide", "paid-ads-funnel-guide"],
     relatedCalculatorSlugs: ["break-even-cpm-calculator", "paid-ads-funnel-calculator"],
   },
@@ -157,12 +195,26 @@ const seeds: Seed[] = [
     description:
       "Max CPC is the maximum cost per click you can pay while still meeting your unit economics target (break-even or with a profit buffer).",
     bullets: [
-      "Compute max CPC from target CPA and click-to-conversion rate (CVR): CPC = CPA × CVR.",
+      "Compute max CPC from target CPA and click-to-conversion rate (CVR): max CPC = target CPA * CVR.",
       "Use contribution margin (not revenue) to avoid overstating allowable spend.",
     ],
+    example:
+      "If target CPA is $40 and click-based CVR is 2.5% (0.025), then max CPC = $40 * 0.025 = $1.00.",
     mistakes: [
       "Mixing session-based CVR with click-based CPC (denominator mismatch).",
       "Using short-window attribution without validating incrementality at scale.",
+    ],
+    faqs: [
+      {
+        question: "Should max CPC use click-based or session-based CVR?",
+        answer:
+          "Use click-based CVR if possible (conversions / clicks). If you only have session-based CVR, treat the result as a rough estimate and validate with real performance.",
+      },
+      {
+        question: "Why add a profit buffer instead of using break-even?",
+        answer:
+          "Break-even leaves no room for noise, returns, attribution error, or overhead. A buffer makes bidding more robust.",
+      },
     ],
     relatedGuideSlugs: ["max-cpc-guide"],
     relatedCalculatorSlugs: ["max-cpc-calculator"],
@@ -183,10 +235,28 @@ const seeds: Seed[] = [
     slug: "ctr",
     title: "CTR (Click-Through Rate)",
     description: "CTR is the fraction of impressions that become clicks.",
-    formula: "CTR = clicks ÷ impressions",
+    formula: "CTR = clicks / impressions",
+    example:
+      "If you got 2,000 clicks from 100,000 impressions, CTR = 2,000 / 100,000 = 2%.",
+    bullets: [
+      "Use CTR as a creative-market fit signal, but validate conversion quality and profit.",
+      "Compare CTR within similar placements and objectives (feed vs search behave differently).",
+    ],
     mistakes: [
       "Optimizing CTR alone (without conversion quality).",
       "Comparing CTR across very different placements (feed vs search).",
+    ],
+    faqs: [
+      {
+        question: "Does a higher CTR always mean better performance?",
+        answer:
+          "Not always. High CTR can come from curiosity clicks that don’t convert. Always check CVR, CPA, and profit.",
+      },
+      {
+        question: "How do I use break-even CTR?",
+        answer:
+          "Break-even CTR tells you the minimum CTR needed to hit a profitability target given CPM, CVR, and economics. It’s a good creative-quality target for a placement mix.",
+      },
     ],
     relatedGuideSlugs: ["break-even-ctr-guide", "paid-ads-funnel-guide"],
     relatedCalculatorSlugs: ["break-even-ctr-calculator", "paid-ads-funnel-calculator"],
@@ -196,11 +266,31 @@ const seeds: Seed[] = [
     title: "CVR (Conversion Rate)",
     description:
       "Conversion rate measures the % of visitors who complete an action. In ads it's often conversions ÷ clicks; on-site it can be conversions ÷ sessions.",
-    formula: "CVR = conversions ÷ clicks (or sessions)",
+    formula: "CVR = conversions / clicks (or sessions)",
+    example:
+      "If you had 50 purchases from 2,000 clicks, click-based CVR = 50 / 2,000 = 2.5%.",
+    bullets: [
+      "Use click-based CVR when you’re bidding on clicks (CPC).",
+      "Use session-based CVR when you’re optimizing landing pages and on-site funnels.",
+    ],
     mistakes: [
       "Mixing click-based and session-based CVR.",
       "Optimizing CVR by narrowing targeting and losing scale.",
     ],
+    faqs: [
+      {
+        question: "Why does CVR drop when I scale spend?",
+        answer:
+          "Scaling often broadens audiences/placements (lower intent). CVR can also drop from creative mismatch, landing-page friction, or offer fatigue.",
+      },
+      {
+        question: "What’s a good CVR?",
+        answer:
+          "It depends on intent and offer. Compare CVR within the same funnel and traffic type rather than chasing a universal benchmark.",
+      },
+    ],
+    relatedGuideSlugs: ["break-even-cvr-guide", "paid-ads-funnel-guide"],
+    relatedCalculatorSlugs: ["break-even-cvr-calculator", "paid-ads-funnel-calculator"],
   },
   {
     slug: "aov",
@@ -238,10 +328,24 @@ const seeds: Seed[] = [
     title: "MER (Marketing Efficiency Ratio)",
     description:
       "MER (also called blended ROAS) is total revenue divided by total marketing spend over the same period. It's useful for top-down health checks.",
-    formula: "MER = total revenue ÷ total marketing spend",
+    formula: "MER = total revenue / total marketing spend",
+    example:
+      "If total revenue is $500k and total marketing spend is $100k, MER = $500k / $100k = 5.0.",
     mistakes: [
       "Using MER alone to optimize channel budgets (it hides what's working).",
       "Not adjusting for seasonality, promos, and pricing changes.",
+    ],
+    faqs: [
+      {
+        question: "MER vs ROAS: what’s the difference?",
+        answer:
+          "ROAS is usually channel/campaign-level. MER is top-down across all marketing spend and reduces attribution noise, but it hides what’s working.",
+      },
+      {
+        question: "What should count as marketing spend in MER?",
+        answer:
+          "Be consistent. Many teams include paid media and variable acquisition costs; some include marketing headcount. The key is to keep the definition stable over time.",
+      },
     ],
     relatedGuideSlugs: ["mer-guide"],
     relatedCalculatorSlugs: ["mer-calculator"],
@@ -250,8 +354,28 @@ const seeds: Seed[] = [
     slug: "blended-roas",
     title: "Blended ROAS",
     description:
-      "Blended ROAS is revenue ÷ total ad spend across channels. It reduces attribution noise but hides channel-level performance.",
-    formula: "Blended ROAS = total revenue ÷ total ad spend",
+      "Blended ROAS is revenue divided by total ad spend across channels. It reduces attribution noise but hides channel-level performance.",
+    formula: "Blended ROAS = total revenue / total ad spend",
+    bullets: [
+      "Use blended ROAS to align finance and marketing on top-down health.",
+      "Use channel ROAS to optimize allocation within a blended target.",
+    ],
+    mistakes: [
+      "Using blended ROAS to scale a single channel (it can hide weak channels).",
+      "Comparing periods with different attribution windows or delayed revenue recognition.",
+    ],
+    faqs: [
+      {
+        question: "Is blended ROAS the same as MER?",
+        answer:
+          "They’re often used similarly. MER is typically revenue / total marketing spend, while blended ROAS is usually revenue / total ad spend.",
+      },
+      {
+        question: "Can blended ROAS still be misleading?",
+        answer:
+          "Yes. It can hide mix shifts (prospecting vs retargeting) and doesn’t prove incrementality. Use experiments for causal truth when needed.",
+      },
+    ],
   },
   {
     slug: "attribution",
@@ -268,10 +392,29 @@ const seeds: Seed[] = [
     title: "Attribution Window",
     description:
       "Attribution window is the time period after an ad interaction during which conversions are credited to that ad.",
+    example:
+      "A 7-day click window credits conversions that happen within 7 days after a click. A 1-day view window credits conversions within 24 hours after an impression.",
+    bullets: [
+      "Keep attribution windows consistent when comparing ROAS/CPA over time.",
+      "Choose windows that match your purchase cycle; short windows can under-credit longer-cycle products.",
+    ],
     mistakes: [
       "Comparing ROAS across platforms with different default windows.",
       "Shortening windows and concluding performance dropped when it is just timing.",
     ],
+    faqs: [
+      {
+        question: "Should I use click-through or view-through attribution?",
+        answer:
+          "Click-through is usually less noisy. View-through can add insight for upper-funnel, but it’s easier to over-credit. Validate with incrementality tests at scale.",
+      },
+      {
+        question: "What window should I pick?",
+        answer:
+          "Pick one that matches your decision cycle and keep it stable. If you change windows, annotate reporting and avoid comparing across the change.",
+      },
+    ],
+    relatedGuideSlugs: ["paid-ads-funnel-guide", "incrementality-guide"],
   },
   {
     slug: "last-click-attribution",
@@ -298,9 +441,27 @@ const seeds: Seed[] = [
     title: "Incrementality",
     description:
       "Incrementality estimates the conversions that would not have happened without ads (true lift).",
+    example:
+      "If the exposed group converts at 5.0% and the holdout group converts at 4.6%, incremental lift is 0.4 percentage points (about 8.7% relative lift).",
     bullets: [
       "Use holdouts or geo-experiments to estimate incremental lift.",
       "Be careful with short tests when purchase cycles are long.",
+    ],
+    mistakes: [
+      "Treating attribution as causal truth (it’s model-based credit).",
+      "Running tests without clean holdouts (contamination breaks results).",
+    ],
+    faqs: [
+      {
+        question: "Is incrementality the same as attribution?",
+        answer:
+          "No. Attribution assigns credit; incrementality estimates causal lift (what ads caused). Incrementality is best measured with experiments.",
+      },
+      {
+        question: "When should we run incrementality tests?",
+        answer:
+          "When spend is meaningful and you suspect attribution bias (retargeting disputes, diminishing returns, or channel credit conflicts).",
+      },
     ],
     relatedGuideSlugs: ["incrementality-guide", "incrementality-lift-guide"],
     relatedCalculatorSlugs: ["incrementality-lift-calculator"],
@@ -310,6 +471,14 @@ const seeds: Seed[] = [
     title: "Holdout Test",
     description:
       "A holdout test withholds ads from a control group and compares outcomes to measure incremental lift.",
+    bullets: [
+      "Define the holdout population and prevent spillover (contamination).",
+      "Run long enough to cover your purchase cycle and seasonality effects.",
+    ],
+    mistakes: [
+      "Peeking early and stopping on noise.",
+      "Letting the holdout get exposed via other campaigns (invalidates the test).",
+    ],
     relatedGuideSlugs: ["incrementality-lift-guide", "incrementality-guide"],
     relatedCalculatorSlugs: ["incrementality-lift-calculator"],
   },
@@ -318,6 +487,9 @@ const seeds: Seed[] = [
     title: "Marginal ROAS",
     description:
       "Marginal ROAS is the incremental revenue generated by the next unit of ad spend. It is the metric you want for scaling decisions under diminishing returns.",
+    formula: "Marginal ROAS = incremental revenue / incremental ad spend",
+    example:
+      "If an extra $10k of spend generates $25k of incremental revenue, marginal ROAS = $25k / $10k = 2.5.",
     bullets: [
       "Use marginal ROAS (or incremental profit) to decide when to scale or cut spend.",
       "Average ROAS can remain high even when marginal ROAS falls below break-even.",
@@ -326,6 +498,18 @@ const seeds: Seed[] = [
     mistakes: [
       "Scaling based on average ROAS rather than marginal profit.",
       "Ignoring margin/variable costs (revenue-only ROAS can mislead).",
+    ],
+    faqs: [
+      {
+        question: "What’s the difference between average ROAS and marginal ROAS?",
+        answer:
+          "Average ROAS looks at total revenue / total spend. Marginal ROAS looks at what the next dollars of spend generate. Scaling decisions should use marginal ROAS (or incremental profit).",
+      },
+      {
+        question: "How do we estimate marginal ROAS?",
+        answer:
+          "Best case: experiments (holdouts) or response curves. Attribution-only estimates can be biased, especially with retargeting overlap.",
+      },
     ],
     relatedGuideSlugs: ["marginal-roas-guide"],
     relatedCalculatorSlugs: ["marginal-roas-calculator"],
@@ -351,12 +535,26 @@ const seeds: Seed[] = [
     title: "Geo Experiment",
     description:
       "A geo experiment measures lift by varying spend across regions and comparing outcomes against controls.",
+    bullets: [
+      "Use geo tests when user-level holdouts aren’t feasible (e.g., offline or privacy constraints).",
+      "Ensure regions are comparable and avoid cross-region spillover.",
+    ],
+    mistakes: [
+      "Using too few regions (low power) and over-interpreting noise.",
+      "Changing major campaigns mid-test (confounds).",
+    ],
+    relatedGuideSlugs: ["incrementality-guide", "incrementality-lift-guide"],
+    relatedCalculatorSlugs: ["incrementality-lift-calculator"],
   },
   {
     slug: "pixel",
     title: "Tracking Pixel",
     description:
       "A tracking pixel is a snippet that records events (page views, purchases) for measurement and optimization in ad platforms.",
+    bullets: [
+      "Validate event firing after every site change (especially checkout).",
+      "Deduplicate events (client + server) to avoid inflated conversion counts.",
+    ],
     mistakes: [
       "Duplicate firing (inflates conversions).",
       "Not validating events after site changes (breaks optimization).",
@@ -371,13 +569,24 @@ const seeds: Seed[] = [
       "Use consistent naming (lowercase, stable conventions).",
       "Avoid tagging internal links to prevent attribution pollution.",
     ],
+    faqs: [
+      {
+        question: "Do UTMs affect SEO?",
+        answer:
+          "They shouldn’t if you handle canonicals correctly. UTMs can create duplicate URLs, so canonical URLs should point to the clean version without query parameters.",
+      },
+    ],
   },
   {
     slug: "frequency",
     title: "Frequency",
     description:
       "Frequency is the average number of times a person sees your ad in a period. High frequency can cause fatigue.",
-    formula: "Frequency = impressions ÷ reach",
+    formula: "Frequency = impressions / reach",
+    bullets: [
+      "Watch frequency and CTR together; rising frequency with falling CTR can signal fatigue.",
+      "Optimal frequency depends on offer, audience size, and creative variety.",
+    ],
   },
   {
     slug: "reach",
@@ -410,6 +619,17 @@ const seeds: Seed[] = [
       "Monitor frequency and CTR trends to detect fatigue.",
       "Rotate creatives and refresh offers to maintain performance.",
     ],
+    mistakes: [
+      "Refreshing creative without changing the underlying message/offer (fatigue returns quickly).",
+      "Blaming fatigue when the real issue is landing-page or pricing changes.",
+    ],
+    faqs: [
+      {
+        question: "How do I know if it’s creative fatigue or audience saturation?",
+        answer:
+          "Fatigue often shows up as CTR decline at stable CPM, while saturation shows falling marginal returns as you scale. They can overlap, so test new creative and new audiences separately.",
+      },
+    ],
   },
   {
     slug: "retargeting",
@@ -420,12 +640,23 @@ const seeds: Seed[] = [
       "Over-crediting retargeting without incrementality checks.",
       "Excess frequency causing annoyance and wasted spend.",
     ],
+    faqs: [
+      {
+        question: "Why does retargeting look so good in ROAS dashboards?",
+        answer:
+          "Retargeting targets people already close to conversion and can get disproportionate attribution credit. Validate with incrementality when spend becomes meaningful.",
+      },
+    ],
   },
   {
     slug: "prospecting",
     title: "Prospecting",
     description:
       "Prospecting targets new audiences to acquire new customers. It typically has lower short-term ROAS but drives incremental growth.",
+    bullets: [
+      "Judge prospecting with longer windows and cohort outcomes (LTV, retention), not just short-window ROAS.",
+      "Use creative testing to find message-market fit before scaling spend.",
+    ],
   },
   {
     slug: "branded-search",

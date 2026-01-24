@@ -1,4 +1,9 @@
-import type { GlossaryCategorySlug, GlossarySection, GlossaryTerm } from "../types";
+import type {
+  GlossaryCategorySlug,
+  GlossaryFaq,
+  GlossarySection,
+  GlossaryTerm,
+} from "../types";
 
 type Seed = {
   slug: string;
@@ -9,6 +14,7 @@ type Seed = {
   example?: string;
   bullets?: string[];
   mistakes?: string[];
+  faqs?: GlossaryFaq[];
   relatedGuideSlugs?: string[];
   relatedCalculatorSlugs?: string[];
 };
@@ -47,6 +53,7 @@ function makeTerm(seed: Seed): GlossaryTerm {
     category: seed.category ?? "saas-metrics",
     updatedAt: "2026-01-23",
     sections: buildSections(seed),
+    faqs: seed.faqs,
     relatedGuideSlugs: seed.relatedGuideSlugs,
     relatedCalculatorSlugs: seed.relatedCalculatorSlugs,
   };
@@ -292,31 +299,80 @@ const seeds: Seed[] = [
     description:
       "NRR measures how revenue from an existing cohort changes over time, including expansion and contraction.",
     formula:
-      "NRR = (starting MRR + expansion − contraction − churn) ÷ starting MRR",
+      "NRR = (starting MRR + expansion - contraction - churn) / starting MRR",
+    example:
+      "If starting MRR is $100k, expansion is $15k, contraction is $5k, and churn is $10k, NRR = ($100k+$15k-$5k-$10k)/$100k = 100%.",
     bullets: [
       "NRR > 100% means the cohort grows without new customers.",
       "Track NRR by segment (plan, size) to avoid blended averages.",
     ],
+    mistakes: [
+      "Using different cohorts for starting MRR vs expansion/churn (inconsistent denominators).",
+      "Letting expansion hide churn (track GRR alongside NRR).",
+    ],
+    faqs: [
+      {
+        question: "NRR vs GRR: why track both?",
+        answer:
+          "NRR includes expansion and can be high even with significant churn. GRR isolates churn and downgrades, making it harder to ‘hide’ retention problems.",
+      },
+    ],
+    relatedGuideSlugs: ["nrr-guide", "nrr-vs-grr-guide", "retention-churn-hub-guide"],
+    relatedCalculatorSlugs: ["nrr-calculator", "nrr-vs-grr-calculator"],
   },
   {
     slug: "grr",
     title: "GRR (Gross Revenue Retention)",
     description:
       "GRR measures how much of a cohort's starting revenue remains after churn and downgrades, excluding expansion.",
-    formula: "GRR = (starting MRR − contraction − churn) ÷ starting MRR",
+    formula: "GRR = (starting MRR - contraction - churn) / starting MRR",
+    example:
+      "If starting MRR is $100k, contraction is $5k, and churn is $10k, GRR = ($100k-$5k-$10k)/$100k = 85%.",
     bullets: [
       "GRR isolates durability (product stickiness) from expansion.",
       "Use GRR to validate that growth isn't masking underlying churn.",
     ],
+    mistakes: [
+      "Including expansion in GRR (by definition it’s excluded).",
+      "Mixing cohorts or time windows (start from one cohort, losses from another).",
+    ],
+    faqs: [
+      {
+        question: "Is GRR supposed to be lower than NRR?",
+        answer:
+          "Yes, typically. NRR adds expansion on top of GRR. If GRR is weak, NRR can still look good temporarily if expansion is strong.",
+      },
+    ],
+    relatedGuideSlugs: ["grr-guide", "nrr-guide", "nrr-vs-grr-guide", "retention-churn-hub-guide"],
+    relatedCalculatorSlugs: ["grr-calculator", "nrr-calculator", "nrr-vs-grr-calculator"],
   },
   {
     slug: "cohort-analysis",
     title: "Cohort Analysis",
     description:
       "Cohort analysis groups customers by a shared start point (e.g., signup month) and tracks outcomes (retention, revenue) over time.",
+    example:
+      "A common cohort view is monthly signup cohorts: track what % of each cohort is still active (or paying) after 1, 3, 6, and 12 months.",
     bullets: [
       "Use cohorts to see where retention drops (month 1 vs month 6+).",
       "Segment cohorts by channel and plan to see quality differences.",
+    ],
+    mistakes: [
+      "Mixing cohorts with different start definitions (signup vs paid vs activated).",
+      "Comparing cohorts without controlling for seasonality or product changes.",
+    ],
+    faqs: [
+      {
+        question: "What should define the cohort start?",
+        answer:
+          "Use the start point that matches your question: signup for onboarding, activation for product usage, paid conversion for revenue retention.",
+      },
+    ],
+    relatedGuideSlugs: ["retention-curve-guide", "cohort-payback-curve-guide", "retention-churn-hub-guide"],
+    relatedCalculatorSlugs: [
+      "retention-curve-calculator",
+      "two-stage-retention-curve-calculator",
+      "cohort-payback-curve-calculator",
     ],
   },
   {
@@ -324,11 +380,22 @@ const seeds: Seed[] = [
     title: "Activation Rate",
     description:
       "Activation rate measures what % of new users reach a meaningful 'aha' moment after signup (an early predictor of retention).",
-    formula: "Activation rate = activated users ÷ new signups",
+    formula: "Activation rate = activated users / new signups",
+    example:
+      "If 1,200 of 5,000 signups reached activation, activation rate = 1,200 / 5,000 = 24%.",
     mistakes: [
       "Using vanity actions as activation (not linked to retention).",
       "Comparing activation across products without aligning definitions.",
     ],
+    faqs: [
+      {
+        question: "How do I pick the right activation event?",
+        answer:
+          "Pick the earliest behavior that strongly predicts retention or revenue (the ‘aha’ moment). Validate it with cohort analysis before locking it in.",
+      },
+    ],
+    relatedGuideSlugs: ["activation-rate-guide", "plg-metrics-hub-guide"],
+    relatedCalculatorSlugs: ["activation-rate-calculator"],
   },
   {
     slug: "trial-to-paid",
@@ -479,7 +546,16 @@ const seeds: Seed[] = [
     title: "Months to recover CAC",
     description:
       "Months to recover CAC is another name for CAC payback period: the months of gross profit needed to earn back acquisition cost.",
-    formula: "Payback (months) = CAC ÷ (ARPA × gross margin)",
+    formula: "Payback (months) ≈ CAC / (ARPA * gross margin)",
+    example:
+      "If CAC is $6,000, ARPA is $500/month, and gross margin is 80% (0.8), payback ≈ $6,000 / ($500 * 0.8) = 15 months.",
+    faqs: [
+      {
+        question: "Why use gross margin in payback?",
+        answer:
+          "Because CAC is paid in cash, and payback is about cash recovery. Using revenue instead of gross profit overstates how fast you recover CAC.",
+      },
+    ],
     relatedGuideSlugs: ["cac-payback-guide"],
     relatedCalculatorSlugs: ["cac-payback-period-calculator"],
   },
@@ -488,10 +564,30 @@ const seeds: Seed[] = [
     title: "Unit Economics",
     description:
       "Unit economics evaluate profitability and cash efficiency at the level of a unit (customer/account/order). Common unit metrics are CAC, LTV, and payback.",
+    example:
+      "A simple unit economics stack is: compute CAC, estimate LTV, sanity-check LTV:CAC, then confirm cash feasibility with CAC payback and runway.",
     bullets: [
       "Pick a unit (customer/account) and keep definitions consistent.",
       "Use gross profit (not revenue) when comparing to CAC.",
       "Segment by channel/plan to avoid blended averages.",
+    ],
+    mistakes: [
+      "Mixing fully-loaded CAC with revenue-only LTV (definition mismatch).",
+      "Using blended averages that hide unprofitable segments.",
+    ],
+    faqs: [
+      {
+        question: "What’s the fastest way to improve unit economics?",
+        answer:
+          "Usually by improving retention (raises LTV) and/or improving margin. Lowering CAC helps too, but it often has trade-offs with scale.",
+      },
+    ],
+    relatedGuideSlugs: ["unit-economics-guide", "unit-economics-hub-guide"],
+    relatedCalculatorSlugs: [
+      "unit-economics-calculator",
+      "unit-economics-dashboard-calculator",
+      "ltv-to-cac-calculator",
+      "cac-payback-period-calculator",
     ],
   },
   {
@@ -510,13 +606,22 @@ const seeds: Seed[] = [
     title: "Burn Multiple",
     description:
       "Burn multiple is a growth efficiency metric: how much net cash you burn to generate $1 of net new ARR.",
-    formula: "Burn multiple = net burn ÷ net new ARR",
+    formula: "Burn multiple = net burn / net new ARR",
+    example:
+      "If net burn is $2.5M in a quarter and net new ARR is $1.0M, burn multiple = 2.5.",
     bullets: [
       "Use consistent windows (typically quarterly).",
       "Adjust for annual prepay seasonality if needed.",
       "Pair with retention and gross margin to judge growth quality.",
     ],
-    relatedGuideSlugs: ["burn-multiple-guide", "net-new-arr-guide"],
+    faqs: [
+      {
+        question: "What’s a ‘good’ burn multiple?",
+        answer:
+          "It depends on stage and market. Lower is generally better, but you should compare against peers and consider retention and margin quality.",
+      },
+    ],
+    relatedGuideSlugs: ["burn-multiple-guide", "net-new-arr-guide", "unit-economics-hub-guide"],
     relatedCalculatorSlugs: ["burn-multiple-calculator", "net-new-arr-calculator"],
   },
   {
@@ -524,7 +629,9 @@ const seeds: Seed[] = [
     title: "Net New ARR",
     description:
       "Net new ARR is the net change in ARR over a period after adding new and expansion ARR and subtracting contraction and churn.",
-    formula: "Net new ARR = new ARR + expansion ARR − contraction ARR − churned ARR",
+    formula: "Net new ARR = new ARR + expansion ARR - contraction ARR - churned ARR",
+    example:
+      "If new ARR is $1.2M, expansion is $0.6M, contraction is $0.2M, and churn is $0.4M, net new ARR = $1.2M + $0.6M - $0.2M - $0.4M = $1.2M.",
     bullets: [
       "Use net new ARR for efficiency metrics like burn multiple and magic number.",
       "Compute it for the same period as burn/spend (often quarterly).",
@@ -544,10 +651,19 @@ const seeds: Seed[] = [
     description:
       "SaaS Magic Number is a heuristic for sales efficiency using net new ARR relative to sales & marketing spend (with a lag).",
     formula:
-      "Magic Number ≈ (net new ARR in quarter × 4) ÷ prior-quarter sales & marketing spend",
+      "Magic Number ≈ (net new ARR in quarter * 4) / prior-quarter sales & marketing spend",
+    example:
+      "If net new ARR in the quarter is $1.0M and prior-quarter sales & marketing spend was $2.0M, Magic Number ≈ ($1.0M * 4) / $2.0M = 2.0.",
     mistakes: [
       "Ignoring lag effects between spend and revenue.",
       "Using blended averages that hide channel differences.",
+    ],
+    faqs: [
+      {
+        question: "Why multiply by 4?",
+        answer:
+          "Net new ARR is often measured quarterly. Multiplying by 4 annualizes the quarterly ARR change before comparing it to spend.",
+      },
     ],
   },
   {
@@ -555,10 +671,18 @@ const seeds: Seed[] = [
     title: "LTV:CAC Ratio",
     description:
       "LTV:CAC compares lifetime value to acquisition cost. It's a unit economics sanity check, but can mislead if definitions mismatch.",
-    formula: "LTV:CAC = LTV ÷ CAC",
+    formula: "LTV:CAC = LTV / CAC",
+    example: "If LTV is $5,400 and CAC is $600, LTV:CAC = $5,400 / $600 = 9.0.",
     mistakes: [
       "Comparing revenue-based LTV to fully-loaded CAC (mismatch).",
       "Ignoring payback and cash constraints.",
+    ],
+    faqs: [
+      {
+        question: "Is a high LTV:CAC always good?",
+        answer:
+          "Not always. It can be inflated by optimistic LTV assumptions or long payback. Pair it with CAC payback and cohort retention.",
+      },
     ],
     relatedGuideSlugs: ["ltv-cac-guide"],
     relatedCalculatorSlugs: ["ltv-to-cac-calculator"],

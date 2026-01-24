@@ -5,7 +5,7 @@ export const termsCore: GlossaryTerm[] = [
     slug: "arr",
     title: "ARR (Annual Recurring Revenue)",
     description:
-      "ARR is an annualized recurring revenue run-rate (typically MRR × 12). Definition, formula, example, and common mistakes.",
+      "ARR is an annualized recurring revenue run-rate (typically MRR * 12). Definition, formula, example, and common mistakes.",
     category: "saas-metrics",
     updatedAt: "2026-01-23",
     sections: [
@@ -15,7 +15,7 @@ export const termsCore: GlossaryTerm[] = [
         text: "ARR (Annual Recurring Revenue) is the annualized run-rate of your recurring subscription revenue. It is a snapshot of current recurring momentum, not a promise of what you'll recognize over the next 12 months.",
       },
       { type: "h2", text: "Formula" },
-      { type: "p", text: "ARR = MRR × 12" },
+      { type: "p", text: "ARR = MRR * 12" },
       { type: "h2", text: "Example" },
       {
         type: "p",
@@ -29,6 +29,18 @@ export const termsCore: GlossaryTerm[] = [
           "Including one-time fees or services revenue in ARR.",
           "Comparing bookings to ARR without normalizing one-time items and term length.",
         ],
+      },
+    ],
+    faqs: [
+      {
+        question: "ARR vs revenue: are they the same?",
+        answer:
+          "No. ARR is a run-rate snapshot based on recurring subscription revenue. Revenue is what you recognize over a period under accounting rules.",
+      },
+      {
+        question: "Should ARR include one-time fees or services?",
+        answer:
+          "Usually no. ARR is typically reserved for recurring subscription revenue to keep it comparable over time.",
       },
     ],
     relatedGuideSlugs: ["arr-guide", "mrr-guide"],
@@ -71,6 +83,18 @@ export const termsCore: GlossaryTerm[] = [
         ],
       },
     ],
+    faqs: [
+      {
+        question: "What’s the difference between MRR and cash collected?",
+        answer:
+          "MRR is a recurring run-rate metric. Cash can be lumpy (annual prepay, timing), so cash collections can move differently than MRR.",
+      },
+      {
+        question: "Should MRR include discounts and credits?",
+        answer:
+          "Use a consistent policy. Most teams report MRR net of recurring discounts and exclude one-time credits so trends remain comparable.",
+      },
+    ],
     relatedGuideSlugs: ["mrr-guide", "mrr-forecast-guide", "arr-guide"],
     relatedCalculatorSlugs: [
       "mrr-calculator",
@@ -94,7 +118,7 @@ export const termsCore: GlossaryTerm[] = [
       { type: "h2", text: "Formula" },
       {
         type: "p",
-        text: "CMGR = (ending ÷ starting)^(1 ÷ months) - 1",
+        text: "CMGR = (ending / starting)^(1 / months) - 1",
       },
       { type: "h2", text: "How to use it" },
       {
@@ -112,6 +136,13 @@ export const termsCore: GlossaryTerm[] = [
           "Assuming CMGR will continue indefinitely (small differences compound).",
           "Confusing CMGR with simple average monthly change (compounding matters).",
         ],
+      },
+    ],
+    faqs: [
+      {
+        question: "When should I not use CMGR?",
+        answer:
+          "Avoid CMGR when the starting value is near zero (the math explodes) or when growth is highly seasonal. Use supporting metrics and context.",
       },
     ],
     relatedGuideSlugs: ["mrr-forecast-guide"],
@@ -271,7 +302,7 @@ export const termsCore: GlossaryTerm[] = [
         text: "ROAS (Return on Ad Spend) measures attributed revenue divided by ad spend. It helps compare campaigns, but it can mislead if you ignore margin, returns, fees, and attribution.",
       },
       { type: "h2", text: "Formula" },
-      { type: "p", text: "ROAS = attributed revenue ÷ ad spend" },
+      { type: "p", text: "ROAS = attributed revenue / ad spend" },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -280,6 +311,18 @@ export const termsCore: GlossaryTerm[] = [
           "Comparing ROAS across channels with different attribution windows.",
           "Optimizing short-window ROAS and hurting long-term LTV.",
         ],
+      },
+    ],
+    faqs: [
+      {
+        question: "What’s the difference between ROAS and ROI?",
+        answer:
+          "ROAS is revenue divided by ad spend. ROI is profit relative to total cost. You can have high ROAS and still lose money if margins or costs are poor.",
+      },
+      {
+        question: "Should I optimize for break-even ROAS or target ROAS?",
+        answer:
+          "Use break-even ROAS to avoid losing money on variable economics. Use target ROAS when you need a profit buffer and want to cover overhead and volatility.",
       },
     ],
     relatedGuideSlugs: ["roas-guide", "break-even-roas-guide", "target-roas-guide"],
