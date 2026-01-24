@@ -32,6 +32,9 @@ yarn-error.log*
 next-dev-*.out.log
 next-dev-*.err.log
 
+# audit reports
+/reports/
+
 # env files (can opt-in for committing if needed)
 .env*
 
