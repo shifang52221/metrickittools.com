@@ -10,6 +10,7 @@ type Seed = {
   title: string;
   description: string;
   category?: GlossaryCategorySlug;
+  updatedAt?: string; // YYYY-MM-DD
   formula?: string;
   example?: string;
   bullets?: string[];
@@ -51,7 +52,7 @@ function makeTerm(seed: Seed): GlossaryTerm {
     title: seed.title,
     description: seed.description,
     category: seed.category ?? "saas-metrics",
-    updatedAt: "2026-01-23",
+    updatedAt: seed.updatedAt ?? "2026-01-23",
     sections: buildSections(seed),
     faqs: seed.faqs,
     relatedGuideSlugs: seed.relatedGuideSlugs,
@@ -432,7 +433,12 @@ const seeds: Seed[] = [
           "Use the start point that matches your question: signup for onboarding, activation for product usage, paid conversion for revenue retention.",
       },
     ],
-    relatedGuideSlugs: ["retention-curve-guide", "cohort-payback-curve-guide", "retention-churn-hub-guide"],
+    relatedGuideSlugs: [
+      "retention-curve-guide",
+      "cohort-payback-curve-guide",
+      "cohort-analysis-playbook-guide",
+      "retention-churn-hub-guide",
+    ],
     relatedCalculatorSlugs: [
       "retention-curve-calculator",
       "two-stage-retention-curve-calculator",
@@ -977,7 +983,11 @@ const seeds: Seed[] = [
       "Using a win rate from a different stage definition.",
       "Ignoring sales cycle length and timing (coverage must match the period).",
     ],
-    relatedGuideSlugs: ["pipeline-coverage-guide", "pipeline-required-guide"],
+    relatedGuideSlugs: [
+      "pipeline-coverage-guide",
+      "pipeline-required-guide",
+      "pipeline-coverage-sales-cycle-guide",
+    ],
     relatedCalculatorSlugs: ["pipeline-coverage-calculator", "pipeline-required-calculator"],
   },
   {
@@ -994,7 +1004,12 @@ const seeds: Seed[] = [
       "Mixing win rate from one stage definition with pipeline from another.",
       "Using a short window that undercounts late closes (seasonality/timing).",
     ],
-    relatedGuideSlugs: ["pipeline-coverage-guide", "pipeline-required-guide", "sales-funnel-targets-guide"],
+    relatedGuideSlugs: [
+      "pipeline-coverage-guide",
+      "pipeline-required-guide",
+      "pipeline-coverage-sales-cycle-guide",
+      "sales-funnel-targets-guide",
+    ],
     relatedCalculatorSlugs: [
       "pipeline-coverage-calculator",
       "pipeline-required-calculator",
@@ -1086,7 +1101,11 @@ const seeds: Seed[] = [
       "Using one blended sales cycle for all segments and channels.",
       "Ignoring sales cycle when comparing CAC payback across channels (timing matters).",
     ],
-    relatedGuideSlugs: ["sales-capacity-guide", "unit-economics-hub-guide"],
+    relatedGuideSlugs: [
+      "sales-capacity-guide",
+      "pipeline-coverage-sales-cycle-guide",
+      "unit-economics-hub-guide",
+    ],
     relatedCalculatorSlugs: ["sales-capacity-calculator", "cac-payback-period-calculator"],
   },
   {

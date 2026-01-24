@@ -4,6 +4,7 @@ type Seed = {
   slug: string;
   title: string;
   description: string;
+  updatedAt?: string; // YYYY-MM-DD
   formula?: string;
   example?: string;
   bullets?: string[];
@@ -43,7 +44,7 @@ function make(seed: Seed): GlossaryTerm {
     title: seed.title,
     description: seed.description,
     category: "finance",
-    updatedAt: "2026-01-23",
+    updatedAt: seed.updatedAt ?? "2026-01-23",
     sections: sectionsFor(seed),
     faqs: seed.faqs,
     relatedGuideSlugs: seed.relatedGuideSlugs,
@@ -515,7 +516,7 @@ const seeds: Seed[] = [
       "Investing cash flow includes capex and acquisitions.",
       "Financing cash flow includes debt, equity, and repayments.",
     ],
-    relatedGuideSlugs: ["runway-burn-cash-guide"],
+    relatedGuideSlugs: ["runway-burn-cash-guide", "cash-conversion-cycle-guide"],
   },
   {
     slug: "working-capital",
@@ -534,7 +535,7 @@ const seeds: Seed[] = [
           "Working capital changes can increase or decrease net burn without changing headline revenue. Faster collections and better payment terms can extend runway.",
       },
     ],
-    relatedGuideSlugs: ["runway-burn-cash-guide"],
+    relatedGuideSlugs: ["runway-burn-cash-guide", "cash-conversion-cycle-guide"],
   },
   {
     slug: "accounts-receivable",
@@ -547,7 +548,7 @@ const seeds: Seed[] = [
       "High AR can create cash strain even with healthy revenue growth.",
       "Improving collections (DSO) is one of the fastest levers to extend runway.",
     ],
-    relatedGuideSlugs: ["runway-burn-cash-guide"],
+    relatedGuideSlugs: ["runway-burn-cash-guide", "cash-conversion-cycle-guide"],
   },
   {
     slug: "accounts-payable",
@@ -560,7 +561,51 @@ const seeds: Seed[] = [
       "AP timing can extend runway, but don’t damage vendor relationships or reliability.",
       "Match payment terms to your collections cycle where possible.",
     ],
-    relatedGuideSlugs: ["runway-burn-cash-guide"],
+    relatedGuideSlugs: ["runway-burn-cash-guide", "cash-conversion-cycle-guide"],
+  },
+  {
+    slug: "cash-conversion-cycle",
+    title: "Cash Conversion Cycle (CCC)",
+    description:
+      "The cash conversion cycle (CCC) measures how long cash is tied up between paying out cash (to suppliers) and collecting cash (from customers). It’s a working-capital lens on runway.",
+    formula: "CCC = DSO + DIO - DPO (often DIO ~ 0 for SaaS)",
+    bullets: [
+      "Lower CCC means cash comes back faster (less runway risk).",
+      "In SaaS, CCC is usually driven by collections (DSO) and vendor terms (DPO), not inventory.",
+      "Use CCC trends to explain why cash can worsen even when revenue looks strong (growth can consume cash).",
+    ],
+    mistakes: [
+      "Treating bookings or recognized revenue as cash collected.",
+      "Planning runway from P&L only (ignoring AR/AP movement).",
+    ],
+    relatedGuideSlugs: ["cash-conversion-cycle-guide", "runway-burn-cash-guide"],
+  },
+  {
+    slug: "days-sales-outstanding",
+    title: "Days Sales Outstanding (DSO)",
+    description:
+      "DSO estimates how many days it takes, on average, to collect cash after you issue invoices. Lower DSO improves cash flow and runway.",
+    formula: "DSO ~ accounts receivable / (revenue per day)",
+    bullets: [
+      "Improve DSO with tighter terms, clearer invoicing, and disciplined collections cadence.",
+      "Segment DSO by customer type and invoice size; a few large accounts can dominate AR.",
+    ],
+    relatedGuideSlugs: ["cash-conversion-cycle-guide", "runway-burn-cash-guide"],
+  },
+  {
+    slug: "days-payables-outstanding",
+    title: "Days Payables Outstanding (DPO)",
+    description:
+      "DPO estimates how many days, on average, you take to pay suppliers. Higher DPO can improve short-term cash timing, but it can also strain vendor relationships.",
+    formula: "DPO ~ accounts payable / (COGS per day)",
+    bullets: [
+      "Negotiate longer terms when appropriate, but protect reliability and trust with key vendors.",
+      "Match payment terms to your collections cycle to reduce cash stress.",
+    ],
+    mistakes: [
+      "Pushing terms too far and creating hidden costs (supply risk, penalties, lower service levels).",
+    ],
+    relatedGuideSlugs: ["cash-conversion-cycle-guide"],
   },
   {
     slug: "billings",

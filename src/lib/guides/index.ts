@@ -7578,6 +7578,430 @@ export const guides: Guide[] = [
       },
     ],
   },
+  {
+    slug: "utm-ga4-attribution-guide",
+    title: "UTM + GA4 attribution: practical tracking for paid ads (without lying to yourself)",
+    description:
+      "A practical guide to UTMs and GA4: consistent source/medium/campaign tagging, conversion deduplication, and common attribution traps.",
+    category: "paid-ads",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: [
+      "roas-calculator",
+      "roi-calculator",
+      "mer-calculator",
+      "incrementality-lift-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "utm-parameters",
+      "ga4",
+      "attribution",
+      "last-click-attribution",
+      "multi-touch-attribution",
+      "attribution-window",
+      "pixel",
+      "conversion",
+      "branded-search",
+      "non-branded-search",
+    ],
+    sections: [
+      { type: "h2", text: "Why tracking breaks (even when you do everything right)" },
+      {
+        type: "bullets",
+        items: [
+          "Platforms optimize on their own click/view attribution; GA4 often reports last-click or data-driven attribution.",
+          "Cross-device and iOS privacy limits create gaps; the absence of clicks in analytics does not mean ads didn't influence.",
+          "Naming inconsistencies (source/medium/campaign) quietly destroy trend analysis.",
+        ],
+      },
+      { type: "h2", text: "A UTM standard that scales" },
+      {
+        type: "bullets",
+        items: [
+          "Always tag: utm_source, utm_medium, utm_campaign; optionally utm_content/utm_term for creative/keyword.",
+          "Keep a controlled vocabulary (e.g., source=facebook/google/tiktok; medium=cpc/paid-social/email).",
+          "Use a campaign naming convention that encodes intent and geography (e.g., nb-search-us-brand).",
+        ],
+      },
+      { type: "h2", text: "GA4: what to check first" },
+      {
+        type: "bullets",
+        items: [
+          "Confirm conversion events fire once (dedupe between pixel + server events when applicable).",
+          "Verify source/medium and default channel groupings match your expectations (sample paid traffic daily).",
+          "Use consistent lookback windows when comparing GA4 to platform dashboards.",
+        ],
+      },
+      { type: "h2", text: "How to interpret conflicting numbers" },
+      {
+        type: "bullets",
+        items: [
+          "Use platforms for optimization and GA4 for directionality; reconcile with MER and incrementality tests.",
+          "Expect GA4 to undercount in privacy-heavy environments; use it for relative comparisons, not absolute truth.",
+          "If branded search spikes with spend, treat it as influenced revenue rather than 'free' traffic.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Should GA4 be the source of truth for ROAS?",
+        answer:
+          "Use GA4 for cross-channel consistency, but validate with blended MER and incrementality tests. GA4 can undercount due to privacy and cross-device gaps.",
+      },
+      {
+        question: "Do UTMs hurt SEO?",
+        answer:
+          "They shouldn't if canonical URLs point to the clean version without query parameters. Avoid indexing UTM variants.",
+      },
+    ],
+    examples: [
+      {
+        label: "ROAS example ($8,400 revenue; $2,000 spend)",
+        calculatorSlug: "roas-calculator",
+        params: { revenue: "8400", adSpend: "2000" },
+      },
+    ],
+  },
+  {
+    slug: "frequency-creative-fatigue-guide",
+    title: "Frequency and creative fatigue: diagnose performance decay and fix it",
+    description:
+      "Learn how frequency, reach, and impressions interact with CTR/CVR, when to cap frequency, and how to refresh creatives without tanking learning.",
+    category: "paid-ads",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: [
+      "paid-ads-funnel-calculator",
+      "break-even-ctr-calculator",
+      "break-even-cpm-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "frequency",
+      "frequency-cap",
+      "creative-fatigue",
+      "reach",
+      "impressions",
+      "ctr",
+      "cpm",
+      "cvr",
+      "landing-page",
+    ],
+    sections: [
+      { type: "h2", text: "What frequency actually tells you" },
+      {
+        type: "p",
+        text: "Frequency is the average number of times a person sees your ad in a time window. Rising frequency with falling CTR often signals creative fatigue or an audience that’s too narrow.",
+      },
+      { type: "h2", text: "A simple fatigue diagnosis checklist" },
+      {
+        type: "bullets",
+        items: [
+          "CTR down, CPM stable: creative fatigue or message-market mismatch.",
+          "CTR stable, CVR down: landing page/offer mismatch or traffic quality shift.",
+          "CPM up, frequency up: audience is saturating (auction pressure inside a small pool).",
+        ],
+      },
+      { type: "h2", text: "Best practices that usually work" },
+      {
+        type: "bullets",
+        items: [
+          "Refresh creatives on a schedule (weekly for fast-moving channels; biweekly/monthly for search/long cycle).",
+          "Expand audience before forcing spend higher; narrow audiences inflate frequency and CPM.",
+          "Use a break-even CTR target so you know when a creative becomes unprofitable (not just 'low CTR').",
+        ],
+      },
+      { type: "h2", text: "What not to do" },
+      {
+        type: "bullets",
+        items: [
+          "Don't chase CTR with clickbait if CVR and profit drop.",
+          "Don't reset everything at once (new creative + new audience + new landing page) or you won't learn what worked.",
+          "Don't assume fatigue is the only explanation; check tracking and on-site conversion before rotating ads blindly.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is there a universal 'good' frequency cap?",
+        answer:
+          "No. Use your funnel metrics: if frequency rises and CTR/CVR decay, cap or expand audience and refresh creative. Retargeting often tolerates higher frequency than prospecting.",
+      },
+    ],
+    examples: [
+      {
+        label: "Funnel example (CPM $14; CTR 1.2%; CVR 2.4%; AOV $90; 55% margin)",
+        calculatorSlug: "paid-ads-funnel-calculator",
+        params: {
+          cpm: "14",
+          ctrPercent: "1.2",
+          cvrPercent: "2.4",
+          aov: "90",
+          grossMarginPercent: "55",
+          paymentFeesPercent: "3",
+          shippingPercent: "0",
+          returnsPercent: "0",
+        },
+      },
+    ],
+  },
+  {
+    slug: "cohort-analysis-playbook-guide",
+    title: "Cohort analysis playbook: retention curves, LTV forecasting, and payback",
+    description:
+      "A practical cohort analysis workflow: build retention curves, forecast LTV, and translate retention quality into payback and growth decisions.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: [
+      "retention-curve-calculator",
+      "cohort-ltv-forecast-calculator",
+      "cohort-payback-curve-calculator",
+      "ltv-sensitivity-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "cohort-analysis",
+      "retention-rate",
+      "churn-rate",
+      "ltv",
+      "payback-period",
+      "nrr",
+      "grr",
+    ],
+    sections: [
+      { type: "h2", text: "Why cohorts matter" },
+      {
+        type: "p",
+        text: "Blended churn hides the truth. Cohorts show where customers fall off (activation, onboarding, pricing fit) and whether newer cohorts are improving.",
+      },
+      { type: "h2", text: "A repeatable cohort workflow" },
+      {
+        type: "bullets",
+        items: [
+          "Start with logo retention by cohort start month; then add revenue retention (GRR/NRR) for expansion effects.",
+          "Look for the biggest early drop (month 1-2) and the long-run slope (steady-state churn).",
+          "Translate retention into unit economics: retention -> LTV -> payback -> scale constraints.",
+        ],
+      },
+      { type: "h2", text: "What to segment (minimum set)" },
+      {
+        type: "bullets",
+        items: [
+          "Plan/price point (pricing fit).",
+          "Acquisition channel (growth quality).",
+          "Customer size/use case (product fit).",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Forecasting LTV from a short window without recognizing churn decay or seasonality.",
+          "Mixing logo churn and revenue churn without stating which one is used.",
+          "Using NRR alone and missing logo churn (NRR can look great while the base erodes).",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Should I use GRR or NRR for LTV?",
+        answer:
+          "For conservative planning, use GRR-driven retention (no expansion). Use NRR for growth planning only when expansion is durable and repeatable for your segment.",
+      },
+    ],
+    examples: [
+      {
+        label: "Retention curve example (2% monthly churn, $800 ARPA, 80% margin, 36 months)",
+        calculatorSlug: "retention-curve-calculator",
+        params: {
+          monthlyLogoChurnPercent: "2",
+          arpaMonthly: "800",
+          grossMarginPercent: "80",
+          months: "36",
+        },
+      },
+    ],
+  },
+  {
+    slug: "pipeline-coverage-sales-cycle-guide",
+    title: "Pipeline coverage and sales cycle math: set realistic targets (and avoid sandbagging)",
+    description:
+      "A practical guide to pipeline coverage: connect quota, win rate, sales cycle length, and CAC/payback constraints to set realistic growth targets.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: [
+      "cac-calculator",
+      "cac-payback-period-calculator",
+      "blended-cac-calculator",
+      "cash-runway-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "sales-cycle",
+      "win-rate",
+      "pipeline-coverage",
+      "cac",
+      "payback-period",
+      "runway",
+      "net-burn",
+    ],
+    sections: [
+      { type: "h2", text: "Pipeline coverage in one line" },
+      {
+        type: "p",
+        text: "Pipeline coverage is how much qualified pipeline you need to hit a bookings target given your win rate and sales cycle timing.",
+      },
+      { type: "h2", text: "A practical formula" },
+      {
+        type: "bullets",
+        items: [
+          "Required pipeline ~= target bookings / win rate.",
+          "If the sales cycle is longer than your reporting window, you need pipeline earlier (timing mismatch).",
+          "Coverage targets differ by segment: enterprise cycles require higher coverage buffers than self-serve.",
+        ],
+      },
+      { type: "h2", text: "How to use it without games" },
+      {
+        type: "bullets",
+        items: [
+          "Define what counts as qualified (stage + exit criteria) and keep it consistent.",
+          "Track velocity (stage conversion + time) so coverage isn't a vanity pile of stale deals.",
+          "Connect to cash: long cycles and slow collections increase runway risk even if bookings look fine.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using a single 'win rate' across wildly different segments and deal sizes.",
+          "Counting pipeline created today toward a quarter where the cycle can't close in time.",
+          "Optimizing for pipeline volume instead of pipeline quality and close probability.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "What's a typical pipeline coverage target?",
+        answer:
+          "It depends on win rate stability and cycle length. Many teams aim for ~3-5x for mid-market and higher for enterprise, but you should back into it from your own historical win rate and slippage.",
+      },
+    ],
+  },
+  {
+    slug: "cash-conversion-cycle-guide",
+    title: "Cash conversion cycle: turn working capital into runway",
+    description:
+      "A practical guide to the cash conversion cycle (CCC): how AR/AP timing changes cash, how to reduce days outstanding, and why runway depends on working capital.",
+    category: "finance",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: ["cash-runway-calculator", "burn-multiple-calculator"],
+    relatedGlossarySlugs: [
+      "cash-conversion-cycle",
+      "days-sales-outstanding",
+      "days-payables-outstanding",
+      "working-capital",
+      "accounts-receivable",
+      "accounts-payable",
+      "cash-flow",
+      "runway",
+      "net-burn",
+    ],
+    sections: [
+      { type: "h2", text: "Why CCC matters" },
+      {
+        type: "p",
+        text: "Two businesses can have the same profit and still have very different runway. Cash timing is driven by receivables (how fast customers pay) and payables (how fast you pay vendors).",
+      },
+      { type: "h2", text: "Core intuition (no jargon)" },
+      {
+        type: "bullets",
+        items: [
+          "Lower AR days means you get cash sooner (more runway).",
+          "Higher AP days means you keep cash longer (more runway, but watch vendor relationships).",
+          "Runway planning should include working capital movement, not just 'burn'.",
+        ],
+      },
+      { type: "h2", text: "Practical levers to reduce CCC" },
+      {
+        type: "bullets",
+        items: [
+          "Tighten billing terms and enforce collections cadence (AR).",
+          "Move to upfront billing or annual prepay where feasible (especially SaaS).",
+          "Negotiate longer payment terms with vendors (AP) while maintaining trust.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Forecasting runway from P&L only (ignoring AR/AP).",
+          "Counting booked revenue as cash received.",
+          "Pushing AP too far and breaking supply/vendor relationships (hidden cost).",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Runway example ($900k cash, $110k net burn)",
+        calculatorSlug: "cash-runway-calculator",
+        params: { cashBalance: "900000", netBurnPerMonth: "110000" },
+      },
+    ],
+  },
+  {
+    slug: "npv-vs-irr-guide",
+    title: "NPV vs IRR: which metric to trust (and the traps)",
+    description:
+      "A practical guide to NPV vs IRR: why IRR can mislead, when NPV is superior, and how to compare projects with different scale and timing.",
+    category: "finance",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: [
+      "npv-calculator",
+      "irr-calculator",
+      "discounted-payback-period-calculator",
+      "investment-decision-calculator",
+    ],
+    relatedGlossarySlugs: ["npv", "irr", "discount-rate", "cash-flow", "payback-period", "marr"],
+    sections: [
+      { type: "h2", text: "The one-sentence difference" },
+      {
+        type: "bullets",
+        items: [
+          "NPV is value created in dollars at a chosen discount rate.",
+          "IRR is the discount rate where NPV equals zero (a percentage).",
+        ],
+      },
+      { type: "h2", text: "When NPV beats IRR" },
+      {
+        type: "bullets",
+        items: [
+          "Comparing projects of different scale (NPV captures absolute value).",
+          "Comparing timing differences (early vs late cash flows).",
+          "When cash flows change sign multiple times (IRR can be multiple or undefined).",
+        ],
+      },
+      { type: "h2", text: "How to use IRR safely" },
+      {
+        type: "bullets",
+        items: [
+          "Use IRR as a communication metric, not the sole decision metric.",
+          "Always pair IRR with NPV at a realistic hurdle rate (MARR).",
+          "Add a liquidity lens: discounted payback for cash risk.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using an arbitrary discount rate and treating NPV as absolute truth.",
+          "Picking the higher IRR when the lower IRR project creates more value (higher NPV).",
+          "Ignoring reinvestment reality: IRR assumes reinvestment at the IRR, which is often unrealistic.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Should I pick the project with the higher IRR?",
+        answer:
+          "Not always. For mutually exclusive projects, NPV at your hurdle rate is usually the better decision metric. Use IRR as supporting context.",
+      },
+    ],
+  },
 ];
 
 export function getGuide(slug: string): Guide | undefined {

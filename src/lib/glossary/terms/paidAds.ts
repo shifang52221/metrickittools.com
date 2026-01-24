@@ -4,6 +4,7 @@ type Seed = {
   slug: string;
   title: string;
   description: string;
+  updatedAt?: string; // YYYY-MM-DD
   formula?: string;
   example?: string;
   bullets?: string[];
@@ -43,7 +44,7 @@ function make(seed: Seed): GlossaryTerm {
     title: seed.title,
     description: seed.description,
     category: "paid-ads",
-    updatedAt: "2026-01-23",
+    updatedAt: seed.updatedAt ?? "2026-01-23",
     sections: sectionsFor(seed),
     faqs: seed.faqs,
     relatedGuideSlugs: seed.relatedGuideSlugs,
@@ -623,6 +624,7 @@ const seeds: Seed[] = [
     title: "UTM Parameters",
     description:
       "UTM parameters are URL tags (source/medium/campaign) used to track traffic in analytics tools.",
+    relatedGuideSlugs: ["utm-ga4-attribution-guide"],
     bullets: [
       "Use consistent naming (lowercase, stable conventions).",
       "Avoid tagging internal links to prevent attribution pollution.",
@@ -636,10 +638,43 @@ const seeds: Seed[] = [
     ],
   },
   {
+    slug: "ga4",
+    title: "GA4 (Google Analytics 4)",
+    description:
+      "GA4 is Google’s analytics platform for web and app measurement. In paid ads workflows, GA4 is often used for consistent cross-channel reporting (but it can undercount due to privacy and cross-device gaps).",
+    bullets: [
+      "Use GA4 for consistent channel trends; use platforms for optimization, and reconcile with MER and incrementality tests.",
+      "Validate that conversion events fire once (dedupe pixel + server events if you use both).",
+      "Be explicit about attribution model and lookback windows when comparing reports.",
+    ],
+    mistakes: [
+      "Treating GA4 as perfect truth in privacy-heavy environments (it will miss conversions).",
+      "Comparing GA4 and platform dashboards without aligning windows and definitions.",
+    ],
+    relatedGuideSlugs: ["utm-ga4-attribution-guide"],
+  },
+  {
+    slug: "conversion",
+    title: "Conversion",
+    description:
+      "A conversion is an action you care about (purchase, signup, lead, subscription) that you measure and optimize toward.",
+    bullets: [
+      "Define conversions with clear eligibility (new vs returning users) and a time window.",
+      "Audit conversion tracking after site releases and checkout changes.",
+      "Keep platform and analytics conversion definitions consistent where possible.",
+    ],
+    mistakes: [
+      "Changing conversion definitions mid-stream and breaking trend comparisons.",
+      "Counting duplicate events (inflates performance and misleads bidding).",
+    ],
+    relatedGuideSlugs: ["utm-ga4-attribution-guide"],
+  },
+  {
     slug: "frequency",
     title: "Frequency",
     description:
       "Frequency is the average number of times a person sees your ad in a period. High frequency can cause fatigue.",
+    relatedGuideSlugs: ["frequency-creative-fatigue-guide"],
     formula: "Frequency = impressions / reach",
     bullets: [
       "Watch frequency and CTR together; rising frequency with falling CTR can signal fatigue.",
@@ -652,6 +687,22 @@ const seeds: Seed[] = [
           "There’s no universal number. If frequency rises and CTR/CVR fall, that’s a practical signal to refresh creative, expand audiences, or cap spend.",
       },
     ],
+  },
+  {
+    slug: "frequency-cap",
+    title: "Frequency Cap",
+    description:
+      "A frequency cap limits how often a person can see your ad in a time window (per day/week). It’s used to reduce fatigue and wasted impressions in saturated audiences.",
+    bullets: [
+      "Use caps when frequency rises and CTR/CVR decay, especially in small audiences.",
+      "Combine caps with audience expansion and creative refresh to avoid simply throttling delivery.",
+      "Retargeting can tolerate higher frequency than prospecting; cap by funnel stage.",
+    ],
+    mistakes: [
+      "Capping too aggressively and starving delivery (performance can look 'stable' but volume collapses).",
+      "Using a cap instead of fixing the root cause (creative/offer mismatch or a too-narrow audience).",
+    ],
+    relatedGuideSlugs: ["frequency-creative-fatigue-guide"],
   },
   {
     slug: "reach",
@@ -694,6 +745,7 @@ const seeds: Seed[] = [
     title: "Creative Fatigue",
     description:
       "Creative fatigue happens when performance declines because the audience has seen the same creatives too many times.",
+    relatedGuideSlugs: ["frequency-creative-fatigue-guide"],
     bullets: [
       "Monitor frequency and CTR trends to detect fatigue.",
       "Rotate creatives and refresh offers to maintain performance.",
