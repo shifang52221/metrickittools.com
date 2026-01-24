@@ -65,7 +65,7 @@ const seeds: Seed[] = [
     title: "ARPA (Average Revenue Per Account)",
     description:
       "ARPA measures average revenue per paying account/customer in a period. In B2B SaaS, ARPA often matches pricing better than ARPU.",
-    formula: "ARPA = revenue ÷ average paying accounts",
+    formula: "ARPA = revenue / average paying accounts",
     bullets: [
       "Use ARPA when you bill per company account (not per seat).",
       "Segment ARPA by plan, industry, and channel to understand monetization.",
@@ -79,7 +79,7 @@ const seeds: Seed[] = [
     title: "CAC Payback Period",
     description:
       "CAC payback period estimates how long it takes to recover customer acquisition cost (CAC) using the gross profit generated each month by a customer/account.",
-    formula: "Payback (months) ≈ CAC ÷ (ARPA × gross margin)",
+    formula: "Payback (months) ~ CAC / (ARPA * gross margin)",
     bullets: [
       "Shorter payback reduces cash risk and improves your ability to scale acquisition.",
       "Use gross profit (margin) rather than revenue to avoid overstating payback speed.",
@@ -100,7 +100,7 @@ const seeds: Seed[] = [
     slug: "arr-vs-bookings",
     title: "Bookings vs ARR",
     description:
-      "Bookings are contracted value closed in a period; ARR is a recurring run-rate snapshot (MRR × 12). They answer different questions.",
+      "Bookings are contracted value closed in a period; ARR is a recurring run-rate snapshot (MRR * 12). They answer different questions.",
     bullets: [
       "Use bookings to evaluate sales performance and contracted demand.",
       "Use ARR to compare recurring scale and momentum over time.",
@@ -118,7 +118,7 @@ const seeds: Seed[] = [
     title: "ACV (Annual Contract Value)",
     description:
       "ACV is the annualized value of a contract. Teams use ACV to compare deal size across different contract lengths.",
-    formula: "ACV = total recurring contract value ÷ contract years",
+    formula: "ACV = total recurring contract value / contract years",
     mistakes: [
       "Including one-time services fees in ACV and treating it as recurring.",
       "Comparing ACV across segments with different discount policies without context.",
@@ -144,7 +144,7 @@ const seeds: Seed[] = [
     description:
       "A price increase raises ARPA/MRR for an existing customer base. It is high leverage, but it can trigger churn or downgrades if customers perceive reduced value-for-money.",
     formula:
-      "Break-even immediate churn (one-time) ≈ 1 - 1/(1 + price increase)",
+      "Break-even immediate churn (one-time) ~ 1 - 1/(1 + price increase)",
     bullets: [
       "Segment price changes by plan, usage, value delivered, and tenure.",
       "Watch revenue churn (downgrades + cancellations), not only logo churn.",
@@ -164,6 +164,8 @@ const seeds: Seed[] = [
     description:
       "Retention rate measures the fraction of customers (or revenue) that remains over a period. It is the complement of churn when measured on the same basis and time window.",
     formula: "Retention rate = 1 - churn rate (with consistent definitions)",
+    example:
+      "If monthly logo churn is 3% for a cohort, monthly logo retention is about 97% (for the same definition and period).",
     bullets: [
       "Specify whether you mean logo retention (customers) or revenue retention (dollars).",
       "Use cohort retention curves to see where retention drops over time.",
@@ -173,6 +175,18 @@ const seeds: Seed[] = [
       "Mixing logo churn with revenue retention (different denominators).",
       "Comparing retention across periods without consistent cohort definitions.",
     ],
+    faqs: [
+      {
+        question: "Retention rate vs GRR/NRR: how are they related?",
+        answer:
+          "Retention rate can be measured on logos or revenue. GRR/NRR are revenue retention variants for a cohort (GRR excludes expansion; NRR includes it).",
+      },
+      {
+        question: "Should we use cohort retention or aggregate retention?",
+        answer:
+          "Use cohort retention for diagnosing lifecycle changes. Aggregate retention can be distorted by mix shift (new vs old customers).",
+      },
+    ],
     relatedGuideSlugs: ["retention-curve-guide", "cohort-vs-aggregate-guide"],
     relatedCalculatorSlugs: ["retention-rate-calculator", "retention-curve-calculator"],
   },
@@ -181,7 +195,9 @@ const seeds: Seed[] = [
     title: "Churn Rate",
     description:
       "Churn rate measures the fraction of customers (logo churn) or recurring revenue (revenue churn) lost over a period. It is one of the most important drivers of LTV and payback.",
-    formula: "Churn rate = losses ÷ starting base (customers or revenue)",
+    formula: "Churn rate = losses / starting base (customers or revenue)",
+    example:
+      "If you start the month with 1,000 customers and lose 35, logo churn = 35 / 1,000 = 3.5% for the month.",
     bullets: [
       "Specify whether churn is logo churn (count) or revenue churn (dollars).",
       "Keep time units consistent (monthly vs annual) when using churn in formulas.",
@@ -192,6 +208,18 @@ const seeds: Seed[] = [
       "Using annual churn as if it were monthly churn (time unit mismatch).",
       "Relying on blended churn when segments behave differently.",
     ],
+    faqs: [
+      {
+        question: "Is churn the same as 1 - retention?",
+        answer:
+          "Only if you’re measuring the same base (logos or revenue) over the same period with consistent definitions. Otherwise they can differ.",
+      },
+      {
+        question: "Why does churn change after a price increase?",
+        answer:
+          "A price increase can increase churn for price-sensitive segments. Track churn/retention by segment and update LTV/payback models after pricing changes.",
+      },
+    ],
     relatedGuideSlugs: ["retention-curve-guide", "cohort-ltv-forecast-guide"],
     relatedCalculatorSlugs: ["churn-rate-calculator", "retention-rate-calculator"],
   },
@@ -201,12 +229,20 @@ const seeds: Seed[] = [
     description:
       "Net new MRR is the change in MRR in a period after expansions, contractions, and churn. It combines growth and retention movements.",
     formula:
-      "Net new MRR = new MRR + expansion MRR − contraction MRR − churned MRR",
+      "Net new MRR = new MRR + expansion MRR - contraction MRR - churned MRR",
+    example:
+      "If new MRR is $40k, expansion is $15k, contraction is $5k, and churned MRR is $10k, net new MRR = $40k+$15k-$5k-$10k = $40k.",
     bullets: [
       "Track net new MRR by segment to find durable growth sources.",
       "Pair with churn/retention to diagnose whether growth is leaky.",
       "Use consistent definitions across months for clean trend analysis.",
     ],
+    mistakes: [
+      "Mixing MRR (run-rate) with billings or cash (timing differs).",
+      "Counting reactivations inconsistently (treat them consistently as new or separate).",
+    ],
+    relatedGuideSlugs: ["mrr-waterfall-guide", "retention-churn-hub-guide"],
+    relatedCalculatorSlugs: ["net-new-mrr-calculator", "mrr-waterfall-calculator"],
   },
   {
     slug: "new-mrr",
@@ -217,6 +253,8 @@ const seeds: Seed[] = [
       "Use New MRR to measure new customer acquisition output.",
       "Segment by channel and plan to learn where new customers stick.",
     ],
+    relatedGuideSlugs: ["mrr-waterfall-guide"],
+    relatedCalculatorSlugs: ["mrr-waterfall-calculator", "net-new-mrr-calculator"],
   },
   {
     slug: "expansion-mrr",
@@ -227,6 +265,12 @@ const seeds: Seed[] = [
       "Track expansion MRR by cohort and segment to find repeatable expansion.",
       "Separate expansion from reactivations and price increases for clean reporting.",
     ],
+    mistakes: [
+      "Counting expansion as ‘retention’ without also tracking GRR (NRR can hide churn).",
+      "Mixing price-driven expansions with true usage expansion (separate when possible).",
+    ],
+    relatedGuideSlugs: ["nrr-guide", "retention-churn-hub-guide"],
+    relatedCalculatorSlugs: ["nrr-calculator", "nrr-vs-grr-calculator"],
   },
   {
     slug: "contraction-mrr",
@@ -237,6 +281,8 @@ const seeds: Seed[] = [
       "Track contraction separately from churn to understand product value vs cancellations.",
       "Segment contraction by plan and lifecycle stage to locate downgrade drivers.",
     ],
+    relatedGuideSlugs: ["grr-guide", "retention-churn-hub-guide"],
+    relatedCalculatorSlugs: ["grr-calculator", "nrr-vs-grr-calculator"],
   },
   {
     slug: "churned-mrr",
@@ -247,27 +293,45 @@ const seeds: Seed[] = [
       "Use churned MRR to quantify revenue leakage from cancellations.",
       "Pair churned MRR with logo churn to understand whether losses come from big or small customers.",
     ],
+    relatedGuideSlugs: ["mrr-churn-rate-guide", "retention-churn-hub-guide"],
+    relatedCalculatorSlugs: ["mrr-churn-rate-calculator", "net-new-mrr-calculator"],
   },
   {
     slug: "logo-churn",
     title: "Logo Churn",
     description:
       "Logo churn is customer churn measured in count (accounts lost), not dollars. It can be high even when NRR is strong.",
-    formula: "Logo churn = customers lost ÷ customers at start of period",
+    formula: "Logo churn = customers lost / customers at start of period",
+    example:
+      "If you started with 1,000 customers and lost 30, logo churn = 30 / 1,000 = 3% for the period.",
     mistakes: [
       "Looking only at blended logo churn (hides segment differences).",
       "Assuming strong NRR means churn is fine (expansion can mask losses).",
     ],
+    faqs: [
+      {
+        question: "Can logo churn be high while NRR is high?",
+        answer:
+          "Yes. If you lose many small customers but expand strongly in larger accounts, NRR can stay high. Track both logo churn and GRR/NRR by segment.",
+      },
+    ],
+    relatedGuideSlugs: ["churn-guide", "nrr-guide", "grr-guide", "retention-churn-hub-guide"],
+    relatedCalculatorSlugs: ["churn-rate-calculator", "nrr-calculator", "grr-calculator"],
   },
   {
     slug: "revenue-churn",
     title: "Revenue Churn",
     description:
       "Revenue churn measures how much recurring revenue you lose (MRR dollars) over a period. It differs from logo churn.",
+    formula: "Revenue churn = revenue lost / starting revenue (same cohort and period)",
+    example:
+      "If starting MRR is $100k and you lose $6k of MRR from churn and downgrades, gross revenue churn = $6k / $100k = 6% for the period.",
     bullets: [
       "Track revenue churn when customer sizes vary a lot.",
       "Use GRR to measure churn + downgrades without expansion.",
     ],
+    relatedGuideSlugs: ["grr-guide", "retention-churn-hub-guide"],
+    relatedCalculatorSlugs: ["gross-revenue-churn-calculator", "grr-calculator"],
   },
   {
     slug: "gross-revenue-churn",
@@ -275,7 +339,7 @@ const seeds: Seed[] = [
     description:
       "Gross revenue churn is the share of starting MRR lost to downgrades (contraction) and cancellations (churn) over a period. It excludes expansion by definition.",
     formula:
-      "Gross revenue churn = (contraction MRR + churned MRR) ÷ starting MRR",
+      "Gross revenue churn = (contraction MRR + churned MRR) / starting MRR",
     bullets: [
       "It’s a loss metric (how much revenue you lost), not a remaining metric.",
       "Use the same cohort and time window for starting MRR and losses.",
@@ -402,7 +466,7 @@ const seeds: Seed[] = [
     title: "Trial-to-paid Conversion Rate",
     description:
       "Trial-to-paid conversion measures what % of trial users become paying customers within a defined window.",
-    formula: "Trial-to-paid = trial users who paid ÷ trial users started",
+    formula: "Trial-to-paid = trial users who paid / trial users started",
     bullets: [
       "Track by cohort and channel to understand lead quality.",
       "Separate self-serve vs sales-assisted conversions for clarity.",
@@ -413,7 +477,7 @@ const seeds: Seed[] = [
     title: "Conversion Rate",
     description:
       "Conversion rate measures the % of users who complete a goal action (signup, purchase, activation) out of those exposed to the step.",
-    formula: "Conversion rate = conversions ÷ opportunities (views/clicks/sessions)",
+    formula: "Conversion rate = conversions / opportunities (views/clicks/sessions)",
     mistakes: [
       "Mixing denominators (clicks vs sessions) and comparing as if equal.",
       "Optimizing conversion rate by narrowing intent and losing scale.",
@@ -475,7 +539,7 @@ const seeds: Seed[] = [
     title: "Stickiness (DAU/MAU, WAU/MAU)",
     description:
       "Stickiness measures how frequently users return. The most common versions are DAU/MAU (daily stickiness) and WAU/MAU (weekly stickiness).",
-    formula: "Stickiness = DAU ÷ MAU (or WAU ÷ MAU)",
+    formula: "Stickiness = DAU / MAU (or WAU / MAU)",
     bullets: [
       "Use DAU/MAU for daily cadence products; use WAU/MAU for weekly cadence products.",
       "Track stickiness by segment (persona/plan) for actionability.",
@@ -492,7 +556,7 @@ const seeds: Seed[] = [
     title: "Feature Adoption Rate",
     description:
       "Feature adoption rate measures what % of active users used a specific feature in a time window. It helps validate that users are discovering and using value-driving capabilities.",
-    formula: "Feature adoption rate = users who used feature ÷ active users",
+    formula: "Feature adoption rate = users who used feature / active users",
     bullets: [
       "Use a meaningful usage threshold (not a one-off click).",
       "Segment adoption by cohort and persona and connect it to retention outcomes.",
@@ -509,7 +573,7 @@ const seeds: Seed[] = [
     title: "PQL-to-paid Conversion",
     description:
       "PQL-to-paid conversion measures what % of product-qualified leads (PQLs) become paying customers. It connects product usage signals to revenue outcomes.",
-    formula: "PQL-to-paid = paid customers from PQLs ÷ PQLs",
+    formula: "PQL-to-paid = paid customers from PQLs / PQLs",
     bullets: [
       "Define PQLs using signals correlated with retention, not vanity actions.",
       "Segment by channel and persona to see where PQL quality differs.",
@@ -525,7 +589,7 @@ const seeds: Seed[] = [
     slug: "funnel",
     title: "Funnel",
     description:
-      "A funnel models a sequence of steps users take (visit → signup → activate → pay) and the conversion rates between steps.",
+      "A funnel models a sequence of steps users take (visit -> signup -> activate -> pay) and the conversion rates between steps.",
     bullets: [
       "Use funnels to identify the largest drop-off points.",
       "Analyze by segment (channel, device, geo) to find specific issues.",
@@ -546,9 +610,9 @@ const seeds: Seed[] = [
     title: "Months to recover CAC",
     description:
       "Months to recover CAC is another name for CAC payback period: the months of gross profit needed to earn back acquisition cost.",
-    formula: "Payback (months) ≈ CAC / (ARPA * gross margin)",
+    formula: "Payback (months) ~ CAC / (ARPA * gross margin)",
     example:
-      "If CAC is $6,000, ARPA is $500/month, and gross margin is 80% (0.8), payback ≈ $6,000 / ($500 * 0.8) = 15 months.",
+      "If CAC is $6,000, ARPA is $500/month, and gross margin is 80% (0.8), payback ~ $6,000 / ($500 * 0.8) = 15 months.",
     faqs: [
       {
         question: "Why use gross margin in payback?",
@@ -651,9 +715,9 @@ const seeds: Seed[] = [
     description:
       "SaaS Magic Number is a heuristic for sales efficiency using net new ARR relative to sales & marketing spend (with a lag).",
     formula:
-      "Magic Number ≈ (net new ARR in quarter * 4) / prior-quarter sales & marketing spend",
+      "Magic Number ~ (net new ARR in quarter * 4) / prior-quarter sales & marketing spend",
     example:
-      "If net new ARR in the quarter is $1.0M and prior-quarter sales & marketing spend was $2.0M, Magic Number ≈ ($1.0M * 4) / $2.0M = 2.0.",
+      "If net new ARR in the quarter is $1.0M and prior-quarter sales & marketing spend was $2.0M, Magic Number ~ ($1.0M * 4) / $2.0M = 2.0.",
     mistakes: [
       "Ignoring lag effects between spend and revenue.",
       "Using blended averages that hide channel differences.",
@@ -714,7 +778,7 @@ const seeds: Seed[] = [
     title: "ARR Multiple (valuation)",
     description:
       "ARR multiple is a valuation shorthand: enterprise value divided by ARR. It is a heuristic that varies by growth, margin, and retention.",
-    formula: "ARR multiple = enterprise value ÷ ARR",
+    formula: "ARR multiple = enterprise value / ARR",
     bullets: [
       "Use ARR multiple for rough comparisons, not as a complete valuation model.",
       "Higher NRR and faster growth often support higher multiples.",
@@ -727,14 +791,14 @@ const seeds: Seed[] = [
     description:
       "Net retention is the same idea as NRR: revenue retained from a cohort including expansion and contraction.",
     formula:
-      "Net retention = (starting revenue + expansion − contraction − churn) ÷ starting revenue",
+      "Net retention = (starting revenue + expansion - contraction - churn) / starting revenue",
   },
   {
     slug: "gross-retention",
     title: "Gross Retention",
     description:
       "Gross retention is the same idea as GRR: revenue retained from a cohort excluding expansion (only churn and contraction).",
-    formula: "Gross retention = (starting revenue − contraction − churn) ÷ starting revenue",
+    formula: "Gross retention = (starting revenue - contraction - churn) / starting revenue",
   },
   {
     slug: "quick-ratio",
@@ -742,7 +806,7 @@ const seeds: Seed[] = [
     description:
       "SaaS quick ratio measures growth quality by comparing positive MRR movements to negative movements in a period.",
     formula:
-      "Quick ratio = (new MRR + expansion MRR) ÷ (contraction MRR + churned MRR)",
+      "Quick ratio = (new MRR + expansion MRR) / (contraction MRR + churned MRR)",
     bullets: [
       "Use it to assess whether growth is healthy vs leaky.",
       "Track by segment; blended ratios can hide churn pockets.",
@@ -753,7 +817,7 @@ const seeds: Seed[] = [
     title: "MRR Churn Rate",
     description:
       "MRR churn rate measures churned MRR (lost recurring revenue from cancellations) as a percentage of starting MRR for a period.",
-    formula: "MRR churn rate = churned MRR ÷ starting MRR",
+    formula: "MRR churn rate = churned MRR / starting MRR",
     bullets: [
       "MRR churn is revenue churn (not customer/logo churn).",
       "Track churned MRR and contraction MRR separately, then use GRR/NRR for the full picture.",
@@ -772,7 +836,7 @@ const seeds: Seed[] = [
     title: "MRR Growth Rate",
     description:
       "MRR growth rate measures how MRR changed between two points in time. It can be expressed as period growth, CMGR, or annualized growth.",
-    formula: "MRR growth (period) = (end MRR − start MRR) ÷ start MRR",
+    formula: "MRR growth (period) = (end MRR - start MRR) / start MRR",
     bullets: [
       "Use CMGR to compare growth across different horizons.",
       "Use an MRR waterfall to explain drivers (new vs expansion vs churn).",
@@ -787,7 +851,7 @@ const seeds: Seed[] = [
     description:
       "An ARR waterfall reconciles starting ARR to ending ARR using new, expansion, contraction, and churned ARR movements.",
     formula:
-      "Ending ARR = starting ARR + new ARR + expansion ARR − contraction ARR − churned ARR",
+      "Ending ARR = starting ARR + new ARR + expansion ARR - contraction ARR - churned ARR",
     bullets: [
       "Use it as a reporting bridge to compute net new ARR and ARR growth.",
       "Segment by plan/channel/customer size to avoid blended averages hiding churn pockets.",
@@ -801,7 +865,7 @@ const seeds: Seed[] = [
     title: "Customer Lifetime",
     description:
       "Customer lifetime is the expected duration a customer stays subscribed. It's often approximated from churn rate (with consistent time units).",
-    formula: "Customer lifetime ≈ 1 ÷ churn rate",
+    formula: "Customer lifetime ~ 1 / churn rate",
     mistakes: [
       "Using monthly churn to compute annual lifetime (unit mismatch).",
       "Assuming churn is constant over time (it often changes by tenure).",
@@ -844,7 +908,7 @@ const seeds: Seed[] = [
     description:
       "An SQL is a lead that sales has validated as qualified for a sales conversation (budget/need/timing or product fit).",
     bullets: [
-      "Track MQL→SQL and SQL→Closed rates to find funnel bottlenecks.",
+      "Track MQL->SQL and SQL->Closed rates to find funnel bottlenecks.",
       "Segment by channel to identify high-quality sources.",
     ],
   },
@@ -863,10 +927,10 @@ const seeds: Seed[] = [
     title: "Pipeline Coverage",
     description:
       "Pipeline coverage is pipeline value divided by quota for a time window. It’s a sanity check that you have enough opportunity value to produce the target outcome given your win rate.",
-    formula: "Pipeline coverage = pipeline ÷ quota",
+    formula: "Pipeline coverage = pipeline / quota",
     bullets: [
       "Use time-bound pipeline (closing in the period), not all open opportunities.",
-      "A rough rule: coverage ≈ 1 ÷ win rate (then add buffer for slippage).",
+      "A rough rule: coverage ~ 1 / win rate (then add buffer for slippage).",
       "Segment by deal size and stage because win rates differ.",
     ],
     mistakes: [
@@ -882,9 +946,9 @@ const seeds: Seed[] = [
     title: "Win Rate",
     description:
       "Win rate is the fraction of opportunities that convert to closed-won. It can be measured by count or by value and varies by stage definition.",
-    formula: "Win rate = wins ÷ opportunities (same stage definition)",
+    formula: "Win rate = wins / opportunities (same stage definition)",
     bullets: [
-      "Always specify the stage definition (e.g., SQL→Won vs Opp→Won).",
+      "Always specify the stage definition (e.g., SQL->Won vs Opp->Won).",
       "Track by segment (ACV band, channel, region) because blended win rate hides problems.",
     ],
     mistakes: [
@@ -923,7 +987,7 @@ const seeds: Seed[] = [
     title: "Quota Attainment",
     description:
       "Quota attainment is booked revenue divided by quota for a period. It’s used to track progress toward targets and to manage pacing.",
-    formula: "Attainment = booked ÷ quota",
+    formula: "Attainment = booked / quota",
     bullets: [
       "Use pacing to project end-of-period, but cross-check with pipeline and win rate.",
       "Segment by rep and region to identify risks early.",
@@ -958,7 +1022,7 @@ const seeds: Seed[] = [
       "OTE (on-target earnings) is total sales compensation at 100% quota attainment: base pay plus target variable pay.",
     formula: "OTE = base pay + variable pay (at 100% attainment)",
     bullets: [
-      "Use OTE and quota to estimate a simplified commission rate (variable ÷ quota).",
+      "Use OTE and quota to estimate a simplified commission rate (variable / quota).",
       "Keep time units consistent (annual OTE with annual quota).",
     ],
     mistakes: [
@@ -984,7 +1048,7 @@ const seeds: Seed[] = [
     description:
       "NDR is another name for NRR in dollar terms. It measures how existing revenue changes including expansion.",
     formula:
-      "NDR = (starting revenue + expansion − contraction − churn) ÷ starting revenue",
+      "NDR = (starting revenue + expansion - contraction - churn) / starting revenue",
   },
 ];
 

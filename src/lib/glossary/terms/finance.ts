@@ -118,7 +118,7 @@ const seeds: Seed[] = [
       "WACC is a blended required return for capital providers (equity and debt). It is commonly used as a discount rate proxy in DCF models.",
     formula: "WACC = (E/V)*Re + (D/V)*Rd*(1 - tax rate)",
     example:
-      "If E/V = 70%, D/V = 30%, Re = 15%, Rd = 7%, and tax rate = 25%, WACC ≈ 0.7*0.15 + 0.3*0.07*(1-0.25) = 12.1%.",
+      "If E/V = 70%, D/V = 30%, Re = 15%, Rd = 7%, and tax rate = 25%, WACC ~ 0.7*0.15 + 0.3*0.07*(1-0.25) = 12.1%.",
     bullets: [
       "Higher WACC lowers present value; lower WACC raises it.",
       "WACC depends on capital structure, market risk, and interest rates.",
@@ -145,7 +145,7 @@ const seeds: Seed[] = [
       "Cost of equity is the return equity investors require for the risk of owning the business. It is a key input to WACC and discount rate selection.",
     formula: "CAPM (common) = risk-free rate + beta * equity risk premium",
     example:
-      "If risk-free rate is 4%, beta is 1.2, and equity risk premium is 5%, cost of equity ≈ 4% + 1.2*5% = 10%.",
+      "If risk-free rate is 4%, beta is 1.2, and equity risk premium is 5%, cost of equity ~ 4% + 1.2*5% = 10%.",
     bullets: [
       "Often estimated using CAPM as a starting point, then adjusted with judgment for company-specific risk.",
       "Higher risk implies higher cost of equity and lower present value in a DCF.",
@@ -169,9 +169,9 @@ const seeds: Seed[] = [
     title: "Cost of Debt",
     description:
       "Cost of debt is the effective interest rate a company pays on its borrowings. In WACC, debt is often adjusted for taxes because interest can be tax deductible.",
-    formula: "After-tax cost of debt ≈ cost of debt * (1 - tax rate)",
+    formula: "After-tax cost of debt ~ cost of debt * (1 - tax rate)",
     example:
-      "If cost of debt is 7% and tax rate is 25%, after-tax cost of debt ≈ 7%*(1-0.25) = 5.25%.",
+      "If cost of debt is 7% and tax rate is 25%, after-tax cost of debt ~ 7%*(1-0.25) = 5.25%.",
     bullets: [
       "Use the company’s current borrowing rate for similar maturity and risk.",
       "Remember the tax shield: after-tax cost of debt is lower than the nominal coupon.",
@@ -324,7 +324,7 @@ const seeds: Seed[] = [
     title: "Real Return",
     description:
       "Real return is the inflation-adjusted return that reflects change in purchasing power rather than just nominal balances.",
-    formula: "Real return ≈ (1 + nominal return) ÷ (1 + inflation) - 1",
+    formula: "Real return ~ (1 + nominal return) / (1 + inflation) - 1",
     relatedGuideSlugs: ["real-vs-nominal-return-guide"],
     relatedCalculatorSlugs: ["real-return-calculator"],
   },
@@ -333,7 +333,7 @@ const seeds: Seed[] = [
     title: "Gross Margin",
     description:
       "Gross margin is gross profit as a percentage of revenue. It is foundational for payback, LTV, and break-even analysis.",
-    formula: "Gross margin (%) = (revenue − COGS) ÷ revenue",
+    formula: "Gross margin (%) = (revenue - COGS) / revenue",
     mistakes: [
       "Using net margin when a model expects gross margin.",
       "Not keeping COGS definitions consistent across time or segments.",
@@ -344,7 +344,7 @@ const seeds: Seed[] = [
     title: "Gross Profit",
     description:
       "Gross profit is revenue minus COGS. Many unit economics models should use gross profit (not revenue) as the value created.",
-    formula: "Gross profit = revenue − COGS",
+    formula: "Gross profit = revenue - COGS",
   },
   {
     slug: "cogs",
@@ -361,10 +361,34 @@ const seeds: Seed[] = [
     title: "Contribution Margin",
     description:
       "Contribution margin is revenue minus variable costs. It covers fixed costs and then profit.",
-    formula: "Contribution margin = revenue − variable costs",
+    formula: "Contribution margin = revenue - variable costs",
+    example:
+      "If revenue is $100 and variable costs (COGS + fees + shipping + returns) are $60, contribution margin is $40 (40%).",
+    bullets: [
+      "Use contribution margin when setting break-even ROAS/CPA targets (profitability depends on variable costs).",
+      "Separate variable costs from fixed costs (rent, base salaries) to avoid double counting.",
+    ],
     mistakes: [
       "Mixing fixed and variable costs inconsistently.",
       "Ignoring variable costs like payment fees, returns, or shipping when they matter.",
+    ],
+    faqs: [
+      {
+        question: "Contribution margin vs gross margin: what’s the difference?",
+        answer:
+          "Gross margin usually means revenue minus COGS. Contribution margin often subtracts additional variable costs like payment fees, shipping, and returns, so it’s closer to per-order profit.",
+      },
+      {
+        question: "Why does contribution margin matter for paid ads?",
+        answer:
+          "Because break-even ROAS/CPA depends on profit per conversion, not revenue. Using revenue-only targets can make campaigns look profitable when they’re not.",
+      },
+    ],
+    relatedGuideSlugs: ["paid-ads-funnel-guide", "break-even-pricing-guide"],
+    relatedCalculatorSlugs: [
+      "paid-ads-funnel-calculator",
+      "break-even-pricing-calculator",
+      "break-even-roas-calculator",
     ],
   },
   {
@@ -388,10 +412,19 @@ const seeds: Seed[] = [
     title: "Break-even Revenue",
     description:
       "Break-even revenue is the revenue required to cover fixed costs given your gross or contribution margin.",
-    formula: "Break-even revenue = fixed costs ÷ gross margin",
+    formula: "Break-even revenue = fixed costs / gross margin",
+    example:
+      "If fixed costs are $50,000/month and gross margin is 60% (0.6), break-even revenue ~ $50,000 / 0.6 = $83,333/month.",
     mistakes: [
       "Using net margin instead of gross/contribution margin.",
       "Forgetting semi-fixed costs that are effectively fixed at your scale.",
+    ],
+    faqs: [
+      {
+        question: "Should I use gross margin or contribution margin?",
+        answer:
+          "Use contribution margin if variable costs beyond COGS are material (fees, shipping, returns). Otherwise gross margin can be a reasonable shortcut.",
+      },
     ],
     relatedGuideSlugs: ["break-even-pricing-guide"],
     relatedCalculatorSlugs: ["break-even-pricing-calculator"],
@@ -401,7 +434,17 @@ const seeds: Seed[] = [
     title: "Runway",
     description:
       "Runway estimates how many months you can operate before running out of cash at the current net burn.",
-    formula: "Runway (months) = cash balance ÷ net monthly burn",
+    formula: "Runway (months) = cash balance / net monthly burn",
+    example:
+      "If cash balance is $1.2M and net burn is $150k/month, runway ~ $1.2M / $150k = 8 months.",
+    bullets: [
+      "Use net burn (cash outflows minus cash inflows), not accounting losses.",
+      "Recalculate runway whenever revenue, collections, or spend changes materially.",
+    ],
+    mistakes: [
+      "Using gross burn instead of net burn (runway becomes overly pessimistic).",
+      "Ignoring working capital timing (AR/AP) and deferred revenue effects.",
+    ],
     relatedGuideSlugs: ["cash-runway-guide"],
     relatedCalculatorSlugs: ["cash-runway-calculator"],
   },
@@ -410,10 +453,21 @@ const seeds: Seed[] = [
     title: "Burn Rate",
     description:
       "Burn rate measures how quickly a company spends cash. Teams often track monthly gross burn and net burn.",
+    example:
+      "If monthly cash outflows are $500k and cash inflows are $350k, gross burn is $500k and net burn is $150k.",
     bullets: [
       "Gross burn: total cash outflows.",
       "Net burn: cash outflows minus cash inflows.",
     ],
+    faqs: [
+      {
+        question: "Burn rate vs burn multiple: how are they different?",
+        answer:
+          "Burn rate is dollars of cash consumed per period. Burn multiple relates cash burn to growth output (e.g., net new ARR) and is a growth efficiency metric.",
+      },
+    ],
+    relatedGuideSlugs: ["cash-runway-guide", "burn-multiple-guide"],
+    relatedCalculatorSlugs: ["cash-runway-calculator", "burn-multiple-calculator"],
   },
   {
     slug: "gross-burn",
@@ -427,7 +481,11 @@ const seeds: Seed[] = [
     title: "Net Burn",
     description:
       "Net burn is cash outflows minus cash inflows in a period (net cash loss). Runway calculations typically use net burn.",
-    formula: "Net burn = cash outflows − cash inflows",
+    formula: "Net burn = cash outflows - cash inflows",
+    example:
+      "If outflows are $500k and inflows are $350k, net burn = $500k - $350k = $150k for the period.",
+    relatedGuideSlugs: ["cash-runway-guide"],
+    relatedCalculatorSlugs: ["cash-runway-calculator"],
   },
   {
     slug: "cash-breakeven",
@@ -525,7 +583,7 @@ const seeds: Seed[] = [
     title: "Operating Margin",
     description:
       "Operating margin is operating income divided by revenue. It reflects profitability after operating expenses.",
-    formula: "Operating margin = operating income ÷ revenue",
+    formula: "Operating margin = operating income / revenue",
   },
   {
     slug: "ebitda",
@@ -561,7 +619,7 @@ const seeds: Seed[] = [
     example:
       "If r = 10%, $100 received in 1 year is worth about $100 / 1.10 = $90.91 today.",
     bullets: [
-      "Use a discount rate consistent with risk (higher risk → higher required return).",
+      "Use a discount rate consistent with risk (higher risk -> higher required return).",
       "For business valuation, WACC is a common starting point (then run sensitivity).",
       "For project evaluation, use a hurdle rate / MARR aligned to opportunity cost.",
     ],
@@ -711,7 +769,7 @@ const seeds: Seed[] = [
       "Pre-money valuation is the value of a company immediately before a new equity financing. It is used with the investment amount to determine post-money valuation and implied ownership.",
     formula: "Post-money (simplified) = pre-money + investment",
     bullets: [
-      "Use pre-money and new investment to estimate investor ownership (investment ÷ post-money).",
+      "Use pre-money and new investment to estimate investor ownership (investment / post-money).",
       "Confirm whether option pool increases are included in the pre-money (option pool shuffle).",
     ],
     mistakes: [
@@ -728,7 +786,7 @@ const seeds: Seed[] = [
       "Post-money valuation is the value of a company immediately after a new equity financing. It is commonly approximated as pre-money plus the new investment amount (simplified).",
     formula: "Post-money (simplified) = pre-money + investment",
     bullets: [
-      "Investor ownership is often approximated as investment ÷ post-money (simplified).",
+      "Investor ownership is often approximated as investment / post-money (simplified).",
       "Use a cap table to validate when option pool changes and convertibles are present.",
     ],
     mistakes: [
@@ -772,7 +830,7 @@ const seeds: Seed[] = [
     description:
       "Pro rata rights allow an existing investor to participate in a future financing to maintain ownership, typically by buying a proportional share of the new issuance (subject to terms and allocation).",
     bullets: [
-      "A rough check-size estimate is current ownership % × round size (priced equity, simplified).",
+      "A rough check-size estimate is current ownership % * round size (priced equity, simplified).",
       "Your ability to take pro rata can be limited by allocation and company discretion.",
     ],
     mistakes: [
@@ -804,7 +862,7 @@ const seeds: Seed[] = [
     description:
       "A valuation cap sets a maximum valuation used when converting a SAFE or convertible note into equity in a priced round. A lower cap generally means a lower conversion price and more shares for the investor.",
     bullets: [
-      "Cap price is often modeled as cap ÷ fully diluted shares at conversion (simplified).",
+      "Cap price is often modeled as cap / fully diluted shares at conversion (simplified).",
       "Caps matter most when the priced round valuation is meaningfully higher than the cap.",
     ],
     mistakes: [
@@ -850,7 +908,7 @@ const seeds: Seed[] = [
     slug: "liquidation-preference",
     title: "Liquidation Preference",
     description:
-      "Liquidation preference defines what preferred shareholders receive at an exit before common shareholders. A common structure is 1× non-participating preferred.",
+      "Liquidation preference defines what preferred shareholders receive at an exit before common shareholders. A common structure is 1* non-participating preferred.",
     bullets: [
       "Non-participating preferred often takes the greater of preference payout or as-converted common payout.",
       "Multiple classes and seniority create a waterfall that requires a full model.",

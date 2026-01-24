@@ -68,7 +68,7 @@ export const guides: Guide[] = [
   },
   {
     slug: "paid-ads-funnel-guide",
-    title: "Paid ads funnel: CPM, CTR, CVR → CPC, CPA, ROAS (with profit)",
+    title: "Paid ads funnel: CPM, CTR, CVR -> CPC, CPA, ROAS (with profit)",
     description:
       "A practical guide to the paid ads funnel: how CPM, CTR, and CVR drive CPC, CPA, ROAS, and profit - with formulas and common pitfalls.",
     category: "paid-ads",
@@ -101,13 +101,13 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "Clicks per 1,000 impressions = 1000 × CTR.",
-          "CPC = CPM ÷ (1000 × CTR).",
-          "CPA = CPC ÷ CVR.",
-          "ROAS = revenue ÷ ad spend.",
-          "Contribution margin = gross margin − fees − shipping − returns (simplified).",
-          "Break-even ROAS = 1 ÷ contribution margin.",
-          "Break-even CPA = AOV × contribution margin.",
+          "Clicks per 1,000 impressions = 1000 * CTR.",
+          "CPC = CPM / (1000 * CTR).",
+          "CPA = CPC / CVR.",
+          "ROAS = revenue / ad spend.",
+          "Contribution margin = gross margin - fees - shipping - returns (simplified).",
+          "Break-even ROAS = 1 / contribution margin.",
+          "Break-even CPA = AOV * contribution margin.",
         ],
       },
       { type: "h2", text: "How to diagnose issues" },
@@ -393,7 +393,7 @@ export const guides: Guide[] = [
         text: "CAC (Customer Acquisition Cost) is the cost to acquire a new paying customer. It's a core unit economics metric for SaaS and subscription businesses.",
       },
       { type: "h2", text: "CAC formula" },
-      { type: "p", text: "CAC = acquisition spend ÷ new customers acquired" },
+      { type: "p", text: "CAC = acquisition spend / new customers acquired" },
       { type: "h2", text: "How to calculate CAC (step-by-step)" },
       {
         type: "bullets",
@@ -417,8 +417,8 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "Paid CAC: ad spend (and variable creative/agency) ÷ new customers (useful for channel optimization).",
-          "Fully-loaded CAC: paid spend + sales/marketing salaries + tools ÷ new customers (useful for planning).",
+          "Paid CAC: ad spend (and variable creative/agency) / new customers (useful for channel optimization).",
+          "Fully-loaded CAC: paid spend + sales/marketing salaries + tools / new customers (useful for planning).",
           "Blended CAC: includes all acquisition sources (paid + organic + outbound). Always label the definition.",
         ],
       },
@@ -473,7 +473,7 @@ export const guides: Guide[] = [
       {
         question: "What is the customer acquisition cost formula?",
         answer:
-          "Customer acquisition cost (CAC) = acquisition spend ÷ new customers acquired. The key is defining what you include in spend (paid-only vs fully-loaded) and what counts as a new customer.",
+          "Customer acquisition cost (CAC) = acquisition spend / new customers acquired. The key is defining what you include in spend (paid-only vs fully-loaded) and what counts as a new customer.",
       },
       {
         question: "Should I use lead CAC or customer CAC?",
@@ -516,7 +516,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "Formula" },
       {
         type: "p",
-        text: "Fully-loaded CAC = total acquisition costs ÷ new paying customers acquired (same period).",
+        text: "Fully-loaded CAC = total acquisition costs / new paying customers acquired (same period).",
       },
       { type: "h2", text: "What to include (typical)" },
       {
@@ -549,7 +549,7 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "Use payback months (CAC ÷ gross profit/month) to compare channels fairly.",
+          "Use payback months (CAC / gross profit/month) to compare channels fairly.",
           "A low paid CAC can still be bad if fully-loaded CAC is high and payback is long.",
           "Segment by channel and plan; blended CAC can hide weak cohorts.",
         ],
@@ -683,7 +683,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "Base model (gross profit LTV shortcut)" },
       {
         type: "p",
-        text: "Gross profit LTV ≈ (ARPA × gross margin) ÷ churn (with consistent monthly units).",
+        text: "Gross profit LTV ~ (ARPA * gross margin) / churn (with consistent monthly units).",
       },
       { type: "h2", text: "How to pick ranges" },
       {
@@ -744,15 +744,15 @@ export const guides: Guide[] = [
       { type: "h2", text: "Formula" },
       {
         type: "p",
-        text: "Payback (months) = CAC ÷ (ARPA × gross margin).",
+        text: "Payback (months) = CAC / (ARPA * gross margin).",
       },
       { type: "h2", text: "How to calculate CAC payback" },
       {
         type: "bullets",
         items: [
           "Pick a period (usually month) and a segment (plan/channel/geo).",
-          "Compute gross profit per month: ARPA × gross margin.",
-          "Compute payback months: CAC ÷ gross profit per month.",
+          "Compute gross profit per month: ARPA * gross margin.",
+          "Compute payback months: CAC / gross profit per month.",
           "Compare across channels and cohorts, not just the blended average.",
         ],
       },
@@ -808,7 +808,7 @@ export const guides: Guide[] = [
   },
   {
     slug: "cac-payback-sensitivity-guide",
-    title: "CAC payback sensitivity: ARPA × margin scenarios (months to recover CAC)",
+    title: "CAC payback sensitivity: ARPA * margin scenarios (months to recover CAC)",
     description:
       "A practical guide to CAC payback sensitivity: vary ARPA and gross margin to see how months to recover CAC changes under realistic scenarios.",
     category: "saas-metrics",
@@ -834,7 +834,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "Payback formula (gross profit payback)" },
       {
         type: "p",
-        text: "Payback (months) = CAC ÷ (ARPA × gross margin).",
+        text: "Payback (months) = CAC / (ARPA * gross margin).",
       },
       { type: "h2", text: "How to pick scenario ranges" },
       {
@@ -920,7 +920,7 @@ export const guides: Guide[] = [
         type: "bullets",
         items: [
           "Logo churn (customer churn) counts customers lost, regardless of size.",
-          "MRR churn measures lost recurring revenue (churned MRR) ÷ starting MRR.",
+          "MRR churn measures lost recurring revenue (churned MRR) / starting MRR.",
           "They diverge when large customers churn less (or more) than small customers.",
         ],
       },
@@ -995,18 +995,18 @@ export const guides: Guide[] = [
       { type: "h2", text: "Formula" },
       {
         type: "p",
-        text: "Gross revenue churn = (contraction MRR + churned MRR) ÷ starting MRR.",
+        text: "Gross revenue churn = (contraction MRR + churned MRR) / starting MRR.",
       },
       { type: "h2", text: "Monthly-equivalent conversion" },
       {
         type: "p",
-        text: "If your window is N months: monthly-equivalent churn = 1 − (1 − period churn)^(1/N).",
+        text: "If your window is N months: monthly-equivalent churn = 1 - (1 - period churn)^(1/N).",
       },
       { type: "h2", text: "How it relates to GRR and NRR" },
       {
         type: "bullets",
         items: [
-          "GRR focuses on remaining revenue after losses (ending gross ÷ starting).",
+          "GRR focuses on remaining revenue after losses (ending gross / starting).",
           "NRR adds expansion, so NRR can look healthy even when gross churn is high.",
           "Track gross churn + GRR/NRR together to avoid being misled by expansion.",
         ],
@@ -1085,24 +1085,24 @@ export const guides: Guide[] = [
       { type: "h2", text: "Definition" },
       {
         type: "p",
-        text: "ARPU (Average Revenue Per User) is calculated as revenue ÷ average active users for a period. It's useful for tracking monetization and pricing performance over time.",
+        text: "ARPU (Average Revenue Per User) is calculated as revenue / average active users for a period. It's useful for tracking monetization and pricing performance over time.",
       },
       { type: "h2", text: "ARPU formula" },
-      { type: "p", text: "ARPU = revenue ÷ average active users" },
+      { type: "p", text: "ARPU = revenue / average active users" },
       { type: "h2", text: "How to calculate ARPU (step-by-step)" },
       {
         type: "bullets",
         items: [
           "Choose a time window (month/quarter) and define what counts as 'active user'.",
           "Sum revenue for the same window (be consistent: gross vs net of refunds).",
-          "Compute average active users (e.g., average of daily active users, or (start + end) ÷ 2).",
+          "Compute average active users (e.g., average of daily active users, or (start + end) / 2).",
           "Divide revenue by average active users to get ARPU.",
         ],
       },
       { type: "h2", text: "Example" },
       {
         type: "p",
-        text: "If you made $50,000 this month and had 2,000 average active users, ARPU = $50,000 ÷ 2,000 = $25 per user for the month.",
+        text: "If you made $50,000 this month and had 2,000 average active users, ARPU = $50,000 / 2,000 = $25 per user for the month.",
       },
       { type: "h2", text: "ARPU vs ARPA (SaaS)" },
       {
@@ -1136,7 +1136,7 @@ export const guides: Guide[] = [
         type: "bullets",
         items: [
           "ARPU is a per-period monetization metric; LTV is the expected value over the customer lifetime.",
-          "A simple relationship is LTV ~= ARPA × gross margin ÷ churn rate (with consistent time units).",
+          "A simple relationship is LTV ~= ARPA * gross margin / churn rate (with consistent time units).",
           "Use ARPU/ARPA to track pricing; use LTV with CAC to evaluate unit economics.",
         ],
       },
@@ -1163,7 +1163,7 @@ export const guides: Guide[] = [
       {
         question: "What is the ARPU formula?",
         answer:
-          "ARPU (average revenue per user) = revenue ÷ average active users for the same period. The key is defining 'active user' consistently.",
+          "ARPU (average revenue per user) = revenue / average active users for the same period. The key is defining 'active user' consistently.",
       },
       {
         question: "What is a good ARPU?",
@@ -1183,7 +1183,7 @@ export const guides: Guide[] = [
       {
         question: "Should ARPU use revenue or gross profit?",
         answer:
-          "ARPU is usually revenue-based. For unit economics decisions, also compute gross profit per user (revenue × gross margin) to reflect profitability.",
+          "ARPU is usually revenue-based. For unit economics decisions, also compute gross profit per user (revenue * gross margin) to reflect profitability.",
       },
     ],
     examples: [
@@ -1220,14 +1220,14 @@ export const guides: Guide[] = [
         text: "ARPA (Average Revenue Per Account) is revenue divided by the average number of paying accounts in a period. It is often more decision-useful than ARPU in B2B SaaS because you sell to companies, not individual users.",
       },
       { type: "h2", text: "ARPA formula" },
-      { type: "p", text: "ARPA = revenue ÷ average paying accounts" },
+      { type: "p", text: "ARPA = revenue / average paying accounts" },
       { type: "h2", text: "How to calculate ARPA (step-by-step)" },
       {
         type: "bullets",
         items: [
           "Choose a time window (month/quarter) and define what counts as a paying account.",
           "Sum revenue for the same window (be consistent: gross vs net of refunds/credits).",
-          "Compute average paying accounts for the window (e.g., (start + end) ÷ 2).",
+          "Compute average paying accounts for the window (e.g., (start + end) / 2).",
           "Divide revenue by average accounts to get ARPA.",
         ],
       },
@@ -1244,9 +1244,9 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "Monthly gross profit ≈ ARPA × gross margin.",
-          "Payback (months) ≈ CAC ÷ (ARPA × gross margin).",
-          "LTV (gross profit) ≈ (ARPA × gross margin) ÷ churn (shortcut model).",
+          "Monthly gross profit ~ ARPA * gross margin.",
+          "Payback (months) ~ CAC / (ARPA * gross margin).",
+          "LTV (gross profit) ~ (ARPA * gross margin) / churn (shortcut model).",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -1287,11 +1287,11 @@ export const guides: Guide[] = [
         text: "Revenue can grow because you have more active users, because you earn more per user (ARPU), or both. Decomposition is a quick way to explain growth without guessing: it splits the change into a user effect, an ARPU effect, and an interaction term.",
       },
       { type: "h2", text: "Core identity" },
-      { type: "p", text: "Revenue = users × ARPU." },
+      { type: "p", text: "Revenue = users * ARPU." },
       { type: "h2", text: "Decomposition formula" },
       {
         type: "p",
-        text: "ΔRevenue = ΔUsers×ARPU_start + ΔARPU×Users_start + ΔUsers×ΔARPU.",
+        text: "ΔRevenue = ΔUsers*ARPU_start + ΔARPU*Users_start + ΔUsers*ΔARPU.",
       },
       { type: "h2", text: "How to use it in practice" },
       {
@@ -1326,7 +1326,7 @@ export const guides: Guide[] = [
     ],
     examples: [
       {
-        label: "Example (start $50k / 2,000 users → end $65k / 2,300 users)",
+        label: "Example (start $50k / 2,000 users -> end $65k / 2,300 users)",
         calculatorSlug: "arpu-growth-decomposition-calculator",
         params: {
           startRevenue: "50000",
@@ -1374,7 +1374,7 @@ export const guides: Guide[] = [
         type: "bullets",
         items: [
           "New MRR, Expansion MRR, Contraction MRR, Churned MRR.",
-          "Net new MRR = new + expansion − contraction − churn.",
+          "Net new MRR = new + expansion - contraction - churn.",
           "Ending MRR = starting MRR + net new MRR (reconciliation).",
         ],
       },
@@ -1382,7 +1382,7 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "MRR is monthly run-rate; ARR is the same run-rate annualized (usually MRR × 12).",
+          "MRR is monthly run-rate; ARR is the same run-rate annualized (usually MRR * 12).",
           "Use MRR for monthly momentum and decomposition; use ARR for scale and many efficiency metrics (burn multiple, magic number).",
           "Both are run-rate snapshots, not recognized revenue.",
         ],
@@ -1391,7 +1391,7 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "MRR growth (period) = (end MRR − start MRR) ÷ start MRR.",
+          "MRR growth (period) = (end MRR - start MRR) / start MRR.",
           "Use CMGR to compare growth across different time horizons.",
           "If you don’t know what drove growth, use an MRR waterfall (new vs expansion vs churn).",
         ],
@@ -1415,7 +1415,7 @@ export const guides: Guide[] = [
       {
         question: "What is net new MRR?",
         answer:
-          "Net new MRR is the net change in MRR for a period: new + expansion − contraction − churn. It explains whether growth is driven by acquisition or retention/expansion.",
+          "Net new MRR is the net change in MRR for a period: new + expansion - contraction - churn. It explains whether growth is driven by acquisition or retention/expansion.",
       },
       {
         question: "Is MRR the same as revenue?",
@@ -1430,7 +1430,7 @@ export const guides: Guide[] = [
         params: { customers: "250", arpaMonthly: "200" },
       },
       {
-        label: "MRR waterfall example (start $200k; +$12k new; +$8k expansion; −$3k contraction; −$5k churn)",
+        label: "MRR waterfall example (start $200k; +$12k new; +$8k expansion; -$3k contraction; -$5k churn)",
         calculatorSlug: "mrr-waterfall-calculator",
         params: {
           startingMrr: "200000",
@@ -1446,7 +1446,7 @@ export const guides: Guide[] = [
         params: { startingMrr: "200000", churnedMrr: "8000", periodMonths: "1" },
       },
       {
-        label: "MRR growth rate example (start $200k → end $240k over 6 months)",
+        label: "MRR growth rate example (start $200k -> end $240k over 6 months)",
         calculatorSlug: "mrr-growth-rate-calculator",
         params: { startMrr: "200000", endMrr: "240000", months: "6" },
       },
@@ -1456,7 +1456,7 @@ export const guides: Guide[] = [
     slug: "arr-vs-mrr-guide",
     title: "ARR vs MRR: definitions, formulas, and how to convert",
     description:
-      "ARR vs MRR explained: what each metric means, the formulas (MRR×12 and ARR÷12), and common pitfalls.",
+      "ARR vs MRR explained: what each metric means, the formulas (MRR*12 and ARR/12), and common pitfalls.",
     category: "saas-metrics",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: ["arr-vs-mrr-calculator", "arr-calculator", "mrr-calculator"],
@@ -1467,13 +1467,13 @@ export const guides: Guide[] = [
         type: "bullets",
         items: [
           "MRR (Monthly Recurring Revenue) is monthly recurring run-rate.",
-          "ARR (Annual Recurring Revenue) is the same run-rate annualized (usually MRR × 12).",
+          "ARR (Annual Recurring Revenue) is the same run-rate annualized (usually MRR * 12).",
           "Both are run-rate snapshots, not recognized revenue.",
         ],
       },
       { type: "h2", text: "Formulas" },
-      { type: "p", text: "ARR = MRR × 12" },
-      { type: "p", text: "MRR = ARR ÷ 12" },
+      { type: "p", text: "ARR = MRR * 12" },
+      { type: "p", text: "MRR = ARR / 12" },
       { type: "h2", text: "When ARR and MRR do not match" },
       {
         type: "bullets",
@@ -1500,7 +1500,7 @@ export const guides: Guide[] = [
           "Not always. ARR is a recurring run-rate snapshot. Annual revenue is recognized over a year and can include one-time items.",
       },
       {
-        question: "Should ARR always equal MRR × 12?",
+        question: "Should ARR always equal MRR * 12?",
         answer:
           "If both are defined as recurring run-rate and measured at the same point in time, yes. If they don’t match, check definitions and timestamps.",
       },
@@ -1532,9 +1532,9 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "Period growth = (end MRR − start MRR) ÷ start MRR.",
-          "CMGR = (end/start)^(1/months) − 1 (compounded monthly).",
-          "Annualized growth = (end/start)^(12/months) − 1.",
+          "Period growth = (end MRR - start MRR) / start MRR.",
+          "CMGR = (end/start)^(1/months) - 1 (compounded monthly).",
+          "Annualized growth = (end/start)^(12/months) - 1.",
         ],
       },
       { type: "h2", text: "How to make the metric actionable" },
@@ -1558,7 +1558,7 @@ export const guides: Guide[] = [
     ],
     examples: [
       {
-        label: "MRR growth example (start $200k → end $240k over 6 months)",
+        label: "MRR growth example (start $200k -> end $240k over 6 months)",
         calculatorSlug: "mrr-growth-rate-calculator",
         params: { startMrr: "200000", endMrr: "240000", months: "6" },
       },
@@ -1568,7 +1568,7 @@ export const guides: Guide[] = [
     slug: "mrr-churn-rate-guide",
     title: "MRR churn rate: definition, formula, and monthly-equivalent conversion",
     description:
-      "MRR churn rate explained: churned MRR ÷ starting MRR, plus how to convert non-monthly windows into a monthly-equivalent rate.",
+      "MRR churn rate explained: churned MRR / starting MRR, plus how to convert non-monthly windows into a monthly-equivalent rate.",
     category: "saas-metrics",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: ["mrr-churn-rate-calculator", "mrr-waterfall-calculator", "grr-calculator", "nrr-calculator"],
@@ -1580,11 +1580,11 @@ export const guides: Guide[] = [
         text: "MRR churn rate measures lost recurring revenue from cancellations (churned MRR) as a percentage of starting MRR for a period. It is a revenue churn metric (not customer churn).",
       },
       { type: "h2", text: "Formula" },
-      { type: "p", text: "MRR churn rate (period) = churned MRR ÷ starting MRR" },
+      { type: "p", text: "MRR churn rate (period) = churned MRR / starting MRR" },
       { type: "h2", text: "Monthly-equivalent churn (for non-monthly windows)" },
       {
         type: "p",
-        text: "Monthly-equivalent churn = 1 − (1 − period churn)^(1/period months).",
+        text: "Monthly-equivalent churn = 1 - (1 - period churn)^(1/period months).",
       },
       { type: "h2", text: "How to use it" },
       {
@@ -1661,7 +1661,7 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "MRR is monthly run-rate; ARR is typically MRR × 12 (same run-rate, different time unit).",
+          "MRR is monthly run-rate; ARR is typically MRR * 12 (same run-rate, different time unit).",
           "Use MRR for monthly momentum and waterfalls; use ARR for scale comparisons and many efficiency metrics.",
           "If ARR and MRR don’t reconcile, definitions or timestamps likely differ.",
         ],
@@ -1670,7 +1670,7 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "Net new ARR = new + expansion − contraction − churned ARR.",
+          "Net new ARR = new + expansion - contraction - churned ARR.",
           "Use an ARR waterfall to reconcile starting ARR to ending ARR for a period.",
           "Segment by plan/channel/customer size to avoid blended averages hiding churn pockets.",
         ],
@@ -1682,7 +1682,7 @@ export const guides: Guide[] = [
         rows: [
           [
             "ARR",
-            "Recurring run-rate (typically MRR × 12). Excludes one-time fees/services.",
+            "Recurring run-rate (typically MRR * 12). Excludes one-time fees/services.",
             "Comparing SaaS scale and momentum across time or companies.",
             "Treating ARR as guaranteed annual revenue or including services revenue.",
           ],
@@ -1713,7 +1713,7 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "Annual prepay: cash may spike today, while ARR reflects ongoing run-rate (MRR × 12).",
+          "Annual prepay: cash may spike today, while ARR reflects ongoing run-rate (MRR * 12).",
           "A large annual contract can increase bookings immediately even if ARR only increases as recurring run-rate grows.",
           "If you add one-time services to a deal, bookings rise but ARR should not include the services portion.",
         ],
@@ -1748,7 +1748,7 @@ export const guides: Guide[] = [
         params: { customers: "250", arpaMonthly: "200" },
       },
       {
-        label: "ARR valuation example ($2.4M ARR; 6× multiple)",
+        label: "ARR valuation example ($2.4M ARR; 6* multiple)",
         calculatorSlug: "arr-valuation-calculator",
         params: { arr: "2400000", multiple: "6" },
       },
@@ -1809,7 +1809,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "NRR formula" },
       {
         type: "p",
-        text: "NRR = (starting MRR + expansion − contraction − churn) ÷ starting MRR",
+        text: "NRR = (starting MRR + expansion - contraction - churn) / starting MRR",
       },
       { type: "h2", text: "Components (quick reference)" },
       {
@@ -1829,12 +1829,12 @@ export const guides: Guide[] = [
           [
             "Contraction",
             "Downgrades, seat reductions, usage decreases (not full churn).",
-            "−$5k contraction MRR",
+            "-$5k contraction MRR",
           ],
           [
             "Churn",
             "Lost recurring revenue from cancellations.",
-            "−$8k churned MRR",
+            "-$8k churned MRR",
           ],
         ],
       },
@@ -1845,8 +1845,8 @@ export const guides: Guide[] = [
           "Pick a cohort and a time window (monthly or quarterly are common).",
           "Measure starting MRR for that cohort at the beginning of the window.",
           "Measure expansion, contraction, and churned MRR for the cohort over the window.",
-          "Compute ending MRR = starting + expansion − contraction − churn.",
-          "Compute NRR = ending MRR ÷ starting MRR.",
+          "Compute ending MRR = starting + expansion - contraction - churn.",
+          "Compute NRR = ending MRR / starting MRR.",
         ],
       },
       { type: "h2", text: "NRR vs GRR" },
@@ -1893,7 +1893,7 @@ export const guides: Guide[] = [
     ],
     examples: [
       {
-        label: "NRR example (start $100k; +$15k expansion; −$5k contraction; −$8k churn)",
+        label: "NRR example (start $100k; +$15k expansion; -$5k contraction; -$8k churn)",
         calculatorSlug: "nrr-calculator",
         params: {
           startingMrr: "100000",
@@ -1921,7 +1921,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "GRR formula" },
       {
         type: "p",
-        text: "GRR = (starting MRR − contraction − churn) ÷ starting MRR",
+        text: "GRR = (starting MRR - contraction - churn) / starting MRR",
       },
       { type: "h2", text: "How to calculate GRR (step-by-step)" },
       {
@@ -1930,8 +1930,8 @@ export const guides: Guide[] = [
           "Pick a cohort and a time window (monthly or quarterly).",
           "Measure starting MRR for the cohort at the beginning of the window.",
           "Measure contraction MRR and churned MRR for the cohort during the window.",
-          "Compute ending gross MRR = starting − contraction − churn.",
-          "Compute GRR = ending gross MRR ÷ starting MRR.",
+          "Compute ending gross MRR = starting - contraction - churn.",
+          "Compute GRR = ending gross MRR / starting MRR.",
         ],
       },
       { type: "h2", text: "Why GRR matters" },
@@ -1962,7 +1962,7 @@ export const guides: Guide[] = [
     ],
     examples: [
       {
-        label: "GRR example (start $100k; −$5k contraction; −$8k churn)",
+        label: "GRR example (start $100k; -$5k contraction; -$8k churn)",
         calculatorSlug: "grr-calculator",
         params: {
           startingMrr: "100000",
@@ -2003,9 +2003,9 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "NRR = (start + expansion − contraction − churn) ÷ start",
-          "GRR = (start − contraction − churn) ÷ start",
-          "Gap (NRR − GRR) is the share of starting revenue added by expansion.",
+          "NRR = (start + expansion - contraction - churn) / start",
+          "GRR = (start - contraction - churn) / start",
+          "Gap (NRR - GRR) is the share of starting revenue added by expansion.",
         ],
       },
       { type: "h2", text: "How to interpret the gap" },
@@ -2054,7 +2054,7 @@ export const guides: Guide[] = [
     ],
     examples: [
       {
-        label: "NRR vs GRR example (start $100k; +$12k expansion; −$5k contraction; −$8k churn)",
+        label: "NRR vs GRR example (start $100k; +$12k expansion; -$5k contraction; -$8k churn)",
         calculatorSlug: "nrr-vs-grr-calculator",
         params: {
           startingMrr: "100000",
@@ -2082,7 +2082,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "Formula" },
       {
         type: "p",
-        text: "Net new MRR = new MRR + expansion MRR − contraction MRR − churned MRR",
+        text: "Net new MRR = new MRR + expansion MRR - contraction MRR - churned MRR",
       },
       { type: "h2", text: "How to calculate net new MRR" },
       {
@@ -2099,7 +2099,7 @@ export const guides: Guide[] = [
         type: "bullets",
         items: [
           "Net new MRR is a dollar amount.",
-          "MRR growth rate is usually net new MRR ÷ starting MRR for the period.",
+          "MRR growth rate is usually net new MRR / starting MRR for the period.",
           "Use growth rate for comparing across time; use net new MRR for planning capacity and targets.",
         ],
       },
@@ -2132,7 +2132,7 @@ export const guides: Guide[] = [
     slug: "mrr-waterfall-guide",
     title: "MRR waterfall: reconcile starting MRR to ending MRR",
     description:
-      "A practical MRR waterfall guide: starting MRR + new + expansion − contraction − churn = ending MRR, with an example and pitfalls.",
+      "A practical MRR waterfall guide: starting MRR + new + expansion - contraction - churn = ending MRR, with an example and pitfalls.",
     category: "saas-metrics",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: ["mrr-waterfall-calculator", "net-new-mrr-calculator", "saas-quick-ratio-calculator"],
@@ -2146,7 +2146,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "Core formula" },
       {
         type: "p",
-        text: "Ending MRR = starting MRR + new MRR + expansion MRR − contraction MRR − churned MRR.",
+        text: "Ending MRR = starting MRR + new MRR + expansion MRR - contraction MRR - churned MRR.",
       },
       { type: "h2", text: "How to use it in reporting" },
       {
@@ -2169,7 +2169,7 @@ export const guides: Guide[] = [
     ],
     examples: [
       {
-        label: "Waterfall example (start $200k; +$12k new; +$8k expansion; −$3k contraction; −$5k churn)",
+        label: "Waterfall example (start $200k; +$12k new; +$8k expansion; -$3k contraction; -$5k churn)",
         calculatorSlug: "mrr-waterfall-calculator",
         params: {
           startingMrr: "200000",
@@ -2185,7 +2185,7 @@ export const guides: Guide[] = [
     slug: "saas-quick-ratio-guide",
     title: "SaaS Quick Ratio: definition, formula, and how to use it",
     description:
-      "SaaS quick ratio explained: (new + expansion) ÷ (contraction + churn). Learn how to compute it and what it tells you about growth quality.",
+      "SaaS quick ratio explained: (new + expansion) / (contraction + churn). Learn how to compute it and what it tells you about growth quality.",
     category: "saas-metrics",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: ["saas-quick-ratio-calculator", "net-new-mrr-calculator"],
@@ -2198,7 +2198,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "Formula" },
       {
         type: "p",
-        text: "Quick ratio = (new MRR + expansion MRR) ÷ (contraction MRR + churned MRR)",
+        text: "Quick ratio = (new MRR + expansion MRR) / (contraction MRR + churned MRR)",
       },
       { type: "h2", text: "How to calculate it" },
       {
@@ -2299,7 +2299,7 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "Period growth: (end ARR − start ARR) ÷ start ARR.",
+          "Period growth: (end ARR - start ARR) / start ARR.",
           "CMGR: compounded monthly growth over the period (useful for comparisons across horizons).",
           "Annualized growth (CAGR): converts the period change into an annualized rate.",
         ],
@@ -2325,7 +2325,7 @@ export const guides: Guide[] = [
     ],
     examples: [
       {
-        label: "ARR growth example (start $1.2M → end $1.8M over 12 months)",
+        label: "ARR growth example (start $1.2M -> end $1.8M over 12 months)",
         calculatorSlug: "arr-growth-rate-calculator",
         params: { startArr: "1200000", endArr: "1800000", months: "12" },
       },
@@ -2335,7 +2335,7 @@ export const guides: Guide[] = [
     slug: "arr-waterfall-guide",
     title: "ARR waterfall: reconcile starting ARR to ending ARR (net new ARR)",
     description:
-      "A practical ARR waterfall guide: starting ARR + new + expansion − contraction − churn = ending ARR, with examples and pitfalls.",
+      "A practical ARR waterfall guide: starting ARR + new + expansion - contraction - churn = ending ARR, with examples and pitfalls.",
     category: "saas-metrics",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: ["arr-waterfall-calculator", "net-new-arr-calculator", "burn-multiple-calculator"],
@@ -2349,7 +2349,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "Core formula" },
       {
         type: "p",
-        text: "Ending ARR = starting ARR + new ARR + expansion ARR − contraction ARR − churned ARR.",
+        text: "Ending ARR = starting ARR + new ARR + expansion ARR - contraction ARR - churned ARR.",
       },
       { type: "h2", text: "How to use it" },
       {
@@ -2372,7 +2372,7 @@ export const guides: Guide[] = [
     ],
     examples: [
       {
-        label: "ARR waterfall example (start $2.4M; +$240k new; +$160k expansion; −$60k contraction; −$100k churn)",
+        label: "ARR waterfall example (start $2.4M; +$240k new; +$160k expansion; -$60k contraction; -$100k churn)",
         calculatorSlug: "arr-waterfall-calculator",
         params: {
           startingArr: "2400000",
@@ -2388,7 +2388,7 @@ export const guides: Guide[] = [
     slug: "burn-multiple-guide",
     title: "Burn multiple: definition, formula, and how to use it",
     description:
-      "Burn multiple explained: net burn ÷ net new ARR. Learn how to compute it, interpret it, and avoid common mistakes.",
+      "Burn multiple explained: net burn / net new ARR. Learn how to compute it, interpret it, and avoid common mistakes.",
     category: "saas-metrics",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: ["burn-multiple-calculator"],
@@ -2399,7 +2399,7 @@ export const guides: Guide[] = [
         text: "Burn multiple measures growth efficiency: how much net cash you burn to generate $1 of net new ARR. It is commonly tracked quarterly to reduce noise from timing.",
       },
       { type: "h2", text: "Formula" },
-      { type: "p", text: "Burn multiple = net burn ÷ net new ARR" },
+      { type: "p", text: "Burn multiple = net burn / net new ARR" },
       { type: "h2", text: "How to calculate it" },
       {
         type: "bullets",
@@ -2445,7 +2445,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "Formula" },
       {
         type: "p",
-        text: "Net new ARR = new ARR + expansion ARR − contraction ARR − churned ARR",
+        text: "Net new ARR = new ARR + expansion ARR - contraction ARR - churned ARR",
       },
       { type: "h2", text: "How to calculate net new ARR" },
       {
@@ -2462,7 +2462,7 @@ export const guides: Guide[] = [
         type: "bullets",
         items: [
           "Net new ARR is a dollar amount (ΔARR).",
-          "ARR growth rate is net new ARR ÷ starting ARR for the period.",
+          "ARR growth rate is net new ARR / starting ARR for the period.",
           "Use growth rate for comparisons; use net new ARR for planning and efficiency metrics.",
         ],
       },
@@ -2517,18 +2517,18 @@ export const guides: Guide[] = [
       { type: "h2", text: "Use gross profit, not revenue" },
       {
         type: "p",
-        text: "A common mistake is to compute LTV using revenue but compare it to a fully-loaded CAC. For cleaner unit economics, compute LTV on gross profit (revenue × gross margin) and label CAC definitions clearly.",
+        text: "A common mistake is to compute LTV using revenue but compare it to a fully-loaded CAC. For cleaner unit economics, compute LTV on gross profit (revenue * gross margin) and label CAC definitions clearly.",
       },
       { type: "h2", text: "Core formulas" },
       {
         type: "bullets",
         items: [
-          "CAC = acquisition spend ÷ new customers acquired.",
-          "Monthly gross profit per customer ≈ ARPA × gross margin.",
-          "Payback (months) = CAC ÷ (ARPA × gross margin).",
-          "Lifetime (months) ≈ 1 ÷ monthly churn (rough shortcut).",
-          "LTV (gross profit) ≈ (ARPA × gross margin) ÷ monthly churn.",
-          "LTV:CAC = LTV ÷ CAC.",
+          "CAC = acquisition spend / new customers acquired.",
+          "Monthly gross profit per customer ~ ARPA * gross margin.",
+          "Payback (months) = CAC / (ARPA * gross margin).",
+          "Lifetime (months) ~ 1 / monthly churn (rough shortcut).",
+          "LTV (gross profit) ~ (ARPA * gross margin) / monthly churn.",
+          "LTV:CAC = LTV / CAC.",
         ],
       },
       { type: "h2", text: "How to model it (step-by-step)" },
@@ -2600,7 +2600,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "Bookings vs ARR (quick definition)" },
       {
         type: "p",
-        text: "Bookings measure contracted value you sign in a period. ARR (Annual Recurring Revenue) is an annualized recurring run-rate snapshot (typically MRR × 12). They are related but not interchangeable.",
+        text: "Bookings measure contracted value you sign in a period. ARR (Annual Recurring Revenue) is an annualized recurring run-rate snapshot (typically MRR * 12). They are related but not interchangeable.",
       },
       { type: "h2", text: "What each metric measures" },
       {
@@ -2615,7 +2615,7 @@ export const guides: Guide[] = [
           ],
           [
             "ARR",
-            "Recurring run-rate snapshot (MRR × 12). Excludes one-time fees/services.",
+            "Recurring run-rate snapshot (MRR * 12). Excludes one-time fees/services.",
             "Comparing SaaS scale and momentum across time or companies.",
             "Treating ARR as guaranteed annual revenue or including services.",
           ],
@@ -2631,15 +2631,15 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "Bookings (simplified) ≈ total contract value signed in the period.",
-          "MRR equivalent = recurring portion ÷ contract term months.",
-          "ARR = MRR × 12.",
+          "Bookings (simplified) ~ total contract value signed in the period.",
+          "MRR equivalent = recurring portion / contract term months.",
+          "ARR = MRR * 12.",
         ],
       },
       { type: "h2", text: "Worked example (annual prepay + one-time fees)" },
       {
         type: "p",
-        text: "Suppose you close a $120,000 12-month contract that includes $10,000 of one-time onboarding. Bookings are $120,000. Recurring portion is $110,000. MRR equivalent is $110,000 ÷ 12 = ~$9,167. ARR run-rate is ~$110,000 (MRR × 12). Cash collected may be $120,000 upfront if prepaid.",
+        text: "Suppose you close a $120,000 12-month contract that includes $10,000 of one-time onboarding. Bookings are $120,000. Recurring portion is $110,000. MRR equivalent is $110,000 / 12 = ~$9,167. ARR run-rate is ~$110,000 (MRR * 12). Cash collected may be $120,000 upfront if prepaid.",
       },
       { type: "h2", text: "Common mistakes to avoid" },
       {
@@ -2698,7 +2698,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "Formula (common simplified version)" },
       {
         type: "p",
-        text: "Magic Number ≈ (net new ARR in period × 4) ÷ prior-period sales & marketing spend",
+        text: "Magic Number ~ (net new ARR in period * 4) / prior-period sales & marketing spend",
       },
       { type: "h2", text: "How to use it" },
       {
@@ -2751,12 +2751,12 @@ export const guides: Guide[] = [
       { type: "h2", text: "Simple formula (shortcut)" },
       {
         type: "p",
-        text: "Customer lifetime (months) ≈ 1 ÷ monthly churn rate",
+        text: "Customer lifetime (months) ~ 1 / monthly churn rate",
       },
       { type: "h2", text: "Worked example" },
       {
         type: "p",
-        text: "If monthly churn is 3%, the simple estimate is lifetime ≈ 1 / 0.03 ≈ 33.3 months. This is useful for planning but can be wrong if churn changes over tenure.",
+        text: "If monthly churn is 3%, the simple estimate is lifetime ~ 1 / 0.03 ~ 33.3 months. This is useful for planning but can be wrong if churn changes over tenure.",
       },
       { type: "h2", text: "Why the shortcut breaks" },
       {
@@ -2810,7 +2810,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "NPV formula" },
       {
         type: "p",
-        text: "NPV = Σ (cash flow_t / (1 + r)^t) − initial investment",
+        text: "NPV = Σ (cash flow_t / (1 + r)^t) - initial investment",
       },
       { type: "h2", text: "How to calculate NPV (step-by-step)" },
       {
@@ -3255,7 +3255,7 @@ export const guides: Guide[] = [
       {
         question: "How do I translate annual NRR to a monthly rate?",
         answer:
-          "If you only have an annual NRR, you can approximate a monthly rate by taking the 12th root: monthly NRR ≈ (annual NRR)^(1/12). It’s still better to compute monthly retention directly when possible.",
+          "If you only have an annual NRR, you can approximate a monthly rate by taking the 12th root: monthly NRR ~ (annual NRR)^(1/12). It’s still better to compute monthly retention directly when possible.",
       },
       {
         question: "Should expansion and churn be applied to starting MRR or ending MRR?",
@@ -3311,7 +3311,7 @@ export const guides: Guide[] = [
           "Net burn = cash outflows - cash inflows.",
           "Runway (months) = cash balance / net burn (if net burn > 0).",
           "Gross profit = revenue * gross margin (simplified).",
-          "Break-even revenue ≈ operating expenses / gross margin (simplified).",
+          "Break-even revenue ~ operating expenses / gross margin (simplified).",
         ],
       },
       { type: "h2", text: "Why cash planning goes wrong" },
@@ -3461,7 +3461,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "Why cohort-based LTV is worth it" },
       {
         type: "p",
-        text: "The classic shortcut LTV ≈ (ARPA × gross margin) ÷ churn can mislead because it assumes constant churn, ignores expansion, and can explode when churn is small. A cohort model makes assumptions explicit and is easier to scenario test.",
+        text: "The classic shortcut LTV ~ (ARPA * gross margin) / churn can mislead because it assumes constant churn, ignores expansion, and can explode when churn is small. A cohort model makes assumptions explicit and is easier to scenario test.",
       },
       { type: "h2", text: "A simple cohort model" },
       {
@@ -3549,10 +3549,10 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "Holdout CVR = holdout conversions ÷ holdout users.",
-          "Expected conversions without ads = exposed users × holdout CVR.",
+          "Holdout CVR = holdout conversions / holdout users.",
+          "Expected conversions without ads = exposed users * holdout CVR.",
           "Incremental conversions = exposed conversions - expected without ads.",
-          "Incremental ROAS = incremental revenue ÷ ad spend.",
+          "Incremental ROAS = incremental revenue / ad spend.",
         ],
       },
       { type: "h2", text: "Decision rules (practical)" },
@@ -3628,8 +3628,8 @@ export const guides: Guide[] = [
         type: "bullets",
         items: [
           "Contribution per unit = price - variable cost per unit.",
-          "Break-even units = fixed costs ÷ contribution per unit.",
-          "Profit = units × contribution per unit - fixed costs.",
+          "Break-even units = fixed costs / contribution per unit.",
+          "Profit = units * contribution per unit - fixed costs.",
         ],
       },
       { type: "h2", text: "What to include in variable costs" },
@@ -3702,7 +3702,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "Break-even churn (quick intuition)" },
       {
         type: "p",
-        text: "If churn happens as a one-time shock right after the change, break-even churn is: (1 + increase) × (1 - churn) = 1, so churn_break-even ≈ 1 - 1/(1+increase).",
+        text: "If churn happens as a one-time shock right after the change, break-even churn is: (1 + increase) * (1 - churn) = 1, so churn_break-even ~ 1 - 1/(1+increase).",
       },
       { type: "h2", text: "Why ongoing churn is different" },
       {
@@ -3770,9 +3770,9 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "Attainment = booked ÷ quota.",
-          "Pacing (simple) ≈ (booked ÷ days elapsed) × days in period.",
-          "Required per day = (quota − booked) ÷ remaining days.",
+          "Attainment = booked / quota.",
+          "Pacing (simple) ~ (booked / days elapsed) * days in period.",
+          "Required per day = (quota - booked) / remaining days.",
         ],
       },
       { type: "h2", text: "How to use pacing (without fooling yourself)" },
@@ -3813,7 +3813,7 @@ export const guides: Guide[] = [
     slug: "pipeline-coverage-guide",
     title: "Pipeline coverage: what it is, how to calculate it, and benchmarks",
     description:
-      "Pipeline coverage explained: pipeline ÷ quota, how win rate translates to required coverage, and how to avoid inflated pipeline.",
+      "Pipeline coverage explained: pipeline / quota, how win rate translates to required coverage, and how to avoid inflated pipeline.",
     category: "saas-metrics",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: ["pipeline-coverage-calculator", "pipeline-required-calculator"],
@@ -3828,9 +3828,9 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "Coverage = pipeline ÷ quota.",
-          "Expected bookings = pipeline × win rate.",
-          "Rule of thumb: coverage ≈ 1 ÷ win rate (before buffer for slippage).",
+          "Coverage = pipeline / quota.",
+          "Expected bookings = pipeline * win rate.",
+          "Rule of thumb: coverage ~ 1 / win rate (before buffer for slippage).",
         ],
       },
       { type: "h2", text: "How to make coverage actionable" },
@@ -3879,9 +3879,9 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "Wins needed = target ÷ average deal size.",
-          "Opportunities needed = wins ÷ win rate.",
-          "Pipeline needed (value) ≈ target ÷ win rate.",
+          "Wins needed = target / average deal size.",
+          "Opportunities needed = wins / win rate.",
+          "Pipeline needed (value) ~ target / win rate.",
         ],
       },
       { type: "h2", text: "Make it accurate" },
@@ -3921,7 +3921,7 @@ export const guides: Guide[] = [
     relatedCalculatorSlugs: ["sales-capacity-calculator", "quota-attainment-calculator"],
     relatedGlossarySlugs: ["sales-ramp", "quota", "quota-attainment", "pipeline"],
     sections: [
-      { type: "h2", text: "Capacity is headcount × productivity" },
+      { type: "h2", text: "Capacity is headcount * productivity" },
       {
         type: "p",
         text: "Sales capacity is the output your team can produce given how many reps you have and how productive they are. Productivity depends on attainment, territory, deal quality, and ramp.",
@@ -3980,8 +3980,8 @@ export const guides: Guide[] = [
         type: "bullets",
         items: [
           "OTE = base + variable (at 100% attainment).",
-          "Commission rate (simplified) ≈ variable ÷ quota.",
-          "Split = base ÷ OTE (and variable ÷ OTE).",
+          "Commission rate (simplified) ~ variable / quota.",
+          "Split = base / OTE (and variable / OTE).",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -4004,7 +4004,7 @@ export const guides: Guide[] = [
   },
   {
     slug: "sales-funnel-targets-guide",
-    title: "Sales funnel targets: leads → MQL → SQL → opp → win (how to plan)",
+    title: "Sales funnel targets: leads -> MQL -> SQL -> opp -> win (how to plan)",
     description:
       "A practical guide to back-solving funnel volume targets from a revenue goal using conversion rates and average deal size.",
     category: "saas-metrics",
@@ -4021,10 +4021,10 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "Compute wins needed = revenue target ÷ ACV.",
-          "Convert wins into required opps using opp→win rate.",
+          "Compute wins needed = revenue target / ACV.",
+          "Convert wins into required opps using opp->win rate.",
           "Convert opps into SQLs and MQLs using stage conversion rates.",
-          "Convert MQLs into leads using lead→MQL.",
+          "Convert MQLs into leads using lead->MQL.",
         ],
       },
       { type: "h2", text: "Make it accurate" },
@@ -4048,7 +4048,7 @@ export const guides: Guide[] = [
     ],
     examples: [
       {
-        label: "Example: $500k target, $25k ACV, 20% lead→MQL, 30% MQL→SQL, 40% SQL→opp, 25% opp→win",
+        label: "Example: $500k target, $25k ACV, 20% lead->MQL, 30% MQL->SQL, 40% SQL->opp, 25% opp->win",
         calculatorSlug: "sales-funnel-targets-calculator",
         params: {
           revenueTarget: "500000",
@@ -4077,7 +4077,7 @@ export const guides: Guide[] = [
         text: "Activation rate measures what % of new users reach a meaningful value moment ('aha' event) after signup. It’s one of the best leading indicators of retention because users who don’t activate rarely stick.",
       },
       { type: "h2", text: "Formula" },
-      { type: "p", text: "Activation rate = activated users ÷ signups" },
+      { type: "p", text: "Activation rate = activated users / signups" },
       { type: "h2", text: "How to define activation (practical)" },
       {
         type: "bullets",
@@ -4130,7 +4130,7 @@ export const guides: Guide[] = [
         text: "Trial-to-paid conversion rate measures what % of trial users become paying customers within a defined window. It’s a bridge metric between activation and revenue.",
       },
       { type: "h2", text: "Formula" },
-      { type: "p", text: "Trial-to-paid = paid conversions ÷ trials started" },
+      { type: "p", text: "Trial-to-paid = paid conversions / trials started" },
       { type: "h2", text: "Choose a conversion window" },
       {
         type: "bullets",
@@ -4183,7 +4183,7 @@ export const guides: Guide[] = [
         text: "DAU/MAU is a stickiness metric: how many monthly active users are active on a typical day. It’s useful for engagement tracking, but it depends heavily on how you define 'active' and your product’s natural cadence.",
       },
       { type: "h2", text: "Formula" },
-      { type: "p", text: "DAU/MAU = DAU ÷ MAU" },
+      { type: "p", text: "DAU/MAU = DAU / MAU" },
       { type: "h2", text: "How to use it" },
       {
         type: "bullets",
@@ -4227,7 +4227,7 @@ export const guides: Guide[] = [
         text: "Many B2B products are used weekly rather than daily (planning, reporting, reviews). WAU/MAU can be a more meaningful engagement signal than DAU/MAU for weekly cadence products.",
       },
       { type: "h2", text: "Formula" },
-      { type: "p", text: "WAU/MAU = WAU ÷ MAU" },
+      { type: "p", text: "WAU/MAU = WAU / MAU" },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -4262,7 +4262,7 @@ export const guides: Guide[] = [
         text: "Feature adoption rate measures what % of active users used a specific feature within a time window. It helps you validate that users are discovering and repeatedly using the product capabilities that drive value and retention.",
       },
       { type: "h2", text: "Formula" },
-      { type: "p", text: "Feature adoption rate = users who used feature ÷ active users" },
+      { type: "p", text: "Feature adoption rate = users who used feature / active users" },
       { type: "h2", text: "How to measure adoption well" },
       {
         type: "bullets",
@@ -4306,7 +4306,7 @@ export const guides: Guide[] = [
         text: "PQL-to-paid conversion measures what % of product-qualified leads become paying customers. It connects product usage signals to revenue outcomes and helps prioritize onboarding, activation, and sales follow-up.",
       },
       { type: "h2", text: "Formula" },
-      { type: "p", text: "PQL-to-paid = paid customers from PQLs ÷ PQLs" },
+      { type: "p", text: "PQL-to-paid = paid customers from PQLs / PQLs" },
       { type: "h2", text: "How to define PQLs" },
       {
         type: "bullets",
@@ -4387,7 +4387,7 @@ export const guides: Guide[] = [
       {
         question: "What’s a good marginal ROAS target?",
         answer:
-          "It depends on your contribution margin and whether you include fixed costs. As a starting point, compare marginal ROAS to break-even ROAS (1 ÷ contribution margin) and add buffer for uncertainty.",
+          "It depends on your contribution margin and whether you include fixed costs. As a starting point, compare marginal ROAS to break-even ROAS (1 / contribution margin) and add buffer for uncertainty.",
       },
       {
         question: "Can marginal ROAS be higher than average ROAS?",
@@ -4446,7 +4446,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "Deferred revenue rollforward formula" },
       {
         type: "p",
-        text: "Ending deferred = beginning deferred + billings − recognized revenue.",
+        text: "Ending deferred = beginning deferred + billings - recognized revenue.",
       },
       { type: "h2", text: "How this relates to bookings vs ARR" },
       {
@@ -4797,14 +4797,14 @@ export const guides: Guide[] = [
       { type: "h2", text: "Core formula" },
       {
         type: "p",
-        text: "WACC = w_e×k_e + w_d×k_d×(1 - tax rate)",
+        text: "WACC = w_e*k_e + w_d*k_d*(1 - tax rate)",
       },
       { type: "h2", text: "How to choose inputs (practical)" },
       {
         type: "bullets",
         items: [
           "Weights: use market-value capital structure when possible (not book values).",
-          "Cost of equity: often estimated via CAPM as a starting point (risk-free + beta×equity risk premium).",
+          "Cost of equity: often estimated via CAPM as a starting point (risk-free + beta*equity risk premium).",
           "Cost of debt: current borrowing rate for the firm’s risk profile.",
           "Tax rate: marginal corporate tax rate applicable to interest deductions.",
         ],
@@ -4858,13 +4858,13 @@ export const guides: Guide[] = [
       { type: "h2", text: "What MER is" },
       {
         type: "p",
-        text: "MER (marketing efficiency ratio) is total revenue ÷ total marketing spend over the same period. It’s a top-down metric that reduces attribution noise, but it hides channel-level performance.",
+        text: "MER (marketing efficiency ratio) is total revenue / total marketing spend over the same period. It’s a top-down metric that reduces attribution noise, but it hides channel-level performance.",
       },
       { type: "h2", text: "Break-even and target MER" },
       {
         type: "bullets",
         items: [
-          "Break-even MER ≈ 1 ÷ contribution margin (variable economics).",
+          "Break-even MER ~ 1 / contribution margin (variable economics).",
           "Target MER should be higher than break-even to leave buffer for uncertainty, overhead, and measurement error.",
         ],
       },
@@ -5080,10 +5080,10 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "Contribution per conversion ≈ AOV × contribution margin.",
+          "Contribution per conversion ~ AOV * contribution margin.",
           "Break-even CPA = contribution per conversion.",
-          "CPA = CPC ÷ CVR, so max CPC = target CPA × CVR.",
-          "If you buy impressions (CPM): CPM = CPC × CTR × 1000.",
+          "CPA = CPC / CVR, so max CPC = target CPA * CVR.",
+          "If you buy impressions (CPM): CPM = CPC * CTR * 1000.",
         ],
       },
       { type: "h2", text: "Best practices" },
@@ -5114,7 +5114,7 @@ export const guides: Guide[] = [
       {
         question: "What if my funnel has multiple steps?",
         answer:
-          "Convert CVR to 'click → purchase' (or click → customer) by multiplying stage conversion rates. Alternatively use a funnel calculator and LTV-based targets for more accuracy.",
+          "Convert CVR to 'click -> purchase' (or click -> customer) by multiplying stage conversion rates. Alternatively use a funnel calculator and LTV-based targets for more accuracy.",
       },
     ],
     examples: [
@@ -5230,8 +5230,8 @@ export const guides: Guide[] = [
         type: "bullets",
         items: [
           "Post-money = pre-money + investment.",
-          "Implied investor ownership ≈ investment ÷ post-money.",
-          "Existing holders’ combined ownership ≈ pre-money ÷ post-money.",
+          "Implied investor ownership ~ investment / post-money.",
+          "Existing holders’ combined ownership ~ pre-money / post-money.",
         ],
       },
       { type: "h2", text: "Why founders get surprised (option pool shuffle)" },
@@ -5245,7 +5245,7 @@ export const guides: Guide[] = [
         items: [
           "Using ownership on an issued-shares basis instead of fully diluted.",
           "Ignoring SAFEs/notes converting in the priced round (dilution stacks).",
-          "Treating investment ÷ post-money as exact without building a cap table.",
+          "Treating investment / post-money as exact without building a cap table.",
         ],
       },
     ],
@@ -5287,7 +5287,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "What happens if you don’t participate" },
       {
         type: "p",
-        text: "If the company raises new money, new shares are issued. If you don’t buy any of them, your ownership typically drops. A simple approximation uses the pre-money ÷ post-money ratio to estimate dilution from the new issuance.",
+        text: "If the company raises new money, new shares are issued. If you don’t buy any of them, your ownership typically drops. A simple approximation uses the pre-money / post-money ratio to estimate dilution from the new issuance.",
       },
       { type: "h2", text: "Common mistakes" },
       {
@@ -5351,7 +5351,7 @@ export const guides: Guide[] = [
     ],
     examples: [
       {
-        label: "Example: $20M pre, $5M raise, pool 10% → 15% post-money target",
+        label: "Example: $20M pre, $5M raise, pool 10% -> 15% post-money target",
         calculatorSlug: "option-pool-shuffle-calculator",
         params: {
           preMoney: "20000000",
@@ -5390,9 +5390,9 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "Compute the priced round price per share = pre-money ÷ fully diluted shares.",
-          "Compute cap price per share = cap ÷ fully diluted shares (if applicable).",
-          "Compute discount price per share = round price × (1 − discount).",
+          "Compute the priced round price per share = pre-money / fully diluted shares.",
+          "Compute cap price per share = cap / fully diluted shares (if applicable).",
+          "Compute discount price per share = round price * (1 - discount).",
           "Convert SAFE amount into shares at the lowest applicable conversion price.",
         ],
       },
@@ -5439,7 +5439,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "Interest and conversion amount" },
       {
         type: "p",
-        text: "Conversion often applies to principal plus accrued interest (depending on the note). In simple modeling, accrued interest ≈ principal × annual rate × (months ÷ 12).",
+        text: "Conversion often applies to principal plus accrued interest (depending on the note). In simple modeling, accrued interest ~ principal * annual rate * (months / 12).",
       },
       { type: "h2", text: "Conversion price mechanics" },
       {
@@ -5479,9 +5479,9 @@ export const guides: Guide[] = [
   },
   {
     slug: "liquidation-preference-guide",
-    title: "Liquidation preference (1× non-participating): what it means at exit",
+    title: "Liquidation preference (1* non-participating): what it means at exit",
     description:
-      "Understand 1× non-participating liquidation preference, when investors convert to common, and how this changes proceeds at different exit values.",
+      "Understand 1* non-participating liquidation preference, when investors convert to common, and how this changes proceeds at different exit values.",
     category: "finance",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: ["liquidation-preference-calculator"],
@@ -5492,11 +5492,11 @@ export const guides: Guide[] = [
         type: "p",
         text: "Liquidation preference sets the payout order at an exit (sale, liquidation). With preferred stock, investors often have a preference claim ahead of common shareholders.",
       },
-      { type: "h2", text: "1× non-participating in plain English" },
+      { type: "h2", text: "1* non-participating in plain English" },
       {
         type: "bullets",
         items: [
-          "Investors typically receive the greater of: (a) their preference amount (often investment × 1×) or (b) what they’d receive if they convert to common.",
+          "Investors typically receive the greater of: (a) their preference amount (often investment * 1*) or (b) what they’d receive if they convert to common.",
           "At low exit values, preference often dominates; at high exit values, conversion often dominates.",
         ],
       },
@@ -5583,7 +5583,7 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Is LTV:CAC of 3× always good?",
+        question: "Is LTV:CAC of 3* always good?",
         answer:
           "Not always. If payback is long, you can still run out of cash. For fast-growing businesses, payback and cash constraints often matter more than a single ratio.",
       },
@@ -5626,10 +5626,10 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "Clicks/1000 = 1000×CTR.",
-          "Conversions/1000 = clicks/1000 × CVR = 1000×CTR×CVR.",
-          "Contribution per conversion ≈ AOV × contribution margin.",
-          "Break-even CPM = conversions/1000 × contribution per conversion.",
+          "Clicks/1000 = 1000*CTR.",
+          "Conversions/1000 = clicks/1000 * CVR = 1000*CTR*CVR.",
+          "Contribution per conversion ~ AOV * contribution margin.",
+          "Break-even CPM = conversions/1000 * contribution per conversion.",
         ],
       },
       { type: "h2", text: "Best practices" },
@@ -5651,7 +5651,7 @@ export const guides: Guide[] = [
       {
         question: "How does this relate to CPC?",
         answer:
-          "They’re linked: CPM ≈ CPC × CTR × 1000. If you know your max CPC and CTR, you can infer a max CPM and vice versa.",
+          "They’re linked: CPM ~ CPC * CTR * 1000. If you know your max CPC and CTR, you can infer a max CPM and vice versa.",
       },
     ],
     examples: [
@@ -5716,7 +5716,7 @@ export const guides: Guide[] = [
     ],
     examples: [
       {
-        label: "Example: $5M ARR, 6× multiple, $1M cash, $2M debt",
+        label: "Example: $5M ARR, 6* multiple, $1M cash, $2M debt",
         calculatorSlug: "multiple-valuation-calculator",
         params: {
           metricValue: "5000000",
@@ -5731,7 +5731,7 @@ export const guides: Guide[] = [
     slug: "arr-valuation-sensitivity-guide",
     title: "ARR valuation sensitivity: a simple multiple grid for scenarios",
     description:
-      "Use a 3×3 grid to see how valuation changes when ARR and the market multiple move, and avoid false precision from a single multiple.",
+      "Use a 3*3 grid to see how valuation changes when ARR and the market multiple move, and avoid false precision from a single multiple.",
     category: "finance",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: [
@@ -5744,7 +5744,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "What this is" },
       {
         type: "p",
-        text: "ARR multiple valuation is fast but fragile: enterprise value is roughly ARR × multiple, and both inputs can change meaningfully. A small sensitivity grid makes the uncertainty explicit.",
+        text: "ARR multiple valuation is fast but fragile: enterprise value is roughly ARR * multiple, and both inputs can change meaningfully. A small sensitivity grid makes the uncertainty explicit.",
       },
       { type: "h2", text: "How to choose ranges" },
       {
@@ -5776,7 +5776,7 @@ export const guides: Guide[] = [
     ],
     examples: [
       {
-        label: "Sensitivity example ($2.4M ARR, 6× multiple, ±15% ARR, ±1× multiple)",
+        label: "Sensitivity example ($2.4M ARR, 6* multiple, ±15% ARR, ±1* multiple)",
         calculatorSlug: "arr-valuation-sensitivity-calculator",
         params: {
           baseArr: "2400000",
@@ -5892,10 +5892,10 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "Conversions/1000 = 1000×CTR×CVR.",
-          "Contribution/conversion ≈ AOV×margin.",
-          "Break-even CPM = conversions/1000 × contribution/conversion.",
-          "Break-even CTR = CPM ÷ (1000×CVR×AOV×margin).",
+          "Conversions/1000 = 1000*CTR*CVR.",
+          "Contribution/conversion ~ AOV*margin.",
+          "Break-even CPM = conversions/1000 * contribution/conversion.",
+          "Break-even CTR = CPM / (1000*CVR*AOV*margin).",
         ],
       },
       { type: "h2", text: "How to use it" },
@@ -5975,7 +5975,7 @@ export const guides: Guide[] = [
           "Discounting compounds over time and terminal value is sensitive to (r - g). Small changes can meaningfully affect present value, especially for long-duration cash flows.",
       },
       {
-        question: "Is a 3×3 grid enough?",
+        question: "Is a 3*3 grid enough?",
         answer:
           "It’s a quick sanity check. For important decisions, expand to more scenarios and also test key operating assumptions (margin, reinvestment, growth fade).",
       },
@@ -6075,7 +6075,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "Core relationship" },
       {
         type: "p",
-        text: "CAC = CPL ÷ (lead-to-customer rate).",
+        text: "CAC = CPL / (lead-to-customer rate).",
       },
       { type: "h2", text: "How to improve CAC (practical levers)" },
       {
@@ -6139,7 +6139,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "Core relationship" },
       {
         type: "p",
-        text: "Break-even CVR = CPM ÷ (1000 × CTR × AOV × margin).",
+        text: "Break-even CVR = CPM / (1000 * CTR * AOV * margin).",
       },
       { type: "h2", text: "How to use it" },
       {
@@ -6155,7 +6155,7 @@ export const guides: Guide[] = [
       {
         question: "Is CVR a landing page metric or a funnel metric?",
         answer:
-          "Both. CVR can mean click→purchase, session→purchase, or click→lead depending on your definition. Use the definition that matches your spend denominator and your business model.",
+          "Both. CVR can mean click->purchase, session->purchase, or click->lead depending on your definition. Use the definition that matches your spend denominator and your business model.",
       },
       {
         question: "How do I increase CVR fastest?",
@@ -6271,9 +6271,9 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "Gross profit/month = ARPA × gross margin.",
-          "Payback ≈ CAC ÷ gross profit/month.",
-          "Gross profit LTV ≈ (ARPA×gross margin) ÷ churn (shortcut).",
+          "Gross profit/month = ARPA * gross margin.",
+          "Payback ~ CAC / gross profit/month.",
+          "Gross profit LTV ~ (ARPA*gross margin) / churn (shortcut).",
         ],
       },
       { type: "h2", text: "How to improve margin (practical)" },
@@ -6310,7 +6310,7 @@ export const guides: Guide[] = [
     ],
     examples: [
       {
-        label: "Example: $800 ARPA, 2% churn, $6k CAC, 70%→80% margin",
+        label: "Example: $800 ARPA, 2% churn, $6k CAC, 70%->80% margin",
         calculatorSlug: "gross-margin-impact-calculator",
         params: {
           arpaMonthly: "800",
@@ -6340,7 +6340,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "Core relationship" },
       {
         type: "p",
-        text: "Payback ≈ CAC ÷ (ARPA×margin). Rearranging gives min ARPA and max discount allowed for a payback target.",
+        text: "Payback ~ CAC / (ARPA*margin). Rearranging gives min ARPA and max discount allowed for a payback target.",
       },
       { type: "h2", text: "How to use it" },
       {
@@ -6504,7 +6504,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "Core relationship" },
       {
         type: "p",
-        text: "Real return ≈ (1 + nominal) ÷ (1 + inflation) - 1.",
+        text: "Real return ~ (1 + nominal) / (1 + inflation) - 1.",
       },
       { type: "h2", text: "Common mistakes" },
       {
@@ -6571,7 +6571,7 @@ export const guides: Guide[] = [
         type: "p",
         text: "Use the Related calculators sidebar to jump into each tool. The sections below explain how the pieces fit together so you can plan targets, capacity, and funnel inputs without mixing definitions.",
       },
-      { type: "h2", text: "The core chain (inputs → outputs)" },
+      { type: "h2", text: "The core chain (inputs -> outputs)" },
       {
         type: "bullets",
         items: [
@@ -6655,7 +6655,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "How to use this hub" },
       {
         type: "p",
-        text: "Use the Related calculators sidebar to open each tool. Start by defining a non-vanity activation event, then connect activation → trial conversion → retention and stickiness so improvements translate into revenue.",
+        text: "Use the Related calculators sidebar to open each tool. Start by defining a non-vanity activation event, then connect activation -> trial conversion -> retention and stickiness so improvements translate into revenue.",
       },
       { type: "h2", text: "A simple PLG measurement stack" },
       {
@@ -6678,7 +6678,7 @@ export const guides: Guide[] = [
           ["DAU/MAU", "Daily stickiness", "DAU + MAU"],
           ["WAU/MAU", "Weekly stickiness", "WAU + MAU"],
           ["Feature adoption", "Value-driving usage", "Feature users + active users"],
-          ["PQL-to-paid", "Product signals → revenue", "PQLs + paid from PQL cohort"],
+          ["PQL-to-paid", "Product signals -> revenue", "PQLs + paid from PQL cohort"],
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -7128,7 +7128,7 @@ export const guides: Guide[] = [
         type: "p",
         text: "Turn business constraints into bidding targets. Start with unit economics (margin and allowable CPA), translate CPA into max CPC using CVR, then set funnel targets (CTR/CVR/CPM) that reflect your actual placement mix.",
       },
-      { type: "h2", text: "The translation chain (economics → bids)" },
+      { type: "h2", text: "The translation chain (economics -> bids)" },
       {
         type: "table",
         columns: ["Step", "Inputs", "Output"],
@@ -7215,7 +7215,7 @@ export const guides: Guide[] = [
           ["2", "DCF valuation", "Compute base-case enterprise value"],
           ["3", "DCF sensitivity", "See how value changes under assumption shifts"],
           ["4", "Multiple valuation", "Cross-check with market comps"],
-          ["5", "Equity value", "Convert EV to equity value (EV − net debt)"],
+          ["5", "Equity value", "Convert EV to equity value (EV - net debt)"],
         ],
       },
       { type: "h2", text: "What usually drives the result" },

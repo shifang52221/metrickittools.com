@@ -162,7 +162,7 @@ export const termsCore: GlossaryTerm[] = [
         text: "ARPU (Average Revenue Per User) measures monetization by dividing revenue by the average number of active users in the same period. Use it to track pricing, packaging, and monetization changes over time.",
       },
       { type: "h2", text: "Formula" },
-      { type: "p", text: "ARPU = revenue ÷ average active users" },
+      { type: "p", text: "ARPU = revenue / average active users" },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -190,7 +190,12 @@ export const termsCore: GlossaryTerm[] = [
         text: "CAC (Customer Acquisition Cost) is the cost to acquire a new paying customer. CAC is most useful when paired with payback or LTV and when the definition stays consistent over time.",
       },
       { type: "h2", text: "Formula" },
-      { type: "p", text: "CAC = acquisition spend ÷ new customers acquired" },
+      { type: "p", text: "CAC = acquisition spend / new customers acquired" },
+      { type: "h2", text: "Example" },
+      {
+        type: "p",
+        text: "If you spent $120,000 on acquisition in a month and acquired 80 new paying customers, CAC = $120,000 / 80 = $1,500.",
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -199,6 +204,18 @@ export const termsCore: GlossaryTerm[] = [
           "Mixing paid-only CAC and fully-loaded CAC without labeling.",
           "Ignoring churn and gross margin when judging CAC.",
         ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Paid CAC vs fully-loaded CAC: which should I use?",
+        answer:
+          "Use fully-loaded CAC for planning and board-level truth (it includes more acquisition costs like sales/marketing salaries and tooling). Use paid CAC for channel optimization, but keep definitions consistent.",
+      },
+      {
+        question: "How do I segment CAC correctly?",
+        answer:
+          "Segment by channel and by customer type (plan, company size) because CAC and retention vary widely. Blended CAC can hide unprofitable segments.",
       },
     ],
     relatedGuideSlugs: ["cac-guide", "blended-cac-guide", "cac-payback-guide"],
@@ -224,7 +241,7 @@ export const termsCore: GlossaryTerm[] = [
       { type: "h2", text: "Formula" },
       {
         type: "p",
-        text: "Fully-loaded CAC = total acquisition costs ÷ new paying customers acquired (same period)",
+        text: "Fully-loaded CAC = total acquisition costs / new paying customers acquired (same period)",
       },
       { type: "h2", text: "Common mistakes" },
       {
@@ -254,16 +271,21 @@ export const termsCore: GlossaryTerm[] = [
       { type: "h2", text: "Definition" },
       {
         type: "p",
-        text: "LTV (Lifetime Value) is the total value you expect from a customer over their lifetime. It’s often used to set acquisition targets (CAC/CPA) and to evaluate payback and growth efficiency. Because costs matter, many teams prefer gross profit LTV (revenue × gross margin over the lifetime).",
+        text: "LTV (Lifetime Value) is the total value you expect from a customer over their lifetime. It’s often used to set acquisition targets (CAC/CPA) and to evaluate payback and growth efficiency. Because costs matter, many teams prefer gross profit LTV (revenue * gross margin over the lifetime).",
       },
       { type: "h2", text: "Common formulas (shortcuts)" },
       {
         type: "bullets",
         items: [
-          "Revenue LTV ≈ ARPA ÷ churn (with consistent time units).",
-          "Gross profit LTV ≈ (ARPA × gross margin) ÷ churn.",
+          "Revenue LTV ~ ARPA / churn (with consistent time units).",
+          "Gross profit LTV ~ (ARPA * gross margin) / churn.",
           "Cohort-based LTV: sum observed gross profit over time from real cohorts (more accurate).",
         ],
+      },
+      { type: "h2", text: "Example" },
+      {
+        type: "p",
+        text: "If ARPA is $500/month, gross margin is 80% (0.8), and monthly churn is 2% (0.02), then gross profit LTV ~ ($500 * 0.8) / 0.02 = $20,000.",
       },
       { type: "h2", text: "Common mistakes" },
       {
@@ -273,6 +295,18 @@ export const termsCore: GlossaryTerm[] = [
           "Mixing monthly churn with annual ARPA (time unit mismatch).",
           "Ignoring expansion or contraction when it materially affects retention dynamics.",
         ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Should LTV be based on revenue or gross profit?",
+        answer:
+          "For unit economics decisions (CAC, payback), gross profit LTV is usually more useful because it reflects the cash you can use to recover acquisition costs.",
+      },
+      {
+        question: "Why does LTV sometimes look unrealistically high?",
+        answer:
+          "The common shortcut LTV ~ ARPA / churn assumes constant churn. If churn is very low, small measurement errors can explode the estimate. Cohort-based LTV is more reliable.",
       },
     ],
     relatedGuideSlugs: [

@@ -101,7 +101,7 @@ const seeds: Seed[] = [
     title: "CPL (Cost Per Lead)",
     description:
       "CPL is ad spend divided by leads generated. CPL is a top-of-funnel metric and should be connected to paying-customer outcomes (CAC).",
-    formula: "CPL = ad spend ÷ leads",
+    formula: "CPL = ad spend / leads",
     mistakes: [
       "Optimizing CPL and destroying lead quality (CAC rises).",
       "Changing lead definitions (MQL/SQL drift) and breaking comparisons.",
@@ -114,7 +114,7 @@ const seeds: Seed[] = [
     title: "Lead-to-customer Rate",
     description:
       "Lead-to-customer rate is the % of leads that become paying customers over a defined time window. It is a key bridge from CPL to CAC.",
-    formula: "Lead-to-customer rate = customers ÷ leads",
+    formula: "Lead-to-customer rate = customers / leads",
     relatedGuideSlugs: ["cpl-to-cac-guide"],
     relatedCalculatorSlugs: ["cpl-to-cac-calculator"],
   },
@@ -123,7 +123,7 @@ const seeds: Seed[] = [
     title: "CPA (Cost Per Acquisition)",
     description:
       "CPA is ad spend divided by conversions (purchase, signup, lead). It's a tactical metric; CAC usually refers to cost per new paying customer including broader costs.",
-    formula: "CPA = ad spend ÷ conversions",
+    formula: "CPA = ad spend / conversions",
     mistakes: [
       "Calling lead CPA 'CAC' (different denominators).",
       "Comparing CPA across campaigns with different conversion definitions.",
@@ -151,7 +151,7 @@ const seeds: Seed[] = [
       {
         question: "How is CPC related to CPM and CTR?",
         answer:
-          "When CTR is a fraction (not percent), CPC ≈ CPM / (1000 * CTR). Higher CTR usually lowers CPC for a given CPM.",
+          "When CTR is a fraction (not percent), CPC ~ CPM / (1000 * CTR). Higher CTR usually lowers CPC for a given CPM.",
       },
       {
         question: "Should I always optimize for lower CPC?",
@@ -178,7 +178,7 @@ const seeds: Seed[] = [
       {
         question: "Is a high CPM always bad?",
         answer:
-          "Not necessarily. High CPM can be normal in competitive auctions or premium audiences. What matters is the full funnel: CPM → CTR → CVR → CPA/ROAS.",
+          "Not necessarily. High CPM can be normal in competitive auctions or premium audiences. What matters is the full funnel: CPM -> CTR -> CVR -> CPA/ROAS.",
       },
       {
         question: "Why does CPM fluctuate so much?",
@@ -265,7 +265,7 @@ const seeds: Seed[] = [
     slug: "cvr",
     title: "CVR (Conversion Rate)",
     description:
-      "Conversion rate measures the % of visitors who complete an action. In ads it's often conversions ÷ clicks; on-site it can be conversions ÷ sessions.",
+      "Conversion rate measures the % of visitors who complete an action. In ads it's often conversions / clicks; on-site it can be conversions / sessions.",
     formula: "CVR = conversions / clicks (or sessions)",
     example:
       "If you had 50 purchases from 2,000 clicks, click-based CVR = 50 / 2,000 = 2.5%.",
@@ -297,7 +297,7 @@ const seeds: Seed[] = [
     title: "AOV (Average Order Value)",
     description:
       "AOV measures the average revenue per order. It affects your allowable CPA at a given margin.",
-    formula: "AOV = revenue ÷ orders",
+    formula: "AOV = revenue / orders",
     bullets: [
       "Use AOV with gross margin to estimate contribution per order.",
       "Track AOV by channel and campaign (intent differs).",
@@ -686,7 +686,7 @@ const seeds: Seed[] = [
     slug: "cvr-funnel",
     title: "Click-to-conversion Funnel",
     description:
-      "A simplified ad funnel: impressions → clicks → conversions. Use CPM/CTR/CVR to diagnose where efficiency is lost.",
+      "A simplified ad funnel: impressions -> clicks -> conversions. Use CPM/CTR/CVR to diagnose where efficiency is lost.",
     bullets: [
       "CPM drives cost per impression.",
       "CTR turns impressions into visits.",
