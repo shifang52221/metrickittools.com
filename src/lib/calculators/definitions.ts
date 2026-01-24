@@ -2077,6 +2077,280 @@ export const calculators: CalculatorDefinition[] = [
     ],
   },
   {
+    slug: "arr-vs-mrr-calculator",
+    title: "ARR vs MRR Calculator",
+    description:
+      "Convert ARR to MRR (and MRR to ARR) and understand the ARR vs MRR relationship.",
+    category: "saas-metrics",
+    guideSlug: "arr-vs-mrr-guide",
+    relatedGlossarySlugs: ["arr", "mrr"],
+    seo: {
+      intro: [
+        "ARR and MRR are the same run-rate at different time units. ARR is typically MRR × 12; MRR is ARR ÷ 12.",
+        "This calculator converts between ARR and MRR and helps you sanity-check consistency when you have both numbers.",
+      ],
+      steps: [
+        "Enter MRR to compute ARR (MRR × 12).",
+        "Enter ARR to compute MRR (ARR ÷ 12).",
+        "If you enter both, compare the implied numbers to spot definition drift.",
+      ],
+      pitfalls: [
+        "Including one-time fees or services in recurring run-rate.",
+        "Mixing recognized revenue (accounting) with run-rate metrics (MRR/ARR).",
+        "Using ARR as a promise of next-12-month revenue (it’s a snapshot).",
+      ],
+    },
+    inputs: [
+      {
+        key: "mrr",
+        label: "MRR",
+        placeholder: "200000",
+        prefix: "$",
+        defaultValue: "200000",
+        min: 0,
+      },
+      {
+        key: "arr",
+        label: "ARR",
+        placeholder: "2400000",
+        prefix: "$",
+        defaultValue: "2400000",
+        min: 0,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      if (values.mrr < 0) warnings.push("MRR must be 0 or greater.");
+      if (values.arr < 0) warnings.push("ARR must be 0 or greater.");
+
+      const arrFromMrr = values.mrr * 12;
+      const mrrFromArr = values.arr / 12;
+
+      const mismatch = values.arr - arrFromMrr;
+      const mismatchPct = arrFromMrr > 0 ? mismatch / arrFromMrr : null;
+      if (mismatchPct !== null && Math.abs(mismatchPct) > 0.02) {
+        warnings.push(
+          "ARR and MRR are inconsistent by more than ~2%. Double-check definitions (one-time fees, active base, annualization, refunds).",
+        );
+      }
+
+      return {
+        headline: {
+          key: "arrFromMrr",
+          label: "ARR (from MRR)",
+          value: arrFromMrr,
+          format: "currency",
+          currency: "USD",
+          detail: "MRR × 12",
+        },
+        secondary: [
+          {
+            key: "mrrFromArr",
+            label: "MRR (from ARR)",
+            value: mrrFromArr,
+            format: "currency",
+            currency: "USD",
+            detail: "ARR ÷ 12",
+          },
+          {
+            key: "mismatch",
+            label: "ARR mismatch (ARR − MRR×12)",
+            value: mismatch,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "ARR = MRR × 12; MRR = ARR ÷ 12",
+    assumptions: [
+      "Assumes you are converting a recurring run-rate (not recognized revenue).",
+      "Assumes ARR is annualized from monthly run-rate (12×) rather than a contracted total.",
+    ],
+    faqs: [
+      {
+        question: "Is ARR the same as annual revenue?",
+        answer:
+          "Not always. ARR is a run-rate snapshot of recurring revenue. Annual revenue is what you recognize over a year and can include one-time items.",
+      },
+      {
+        question: "Should ARR always equal MRR × 12?",
+        answer:
+          "If both are defined as recurring run-rate, yes. If they don’t match, it usually means definitions differ (one-time items, active base, annualization) or the numbers are from different dates.",
+      },
+    ],
+    guide: [
+      {
+        title: "ARR vs MRR tips",
+        bullets: [
+          "Use MRR for monthly momentum and decomposition (new/expansion/churn).",
+          "Use ARR to compare scale and for many efficiency metrics (burn multiple, magic number).",
+          "Avoid mixing bookings/cash timing into run-rate metrics.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "arr-growth-rate-calculator",
+    title: "ARR Growth Rate Calculator",
+    description:
+      "Calculate ARR growth over a period and convert it to CMGR and annualized growth (CAGR).",
+    category: "saas-metrics",
+    guideSlug: "arr-growth-rate-guide",
+    relatedGlossarySlugs: ["arr", "cmgr"],
+    seo: {
+      intro: [
+        "ARR growth is a clean way to track recurring momentum over time. For comparisons across different horizons, convert to CMGR (monthly compounded growth) and annualized growth.",
+      ],
+      steps: [
+        "Enter start ARR and end ARR for the period.",
+        "Enter the number of months between the two points.",
+        "Review period growth, CMGR, and annualized growth.",
+      ],
+      pitfalls: [
+        "Using end-of-period ARR and start-of-period ARR from different definitions (inconsistent run-rate).",
+        "Including one-time items or services in ARR.",
+        "Using very short windows where seasonality dominates.",
+      ],
+    },
+    inputs: [
+      {
+        key: "startArr",
+        label: "Start ARR",
+        placeholder: "1200000",
+        prefix: "$",
+        defaultValue: "1200000",
+        min: 0,
+      },
+      {
+        key: "endArr",
+        label: "End ARR",
+        placeholder: "1800000",
+        prefix: "$",
+        defaultValue: "1800000",
+        min: 0,
+      },
+      {
+        key: "months",
+        label: "Months between points",
+        placeholder: "12",
+        defaultValue: "12",
+        min: 1,
+        step: 1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const months = Math.max(1, Math.floor(values.months));
+      if (values.months !== months) warnings.push("Months was rounded down to a whole number.");
+
+      if (values.startArr <= 0) warnings.push("Start ARR must be greater than 0 to compute growth rates.");
+      if (values.endArr < 0) warnings.push("End ARR must be 0 or greater.");
+
+      const netNewArr = values.endArr - values.startArr;
+      const periodGrowth = safeDivide(netNewArr, values.startArr);
+
+      const cmgr =
+        values.startArr > 0
+          ? Math.pow(values.endArr / values.startArr, 1 / months) - 1
+          : null;
+
+      const annualized =
+        values.startArr > 0
+          ? Math.pow(values.endArr / values.startArr, 12 / months) - 1
+          : null;
+
+      return {
+        headline: {
+          key: "periodGrowth",
+          label: "ARR growth (period)",
+          value: periodGrowth ?? 0,
+          format: "percent",
+          maxFractionDigits: 2,
+          detail: "ΔARR ÷ start ARR",
+        },
+        secondary: [
+          {
+            key: "netNewArr",
+            label: "Net new ARR (ΔARR)",
+            value: netNewArr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "cmgr",
+            label: "CMGR (monthly compounded)",
+            value: cmgr ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: cmgr === null ? "Requires start ARR > 0" : "Compounded monthly",
+          },
+          {
+            key: "annualized",
+            label: "Annualized growth (CAGR)",
+            value: annualized ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: annualized === null ? "Requires start ARR > 0" : "Annualized from period",
+          },
+        ],
+        breakdown: [
+          {
+            key: "startArr",
+            label: "Start ARR",
+            value: values.startArr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "endArr",
+            label: "End ARR",
+            value: values.endArr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "months",
+            label: "Months",
+            value: months,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Period growth = (end ARR − start ARR) ÷ start ARR; CMGR = (end/start)^(1/months) − 1; CAGR = (end/start)^(12/months) − 1",
+    assumptions: [
+      "Start and end ARR use the same definition (clean recurring run-rate).",
+      "CMGR assumes smooth compounding; use it for comparison and planning, not as a guarantee.",
+    ],
+    faqs: [
+      {
+        question: "Is ARR growth the same as revenue growth?",
+        answer:
+          "Not necessarily. ARR is a recurring run-rate snapshot. Revenue is what you recognize over time and can include non-recurring items.",
+      },
+      {
+        question: "Should I use CMGR or YoY growth?",
+        answer:
+          "Use YoY growth for seasonal businesses and for external comparisons. Use CMGR for planning and comparing scenarios over different horizons.",
+      },
+    ],
+    guide: [
+      {
+        title: "ARR growth tips",
+        bullets: [
+          "Use consistent point-in-time snapshots (start and end of the period).",
+          "Segment ARR growth by plan and channel to find what’s driving momentum.",
+          "Pair ARR growth with retention (NRR/GRR) and payback to assess quality.",
+        ],
+      },
+    ],
+  },
+  {
     slug: "arr-valuation-calculator",
     title: "ARR Valuation Calculator",
     description:
@@ -2580,6 +2854,194 @@ export const calculators: CalculatorDefinition[] = [
     ],
   },
   {
+    slug: "mrr-waterfall-calculator",
+    title: "MRR Waterfall Calculator",
+    description:
+      "Build an MRR waterfall: starting MRR + new + expansion − contraction − churn = ending MRR.",
+    category: "saas-metrics",
+    guideSlug: "mrr-waterfall-guide",
+    relatedGlossarySlugs: ["mrr", "net-new-mrr", "quick-ratio"],
+    seo: {
+      intro: [
+        "An MRR waterfall makes MRR changes explainable: you start with beginning MRR, add new and expansion, subtract contraction and churn, and you get ending MRR.",
+        "This is a practical template for monthly reporting and for diagnosing whether growth is driven by acquisition or retention/expansion.",
+      ],
+      steps: [
+        "Enter starting MRR for the period.",
+        "Enter MRR movements: new, expansion, contraction, churned.",
+        "Review ending MRR and net new MRR, plus quick ratio as a growth-quality check.",
+      ],
+      pitfalls: [
+        "Mixing billings/cash with MRR run-rate movements.",
+        "Comparing movements across periods with different definitions.",
+        "Hiding problems with blended numbers (segment by plan/channel).",
+      ],
+    },
+    inputs: [
+      {
+        key: "startingMrr",
+        label: "Starting MRR (beginning of period)",
+        placeholder: "200000",
+        prefix: "$",
+        defaultValue: "200000",
+        min: 0,
+      },
+      {
+        key: "newMrr",
+        label: "New MRR",
+        placeholder: "12000",
+        prefix: "$",
+        defaultValue: "12000",
+        min: 0,
+      },
+      {
+        key: "expansionMrr",
+        label: "Expansion MRR",
+        placeholder: "8000",
+        prefix: "$",
+        defaultValue: "8000",
+        min: 0,
+      },
+      {
+        key: "contractionMrr",
+        label: "Contraction MRR",
+        placeholder: "3000",
+        prefix: "$",
+        defaultValue: "3000",
+        min: 0,
+      },
+      {
+        key: "churnedMrr",
+        label: "Churned MRR",
+        placeholder: "5000",
+        prefix: "$",
+        defaultValue: "5000",
+        min: 0,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      if (values.startingMrr < 0) warnings.push("Starting MRR must be 0 or greater.");
+      if (values.newMrr < 0) warnings.push("New MRR must be 0 or greater.");
+      if (values.expansionMrr < 0) warnings.push("Expansion MRR must be 0 or greater.");
+      if (values.contractionMrr < 0) warnings.push("Contraction MRR must be 0 or greater.");
+      if (values.churnedMrr < 0) warnings.push("Churned MRR must be 0 or greater.");
+
+      const grossAdditions = values.newMrr + values.expansionMrr;
+      const grossLosses = values.contractionMrr + values.churnedMrr;
+      const netNewMrr = grossAdditions - grossLosses;
+      const endingMrr = values.startingMrr + netNewMrr;
+
+      const quickRatio = safeDivide(grossAdditions, grossLosses);
+      if (grossLosses <= 0) warnings.push("Losses (contraction + churn) must be greater than 0 to compute quick ratio.");
+
+      const growthRate = safeDivide(netNewMrr, values.startingMrr);
+
+      return {
+        headline: {
+          key: "endingMrr",
+          label: "Ending MRR",
+          value: endingMrr,
+          format: "currency",
+          currency: "USD",
+          detail: "Starting + net new",
+        },
+        secondary: [
+          {
+            key: "netNewMrr",
+            label: "Net new MRR",
+            value: netNewMrr,
+            format: "currency",
+            currency: "USD",
+            detail: "New + Expansion − Contraction − Churn",
+          },
+          {
+            key: "growthRate",
+            label: "MRR growth rate (net new ÷ starting)",
+            value: growthRate ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: growthRate === null ? "Starting MRR must be > 0" : undefined,
+          },
+          {
+            key: "quickRatio",
+            label: "Quick ratio",
+            value: quickRatio ?? 0,
+            format: "ratio",
+            maxFractionDigits: 2,
+            detail: quickRatio === null ? "Losses must be > 0" : "(New + Expansion) ÷ (Contraction + Churn)",
+          },
+        ],
+        breakdown: [
+          {
+            key: "startingMrr",
+            label: "Starting MRR",
+            value: values.startingMrr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "newMrr",
+            label: "New MRR",
+            value: values.newMrr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "expansionMrr",
+            label: "Expansion MRR",
+            value: values.expansionMrr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "contractionMrr",
+            label: "Contraction MRR",
+            value: values.contractionMrr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "churnedMrr",
+            label: "Churned MRR",
+            value: values.churnedMrr,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Ending MRR = starting MRR + new + expansion − contraction − churn; Net new MRR = new + expansion − contraction − churn",
+    assumptions: [
+      "All inputs represent the same period and use the same MRR definition.",
+      "This is a reporting bridge; it does not model cohorts or timing within the period.",
+    ],
+    faqs: [
+      {
+        question: "Is this the same as net new MRR?",
+        answer:
+          "Net new MRR is the change (delta) in MRR. A waterfall adds starting MRR and produces an ending MRR to reconcile the period.",
+      },
+      {
+        question: "Should I segment the waterfall?",
+        answer:
+          "Yes when possible. Segment by plan, channel, and customer size to avoid blended averages hiding churn pockets or weak cohorts.",
+      },
+    ],
+    guide: [
+      {
+        title: "How to use an MRR waterfall",
+        bullets: [
+          "Use it in monthly reporting to make growth explainable, not just a single MRR number.",
+          "Diagnose leaky growth by tracking churned and contraction MRR trends.",
+          "Pair with payback and burn multiple to understand cash efficiency.",
+        ],
+      },
+    ],
+  },
+  {
     slug: "saas-quick-ratio-calculator",
     title: "SaaS Quick Ratio Calculator",
     description:
@@ -2798,6 +3260,132 @@ export const calculators: CalculatorDefinition[] = [
           "Use it as a trend metric, not a single-point verdict.",
           "Pair with NRR/GRR and payback to judge growth quality and durability.",
           "Compare within your segment (SMB vs enterprise) rather than across all SaaS.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "net-new-arr-calculator",
+    title: "Net New ARR Calculator",
+    description:
+      "Calculate net new ARR from new, expansion, contraction, and churned ARR movements.",
+    category: "saas-metrics",
+    guideSlug: "net-new-arr-guide",
+    relatedGlossarySlugs: ["arr", "net-new-arr"],
+    seo: {
+      intro: [
+        "Net new ARR is the net change in recurring run-rate over a period after you add new and expansion ARR and subtract contraction and churned ARR.",
+        "It’s commonly used in efficiency metrics like burn multiple and the SaaS magic number.",
+      ],
+      steps: [
+        "Measure new ARR added in the period (from new customers).",
+        "Measure expansion ARR (upsells, seats, add-ons) from existing customers.",
+        "Subtract contraction ARR and churned ARR (downgrades and cancellations).",
+        "Net new ARR is the net change in ARR for the period.",
+      ],
+      pitfalls: [
+        "Mixing bookings/cash with ARR movements (different timing and definitions).",
+        "Using inconsistent windows (monthly movements, quarterly reporting).",
+        "Counting one-time fees/services as recurring ARR.",
+      ],
+    },
+    inputs: [
+      {
+        key: "newArr",
+        label: "New ARR",
+        placeholder: "240000",
+        prefix: "$",
+        defaultValue: "240000",
+        min: 0,
+      },
+      {
+        key: "expansionArr",
+        label: "Expansion ARR",
+        placeholder: "160000",
+        prefix: "$",
+        defaultValue: "160000",
+        min: 0,
+      },
+      {
+        key: "contractionArr",
+        label: "Contraction ARR",
+        placeholder: "60000",
+        prefix: "$",
+        defaultValue: "60000",
+        min: 0,
+      },
+      {
+        key: "churnedArr",
+        label: "Churned ARR",
+        placeholder: "100000",
+        prefix: "$",
+        defaultValue: "100000",
+        min: 0,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      if (values.newArr < 0) warnings.push("New ARR must be 0 or greater.");
+      if (values.expansionArr < 0) warnings.push("Expansion ARR must be 0 or greater.");
+      if (values.contractionArr < 0) warnings.push("Contraction ARR must be 0 or greater.");
+      if (values.churnedArr < 0) warnings.push("Churned ARR must be 0 or greater.");
+
+      const grossAdditions = values.newArr + values.expansionArr;
+      const grossLosses = values.contractionArr + values.churnedArr;
+      const netNewArr = grossAdditions - grossLosses;
+
+      return {
+        headline: {
+          key: "netNewArr",
+          label: "Net new ARR",
+          value: netNewArr,
+          format: "currency",
+          currency: "USD",
+          detail: "New + Expansion − Contraction − Churn",
+        },
+        secondary: [
+          {
+            key: "grossAdditions",
+            label: "Gross additions",
+            value: grossAdditions,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "grossLosses",
+            label: "Gross losses",
+            value: grossLosses,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "Net new ARR = new ARR + expansion ARR − contraction ARR − churned ARR",
+    assumptions: [
+      "All movements are measured for the same period using a consistent ARR definition.",
+      "ARR is treated as recurring run-rate (not recognized revenue).",
+    ],
+    faqs: [
+      {
+        question: "Is net new ARR the same as ARR growth rate?",
+        answer:
+          "Net new ARR is a dollar change (ΔARR). Growth rate is net new ARR divided by starting ARR for the period.",
+      },
+      {
+        question: "How is net new ARR used for burn multiple?",
+        answer:
+          "Burn multiple compares net cash burn to net new ARR for the same period (often quarterly). Lower burn multiple means better growth efficiency.",
+      },
+    ],
+    guide: [
+      {
+        title: "Net new ARR tips",
+        bullets: [
+          "Compute it on a consistent cadence (quarterly is common) to reduce noise.",
+          "Segment by plan/channel to avoid blended numbers hiding churn pockets.",
+          "Pair with retention (NRR/GRR) and payback to judge growth quality.",
         ],
       },
     ],

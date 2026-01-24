@@ -390,6 +390,27 @@ const seeds: Seed[] = [
       "Adjust for annual prepay seasonality if needed.",
       "Pair with retention and gross margin to judge growth quality.",
     ],
+    relatedGuideSlugs: ["burn-multiple-guide", "net-new-arr-guide"],
+    relatedCalculatorSlugs: ["burn-multiple-calculator", "net-new-arr-calculator"],
+  },
+  {
+    slug: "net-new-arr",
+    title: "Net New ARR",
+    description:
+      "Net new ARR is the net change in ARR over a period after adding new and expansion ARR and subtracting contraction and churn.",
+    formula: "Net new ARR = new ARR + expansion ARR − contraction ARR − churned ARR",
+    bullets: [
+      "Use net new ARR for efficiency metrics like burn multiple and magic number.",
+      "Compute it for the same period as burn/spend (often quarterly).",
+      "Segment by channel, plan, and customer size to avoid blended noise.",
+    ],
+    mistakes: [
+      "Mixing ARR movements with bookings/cash (different concepts and timing).",
+      "Using inconsistent windows (monthly net new ARR with quarterly burn).",
+      "Counting one-time fees as recurring ARR movements.",
+    ],
+    relatedGuideSlugs: ["net-new-arr-guide", "burn-multiple-guide"],
+    relatedCalculatorSlugs: ["net-new-arr-calculator", "burn-multiple-calculator"],
   },
   {
     slug: "saas-magic-number",
