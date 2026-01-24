@@ -3752,6 +3752,316 @@ export const guides: Guide[] = [
     ],
   },
   {
+    slug: "quota-attainment-guide",
+    title: "Quota attainment: formulas, pacing, and how to forecast safely",
+    description:
+      "Learn how to calculate quota attainment and pacing, how to interpret projections, and what to pair it with (pipeline coverage, win rate).",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: ["quota-attainment-calculator", "pipeline-coverage-calculator"],
+    relatedGlossarySlugs: ["quota", "quota-attainment", "pipeline", "win-rate", "sales-cycle"],
+    sections: [
+      { type: "h2", text: "What quota attainment measures" },
+      {
+        type: "p",
+        text: "Quota attainment is booked revenue (or ARR/ACV) divided by a target quota for a period. It’s a fast read of whether you’re on track, but it needs context because deal timing is lumpy.",
+      },
+      { type: "h2", text: "Core formulas" },
+      {
+        type: "bullets",
+        items: [
+          "Attainment = booked ÷ quota.",
+          "Pacing (simple) ≈ (booked ÷ days elapsed) × days in period.",
+          "Required per day = (quota − booked) ÷ remaining days.",
+        ],
+      },
+      { type: "h2", text: "How to use pacing (without fooling yourself)" },
+      {
+        type: "bullets",
+        items: [
+          "Compare pacing to historical seasonality (many teams close late).",
+          "Pair with pipeline coverage and win rate to forecast probability of hitting quota.",
+          "Review opportunity cohorts by expected close date for a time-bound view.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Mixing time units (annual quota with monthly booked).",
+          "Using inconsistent definitions of booked revenue (bookings vs ARR vs ACV).",
+          "Overreacting to early-period pacing without pipeline context.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Should I use business days or calendar days?",
+        answer:
+          "Either can work as long as you’re consistent. If your team sells mostly on business days, business-day pacing is usually more meaningful.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $500k quota, $180k booked, day 12 of 30",
+        calculatorSlug: "quota-attainment-calculator",
+        params: { quota: "500000", bookedToDate: "180000", daysElapsed: "12", daysInPeriod: "30" },
+      },
+    ],
+  },
+  {
+    slug: "pipeline-coverage-guide",
+    title: "Pipeline coverage: what it is, how to calculate it, and benchmarks",
+    description:
+      "Pipeline coverage explained: pipeline ÷ quota, how win rate translates to required coverage, and how to avoid inflated pipeline.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: ["pipeline-coverage-calculator", "pipeline-required-calculator"],
+    relatedGlossarySlugs: ["pipeline", "pipeline-coverage", "quota", "win-rate", "sales-cycle"],
+    sections: [
+      { type: "h2", text: "Definition" },
+      {
+        type: "p",
+        text: "Pipeline coverage is the ratio of pipeline value to quota for a time window (often a quarter). It’s a sanity check that you have enough opportunity value to produce the target outcome given your win rate.",
+      },
+      { type: "h2", text: "Key formulas" },
+      {
+        type: "bullets",
+        items: [
+          "Coverage = pipeline ÷ quota.",
+          "Expected bookings = pipeline × win rate.",
+          "Rule of thumb: coverage ≈ 1 ÷ win rate (before buffer for slippage).",
+        ],
+      },
+      { type: "h2", text: "How to make coverage actionable" },
+      {
+        type: "bullets",
+        items: [
+          "Use time-bound pipeline (closing in the period), not total open pipeline.",
+          "Track coverage by segment (SMB vs enterprise) because win rate and deal size differ.",
+          "Watch slippage: deals that push out reduce effective coverage.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Counting early-stage, unqualified deals as real pipeline.",
+          "Using a win rate from a different stage definition.",
+          "Ignoring sales cycle length and timing (coverage must match the period).",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $500k quota, $1.5M pipeline, 25% win rate",
+        calculatorSlug: "pipeline-coverage-calculator",
+        params: { quota: "500000", pipelineAmount: "1500000", winRatePercent: "25" },
+      },
+    ],
+  },
+  {
+    slug: "pipeline-required-guide",
+    title: "Required pipeline: how much pipeline (and how many deals) you need",
+    description:
+      "Translate a revenue target into required pipeline dollars, wins, and opportunities using win rate and average deal size.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: ["pipeline-required-calculator", "pipeline-coverage-calculator"],
+    relatedGlossarySlugs: ["pipeline", "quota", "win-rate", "acv"],
+    sections: [
+      { type: "h2", text: "Why required pipeline matters" },
+      {
+        type: "p",
+        text: "Pipeline is the input; bookings are the output. If you know your win rate and average deal size, you can estimate how much pipeline and how many opportunities you need to hit a target.",
+      },
+      { type: "h2", text: "Core math" },
+      {
+        type: "bullets",
+        items: [
+          "Wins needed = target ÷ average deal size.",
+          "Opportunities needed = wins ÷ win rate.",
+          "Pipeline needed (value) ≈ target ÷ win rate.",
+        ],
+      },
+      { type: "h2", text: "Make it accurate" },
+      {
+        type: "bullets",
+        items: [
+          "Segment by deal size (ACV bands) and motion (PLG vs sales-led).",
+          "Use stage-consistent win rate.",
+          "Add a slippage buffer based on history (many deals push).",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using a single average deal size across segments.",
+          "Using win rate from the wrong funnel stage.",
+          "Ignoring time lag (pipeline must be closeable within the period).",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $500k target, $25k ACV, 25% win rate",
+        calculatorSlug: "pipeline-required-calculator",
+        params: { target: "500000", winRatePercent: "25", avgDealSize: "25000" },
+      },
+    ],
+  },
+  {
+    slug: "sales-capacity-guide",
+    title: "Sales capacity planning: quota, attainment, ramp, and what to watch",
+    description:
+      "A practical guide to sales capacity: estimate bookings capacity using headcount, quota, expected attainment, and ramped vs ramping mix.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: ["sales-capacity-calculator", "quota-attainment-calculator"],
+    relatedGlossarySlugs: ["sales-ramp", "quota", "quota-attainment", "pipeline"],
+    sections: [
+      { type: "h2", text: "Capacity is headcount × productivity" },
+      {
+        type: "p",
+        text: "Sales capacity is the output your team can produce given how many reps you have and how productive they are. Productivity depends on attainment, territory, deal quality, and ramp.",
+      },
+      { type: "h2", text: "A practical capacity model" },
+      {
+        type: "bullets",
+        items: [
+          "Start with quota per rep for the period.",
+          "Apply expected attainment for ramped reps.",
+          "Adjust for ramp: new reps contribute less than ramped reps.",
+          "Sanity-check that you have enough pipeline to feed the capacity.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Treating new hires as fully ramped.",
+          "Assuming attainment is stable while pipeline quality changes.",
+          "Forecasting capacity without a pipeline plan (input constraint).",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Example: 10 reps, $150k quota/rep, 85% attainment, 70% ramped, 40% ramping productivity",
+        calculatorSlug: "sales-capacity-calculator",
+        params: {
+          reps: "10",
+          quotaPerRep: "150000",
+          attainmentPercent: "85",
+          rampedPercent: "70",
+          rampingProductivityPercent: "40",
+        },
+      },
+    ],
+  },
+  {
+    slug: "ote-guide",
+    title: "OTE (on-target earnings): definition, commission rate, and pitfalls",
+    description:
+      "Understand OTE, how to compute commission rate from variable pay and quota, and how to avoid common comp modeling mistakes.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: ["ote-commission-rate-calculator"],
+    relatedGlossarySlugs: ["ote", "quota", "quota-attainment"],
+    sections: [
+      { type: "h2", text: "What OTE means" },
+      {
+        type: "p",
+        text: "OTE (on-target earnings) is total compensation at 100% quota attainment: base salary plus target variable compensation. It’s a standard way to compare sales roles and sanity-check comp plans.",
+      },
+      { type: "h2", text: "Core formulas" },
+      {
+        type: "bullets",
+        items: [
+          "OTE = base + variable (at 100% attainment).",
+          "Commission rate (simplified) ≈ variable ÷ quota.",
+          "Split = base ÷ OTE (and variable ÷ OTE).",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Mixing annual OTE with quarterly quota (unit mismatch).",
+          "Ignoring accelerators/decels and thresholds when comparing plans.",
+          "Optimizing comp without checking CAC/payback and sales cycle constraints.",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $90k base, $90k variable, $900k quota",
+        calculatorSlug: "ote-commission-rate-calculator",
+        params: { basePay: "90000", variablePay: "90000", quota: "900000" },
+      },
+    ],
+  },
+  {
+    slug: "sales-funnel-targets-guide",
+    title: "Sales funnel targets: leads → MQL → SQL → opp → win (how to plan)",
+    description:
+      "A practical guide to back-solving funnel volume targets from a revenue goal using conversion rates and average deal size.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: ["sales-funnel-targets-calculator", "pipeline-required-calculator"],
+    relatedGlossarySlugs: ["mql", "sql", "win-rate", "acv", "pipeline"],
+    sections: [
+      { type: "h2", text: "Why back-solving funnel targets works" },
+      {
+        type: "p",
+        text: "Revenue targets are outcomes. Funnel targets are controllable inputs. If you know conversion rates and deal size, you can estimate how many leads and qualified conversations you need.",
+      },
+      { type: "h2", text: "How to do it" },
+      {
+        type: "bullets",
+        items: [
+          "Compute wins needed = revenue target ÷ ACV.",
+          "Convert wins into required opps using opp→win rate.",
+          "Convert opps into SQLs and MQLs using stage conversion rates.",
+          "Convert MQLs into leads using lead→MQL.",
+        ],
+      },
+      { type: "h2", text: "Make it accurate" },
+      {
+        type: "bullets",
+        items: [
+          "Segment by channel and ACV band (conversion differs).",
+          "Account for sales cycle lag (this period’s leads close next period).",
+          "Use consistent MQL/SQL definitions to avoid denominator drift.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using blended conversion rates that hide weak segments.",
+          "Assuming linearity (conversion often changes with volume and lead quality).",
+          "Ignoring capacity constraints (rep bandwidth).",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $500k target, $25k ACV, 20% lead→MQL, 30% MQL→SQL, 40% SQL→opp, 25% opp→win",
+        calculatorSlug: "sales-funnel-targets-calculator",
+        params: {
+          revenueTarget: "500000",
+          avgDealSize: "25000",
+          leadToMqlPercent: "20",
+          mqlToSqlPercent: "30",
+          sqlToOppPercent: "40",
+          oppToWinPercent: "25",
+        },
+      },
+    ],
+  },
+  {
     slug: "marginal-roas-guide",
     title: "Marginal ROAS: how to scale ads with diminishing returns",
     description:

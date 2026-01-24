@@ -633,6 +633,116 @@ const seeds: Seed[] = [
     ],
   },
   {
+    slug: "pipeline-coverage",
+    title: "Pipeline Coverage",
+    description:
+      "Pipeline coverage is pipeline value divided by quota for a time window. It’s a sanity check that you have enough opportunity value to produce the target outcome given your win rate.",
+    formula: "Pipeline coverage = pipeline ÷ quota",
+    bullets: [
+      "Use time-bound pipeline (closing in the period), not all open opportunities.",
+      "A rough rule: coverage ≈ 1 ÷ win rate (then add buffer for slippage).",
+      "Segment by deal size and stage because win rates differ.",
+    ],
+    mistakes: [
+      "Counting unqualified early-stage deals as real pipeline (inflates coverage).",
+      "Using a win rate from a different stage definition.",
+      "Ignoring sales cycle length and timing (coverage must match the period).",
+    ],
+    relatedGuideSlugs: ["pipeline-coverage-guide", "pipeline-required-guide"],
+    relatedCalculatorSlugs: ["pipeline-coverage-calculator", "pipeline-required-calculator"],
+  },
+  {
+    slug: "win-rate",
+    title: "Win Rate",
+    description:
+      "Win rate is the fraction of opportunities that convert to closed-won. It can be measured by count or by value and varies by stage definition.",
+    formula: "Win rate = wins ÷ opportunities (same stage definition)",
+    bullets: [
+      "Always specify the stage definition (e.g., SQL→Won vs Opp→Won).",
+      "Track by segment (ACV band, channel, region) because blended win rate hides problems.",
+    ],
+    mistakes: [
+      "Mixing win rate from one stage definition with pipeline from another.",
+      "Using a short window that undercounts late closes (seasonality/timing).",
+    ],
+    relatedGuideSlugs: ["pipeline-coverage-guide", "pipeline-required-guide", "sales-funnel-targets-guide"],
+    relatedCalculatorSlugs: [
+      "pipeline-coverage-calculator",
+      "pipeline-required-calculator",
+      "sales-funnel-targets-calculator",
+    ],
+  },
+  {
+    slug: "quota",
+    title: "Sales Quota",
+    description:
+      "Sales quota is a target revenue amount for a rep/team over a time period (monthly/quarterly/annual). Quota is used for planning, compensation, and forecasting.",
+    bullets: [
+      "Keep quota time units consistent with booked/attainment reporting.",
+      "Pair quota with pipeline coverage and win rate for forecasting.",
+    ],
+    mistakes: [
+      "Comparing annual quota to monthly bookings (unit mismatch).",
+      "Using quota as the only forecast signal (deal timing is lumpy).",
+    ],
+    relatedGuideSlugs: ["quota-attainment-guide", "sales-capacity-guide", "ote-guide"],
+    relatedCalculatorSlugs: [
+      "quota-attainment-calculator",
+      "sales-capacity-calculator",
+      "ote-commission-rate-calculator",
+    ],
+  },
+  {
+    slug: "quota-attainment",
+    title: "Quota Attainment",
+    description:
+      "Quota attainment is booked revenue divided by quota for a period. It’s used to track progress toward targets and to manage pacing.",
+    formula: "Attainment = booked ÷ quota",
+    bullets: [
+      "Use pacing to project end-of-period, but cross-check with pipeline and win rate.",
+      "Segment by rep and region to identify risks early.",
+    ],
+    mistakes: [
+      "Overreacting to pacing without pipeline context.",
+      "Mixing bookings/ARR/ACV definitions across reports.",
+    ],
+    relatedGuideSlugs: ["quota-attainment-guide"],
+    relatedCalculatorSlugs: ["quota-attainment-calculator"],
+  },
+  {
+    slug: "sales-ramp",
+    title: "Sales Ramp",
+    description:
+      "Sales ramp is the time and productivity curve it takes for a new sales rep to reach full quota productivity. Ramp affects capacity, forecasting, and hiring plans.",
+    bullets: [
+      "Use historical ramp cohorts (month 1/2/3) instead of a single assumption.",
+      "Ramp often differs by segment and motion (SMB vs enterprise).",
+    ],
+    mistakes: [
+      "Assuming new hires are fully productive immediately.",
+      "Using a single ramp assumption across very different roles/territories.",
+    ],
+    relatedGuideSlugs: ["sales-capacity-guide"],
+    relatedCalculatorSlugs: ["sales-capacity-calculator"],
+  },
+  {
+    slug: "ote",
+    title: "OTE (On-target Earnings)",
+    description:
+      "OTE (on-target earnings) is total sales compensation at 100% quota attainment: base pay plus target variable pay.",
+    formula: "OTE = base pay + variable pay (at 100% attainment)",
+    bullets: [
+      "Use OTE and quota to estimate a simplified commission rate (variable ÷ quota).",
+      "Keep time units consistent (annual OTE with annual quota).",
+    ],
+    mistakes: [
+      "Mixing annual OTE with quarterly quota (unit mismatch).",
+      "Ignoring accelerators/decels when comparing comp plans.",
+    ],
+    relatedGuideSlugs: ["ote-guide"],
+    relatedCalculatorSlugs: ["ote-commission-rate-calculator"],
+  },
+  {
     slug: "sales-cycle",
     title: "Sales Cycle Length",
     description:

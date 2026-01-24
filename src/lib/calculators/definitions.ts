@@ -12645,6 +12645,794 @@ export const calculators: CalculatorDefinition[] = [
     ],
   },
   {
+    slug: "quota-attainment-calculator",
+    title: "Quota Attainment Calculator",
+    description:
+      "Calculate quota attainment and pacing from booked revenue to date, quota, and days elapsed in the period.",
+    category: "saas-metrics",
+    guideSlug: "quota-attainment-guide",
+    relatedGlossarySlugs: ["quota", "quota-attainment", "pipeline", "sales-cycle"],
+    seo: {
+      intro: [
+        "Quota attainment shows how close you are to a revenue target. Pacing adds context by projecting end-of-period bookings based on progress so far.",
+        "Use pacing for weekly check-ins, but sanity-check with pipeline coverage and win rate to avoid false confidence.",
+      ],
+      steps: [
+        "Enter the period quota and booked revenue so far.",
+        "Enter how many days have elapsed and total days in the period.",
+        "Review attainment %, projected bookings, and required daily pace to hit quota.",
+      ],
+      pitfalls: [
+        "Using calendar days when only business days matter (be consistent).",
+        "Assuming early-period pace will hold (deal timing is lumpy).",
+        "Ignoring sales cycle length and pipeline coverage when forecasting.",
+      ],
+    },
+    inputs: [
+      {
+        key: "quota",
+        label: "Quota (period)",
+        placeholder: "500000",
+        prefix: "$",
+        defaultValue: "500000",
+        min: 0,
+      },
+      {
+        key: "bookedToDate",
+        label: "Booked to date",
+        placeholder: "180000",
+        prefix: "$",
+        defaultValue: "180000",
+        min: 0,
+      },
+      {
+        key: "daysElapsed",
+        label: "Days elapsed",
+        placeholder: "12",
+        defaultValue: "12",
+        min: 1,
+        step: 1,
+      },
+      {
+        key: "daysInPeriod",
+        label: "Total days in period",
+        placeholder: "30",
+        defaultValue: "30",
+        min: 1,
+        step: 1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const daysElapsed = Math.floor(values.daysElapsed);
+      const daysInPeriod = Math.floor(values.daysInPeriod);
+
+      if (values.quota <= 0) warnings.push("Quota must be greater than 0.");
+      if (values.bookedToDate < 0) warnings.push("Booked to date must be 0 or greater.");
+      if (daysElapsed <= 0) warnings.push("Days elapsed must be greater than 0.");
+      if (daysInPeriod <= 0) warnings.push("Days in period must be greater than 0.");
+      if (daysElapsed > daysInPeriod)
+        warnings.push("Days elapsed cannot be greater than total days in period.");
+
+      const attainment = safeDivide(values.bookedToDate, values.quota);
+      const projectedBookings =
+        daysElapsed > 0 ? (values.bookedToDate / daysElapsed) * daysInPeriod : 0;
+
+      const remainingDays = Math.max(0, daysInPeriod - daysElapsed);
+      const remainingToQuota = Math.max(0, values.quota - values.bookedToDate);
+      const requiredPerDay =
+        remainingDays > 0 ? remainingToQuota / remainingDays : remainingToQuota > 0 ? 0 : 0;
+
+      return {
+        headline: {
+          key: "attainment",
+          label: "Quota attainment",
+          value: attainment ?? 0,
+          format: "percent",
+          maxFractionDigits: 2,
+          detail: "Booked ÷ quota",
+        },
+        secondary: [
+          {
+            key: "projected",
+            label: "Projected bookings (at current pace)",
+            value: projectedBookings,
+            format: "currency",
+            currency: "USD",
+            detail: "Booked/day × total days",
+          },
+          {
+            key: "remaining",
+            label: "Remaining to quota",
+            value: remainingToQuota,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "requiredPerDay",
+            label: "Required per day (remaining)",
+            value: requiredPerDay,
+            format: "currency",
+            currency: "USD",
+            detail: remainingDays > 0 ? "Remaining ÷ remaining days" : "No remaining days",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Attainment = booked ÷ quota; projected bookings ≈ (booked ÷ days elapsed) × days in period",
+    assumptions: [
+      "Uses a simple linear pace projection (deal timing is often lumpy).",
+      "Uses calendar-day pacing; use business days if that matches your process.",
+      "Quota and booked revenue are measured on the same basis (bookings/ARR/ACV).",
+    ],
+    faqs: [
+      {
+        question: "Should I pace using business days?",
+        answer:
+          "If your team sells primarily on business days, yes. The key is consistency—use the same day definition for both pacing and period length.",
+      },
+      {
+        question: "Why can projected bookings be misleading early in the period?",
+        answer:
+          "Many teams close deals late in the month/quarter. Early pace can understate or overstate the final outcome depending on your deal timing pattern.",
+      },
+    ],
+    guide: [
+      {
+        title: "Quota tips",
+        bullets: [
+          "Pair attainment with pipeline coverage to avoid false confidence.",
+          "Segment by rep, region, and deal size to spot risks early.",
+          "Forecast with cohorts of opportunities by expected close date (not only pace).",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "pipeline-coverage-calculator",
+    title: "Pipeline Coverage Calculator",
+    description:
+      "Compute pipeline coverage ratio and expected bookings from pipeline and win rate.",
+    category: "saas-metrics",
+    guideSlug: "pipeline-coverage-guide",
+    relatedGlossarySlugs: ["pipeline", "pipeline-coverage", "quota", "win-rate"],
+    seo: {
+      intro: [
+        "Pipeline coverage is a simple sanity check: pipeline ÷ quota. If win rate is below 100%, you usually need multiple turns of pipeline to hit quota.",
+        "This calculator also converts pipeline into expected bookings using your win rate so you can compare expected output to quota.",
+      ],
+      steps: [
+        "Enter quota for the period and current pipeline amount.",
+        "Enter estimated win rate for the same stage definition.",
+        "Review coverage ratio and expected bookings / expected attainment.",
+      ],
+      pitfalls: [
+        "Using pipeline that includes unqualified deals (inflates coverage).",
+        "Using a win rate from a different stage definition (SQL vs closed-won).",
+        "Ignoring sales cycle length and timing (coverage must be time-bound).",
+      ],
+    },
+    inputs: [
+      {
+        key: "quota",
+        label: "Quota (period)",
+        placeholder: "500000",
+        prefix: "$",
+        defaultValue: "500000",
+        min: 0,
+      },
+      {
+        key: "pipelineAmount",
+        label: "Pipeline amount",
+        placeholder: "1500000",
+        prefix: "$",
+        defaultValue: "1500000",
+        min: 0,
+      },
+      {
+        key: "winRatePercent",
+        label: "Win rate",
+        placeholder: "25",
+        suffix: "%",
+        defaultValue: "25",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const winRate = values.winRatePercent / 100;
+      if (values.quota <= 0) warnings.push("Quota must be greater than 0.");
+      if (values.pipelineAmount < 0) warnings.push("Pipeline amount must be 0 or greater.");
+      if (winRate < 0 || winRate > 1) warnings.push("Win rate must be between 0% and 100%.");
+
+      const coverage = safeDivide(values.pipelineAmount, values.quota);
+      const expectedBookings = values.pipelineAmount * winRate;
+      const expectedAttainment = safeDivide(expectedBookings, values.quota);
+
+      return {
+        headline: {
+          key: "coverage",
+          label: "Pipeline coverage",
+          value: coverage ?? 0,
+          format: "multiple",
+          maxFractionDigits: 2,
+          detail: "Pipeline ÷ quota",
+        },
+        secondary: [
+          {
+            key: "expectedBookings",
+            label: "Expected bookings (from pipeline)",
+            value: expectedBookings,
+            format: "currency",
+            currency: "USD",
+            detail: "Pipeline × win rate",
+          },
+          {
+            key: "expectedAttainment",
+            label: "Expected attainment (from pipeline)",
+            value: expectedAttainment ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+        ],
+        breakdown: [
+          {
+            key: "winRate",
+            label: "Win rate",
+            value: winRate,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Coverage = pipeline ÷ quota; expected bookings = pipeline × win rate; expected attainment = expected bookings ÷ quota",
+    assumptions: [
+      "Pipeline is for the same time window as quota (e.g., this quarter) and similarly staged.",
+      "Win rate is applied as an average and assumes stable conversion.",
+    ],
+    faqs: [
+      {
+        question: "What coverage ratio is 'good'?",
+        answer:
+          "It depends on win rate and stage quality. A rough rule is coverage ≈ 1 ÷ win rate (e.g., 25% win rate implies ~4× coverage), adjusted for deal slippage and timing.",
+      },
+      {
+        question: "Should I use pipeline value or weighted pipeline?",
+        answer:
+          "If you have reliable stage probabilities, weighted pipeline can be more realistic. But many teams start with unweighted pipeline + historical win rate for simplicity.",
+      },
+    ],
+  },
+  {
+    slug: "pipeline-required-calculator",
+    title: "Required Pipeline Calculator",
+    description:
+      "Estimate how much pipeline (and how many opportunities) you need to hit a revenue target given win rate and average deal size.",
+    category: "saas-metrics",
+    guideSlug: "pipeline-required-guide",
+    relatedGlossarySlugs: ["pipeline", "quota", "win-rate", "acv"],
+    seo: {
+      intro: [
+        "A revenue target implies a required number of wins. Wins imply a required number of opportunities based on your win rate.",
+        "This calculator converts quota into required pipeline and required opportunity count so you can plan top-of-funnel demand and capacity.",
+      ],
+      steps: [
+        "Enter your quota/target for the period.",
+        "Enter win rate and average deal size (ACV/ARR/bookings).",
+        "Review required pipeline $ and required opportunities and wins.",
+      ],
+      pitfalls: [
+        "Using average deal size without segmenting (SMB vs enterprise).",
+        "Using win rate from a different stage definition.",
+        "Ignoring sales cycle slippage (time-bound pipeline matters).",
+      ],
+    },
+    inputs: [
+      {
+        key: "target",
+        label: "Target revenue (period)",
+        placeholder: "500000",
+        prefix: "$",
+        defaultValue: "500000",
+        min: 0,
+      },
+      {
+        key: "winRatePercent",
+        label: "Win rate",
+        placeholder: "25",
+        suffix: "%",
+        defaultValue: "25",
+        min: 0.1,
+        step: 0.1,
+      },
+      {
+        key: "avgDealSize",
+        label: "Average deal size (ACV)",
+        placeholder: "25000",
+        prefix: "$",
+        defaultValue: "25000",
+        min: 0.01,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const winRate = values.winRatePercent / 100;
+      if (values.target <= 0) warnings.push("Target must be greater than 0.");
+      if (winRate <= 0) warnings.push("Win rate must be greater than 0%.");
+      if (values.avgDealSize <= 0) warnings.push("Average deal size must be greater than 0.");
+
+      const requiredWins = safeDivide(values.target, values.avgDealSize);
+      const requiredOpps =
+        requiredWins !== null && winRate > 0 ? requiredWins / winRate : null;
+      const requiredPipeline = winRate > 0 ? values.target / winRate : 0;
+      const impliedCoverage = safeDivide(requiredPipeline, values.target);
+
+      return {
+        headline: {
+          key: "requiredPipeline",
+          label: "Required pipeline ($)",
+          value: requiredPipeline,
+          format: "currency",
+          currency: "USD",
+          detail: "Target ÷ win rate",
+        },
+        secondary: [
+          {
+            key: "requiredOpps",
+            label: "Required opportunities",
+            value: requiredOpps ?? 0,
+            format: "number",
+            maxFractionDigits: 0,
+            detail: requiredOpps === null ? "Invalid inputs" : "Wins ÷ win rate",
+          },
+          {
+            key: "requiredWins",
+            label: "Required wins",
+            value: requiredWins ?? 0,
+            format: "number",
+            maxFractionDigits: 0,
+            detail: requiredWins === null ? "Invalid inputs" : "Target ÷ avg deal size",
+          },
+          {
+            key: "impliedCoverage",
+            label: "Implied coverage ratio",
+            value: impliedCoverage ?? 0,
+            format: "multiple",
+            maxFractionDigits: 2,
+            detail: "Required pipeline ÷ target",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Required pipeline = target ÷ win rate; wins = target ÷ avg deal size; opps = wins ÷ win rate",
+    assumptions: [
+      "Uses average deal size; segment for higher accuracy.",
+      "Win rate is stable and measured on the same stage definition as your pipeline.",
+    ],
+    faqs: [
+      {
+        question: "Why is required pipeline target ÷ win rate?",
+        answer:
+          "If you win X% of pipeline value on average, you need about 1/X times the target in pipeline to produce the target in closed revenue (before adding buffer for slippage).",
+      },
+      {
+        question: "Should I add a buffer above required pipeline?",
+        answer:
+          "Often yes. Deal slippage and push-outs can be material. Many teams set an additional buffer (e.g., +10–30%) based on historical slippage.",
+      },
+    ],
+  },
+  {
+    slug: "sales-capacity-calculator",
+    title: "Sales Capacity Calculator (with Ramp)",
+    description:
+      "Estimate period bookings capacity from team size, quota per rep, expected attainment, and ramped vs ramping mix.",
+    category: "saas-metrics",
+    guideSlug: "sales-capacity-guide",
+    relatedGlossarySlugs: ["sales-ramp", "quota", "quota-attainment", "pipeline"],
+    seo: {
+      intro: [
+        "Sales capacity is the output your team can produce given headcount and productivity. Ramp matters: new reps rarely produce full quota immediately.",
+        "This calculator estimates bookings capacity using an expected attainment rate and a ramped vs ramping mix.",
+      ],
+      steps: [
+        "Enter number of reps and quota per rep for the period.",
+        "Enter expected attainment % for ramped reps.",
+        "Enter what % of the team is ramped and a productivity factor for ramping reps.",
+      ],
+      pitfalls: [
+        "Assuming all reps are fully ramped.",
+        "Using quota that doesn’t match the same period definition.",
+        "Ignoring pipeline constraints (capacity without pipeline is theoretical).",
+      ],
+    },
+    inputs: [
+      {
+        key: "reps",
+        label: "Sales reps",
+        placeholder: "10",
+        defaultValue: "10",
+        min: 0,
+        step: 1,
+      },
+      {
+        key: "quotaPerRep",
+        label: "Quota per rep (period)",
+        placeholder: "150000",
+        prefix: "$",
+        defaultValue: "150000",
+        min: 0,
+      },
+      {
+        key: "attainmentPercent",
+        label: "Expected attainment (ramped reps)",
+        placeholder: "85",
+        suffix: "%",
+        defaultValue: "85",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "rampedPercent",
+        label: "% of team fully ramped",
+        placeholder: "70",
+        suffix: "%",
+        defaultValue: "70",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "rampingProductivityPercent",
+        label: "Ramping reps productivity",
+        help: "Productivity of ramping reps relative to ramped reps.",
+        placeholder: "40",
+        suffix: "%",
+        defaultValue: "40",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const reps = Math.floor(values.reps);
+      const attainment = values.attainmentPercent / 100;
+      const ramped = values.rampedPercent / 100;
+      const rampingProd = values.rampingProductivityPercent / 100;
+
+      if (reps < 0) warnings.push("Sales reps must be 0 or greater.");
+      if (values.quotaPerRep < 0) warnings.push("Quota per rep must be 0 or greater.");
+      if (attainment < 0 || attainment > 2)
+        warnings.push("Attainment should be between 0% and 200% (check input).");
+      if (ramped < 0 || ramped > 1) warnings.push("Ramped % must be between 0% and 100%.");
+      if (rampingProd < 0 || rampingProd > 1)
+        warnings.push("Ramping productivity must be between 0% and 100%.");
+
+      const effectiveReps = reps * (ramped + (1 - ramped) * rampingProd);
+      const capacity = effectiveReps * values.quotaPerRep * attainment;
+
+      return {
+        headline: {
+          key: "capacity",
+          label: "Estimated bookings capacity",
+          value: capacity,
+          format: "currency",
+          currency: "USD",
+          detail: "Reps × quota × attainment × ramp mix",
+        },
+        secondary: [
+          {
+            key: "effectiveReps",
+            label: "Effective reps (ramp-adjusted)",
+            value: effectiveReps,
+            format: "number",
+            maxFractionDigits: 2,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Capacity ≈ reps × quota per rep × attainment × (ramped% + (1-ramped%)×ramping productivity)",
+    assumptions: [
+      "Ramping productivity is expressed relative to ramped rep productivity.",
+      "Attainment applies to ramped productivity; actual outcomes vary by segment and seasonality.",
+    ],
+    faqs: [
+      {
+        question: "Why use ramp-adjusted effective reps?",
+        answer:
+          "Because a team with many new hires has fewer 'fully productive' reps. Adjusting for ramp helps you avoid over-forecasting bookings.",
+      },
+      {
+        question: "How should I pick ramping productivity?",
+        answer:
+          "Use historical ramp curves (month 1, 2, 3 productivity). If you don’t have data, start conservative (e.g., 20–50%) and refine with observed cohorts.",
+      },
+    ],
+  },
+  {
+    slug: "ote-commission-rate-calculator",
+    title: "OTE & Commission Rate Calculator",
+    description:
+      "Compute on-target earnings (OTE), commission rate, and compensation split from base salary, variable pay, and quota.",
+    category: "saas-metrics",
+    guideSlug: "ote-guide",
+    relatedGlossarySlugs: ["ote", "quota", "quota-attainment"],
+    seo: {
+      intro: [
+        "Sales compensation often starts with OTE (on-target earnings): base + variable at 100% attainment.",
+        "From OTE and quota you can derive a simple commission rate (variable ÷ quota) and sanity-check incentive alignment.",
+      ],
+      steps: [
+        "Enter base and variable compensation for the period (usually annual).",
+        "Enter quota for the same period.",
+        "Review OTE, commission rate, and base/variable split.",
+      ],
+      pitfalls: [
+        "Mixing annual OTE with quarterly quota (unit mismatch).",
+        "Ignoring accelerators/decels and thresholds (this is a simplified model).",
+        "Optimizing commission rate without checking CAC/payback and sales cycle.",
+      ],
+    },
+    inputs: [
+      {
+        key: "basePay",
+        label: "Base pay (annual)",
+        placeholder: "90000",
+        prefix: "$",
+        defaultValue: "90000",
+        min: 0,
+      },
+      {
+        key: "variablePay",
+        label: "Variable pay at 100% attainment (annual)",
+        placeholder: "90000",
+        prefix: "$",
+        defaultValue: "90000",
+        min: 0,
+      },
+      {
+        key: "quota",
+        label: "Quota (annual)",
+        placeholder: "900000",
+        prefix: "$",
+        defaultValue: "900000",
+        min: 0.01,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      if (values.quota <= 0) warnings.push("Quota must be greater than 0.");
+      if (values.basePay < 0) warnings.push("Base pay must be 0 or greater.");
+      if (values.variablePay < 0) warnings.push("Variable pay must be 0 or greater.");
+
+      const ote = values.basePay + values.variablePay;
+      const commissionRate = safeDivide(values.variablePay, values.quota);
+      const baseSplit = safeDivide(values.basePay, ote);
+      const variableSplit = safeDivide(values.variablePay, ote);
+
+      return {
+        headline: {
+          key: "ote",
+          label: "OTE (annual)",
+          value: ote,
+          format: "currency",
+          currency: "USD",
+          detail: "Base + variable",
+        },
+        secondary: [
+          {
+            key: "commissionRate",
+            label: "Commission rate (variable ÷ quota)",
+            value: commissionRate ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "baseSplit",
+            label: "Base split",
+            value: baseSplit ?? 0,
+            format: "percent",
+            maxFractionDigits: 0,
+          },
+          {
+            key: "variableSplit",
+            label: "Variable split",
+            value: variableSplit ?? 0,
+            format: "percent",
+            maxFractionDigits: 0,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "OTE = base + variable; commission rate ≈ variable ÷ quota",
+    assumptions: [
+      "Assumes linear commission proportional to quota attainment (no accelerators/decels).",
+      "Base and quota are for the same time unit (annual vs quarterly).",
+    ],
+    faqs: [
+      {
+        question: "What’s a typical OTE split?",
+        answer:
+          "Many AE roles use ~50/50 base/variable, but it varies by motion and market. Use this as a sanity check, not a rule.",
+      },
+      {
+        question: "Does this include accelerators?",
+        answer:
+          "No. Accelerators can materially change effective commission rate at high attainment. Use a full comp plan model if you need precision.",
+      },
+    ],
+  },
+  {
+    slug: "sales-funnel-targets-calculator",
+    title: "Sales Funnel Targets Calculator",
+    description:
+      "Translate a revenue target into required wins, opportunities, SQLs, MQLs, and leads using funnel conversion rates.",
+    category: "saas-metrics",
+    guideSlug: "sales-funnel-targets-guide",
+    relatedGlossarySlugs: ["acv", "mql", "sql", "win-rate", "pipeline"],
+    seo: {
+      intro: [
+        "If you want $X in new revenue, you need a certain number of wins. Wins require opportunities, and opportunities require qualified leads.",
+        "This calculator converts a revenue target into funnel volume targets using your conversion rates so you can plan demand generation and sales capacity.",
+      ],
+      steps: [
+        "Enter your revenue target and average deal size (ACV).",
+        "Enter funnel conversion rates from lead → MQL → SQL → opp → win.",
+        "Review required counts at each funnel stage.",
+      ],
+      pitfalls: [
+        "Using conversion rates from a different segment (SMB vs enterprise).",
+        "Mixing definitions (what counts as an MQL/SQL).",
+        "Ignoring time lag (leads generated now may close next period).",
+      ],
+    },
+    inputs: [
+      {
+        key: "revenueTarget",
+        label: "Revenue target (period)",
+        placeholder: "500000",
+        prefix: "$",
+        defaultValue: "500000",
+        min: 0.01,
+      },
+      {
+        key: "avgDealSize",
+        label: "Average deal size (ACV)",
+        placeholder: "25000",
+        prefix: "$",
+        defaultValue: "25000",
+        min: 0.01,
+      },
+      {
+        key: "leadToMqlPercent",
+        label: "Lead → MQL",
+        placeholder: "20",
+        suffix: "%",
+        defaultValue: "20",
+        min: 0.01,
+        step: 0.1,
+      },
+      {
+        key: "mqlToSqlPercent",
+        label: "MQL → SQL",
+        placeholder: "30",
+        suffix: "%",
+        defaultValue: "30",
+        min: 0.01,
+        step: 0.1,
+      },
+      {
+        key: "sqlToOppPercent",
+        label: "SQL → Opportunity",
+        placeholder: "40",
+        suffix: "%",
+        defaultValue: "40",
+        min: 0.01,
+        step: 0.1,
+      },
+      {
+        key: "oppToWinPercent",
+        label: "Opportunity → Win",
+        placeholder: "25",
+        suffix: "%",
+        defaultValue: "25",
+        min: 0.01,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const leadToMql = values.leadToMqlPercent / 100;
+      const mqlToSql = values.mqlToSqlPercent / 100;
+      const sqlToOpp = values.sqlToOppPercent / 100;
+      const oppToWin = values.oppToWinPercent / 100;
+
+      if (values.revenueTarget <= 0) warnings.push("Revenue target must be greater than 0.");
+      if (values.avgDealSize <= 0) warnings.push("Average deal size must be greater than 0.");
+      if (leadToMql <= 0) warnings.push("Lead → MQL must be greater than 0%.");
+      if (mqlToSql <= 0) warnings.push("MQL → SQL must be greater than 0%.");
+      if (sqlToOpp <= 0) warnings.push("SQL → Opportunity must be greater than 0%.");
+      if (oppToWin <= 0) warnings.push("Opportunity → Win must be greater than 0%.");
+
+      const wins = safeDivide(values.revenueTarget, values.avgDealSize);
+      const opps = wins !== null ? safeDivide(wins, oppToWin) : null;
+      const sqls = opps !== null ? safeDivide(opps, sqlToOpp) : null;
+      const mqls = sqls !== null ? safeDivide(sqls, mqlToSql) : null;
+      const leads = mqls !== null ? safeDivide(mqls, leadToMql) : null;
+
+      return {
+        headline: {
+          key: "leads",
+          label: "Required leads",
+          value: leads ?? 0,
+          format: "number",
+          maxFractionDigits: 0,
+          detail: "Back-solved from revenue target and conversion rates",
+        },
+        secondary: [
+          {
+            key: "mqls",
+            label: "Required MQLs",
+            value: mqls ?? 0,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+          {
+            key: "sqls",
+            label: "Required SQLs",
+            value: sqls ?? 0,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+          {
+            key: "opps",
+            label: "Required opportunities",
+            value: opps ?? 0,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+          {
+            key: "wins",
+            label: "Required wins",
+            value: wins ?? 0,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "wins = target ÷ deal size; opps = wins ÷ opp→win; SQLs = opps ÷ SQL→opp; MQLs = SQLs ÷ MQL→SQL; leads = MQLs ÷ lead→MQL",
+    assumptions: [
+      "Conversion rates are stable and measured over consistent windows.",
+      "Ignores time lag (sales cycle); align inputs to the same period.",
+      "Assumes average deal size is representative; segment for higher accuracy.",
+    ],
+    faqs: [
+      {
+        question: "Why does a small change in conversion rates move leads a lot?",
+        answer:
+          "Because conversion rates multiply. Small improvements at each stage compound into a large reduction in top-of-funnel volume required.",
+      },
+      {
+        question: "Should I use leads or MQLs as the starting point?",
+        answer:
+          "Use the earliest stage you can measure consistently. If lead quality varies widely by channel, model channels separately for accuracy.",
+      },
+    ],
+  },
+  {
     slug: "gross-margin-impact-calculator",
     title: "Gross Margin Impact Calculator",
     description:
