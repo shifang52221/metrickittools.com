@@ -35,7 +35,14 @@ async function fetchOk(url, preferredMethod = "GET") {
 
   if (preferredMethod === "HEAD") {
     const head = await tryRequest("HEAD");
-    if (head) return head;
+    if (head) {
+      if (head.status >= 400) {
+        // Some servers (including Next) can behave oddly on HEAD for static assets.
+        // Re-try with GET before declaring a failure.
+        return abortableFetch(url, { method: "GET" });
+      }
+      return head;
+    }
     return abortableFetch(url, { method: "GET" });
   }
 
@@ -117,13 +124,8 @@ async function runPool(items, worker, concurrency) {
 }
 
 function startNextServer() {
-  const isWin = process.platform === "win32";
-  const command = isWin ? "cmd.exe" : "npm";
-  const args = isWin
-    ? ["/c", "npm", "run", "start", "--", "-p", "3000"]
-    : ["run", "start", "--", "-p", "3000"];
-
-  const child = spawn(command, args, {
+  const nextBin = "node_modules/next/dist/bin/next";
+  const child = spawn(process.execPath, [nextBin, "start", "-p", "3000"], {
     stdio: ["ignore", "pipe", "pipe"],
     env: { ...process.env, PORT: "3000" },
     shell: false,

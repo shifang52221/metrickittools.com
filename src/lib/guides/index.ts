@@ -6536,6 +6536,248 @@ export const guides: Guide[] = [
       },
     ],
   },
+  {
+    slug: "sales-ops-hub-guide",
+    title: "Sales ops metrics hub: quota, pipeline, win rate, and capacity planning",
+    description:
+      "A practical hub for sales ops planning: quota attainment, pipeline coverage, required pipeline, sales capacity with ramp, and OTE math.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: [
+      "quota-attainment-calculator",
+      "pipeline-coverage-calculator",
+      "pipeline-required-calculator",
+      "sales-capacity-calculator",
+      "ote-commission-rate-calculator",
+      "sales-funnel-targets-calculator",
+      "cpl-to-cac-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "quota",
+      "quota-attainment",
+      "pipeline",
+      "pipeline-coverage",
+      "win-rate",
+      "sales-cycle",
+      "sales-ramp",
+      "ote",
+      "acv",
+      "mql",
+      "sql",
+    ],
+    sections: [
+      { type: "h2", text: "How to use this hub" },
+      {
+        type: "p",
+        text: "Use the Related calculators sidebar to jump into each tool. The sections below explain how the pieces fit together so you can plan targets, capacity, and funnel inputs without mixing definitions.",
+      },
+      { type: "h2", text: "The core chain (inputs → outputs)" },
+      {
+        type: "bullets",
+        items: [
+          "Funnel inputs (leads/MQL/SQL) create opportunities.",
+          "Opportunities become pipeline value (time-bound to the period).",
+          "Pipeline converts to bookings via win rate.",
+          "Bookings drive quota attainment and forecasting confidence.",
+          "Headcount and ramp limit how much pipeline your team can work (capacity).",
+        ],
+      },
+      { type: "h2", text: "Tools in this cluster" },
+      {
+        type: "table",
+        columns: ["Tool", "Best for", "Key input"],
+        rows: [
+          ["Quota attainment", "Progress and pacing", "Booked to date + quota"],
+          ["Pipeline coverage", "Sanity-checking target risk", "Pipeline + quota + win rate"],
+          ["Required pipeline", "Planning how much pipeline you need", "Target + win rate + ACV"],
+          ["Sales capacity (ramp)", "Headcount-based output planning", "Reps + quota/rep + ramp mix"],
+          ["OTE & commission rate", "Comp plan sanity checks", "Base + variable + quota"],
+          ["Sales funnel targets", "Lead/MQL/SQL volume planning", "Target + stage conversion rates"],
+        ],
+      },
+      { type: "h2", text: "Common failure modes (and fixes)" },
+      {
+        type: "bullets",
+        items: [
+          "Inflated pipeline: tighten qualification and stage definitions; track stage conversion.",
+          "Coverage looks fine but misses quota: slippage/timing; use close-date cohorts and buffer coverage.",
+          "Great pipeline but low bookings: win rate issues; segment by ACV band and diagnose losses.",
+          "Capacity bottleneck: ramp-adjust headcount and ensure enough qualified pipeline per rep.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "What’s the fastest weekly dashboard for sales ops?",
+        answer:
+          "Track quota attainment (pacing), pipeline coverage (risk), win rate (conversion), and ramp-adjusted capacity (realistic output). Segment by ACV band to avoid blended averages.",
+      },
+    ],
+    examples: [
+      {
+        label: "Coverage example ($500k quota, $1.5M pipeline, 25% win rate)",
+        calculatorSlug: "pipeline-coverage-calculator",
+        params: { quota: "500000", pipelineAmount: "1500000", winRatePercent: "25" },
+      },
+    ],
+  },
+  {
+    slug: "plg-metrics-hub-guide",
+    title: "PLG metrics hub: activation, trial conversion, stickiness, and adoption",
+    description:
+      "A practical hub for product-led growth metrics: activation rate, trial-to-paid, DAU/MAU and WAU/MAU stickiness, feature adoption, and PQL-to-paid conversion.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: [
+      "activation-rate-calculator",
+      "trial-to-paid-calculator",
+      "dau-mau-calculator",
+      "wau-mau-calculator",
+      "feature-adoption-rate-calculator",
+      "pql-to-paid-calculator",
+      "two-stage-retention-curve-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "arrr-funnel",
+      "funnel",
+      "activation-rate",
+      "trial-to-paid",
+      "conversion-rate",
+      "stickiness",
+      "dau",
+      "wau",
+      "mau",
+      "feature-adoption",
+      "pql",
+      "pql-to-paid",
+    ],
+    sections: [
+      { type: "h2", text: "How to use this hub" },
+      {
+        type: "p",
+        text: "Use the Related calculators sidebar to open each tool. Start by defining a non-vanity activation event, then connect activation → trial conversion → retention and stickiness so improvements translate into revenue.",
+      },
+      { type: "h2", text: "A simple PLG measurement stack" },
+      {
+        type: "bullets",
+        items: [
+          "Activation: do users reach value quickly after signup?",
+          "Conversion: do activated users convert to paid (and how fast)?",
+          "Stickiness: do users come back at the cadence your product needs?",
+          "Adoption: are users using the features that drive value and retention?",
+          "Retention: do cohorts survive beyond the early lifecycle drop-off?",
+        ],
+      },
+      { type: "h2", text: "Tools in this cluster" },
+      {
+        type: "table",
+        columns: ["Tool", "Best for", "Key input"],
+        rows: [
+          ["Activation rate", "Early lifecycle health", "Activated users + signups"],
+          ["Trial-to-paid", "Monetization bridge from trial", "Paid conversions + trials"],
+          ["DAU/MAU", "Daily stickiness", "DAU + MAU"],
+          ["WAU/MAU", "Weekly stickiness", "WAU + MAU"],
+          ["Feature adoption", "Value-driving usage", "Feature users + active users"],
+          ["PQL-to-paid", "Product signals → revenue", "PQLs + paid from PQL cohort"],
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Changing event definitions and breaking trends (keep stable, version if needed).",
+          "Mixing self-serve and sales-assisted paths (track separately).",
+          "Optimizing conversion with dark patterns that harm retention (watch churn/GRR/NRR).",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Activation example (5,000 signups, 1,200 activated)",
+        calculatorSlug: "activation-rate-calculator",
+        params: { signups: "5000", activated: "1200", targetActivationPercent: "30" },
+      },
+    ],
+  },
+  {
+    slug: "fundraising-valuation-hub-guide",
+    title: "Fundraising & valuation hub: pre/post-money, SAFEs, notes, and liquidation prefs",
+    description:
+      "A practical hub for startup fundraising and valuation basics: pre/post-money, pro rata, option pool shuffle, SAFE/note conversion, and liquidation preference outcomes.",
+    category: "finance",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: [
+      "pre-money-post-money-calculator",
+      "pro-rata-investment-calculator",
+      "option-pool-shuffle-calculator",
+      "safe-conversion-calculator",
+      "convertible-note-conversion-calculator",
+      "liquidation-preference-calculator",
+      "equity-value-calculator",
+      "multiple-valuation-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "pre-money-valuation",
+      "post-money-valuation",
+      "dilution",
+      "pro-rata-rights",
+      "option-pool",
+      "safe",
+      "valuation-cap",
+      "convertible-note",
+      "interest-rate",
+      "liquidation-preference",
+      "equity-value",
+      "enterprise-value",
+    ],
+    sections: [
+      { type: "h2", text: "How to use this hub" },
+      {
+        type: "p",
+        text: "Use the Related calculators sidebar to open each tool. Fundraising math can look simple in headlines, but ownership outcomes depend on option pools, convertibles, and preference terms—so always sanity-check with scenarios.",
+      },
+      { type: "h2", text: "The fundraising stack (what changes ownership)" },
+      {
+        type: "bullets",
+        items: [
+          "Pre vs post-money sets the basic ownership math for a priced round.",
+          "Option pool shuffle changes effective dilution for existing holders.",
+          "SAFEs and notes convert into shares (cap/discount/interest mechanics).",
+          "Pro rata participation can maintain ownership (if allocation allows).",
+          "Liquidation preference changes exit proceeds even if ownership is unchanged.",
+        ],
+      },
+      { type: "h2", text: "Tools in this cluster" },
+      {
+        type: "table",
+        columns: ["Tool", "Best for", "Key input"],
+        rows: [
+          ["Pre vs post-money", "Basic ownership math", "Pre-money + investment"],
+          ["Pro rata investment", "Maintaining ownership", "Current % + round size"],
+          ["Option pool shuffle", "Founder dilution reality check", "Pool % pre and target post"],
+          ["SAFE conversion", "Cap vs discount intuition", "SAFE amount + cap/discount"],
+          ["Note conversion", "Interest + cap/discount", "Principal + interest + terms"],
+          ["Liquidation preference", "Exit proceeds scenarios", "Exit value + investment + %"],
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Mixing fully diluted and issued-share bases.",
+          "Ignoring multiple convertibles and pool increases (dilution stacks).",
+          "Treating liquidation preference as a single number (real deals have seniority/waterfalls).",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Pre/post example ($20M pre + $5M new money)",
+        calculatorSlug: "pre-money-post-money-calculator",
+        params: { preMoney: "20000000", investment: "5000000" },
+      },
+    ],
+  },
 ];
 
 export function getGuide(slug: string): Guide | undefined {

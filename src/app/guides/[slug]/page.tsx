@@ -21,6 +21,16 @@ function slugify(input: string): string {
     .replaceAll(/-+/g, "-");
 }
 
+function overlapCount(a: string[] | undefined, b: string[] | undefined): number {
+  if (!a?.length || !b?.length) return 0;
+  const setA = new Set(a);
+  let count = 0;
+  for (const item of b) {
+    if (setA.has(item)) count += 1;
+  }
+  return count;
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const guide = getGuide(slug);
@@ -86,7 +96,21 @@ export default async function GuidePage({ params }: PageProps) {
   const inSameCategory = guides.filter(
     (g) => g.category === guide.category && g.slug !== guide.slug,
   );
-  const relatedGuides = inSameCategory.slice(0, 3);
+  const relatedGuides = [...inSameCategory]
+    .map((g) => {
+      const score =
+        overlapCount(guide.relatedCalculatorSlugs, g.relatedCalculatorSlugs) * 3 +
+        overlapCount(guide.relatedGlossarySlugs, g.relatedGlossarySlugs);
+      return { guide: g, score };
+    })
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      if (b.guide.updatedAt !== a.guide.updatedAt)
+        return b.guide.updatedAt.localeCompare(a.guide.updatedAt);
+      return a.guide.slug.localeCompare(b.guide.slug);
+    })
+    .slice(0, 3)
+    .map((x) => x.guide);
   const sortedGuides = [...guides].sort((a, b) => a.slug.localeCompare(b.slug));
   const idx = sortedGuides.findIndex((g) => g.slug === guide.slug);
   const prevGuide = idx > 0 ? sortedGuides[idx - 1] : null;

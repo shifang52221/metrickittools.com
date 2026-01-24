@@ -39,13 +39,19 @@ export default async function GlossaryTermPage({ params }: PageProps) {
   type Calculator = (typeof calculators)[number];
   type Guide = (typeof guides)[number];
 
-  const relatedCalcs = (term.relatedCalculatorSlugs ?? [])
-    .map((s) => calculators.find((c) => c.slug === s))
-    .filter((c): c is Calculator => Boolean(c));
+  const relatedCalcs = [
+    ...(term.relatedCalculatorSlugs ?? [])
+      .map((s) => calculators.find((c) => c.slug === s))
+      .filter((c): c is Calculator => Boolean(c)),
+    ...calculators.filter((c) => (c.relatedGlossarySlugs ?? []).includes(term.slug)),
+  ].filter((c, i, arr) => arr.findIndex((x) => x.slug === c.slug) === i);
 
-  const relatedGuides = (term.relatedGuideSlugs ?? [])
-    .map((s) => guides.find((g) => g.slug === s))
-    .filter((g): g is Guide => Boolean(g));
+  const relatedGuides = [
+    ...(term.relatedGuideSlugs ?? [])
+      .map((s) => guides.find((g) => g.slug === s))
+      .filter((g): g is Guide => Boolean(g)),
+    ...guides.filter((g) => (g.relatedGlossarySlugs ?? []).includes(term.slug)),
+  ].filter((g, i, arr) => arr.findIndex((x) => x.slug === g.slug) === i);
 
   const definedTermLd = {
     "@context": "https://schema.org",

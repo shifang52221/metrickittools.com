@@ -43,13 +43,30 @@ export function CalculatorPageClient({ slug }: { slug: string }) {
   const sidebarSlot = getAdSenseSlot("calculatorSidebar");
   const relatedGuides = useMemo(() => {
     if (!calc) return [];
-    return guides
-      .filter(
-        (g) =>
-          g.relatedCalculatorSlugs.includes(calc.slug) ||
-          g.slug === calc.guideSlug,
-      )
-      .slice(0, 4);
+    const calcGlossary = new Set(calc.relatedGlossarySlugs ?? []);
+    const scoreFor = (g: (typeof guides)[number]) => {
+      let score = 0;
+      if (g.slug === calc.guideSlug) score += 100;
+      if (g.relatedCalculatorSlugs.includes(calc.slug)) score += 50;
+      if (g.category === calc.category) score += 10;
+      if (g.relatedGlossarySlugs?.length) {
+        for (const s of g.relatedGlossarySlugs) {
+          if (calcGlossary.has(s)) score += 2;
+        }
+      }
+      return score;
+    };
+
+    return [...guides]
+      .map((g) => ({ g, score: scoreFor(g) }))
+      .filter((x) => x.score > 0)
+      .sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        if (b.g.updatedAt !== a.g.updatedAt) return b.g.updatedAt.localeCompare(a.g.updatedAt);
+        return a.g.slug.localeCompare(b.g.slug);
+      })
+      .slice(0, 4)
+      .map((x) => x.g);
   }, [calc]);
   const related = useMemo(() => {
     if (!calc) return [];
