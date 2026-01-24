@@ -490,6 +490,98 @@ export const guides: Guide[] = [
     ],
   },
   {
+    slug: "fully-loaded-cac-guide",
+    title: "Fully-loaded CAC: definition, formula, and what to include",
+    description:
+      "A practical guide to fully-loaded CAC: how it differs from paid CAC, what to include, and how to keep the definition consistent for planning.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: [
+      "fully-loaded-cac-calculator",
+      "cac-calculator",
+      "cac-payback-period-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "cac",
+      "fully-loaded-cac",
+      "cac-payback-period",
+      "gross-margin",
+    ],
+    sections: [
+      { type: "h2", text: "Why fully-loaded CAC exists" },
+      {
+        type: "p",
+        text: "Paid CAC is useful for optimizing ads, but it ignores the people and tools required to acquire customers. Fully-loaded CAC adds sales & marketing costs (salaries, tools, and other acquisition costs) to get a planning-grade CAC for unit economics.",
+      },
+      { type: "h2", text: "Formula" },
+      {
+        type: "p",
+        text: "Fully-loaded CAC = total acquisition costs ÷ new paying customers acquired (same period).",
+      },
+      { type: "h2", text: "What to include (typical)" },
+      {
+        type: "bullets",
+        items: [
+          "Paid media spend and variable acquisition costs (agency, creative if variable).",
+          "Allocated sales & marketing salaries and commissions (if treated as acquisition cost).",
+          "Allocated tools and software needed for acquisition (CRM, email, enrichment).",
+          "Other acquisition costs you consistently treat as acquisition (events, list rentals).",
+        ],
+      },
+      { type: "h2", text: "What to exclude (typical)" },
+      {
+        type: "bullets",
+        items: [
+          "COGS and support costs (these affect gross margin and payback, not CAC).",
+          "R&D and general overhead unless you explicitly allocate them (avoid mixing definitions).",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using leads/trials as customers (denominator mismatch).",
+          "Mixing time windows (monthly costs with quarterly customers).",
+          "Changing what costs are included month-to-month (definition drift).",
+        ],
+      },
+      { type: "h2", text: "How to use it with payback" },
+      {
+        type: "bullets",
+        items: [
+          "Use payback months (CAC ÷ gross profit/month) to compare channels fairly.",
+          "A low paid CAC can still be bad if fully-loaded CAC is high and payback is long.",
+          "Segment by channel and plan; blended CAC can hide weak cohorts.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Should fully-loaded CAC replace paid CAC?",
+        answer:
+          "No. Use paid CAC for channel optimization and tactical decisions. Use fully-loaded CAC for planning and unit economics because it includes the costs required to acquire customers.",
+      },
+      {
+        question: "Do I need to allocate salaries to acquisition?",
+        answer:
+          "If you want a planning-grade CAC, yes. The key is consistency: use a simple allocation rule and keep it stable over time.",
+      },
+    ],
+    examples: [
+      {
+        label: "Fully-loaded example ($60k paid; $90k salaries; $12k tools; $8k other; 120 customers)",
+        calculatorSlug: "fully-loaded-cac-calculator",
+        params: {
+          paidSpend: "60000",
+          salaries: "90000",
+          tools: "12000",
+          otherCosts: "8000",
+          newCustomers: "120",
+        },
+      },
+    ],
+  },
+  {
     slug: "ltv-guide",
     title: "LTV: How to estimate Lifetime Value (and when not to)",
     description:
@@ -559,6 +651,78 @@ export const guides: Guide[] = [
           arpaMonthly: "200",
           grossMarginPercent: "80",
           churnPercent: "3",
+        },
+      },
+    ],
+  },
+  {
+    slug: "ltv-sensitivity-guide",
+    title: "LTV sensitivity: how churn and margin change LTV",
+    description:
+      "A practical guide to LTV sensitivity: vary churn and gross margin to see how gross profit LTV changes under realistic scenarios.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: [
+      "ltv-sensitivity-calculator",
+      "ltv-calculator",
+      "cac-payback-period-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "ltv",
+      "churn-rate",
+      "gross-margin",
+      "arpa",
+      "sensitivity-analysis",
+    ],
+    sections: [
+      { type: "h2", text: "Why sensitivity matters" },
+      {
+        type: "p",
+        text: "Simple LTV formulas are extremely sensitive to churn and gross margin. Sensitivity analysis helps you avoid false confidence by showing how LTV changes under a small set of scenarios.",
+      },
+      { type: "h2", text: "Base model (gross profit LTV shortcut)" },
+      {
+        type: "p",
+        text: "Gross profit LTV ≈ (ARPA × gross margin) ÷ churn (with consistent monthly units).",
+      },
+      { type: "h2", text: "How to pick ranges" },
+      {
+        type: "bullets",
+        items: [
+          "Pick churn and margin ranges that reflect uncertainty (not tiny deltas).",
+          "Use segment-level inputs (plan/channel) instead of blended averages when possible.",
+          "If churn changes by tenure, pair this with cohort curves for accuracy.",
+        ],
+      },
+      { type: "h2", text: "How to interpret results" },
+      {
+        type: "bullets",
+        items: [
+          "If LTV is most sensitive to churn, retention and activation matter most.",
+          "If LTV is most sensitive to margin, COGS and variable cost control matter most.",
+          "Use payback alongside LTV so you don’t accept high LTV with dangerously long payback.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Mixing monthly ARPA with annual churn (unit mismatch).",
+          "Using revenue LTV while comparing to fully-loaded CAC (mismatch).",
+          "Treating the shortcut as precise instead of directional planning.",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Sensitivity example (ARPA $200; margin 80%; churn 3%; ±5% margin; ±1% churn)",
+        calculatorSlug: "ltv-sensitivity-calculator",
+        params: {
+          arpaMonthly: "200",
+          grossMarginPercent: "80",
+          marginStepPercent: "5",
+          monthlyChurnPercent: "3",
+          churnStepPercent: "1",
         },
       },
     ],
@@ -809,6 +973,68 @@ export const guides: Guide[] = [
     ],
   },
   {
+    slug: "gross-revenue-churn-guide",
+    title: "Gross revenue churn: definition, formula, and how to calculate it",
+    description:
+      "Gross revenue churn explained: contraction + churned MRR relative to starting MRR, with monthly-equivalent conversion and pitfalls.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: [
+      "gross-revenue-churn-calculator",
+      "grr-calculator",
+      "nrr-calculator",
+      "mrr-waterfall-calculator",
+    ],
+    relatedGlossarySlugs: ["revenue-churn", "gross-revenue-churn", "grr", "nrr", "mrr"],
+    sections: [
+      { type: "h2", text: "Definition" },
+      {
+        type: "p",
+        text: "Gross revenue churn measures the share of starting MRR lost to contraction (downgrades) and churn (cancellations) over a period. It excludes expansion by definition.",
+      },
+      { type: "h2", text: "Formula" },
+      {
+        type: "p",
+        text: "Gross revenue churn = (contraction MRR + churned MRR) ÷ starting MRR.",
+      },
+      { type: "h2", text: "Monthly-equivalent conversion" },
+      {
+        type: "p",
+        text: "If your window is N months: monthly-equivalent churn = 1 − (1 − period churn)^(1/N).",
+      },
+      { type: "h2", text: "How it relates to GRR and NRR" },
+      {
+        type: "bullets",
+        items: [
+          "GRR focuses on remaining revenue after losses (ending gross ÷ starting).",
+          "NRR adds expansion, so NRR can look healthy even when gross churn is high.",
+          "Track gross churn + GRR/NRR together to avoid being misled by expansion.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Mixing cohorts or time windows (starting MRR from one cohort, losses from another).",
+          "Including expansion in the churn metric (gross churn excludes expansion).",
+          "Using ending MRR as the denominator instead of starting MRR.",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Gross churn example (start $100k; $5k contraction; $8k churn; 1 month)",
+        calculatorSlug: "gross-revenue-churn-calculator",
+        params: {
+          startingMrr: "100000",
+          contractionMrr: "5000",
+          churnedMrr: "8000",
+          periodMonths: "1",
+        },
+      },
+    ],
+  },
+  {
     slug: "retention-guide",
     title: "Retention rate: how to measure retention correctly",
     description:
@@ -965,6 +1191,79 @@ export const guides: Guide[] = [
         label: "Monthly example ($50,000 revenue; 2,000 avg users)",
         calculatorSlug: "arpu-calculator",
         params: { revenue: "50000", avgUsers: "2000" },
+      },
+    ],
+  },
+  {
+    slug: "arpa-guide",
+    title: "ARPA: how to calculate Average Revenue Per Account (formula + examples)",
+    description:
+      "ARPA explained: definition, ARPA formula, step-by-step calculation, and how to use ARPA with churn, payback, and LTV.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: [
+      "arpa-calculator",
+      "ltv-calculator",
+      "cac-payback-period-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "arpa",
+      "arpa-vs-arpu",
+      "gross-margin",
+      "cac-payback-period",
+      "ltv",
+    ],
+    sections: [
+      { type: "h2", text: "Definition" },
+      {
+        type: "p",
+        text: "ARPA (Average Revenue Per Account) is revenue divided by the average number of paying accounts in a period. It is often more decision-useful than ARPU in B2B SaaS because you sell to companies, not individual users.",
+      },
+      { type: "h2", text: "ARPA formula" },
+      { type: "p", text: "ARPA = revenue ÷ average paying accounts" },
+      { type: "h2", text: "How to calculate ARPA (step-by-step)" },
+      {
+        type: "bullets",
+        items: [
+          "Choose a time window (month/quarter) and define what counts as a paying account.",
+          "Sum revenue for the same window (be consistent: gross vs net of refunds/credits).",
+          "Compute average paying accounts for the window (e.g., (start + end) ÷ 2).",
+          "Divide revenue by average accounts to get ARPA.",
+        ],
+      },
+      { type: "h2", text: "ARPA vs ARPU" },
+      {
+        type: "bullets",
+        items: [
+          "ARPA is per account/customer; ARPU is per active user.",
+          "If you price per company, ARPA usually matches how you sell and report.",
+          "If you price per seat/user, ARPU can be more natural.",
+        ],
+      },
+      { type: "h2", text: "How to use ARPA with payback and LTV" },
+      {
+        type: "bullets",
+        items: [
+          "Monthly gross profit ≈ ARPA × gross margin.",
+          "Payback (months) ≈ CAC ÷ (ARPA × gross margin).",
+          "LTV (gross profit) ≈ (ARPA × gross margin) ÷ churn (shortcut model).",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Mixing accounts and users (denominator mismatch).",
+          "Comparing ARPA across periods with major mix shifts without segmentation.",
+          "Changing what revenue is included (net vs gross) without labeling.",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "ARPA example ($120k revenue; 60 avg accounts)",
+        calculatorSlug: "arpa-calculator",
+        params: { revenue: "120000", avgAccounts: "60" },
       },
     ],
   },
@@ -1667,6 +1966,99 @@ export const guides: Guide[] = [
         calculatorSlug: "grr-calculator",
         params: {
           startingMrr: "100000",
+          contractionMrr: "5000",
+          churnedMrr: "8000",
+        },
+      },
+    ],
+  },
+  {
+    slug: "nrr-vs-grr-guide",
+    title: "NRR vs GRR: differences, formulas, and how to use both",
+    description:
+      "NRR includes expansion; GRR excludes it. Learn when each metric matters, how to compute both from the same cohort, and how to interpret the gap.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: [
+      "nrr-vs-grr-calculator",
+      "nrr-calculator",
+      "grr-calculator",
+      "gross-revenue-churn-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "nrr",
+      "grr",
+      "revenue-churn",
+      "expansion-mrr",
+      "contraction-mrr",
+      "churned-mrr",
+    ],
+    sections: [
+      { type: "h2", text: "The core difference" },
+      {
+        type: "p",
+        text: "NRR (Net Revenue Retention) answers: does an existing cohort grow after expansions, downgrades, and churn? GRR (Gross Revenue Retention) answers: how much of the cohort’s starting revenue survives losses, excluding expansion.",
+      },
+      { type: "h2", text: "Formulas (same inputs)" },
+      {
+        type: "bullets",
+        items: [
+          "NRR = (start + expansion − contraction − churn) ÷ start",
+          "GRR = (start − contraction − churn) ÷ start",
+          "Gap (NRR − GRR) is the share of starting revenue added by expansion.",
+        ],
+      },
+      { type: "h2", text: "How to interpret the gap" },
+      {
+        type: "table",
+        columns: ["Pattern", "What it usually means", "What to do next"],
+        rows: [
+          [
+            "High NRR, low GRR",
+            "Expansion is masking churn/downgrades.",
+            "Segment churn by plan/size, diagnose downgrade drivers, then protect expansion motions.",
+          ],
+          [
+            "High NRR, high GRR",
+            "Durable retention with healthy expansion.",
+            "Scale acquisition with confidence; monitor segment pockets.",
+          ],
+          [
+            "Low NRR, high GRR",
+            "Customers stick, but expansion is weak.",
+            "Improve packaging/upsell paths; add value moments that drive upgrades.",
+          ],
+          [
+            "Low NRR, low GRR",
+            "Cohort is shrinking; losses dominate.",
+            "Fix onboarding/activation and churn drivers before scaling acquisition.",
+          ],
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Mixing cohorts or time windows (start from one cohort, movements from another).",
+          "Using billings/cash instead of recurring run-rate movements.",
+          "Using blended NRR/GRR that hides segment churn pockets.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Can NRR be above 100% if churn is high?",
+        answer:
+          "Yes. Strong expansion can offset churn and downgrades. That’s why pairing NRR with GRR (and gross churn) helps you see durability and not just cohort growth.",
+      },
+    ],
+    examples: [
+      {
+        label: "NRR vs GRR example (start $100k; +$12k expansion; −$5k contraction; −$8k churn)",
+        calculatorSlug: "nrr-vs-grr-calculator",
+        params: {
+          startingMrr: "100000",
+          expansionMrr: "12000",
           contractionMrr: "5000",
           churnedMrr: "8000",
         },
@@ -4423,6 +4815,66 @@ export const guides: Guide[] = [
           multiple: "6",
           cash: "1000000",
           debt: "2000000",
+        },
+      },
+    ],
+  },
+  {
+    slug: "arr-valuation-sensitivity-guide",
+    title: "ARR valuation sensitivity: a simple multiple grid for scenarios",
+    description:
+      "Use a 3×3 grid to see how valuation changes when ARR and the market multiple move, and avoid false precision from a single multiple.",
+    category: "finance",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: [
+      "arr-valuation-sensitivity-calculator",
+      "multiple-valuation-calculator",
+      "dcf-sensitivity-calculator",
+    ],
+    relatedGlossarySlugs: ["arr", "arr-valuation-multiple", "sensitivity-analysis"],
+    sections: [
+      { type: "h2", text: "What this is" },
+      {
+        type: "p",
+        text: "ARR multiple valuation is fast but fragile: enterprise value is roughly ARR × multiple, and both inputs can change meaningfully. A small sensitivity grid makes the uncertainty explicit.",
+      },
+      { type: "h2", text: "How to choose ranges" },
+      {
+        type: "bullets",
+        items: [
+          "ARR range: use realistic forecast error or pipeline volatility (e.g., ±10–20%).",
+          "Multiple range: use a market band from comparable companies (e.g., ±1–2 turns).",
+          "Use the same ARR definition across scenarios (exclude one-time items).",
+        ],
+      },
+      { type: "h2", text: "How to read the grid" },
+      {
+        type: "bullets",
+        items: [
+          "Rows/columns show how valuation responds to ARR vs multiple moves.",
+          "If multiple sensitivity dominates, valuation is mostly market-driven (quality signals matter).",
+          "If ARR sensitivity dominates, execution (growth, retention, pricing) matters most in the near term.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using a single multiple with false precision.",
+          "Mixing ARR definitions across periods (inconsistent run-rate).",
+          "Ignoring retention and margin (multiples reflect quality).",
+        ],
+      },
+    ],
+    examples: [
+      {
+        label: "Sensitivity example ($2.4M ARR, 6× multiple, ±15% ARR, ±1× multiple)",
+        calculatorSlug: "arr-valuation-sensitivity-calculator",
+        params: {
+          baseArr: "2400000",
+          arrStepPercent: "15",
+          baseMultiple: "6",
+          multipleStep: "1",
         },
       },
     ],

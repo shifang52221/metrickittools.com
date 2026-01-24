@@ -178,6 +178,41 @@ export const termsCore: GlossaryTerm[] = [
     ],
   },
   {
+    slug: "fully-loaded-cac",
+    title: "Fully-loaded CAC",
+    description:
+      "Fully-loaded CAC includes more of your acquisition costs (often sales & marketing salaries and tools) to make CAC planning-grade for unit economics.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    sections: [
+      { type: "h2", text: "Definition" },
+      {
+        type: "p",
+        text: "Fully-loaded CAC extends paid CAC by including additional acquisition costs beyond paid media—commonly sales & marketing salaries, commissions, and tooling—so the metric reflects the true cost to acquire a customer for planning and unit economics.",
+      },
+      { type: "h2", text: "Formula" },
+      {
+        type: "p",
+        text: "Fully-loaded CAC = total acquisition costs ÷ new paying customers acquired (same period)",
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Mixing paid-only CAC and fully-loaded CAC without labeling and consistency.",
+          "Including costs that aren’t acquisition-related (COGS, R&D) without a clear allocation method.",
+          "Comparing fully-loaded CAC to revenue-only payback or revenue LTV (use gross profit where appropriate).",
+        ],
+      },
+    ],
+    relatedGuideSlugs: ["fully-loaded-cac-guide", "cac-guide", "cac-payback-guide"],
+    relatedCalculatorSlugs: [
+      "fully-loaded-cac-calculator",
+      "cac-calculator",
+      "cac-payback-period-calculator",
+    ],
+  },
+  {
     slug: "ltv",
     title: "LTV (Lifetime Value)",
     description:

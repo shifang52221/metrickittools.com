@@ -926,6 +926,190 @@ export const calculators: CalculatorDefinition[] = [
     ],
   },
   {
+    slug: "fully-loaded-cac-calculator",
+    title: "Fully-loaded CAC Calculator",
+    description:
+      "Calculate fully-loaded CAC by including paid spend plus sales & marketing costs (salaries, tools, and other acquisition costs).",
+    category: "saas-metrics",
+    guideSlug: "fully-loaded-cac-guide",
+    relatedGlossarySlugs: ["cac", "fully-loaded-cac"],
+    seo: {
+      intro: [
+        "Fully-loaded CAC includes more than ad spend. It adds the costs required to acquire customers (sales & marketing salaries, tools, and other acquisition costs) to get a planning-grade CAC.",
+        "Use the same time window for costs and new customers, and keep the definition consistent over time so trends are meaningful.",
+      ],
+      steps: [
+        "Choose a time window (month/quarter) and a segment (paid channel, motion, plan).",
+        "Enter paid spend and other acquisition costs for the same window.",
+        "Enter the number of new paying customers acquired in the same window.",
+        "Compute fully-loaded CAC = total acquisition costs ÷ new customers.",
+      ],
+      pitfalls: [
+        "Using leads/trials as 'customers' (denominator mismatch).",
+        "Mixing time windows (monthly costs with quarterly customers).",
+        "Changing what you include month-to-month (definition drift).",
+      ],
+    },
+    inputs: [
+      {
+        key: "paidSpend",
+        label: "Paid media spend",
+        placeholder: "60000",
+        prefix: "$",
+        defaultValue: "60000",
+        min: 0,
+      },
+      {
+        key: "salaries",
+        label: "Sales & marketing salaries (allocated)",
+        help: "Allocated to acquisition for the same time window (include commissions if you treat them as acquisition cost).",
+        placeholder: "90000",
+        prefix: "$",
+        defaultValue: "90000",
+        min: 0,
+      },
+      {
+        key: "tools",
+        label: "Tools & software (allocated)",
+        placeholder: "12000",
+        prefix: "$",
+        defaultValue: "12000",
+        min: 0,
+      },
+      {
+        key: "otherCosts",
+        label: "Other acquisition costs (optional)",
+        help: "Agencies, creative production, list rentals, events, etc. (if you treat them as acquisition costs).",
+        placeholder: "8000",
+        prefix: "$",
+        defaultValue: "8000",
+        min: 0,
+      },
+      {
+        key: "newCustomers",
+        label: "New paying customers acquired",
+        placeholder: "120",
+        defaultValue: "120",
+        min: 0,
+        step: 1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const customers = Math.floor(values.newCustomers);
+      if (values.newCustomers !== customers)
+        warnings.push("New customers was rounded down to a whole number.");
+      if (customers <= 0)
+        warnings.push("New customers must be greater than 0 to compute CAC.");
+
+      const total =
+        values.paidSpend + values.salaries + values.tools + values.otherCosts;
+      if (total < 0)
+        warnings.push("Total acquisition costs must be 0 or greater.");
+
+      const cac = customers > 0 ? safeDivide(total, customers) : null;
+      if (cac === null) {
+        return {
+          headline: {
+            key: "cac",
+            label: "Fully-loaded CAC",
+            value: 0,
+            format: "currency",
+            currency: "USD",
+          },
+          warnings,
+        };
+      }
+
+      return {
+        headline: {
+          key: "cac",
+          label: "Fully-loaded CAC",
+          value: cac,
+          format: "currency",
+          currency: "USD",
+          detail: "Total acquisition costs ÷ new customers",
+        },
+        secondary: [
+          {
+            key: "total",
+            label: "Total acquisition costs",
+            value: total,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        breakdown: [
+          {
+            key: "paidSpend",
+            label: "Paid spend",
+            value: values.paidSpend,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "salaries",
+            label: "Salaries (allocated)",
+            value: values.salaries,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "tools",
+            label: "Tools (allocated)",
+            value: values.tools,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "otherCosts",
+            label: "Other costs",
+            value: values.otherCosts,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "newCustomers",
+            label: "New customers",
+            value: customers,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Fully-loaded CAC = (paid spend + salaries + tools + other) ÷ new customers",
+    assumptions: [
+      "All costs and new customers are measured over the same time window.",
+      "Salaries/tools are allocated to acquisition consistently (planning definition).",
+      "Use segment-level CAC (channel/plan) when possible; blended numbers can hide weak cohorts.",
+    ],
+    faqs: [
+      {
+        question: "Is fully-loaded CAC better than paid CAC?",
+        answer:
+          "They answer different questions. Paid CAC helps optimize paid channels; fully-loaded CAC is more useful for planning and unit economics because it includes the costs required to acquire customers.",
+      },
+      {
+        question: "Should I include support and COGS in CAC?",
+        answer:
+          "Typically no. CAC focuses on acquisition costs. Support/hosting are usually part of COGS and affect gross margin, which impacts payback and LTV.",
+      },
+    ],
+    guide: [
+      {
+        title: "How to use fully-loaded CAC",
+        bullets: [
+          "Use it for planning and unit economics (payback, LTV:CAC).",
+          "Keep the definition stable over time to avoid misleading trends.",
+          "Segment by channel and plan to find which motions are sustainable.",
+        ],
+      },
+    ],
+  },
+  {
     slug: "ltv-calculator",
     title: "LTV Calculator",
     description:
@@ -1051,6 +1235,186 @@ export const calculators: CalculatorDefinition[] = [
           "Using revenue churn (NRR/GRR) but labeling it as customer churn.",
           "Using annual churn with monthly ARPA (mismatched units).",
           "Ignoring expansion/upsell when churn is low.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "ltv-sensitivity-calculator",
+    title: "LTV Sensitivity Calculator",
+    description:
+      "See how gross profit LTV changes as churn and gross margin vary (simple 3×3 sensitivity).",
+    category: "saas-metrics",
+    guideSlug: "ltv-sensitivity-guide",
+    relatedGlossarySlugs: ["ltv", "arpa", "gross-margin", "churn-rate", "sensitivity-analysis"],
+    seo: {
+      intro: [
+        "Quick LTV models are simple but sensitive. Small changes in churn or gross margin can dramatically change LTV because churn sits in the denominator.",
+        "This calculator generates a 3×3 LTV grid by varying churn and gross margin around your base assumptions.",
+      ],
+      steps: [
+        "Enter ARPA (monthly), gross margin, and monthly churn as base inputs.",
+        "Choose step sizes for margin and churn (± around the base).",
+        "Review the LTV grid and identify which lever matters most for your model.",
+      ],
+      pitfalls: [
+        "Treating constant-churn LTV as precise (use cohorts for accuracy).",
+        "Using revenue LTV when comparing to fully-loaded CAC (mismatch).",
+        "Mixing monthly ARPA with annual churn (unit mismatch).",
+      ],
+    },
+    inputs: [
+      {
+        key: "arpaMonthly",
+        label: "ARPA (monthly)",
+        placeholder: "200",
+        prefix: "$",
+        defaultValue: "200",
+        min: 0,
+      },
+      {
+        key: "grossMarginPercent",
+        label: "Gross margin (base)",
+        placeholder: "80",
+        suffix: "%",
+        defaultValue: "80",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "marginStepPercent",
+        label: "Margin step",
+        help: "Uses ± step around margin base to create a 3×3 grid.",
+        placeholder: "5",
+        suffix: "%",
+        defaultValue: "5",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "monthlyChurnPercent",
+        label: "Monthly churn (base)",
+        placeholder: "3",
+        suffix: "%",
+        defaultValue: "3",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "churnStepPercent",
+        label: "Churn step",
+        help: "Uses ± step around churn base to create a 3×3 grid.",
+        placeholder: "1",
+        suffix: "%",
+        defaultValue: "1",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      if (values.arpaMonthly <= 0) warnings.push("ARPA must be greater than 0.");
+
+      const baseMargin = values.grossMarginPercent / 100;
+      const marginStep = values.marginStepPercent / 100;
+      if (baseMargin <= 0) warnings.push("Gross margin must be greater than 0%.");
+      if (baseMargin > 1) warnings.push("Gross margin must be 100% or less.");
+
+      const baseChurn = values.monthlyChurnPercent / 100;
+      const churnStep = values.churnStepPercent / 100;
+      if (baseChurn <= 0)
+        warnings.push("Monthly churn must be greater than 0% for LTV.");
+
+      const marginLow = Math.max(0, baseMargin - marginStep);
+      const marginMid = baseMargin;
+      const marginHigh = Math.min(1, baseMargin + marginStep);
+
+      const churnLow = Math.max(0.000001, baseChurn - churnStep);
+      const churnMid = baseChurn;
+      const churnHigh = baseChurn + churnStep;
+
+      const ltvAt = (margin: number, churn: number) => {
+        const gpPerMonth = values.arpaMonthly * margin;
+        return safeDivide(gpPerMonth, churn);
+      };
+
+      const baseLtv = ltvAt(marginMid, churnMid);
+      if (baseLtv === null) warnings.push("Base inputs are invalid for LTV.");
+
+      const grid: Array<{ key: string; label: string; value: number }> = [];
+      const points: Array<[string, number, number]> = [
+        ["ltv_marginLow_churnLow", marginLow, churnLow],
+        ["ltv_marginLow_churnMid", marginLow, churnMid],
+        ["ltv_marginLow_churnHigh", marginLow, churnHigh],
+        ["ltv_marginMid_churnLow", marginMid, churnLow],
+        ["ltv_marginMid_churnMid", marginMid, churnMid],
+        ["ltv_marginMid_churnHigh", marginMid, churnHigh],
+        ["ltv_marginHigh_churnLow", marginHigh, churnLow],
+        ["ltv_marginHigh_churnMid", marginHigh, churnMid],
+        ["ltv_marginHigh_churnHigh", marginHigh, churnHigh],
+      ];
+
+      for (const [key, margin, churn] of points) {
+        const ltv = ltvAt(margin, churn);
+        if (ltv === null) continue;
+        grid.push({
+          key,
+          label: `LTV @ ${(margin * 100).toFixed(1)}% / ${(churn * 100).toFixed(1)}% churn`,
+          value: ltv,
+        });
+      }
+
+      if (grid.length < 5) {
+        warnings.push(
+          "Many grid points are invalid because churn is too close to 0%. Increase churn or adjust steps.",
+        );
+      }
+
+      return {
+        headline: {
+          key: "ltvBase",
+          label: "Gross profit LTV (base case)",
+          value: baseLtv ?? (grid[0]?.value ?? 0),
+          format: "currency",
+          currency: "USD",
+          detail: `Base: ${values.grossMarginPercent.toFixed(1)}% / ${values.monthlyChurnPercent.toFixed(1)}% churn`,
+        },
+        secondary: grid.map((g) => ({
+          key: g.key,
+          label: g.label,
+          value: g.value,
+          format: "currency",
+          currency: "USD",
+        })),
+        warnings,
+      };
+    },
+    formula:
+      "Gross profit LTV ≈ (ARPA × gross margin) ÷ churn; Sensitivity varies gross margin and churn around a base case",
+    assumptions: [
+      "Uses a constant-churn shortcut model (planning).",
+      "LTV is modeled as gross profit (ARPA × gross margin) to align with CAC and payback.",
+      "Only shows a small grid; use cohort curves for precision.",
+    ],
+    faqs: [
+      {
+        question: "Why is LTV so sensitive to churn?",
+        answer:
+          "Because churn is in the denominator. Small changes in churn can create large changes in lifetime and therefore in LTV in simple models.",
+      },
+      {
+        question: "Should I use this instead of cohort LTV?",
+        answer:
+          "Use this for planning and sensitivity. For accuracy, use cohort-based LTV from observed retention and expansion over time.",
+      },
+    ],
+    guide: [
+      {
+        title: "How to use LTV sensitivity",
+        bullets: [
+          "If LTV is most sensitive to churn, prioritize retention and activation improvements.",
+          "If LTV is most sensitive to margin, prioritize COGS and variable cost improvements.",
+          "Pair with payback and CAC to ensure growth is cash-feasible.",
         ],
       },
     ],
@@ -1703,6 +2067,104 @@ export const calculators: CalculatorDefinition[] = [
           "Using total signups as the denominator instead of active users.",
           "Mixing gross revenue with net revenue (refunds/discounts) without noting it.",
           "Comparing ARPU across periods while changing pricing or activation criteria without segmentation.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "arpa-calculator",
+    title: "ARPA Calculator",
+    description:
+      "Calculate Average Revenue Per Account (ARPA) for a period and understand the ARPA formula.",
+    category: "saas-metrics",
+    guideSlug: "arpa-guide",
+    relatedGlossarySlugs: ["arpa", "arpa-vs-arpu"],
+    seo: {
+      intro: [
+        "ARPA (Average Revenue Per Account) is revenue ÷ average paying accounts for a period. It often matches B2B SaaS pricing better than ARPU because you sell to companies, not individual users.",
+        "To compare ARPA over time, keep the definition of 'paying account' and the revenue base consistent (gross vs net of refunds/credits).",
+      ],
+      steps: [
+        "Pick a time window (month/quarter) and define what counts as a paying account.",
+        "Sum revenue for that same window (choose a consistent revenue base).",
+        "Compute the average number of paying accounts for the window.",
+        "Divide revenue by average paying accounts to get ARPA.",
+      ],
+      pitfalls: [
+        "Mixing accounts and users (ARPA vs ARPU mismatch).",
+        "Including free/trial accounts in the denominator without labeling.",
+        "Comparing ARPA across periods with big pricing/mix changes without segmentation.",
+      ],
+    },
+    inputs: [
+      {
+        key: "revenue",
+        label: "Total revenue (period)",
+        placeholder: "120000",
+        prefix: "$",
+        defaultValue: "120000",
+        min: 0,
+      },
+      {
+        key: "avgAccounts",
+        label: "Average paying accounts (period)",
+        placeholder: "60",
+        defaultValue: "60",
+        min: 0,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      if (values.avgAccounts <= 0)
+        warnings.push("Average accounts must be greater than 0.");
+
+      const arpa = safeDivide(values.revenue, values.avgAccounts);
+      if (arpa === null) {
+        return {
+          headline: {
+            key: "arpa",
+            label: "ARPA",
+            value: 0,
+            format: "currency",
+            currency: "USD",
+          },
+          warnings,
+        };
+      }
+
+      return {
+        headline: {
+          key: "arpa",
+          label: "ARPA",
+          value: arpa,
+          format: "currency",
+          currency: "USD",
+          detail: "Revenue ÷ Avg. accounts",
+        },
+        warnings,
+      };
+    },
+    formula: "ARPA = Revenue ÷ Average Paying Accounts",
+    assumptions: ["Revenue and accounts are measured over the same period."],
+    faqs: [
+      {
+        question: "ARPA vs ARPU?",
+        answer:
+          "ARPA is per paying account/customer. ARPU is per active user. If you sell to companies, ARPA often matches pricing and reporting better.",
+      },
+      {
+        question: "Should ARPA use revenue or gross profit?",
+        answer:
+          "ARPA is usually revenue-based. For unit economics decisions, also compute gross profit per account (ARPA × gross margin).",
+      },
+    ],
+    guide: [
+      {
+        title: "Use ARPA effectively",
+        bullets: [
+          "Segment by plan and customer size; blended ARPA can hide mix shifts.",
+          "Pair ARPA with gross margin and churn to estimate LTV and payback.",
+          "Keep 'paying account' definition consistent over time.",
         ],
       },
     ],
@@ -2737,6 +3199,161 @@ export const calculators: CalculatorDefinition[] = [
     ],
   },
   {
+    slug: "arr-valuation-sensitivity-calculator",
+    title: "ARR Valuation Sensitivity Calculator",
+    description:
+      "Estimate valuation sensitivity to ARR and revenue multiple assumptions (simple 3×3 grid).",
+    category: "saas-metrics",
+    guideSlug: "arr-valuation-sensitivity-guide",
+    relatedGlossarySlugs: ["arr", "arr-valuation-multiple", "sensitivity-analysis"],
+    seo: {
+      intro: [
+        "ARR multiple valuation is fast: enterprise value ≈ ARR × multiple. But both ARR and multiples move with market conditions, pricing, and retention.",
+        "A small sensitivity grid helps you see how fragile (or robust) the valuation is to reasonable changes in ARR and the multiple.",
+      ],
+      steps: [
+        "Enter your base ARR and base multiple.",
+        "Choose step sizes for ARR and the multiple (± around the base).",
+        "Review the 3×3 grid of valuations.",
+      ],
+      pitfalls: [
+        "Treating a single multiple as precise (false precision).",
+        "Using inconsistent ARR definitions (including one-time items).",
+        "Ignoring retention and margin (multiples depend on quality).",
+      ],
+    },
+    inputs: [
+      {
+        key: "baseArr",
+        label: "Base ARR",
+        placeholder: "2400000",
+        prefix: "$",
+        defaultValue: "2400000",
+        min: 0,
+      },
+      {
+        key: "arrStepPercent",
+        label: "ARR step",
+        help: "Uses ± step around ARR base to create a 3×3 grid.",
+        placeholder: "15",
+        suffix: "%",
+        defaultValue: "15",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "baseMultiple",
+        label: "Base multiple",
+        placeholder: "6",
+        defaultValue: "6",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "multipleStep",
+        label: "Multiple step",
+        help: "Uses ± step around the multiple base to create a 3×3 grid.",
+        placeholder: "1",
+        defaultValue: "1",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      if (values.baseArr < 0) warnings.push("Base ARR must be 0 or greater.");
+      if (values.baseMultiple <= 0) warnings.push("Base multiple must be greater than 0.");
+      if (values.arrStepPercent < 0) warnings.push("ARR step must be 0% or greater.");
+      if (values.multipleStep < 0) warnings.push("Multiple step must be 0 or greater.");
+
+      const arrStep = values.arrStepPercent / 100;
+      const arrLow = Math.max(0, values.baseArr * (1 - arrStep));
+      const arrMid = values.baseArr;
+      const arrHigh = values.baseArr * (1 + arrStep);
+
+      const mLow = Math.max(0, values.baseMultiple - values.multipleStep);
+      const mMid = values.baseMultiple;
+      const mHigh = values.baseMultiple + values.multipleStep;
+
+      const evAt = (arr: number, multiple: number) => arr * multiple;
+      const baseEv = evAt(arrMid, mMid);
+
+      const grid: Array<{ key: string; label: string; value: number }> = [];
+      const points: Array<[string, number, number]> = [
+        ["ev_arrLow_mLow", arrLow, mLow],
+        ["ev_arrLow_mMid", arrLow, mMid],
+        ["ev_arrLow_mHigh", arrLow, mHigh],
+        ["ev_arrMid_mLow", arrMid, mLow],
+        ["ev_arrMid_mMid", arrMid, mMid],
+        ["ev_arrMid_mHigh", arrMid, mHigh],
+        ["ev_arrHigh_mLow", arrHigh, mLow],
+        ["ev_arrHigh_mMid", arrHigh, mMid],
+        ["ev_arrHigh_mHigh", arrHigh, mHigh],
+      ];
+
+      for (const [key, arr, multiple] of points) {
+        if (multiple <= 0) continue;
+        grid.push({
+          key,
+          label: `EV @ $${arr.toFixed(0)} / ${multiple.toFixed(1)}×`,
+          value: evAt(arr, multiple),
+        });
+      }
+
+      if (mLow <= 0)
+        warnings.push(
+          "Low multiple is 0 or less; increase base multiple or reduce step.",
+        );
+
+      return {
+        headline: {
+          key: "evBase",
+          label: "Enterprise value (base case)",
+          value: baseEv,
+          format: "currency",
+          currency: "USD",
+          detail: `Base: $${values.baseArr.toFixed(0)} / ${values.baseMultiple.toFixed(1)}×`,
+        },
+        secondary: grid.map((g) => ({
+          key: g.key,
+          label: g.label,
+          value: g.value,
+          format: "currency",
+          currency: "USD",
+        })),
+        warnings,
+      };
+    },
+    formula: "Enterprise value ≈ ARR × multiple; Sensitivity varies ARR and multiple around a base case",
+    assumptions: [
+      "This is a heuristic. Real valuation depends on growth, margin, retention, and market conditions.",
+      "Uses enterprise value (EV) as ARR × multiple (simplified).",
+      "Only shows a small grid; use broader scenarios for full planning.",
+    ],
+    faqs: [
+      {
+        question: "Is this a full valuation model?",
+        answer:
+          "No. This is a multiple-based heuristic. For deeper analysis, use DCF or a comps model that reflects retention, growth, margin, and risk.",
+      },
+      {
+        question: "Why sensitivity on ARR as well as multiple?",
+        answer:
+          "ARR can change with pricing, churn, and mix. The multiple can change with market conditions and your growth/retention profile. Both move in practice.",
+      },
+    ],
+    guide: [
+      {
+        title: "How to use ARR valuation sensitivity",
+        bullets: [
+          "Treat the grid as a scenario range, not a precise estimate.",
+          "Pair valuation scenarios with unit economics (payback, burn multiple) to ensure growth is sustainable.",
+          "Use a clean ARR definition (recurring only) to avoid inflating the base case.",
+        ],
+      },
+    ],
+  },
+  {
     slug: "nrr-calculator",
     title: "NRR Calculator",
     description:
@@ -3040,6 +3657,299 @@ export const calculators: CalculatorDefinition[] = [
           "Track GRR by customer size and plan to find where churn risk is concentrated.",
           "Use cohort curves to understand when contraction happens (early vs later).",
           "Pair GRR with churned MRR and logo churn for a full picture.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "nrr-vs-grr-calculator",
+    title: "NRR vs GRR Calculator",
+    description:
+      "Calculate NRR and GRR together from the same starting MRR and expansion/contraction/churn inputs.",
+    category: "saas-metrics",
+    guideSlug: "nrr-vs-grr-guide",
+    relatedGlossarySlugs: ["nrr", "grr", "revenue-churn"],
+    seo: {
+      intro: [
+        "NRR (Net Revenue Retention) includes expansion. GRR (Gross Revenue Retention) excludes expansion and focuses on durability after churn and downgrades.",
+        "Calculating both from the same inputs prevents definition drift and makes retention diagnostics faster.",
+      ],
+      steps: [
+        "Enter starting MRR for the cohort (beginning of period).",
+        "Enter expansion, contraction, and churned MRR for the same cohort and period.",
+        "Compute NRR and GRR and compare the gap to understand how much expansion is offsetting churn/downgrades.",
+      ],
+      pitfalls: [
+        "Mixing cohorts or time windows (starting MRR from one cohort, movements from another).",
+        "Including one-time items or billings/cash in MRR movements.",
+        "Using blended numbers that hide segment churn pockets.",
+      ],
+    },
+    inputs: [
+      {
+        key: "startingMrr",
+        label: "Starting MRR",
+        placeholder: "100000",
+        prefix: "$",
+        defaultValue: "100000",
+        min: 0,
+      },
+      {
+        key: "expansionMrr",
+        label: "Expansion MRR",
+        placeholder: "12000",
+        prefix: "$",
+        defaultValue: "12000",
+        min: 0,
+      },
+      {
+        key: "contractionMrr",
+        label: "Contraction MRR",
+        placeholder: "5000",
+        prefix: "$",
+        defaultValue: "5000",
+        min: 0,
+      },
+      {
+        key: "churnedMrr",
+        label: "Churned MRR",
+        placeholder: "8000",
+        prefix: "$",
+        defaultValue: "8000",
+        min: 0,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      if (values.startingMrr <= 0)
+        warnings.push("Starting MRR must be greater than 0.");
+      if (values.expansionMrr < 0) warnings.push("Expansion MRR must be 0 or greater.");
+      if (values.contractionMrr < 0)
+        warnings.push("Contraction MRR must be 0 or greater.");
+      if (values.churnedMrr < 0) warnings.push("Churned MRR must be 0 or greater.");
+
+      const nrr = safeDivide(
+        values.startingMrr +
+          values.expansionMrr -
+          values.contractionMrr -
+          values.churnedMrr,
+        values.startingMrr,
+      );
+      const grr = safeDivide(
+        values.startingMrr - values.contractionMrr - values.churnedMrr,
+        values.startingMrr,
+      );
+
+      if (nrr === null || grr === null) {
+        return {
+          headline: {
+            key: "nrr",
+            label: "NRR",
+            value: 0,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          warnings,
+        };
+      }
+
+      const gap = nrr - grr;
+
+      return {
+        headline: {
+          key: "nrr",
+          label: "NRR",
+          value: nrr,
+          format: "percent",
+          maxFractionDigits: 2,
+          detail: "(Start + expansion − contraction − churn) ÷ start",
+        },
+        secondary: [
+          {
+            key: "grr",
+            label: "GRR",
+            value: grr,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: "(Start − contraction − churn) ÷ start",
+          },
+          {
+            key: "gap",
+            label: "NRR − GRR (expansion offset)",
+            value: gap,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: "How much expansion offsets losses",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "NRR = (start + expansion − contraction − churn) ÷ start; GRR = (start − contraction − churn) ÷ start",
+    assumptions: [
+      "All inputs represent the same cohort and time window.",
+      "MRR movements reflect recurring run-rate changes (not billings/cash).",
+    ],
+    faqs: [
+      {
+        question: "Can NRR be above 100%?",
+        answer:
+          "Yes. If expansion exceeds contraction + churn, the cohort grows without new customers and NRR can exceed 100%.",
+      },
+      {
+        question: "Why track GRR if NRR looks strong?",
+        answer:
+          "NRR can look strong due to expansion even when churn/downgrades are weak. GRR isolates durability without expansion.",
+      },
+    ],
+    guide: [
+      {
+        title: "How to use NRR vs GRR",
+        bullets: [
+          "If GRR is weak, focus on churn and downgrades (product value, support, renewals).",
+          "If GRR is strong but NRR is flat, focus on expansion levers (upsell, seats, pricing).",
+          "Always segment by customer size and plan to avoid blended averages.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "gross-revenue-churn-calculator",
+    title: "Gross Revenue Churn Calculator",
+    description:
+      "Calculate gross revenue churn rate from contraction and churned MRR (with monthly-equivalent conversion).",
+    category: "saas-metrics",
+    guideSlug: "gross-revenue-churn-guide",
+    relatedGlossarySlugs: ["revenue-churn", "gross-revenue-churn", "mrr"],
+    seo: {
+      intro: [
+        "Gross revenue churn is the share of starting MRR you lost to downgrades (contraction) and cancellations (churn) over a period. It excludes expansion by definition.",
+        "If your window is not monthly, convert to a monthly-equivalent churn rate so you can compare periods consistently.",
+      ],
+      steps: [
+        "Enter starting MRR for the cohort (beginning of period).",
+        "Enter contraction MRR and churned MRR for the same cohort and period.",
+        "Compute gross revenue churn = (contraction + churn) ÷ starting MRR.",
+        "Optionally convert to monthly-equivalent churn for non-monthly windows.",
+      ],
+      pitfalls: [
+        "Mixing cohorts or time windows (starting MRR from one cohort, losses from another).",
+        "Including expansion (gross churn excludes expansion).",
+        "Using ending MRR as the denominator instead of starting MRR.",
+      ],
+    },
+    inputs: [
+      {
+        key: "startingMrr",
+        label: "Starting MRR",
+        placeholder: "100000",
+        prefix: "$",
+        defaultValue: "100000",
+        min: 0,
+      },
+      {
+        key: "contractionMrr",
+        label: "Contraction MRR (downgrades)",
+        placeholder: "5000",
+        prefix: "$",
+        defaultValue: "5000",
+        min: 0,
+      },
+      {
+        key: "churnedMrr",
+        label: "Churned MRR (cancellations)",
+        placeholder: "8000",
+        prefix: "$",
+        defaultValue: "8000",
+        min: 0,
+      },
+      {
+        key: "periodMonths",
+        label: "Period length (months)",
+        help: "Use 1 for monthly gross churn; 3 for quarterly, etc.",
+        placeholder: "1",
+        defaultValue: "1",
+        min: 1,
+        step: 1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const months = Math.max(1, Math.floor(values.periodMonths));
+      if (values.periodMonths !== months)
+        warnings.push("Period months was rounded down to a whole number.");
+
+      if (values.startingMrr <= 0)
+        warnings.push("Starting MRR must be greater than 0 to compute churn.");
+      if (values.contractionMrr < 0) warnings.push("Contraction MRR must be 0 or greater.");
+      if (values.churnedMrr < 0) warnings.push("Churned MRR must be 0 or greater.");
+
+      const losses = values.contractionMrr + values.churnedMrr;
+      if (values.startingMrr > 0 && losses > values.startingMrr)
+        warnings.push("Losses exceed starting MRR (check inputs).");
+
+      const periodChurn = safeDivide(losses, values.startingMrr);
+      const monthlyEquivalent =
+        periodChurn !== null && months > 0
+          ? 1 - Math.pow(1 - Math.min(1, Math.max(0, periodChurn)), 1 / months)
+          : null;
+
+      return {
+        headline: {
+          key: "grossChurn",
+          label: "Gross revenue churn (period)",
+          value: periodChurn ?? 0,
+          format: "percent",
+          maxFractionDigits: 2,
+          detail: "(Contraction + churn) ÷ starting MRR",
+        },
+        secondary: [
+          {
+            key: "monthlyEquivalent",
+            label: "Monthly-equivalent gross revenue churn",
+            value: monthlyEquivalent ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: monthlyEquivalent === null ? "Requires valid inputs" : `Converted from ${months} month period`,
+          },
+          {
+            key: "losses",
+            label: "Total losses (contraction + churn)",
+            value: losses,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Gross revenue churn = (contraction + churned MRR) ÷ starting MRR; Monthly-equivalent = 1 − (1 − period churn)^(1/period months)",
+    assumptions: [
+      "Uses starting MRR as the denominator (standard for churn rates).",
+      "Gross churn excludes expansion by definition.",
+      "Monthly-equivalent conversion assumes smooth compounding across the period (approximation).",
+    ],
+    faqs: [
+      {
+        question: "Is gross revenue churn the same as GRR?",
+        answer:
+          "They are closely related. GRR is the remaining revenue after losses (ending gross ÷ starting). Gross revenue churn focuses on the losses ((contraction + churn) ÷ starting).",
+      },
+      {
+        question: "Should I include expansion in gross churn?",
+        answer:
+          "No. Gross churn excludes expansion. Expansion is tracked separately and is included in NRR.",
+      },
+    ],
+    guide: [
+      {
+        title: "Gross revenue churn tips",
+        bullets: [
+          "Track contraction and churned MRR separately to diagnose downgrades vs cancellations.",
+          "Segment by plan and customer size; blended churn can hide weak cohorts.",
+          "Use GRR/NRR alongside churn to get the full retention picture.",
         ],
       },
     ],

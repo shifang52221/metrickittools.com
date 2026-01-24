@@ -263,6 +263,30 @@ const seeds: Seed[] = [
     ],
   },
   {
+    slug: "gross-revenue-churn",
+    title: "Gross Revenue Churn",
+    description:
+      "Gross revenue churn is the share of starting MRR lost to downgrades (contraction) and cancellations (churn) over a period. It excludes expansion by definition.",
+    formula:
+      "Gross revenue churn = (contraction MRR + churned MRR) ÷ starting MRR",
+    bullets: [
+      "It’s a loss metric (how much revenue you lost), not a remaining metric.",
+      "Use the same cohort and time window for starting MRR and losses.",
+      "Track gross churn alongside GRR/NRR to avoid being misled by expansion.",
+    ],
+    mistakes: [
+      "Including expansion (gross churn excludes it).",
+      "Mixing cohorts or time windows (start from one cohort, losses from another).",
+      "Using ending MRR as the denominator instead of starting MRR.",
+    ],
+    relatedGuideSlugs: ["gross-revenue-churn-guide", "churn-guide", "grr-guide", "nrr-guide"],
+    relatedCalculatorSlugs: [
+      "gross-revenue-churn-calculator",
+      "grr-calculator",
+      "nrr-calculator",
+    ],
+  },
+  {
     slug: "nrr",
     title: "NRR (Net Revenue Retention)",
     description:
