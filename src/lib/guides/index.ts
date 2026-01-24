@@ -3878,6 +3878,546 @@ export const guides: Guide[] = [
       },
     ],
   },
+  {
+    slug: "ab-test-sample-size-guide",
+    title: "A/B test sample size: how to plan conversion experiments",
+    description:
+      "A practical guide to A/B test planning: baseline CVR, MDE, alpha, power, sample size, and common pitfalls like peeking.",
+    category: "paid-ads",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["ab-test-sample-size-calculator"],
+    relatedGlossarySlugs: ["ab-test", "statistical-significance", "power", "mde", "cvr"],
+    sections: [
+      { type: "h2", text: "Why sample size planning matters" },
+      {
+        type: "p",
+        text: "Without enough sample, A/B tests produce noisy results: you might ship a false win or miss a real improvement. Planning sample size sets expectations for how long a test must run.",
+      },
+      { type: "h2", text: "Key inputs" },
+      {
+        type: "bullets",
+        items: [
+          "Baseline CVR: your current conversion rate for the exact funnel definition.",
+          "MDE: the smallest lift worth acting on (absolute percentage points).",
+          "Alpha: tolerated false positive rate (commonly 5% for two-sided tests).",
+          "Power: probability of detecting the effect if it’s real (commonly 80–90%).",
+        ],
+      },
+      { type: "h2", text: "Common pitfalls" },
+      {
+        type: "bullets",
+        items: [
+          "Peeking and stopping early (inflates false positives).",
+          "Picking an unrealistic MDE (forces huge sample sizes).",
+          "Mixing denominators (click CVR vs session CVR) and invalidating the test.",
+          "Running tests through seasonality or major site changes without controls.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Should I use one-sided or two-sided tests?",
+        answer:
+          "Two-sided is safer and more standard unless you truly would never act on a negative result. This calculator assumes a two-sided test.",
+      },
+      {
+        question: "What if traffic is low?",
+        answer:
+          "Increase MDE (test bigger changes), increase test duration, or test higher-funnel metrics first. You can also pool traffic across similar pages if the experience is consistent.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: 2.5% baseline, 0.5pp MDE, 5% alpha, 80% power",
+        calculatorSlug: "ab-test-sample-size-calculator",
+        params: {
+          baselineCvrPercent: "2.5",
+          mdePercentPoints: "0.5",
+          alphaPercent: "5",
+          powerPercent: "80",
+        },
+      },
+    ],
+  },
+  {
+    slug: "cpl-to-cac-guide",
+    title: "CPL to CAC: why lead gen metrics mislead (and how to fix it)",
+    description:
+      "A practical guide to converting CPL into CAC using lead-to-customer rates, and how to improve CAC by improving lead quality and close rate.",
+    category: "paid-ads",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["cpl-to-cac-calculator", "blended-cac-calculator"],
+    relatedGlossarySlugs: ["cpl", "cac", "cpa", "lead-to-customer-rate", "incrementality"],
+    sections: [
+      { type: "h2", text: "Why CPL can be a trap" },
+      {
+        type: "p",
+        text: "CPL is only meaningful if lead quality is stable. If lead-to-customer rate falls, CAC rises even if CPL looks great. Always connect top-of-funnel metrics to paying-customer outcomes.",
+      },
+      { type: "h2", text: "Core relationship" },
+      {
+        type: "p",
+        text: "CAC = CPL ÷ (lead-to-customer rate).",
+      },
+      { type: "h2", text: "How to improve CAC (practical levers)" },
+      {
+        type: "bullets",
+        items: [
+          "Improve lead quality: tighter targeting, better qualification, clearer messaging.",
+          "Improve close rate: faster follow-up, better sales process, better offer.",
+          "Reduce CPL without losing quality: creative testing, landing page optimization.",
+          "Measure cohorts: today’s leads convert later; short windows can lie.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Changing lead definition (MQL/SQL drift) and breaking CAC comparisons.",
+          "Optimizing for volume and reducing intent (close rate drops).",
+          "Ignoring incrementality and counting conversions that would happen anyway.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Should I use CPA or CAC in reporting?",
+        answer:
+          "CPA often refers to cost per conversion event (lead, signup, purchase). CAC should refer to cost per new paying customer. Use both, but label the denominator clearly.",
+      },
+      {
+        question: "What if my sales cycle is long?",
+        answer:
+          "Use cohort-based reporting: group leads by week/month acquired and measure eventual conversion to customer. Otherwise CAC will look worse in recent periods due to lag.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $80 CPL, 5% lead-to-customer rate, $1,500 target CAC",
+        calculatorSlug: "cpl-to-cac-calculator",
+        params: {
+          cpl: "80",
+          leadToCustomerRatePercent: "5",
+          targetCac: "1500",
+        },
+      },
+    ],
+  },
+  {
+    slug: "break-even-cvr-guide",
+    title: "Break-even CVR: required conversion rate at a given CPM and CTR",
+    description:
+      "A practical guide to break-even CVR: compute required CVR from CPM, CTR, AOV, and margin, and how to use it for landing page targets.",
+    category: "paid-ads",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["break-even-cvr-calculator", "break-even-ctr-calculator", "break-even-cpm-calculator"],
+    relatedGlossarySlugs: ["cvr", "cpm", "ctr", "aov", "contribution-margin", "break-even-cpm"],
+    sections: [
+      { type: "h2", text: "What break-even CVR tells you" },
+      {
+        type: "p",
+        text: "Break-even CVR tells you how strong your click-to-conversion rate must be to justify a given CPM and CTR given your AOV and margin. It’s a fast way to sanity-check whether a placement mix can be profitable.",
+      },
+      { type: "h2", text: "Core relationship" },
+      {
+        type: "p",
+        text: "Break-even CVR = CPM ÷ (1000 × CTR × AOV × margin).",
+      },
+      { type: "h2", text: "How to use it" },
+      {
+        type: "bullets",
+        items: [
+          "If required CVR is unrealistic, you need lower CPM, higher CTR, higher AOV, or higher margin.",
+          "Add a buffer; operating at break-even is fragile under noise and attribution error.",
+          "Validate with incrementality as spend scales.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is CVR a landing page metric or a funnel metric?",
+        answer:
+          "Both. CVR can mean click→purchase, session→purchase, or click→lead depending on your definition. Use the definition that matches your spend denominator and your business model.",
+      },
+      {
+        question: "How do I increase CVR fastest?",
+        answer:
+          "Improve offer clarity, reduce friction, speed up pages, improve trust signals, and match ad intent to landing content. Also filter low-intent traffic that inflates clicks without conversions.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $12 CPM, 1.5% CTR, $80 AOV, 40% margin, 20% buffer",
+        calculatorSlug: "break-even-cvr-calculator",
+        params: {
+          cpm: "12",
+          ctrPercent: "1.5",
+          aov: "80",
+          contributionMarginPercent: "40",
+          profitBufferPercent: "20",
+        },
+      },
+    ],
+  },
+  {
+    slug: "retention-targets-planner-guide",
+    title: "NRR/GRR targets: how to translate targets into expansion and churn goals",
+    description:
+      "A practical guide to retention targets: how NRR maps to required expansion and how GRR maps to maximum churn+contraction (with monthly vs annual units).",
+    category: "saas-metrics",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["retention-targets-planner-calculator", "revenue-retention-curve-calculator"],
+    relatedGlossarySlugs: [
+      "nrr",
+      "grr",
+      "net-retention",
+      "gross-retention",
+      "expansion-mrr",
+      "contraction-mrr",
+      "revenue-churn",
+    ],
+    sections: [
+      { type: "h2", text: "What targets should do" },
+      {
+        type: "p",
+        text: "Retention targets are only useful if they turn into controllable levers. NRR targets imply an expansion requirement. GRR targets imply a maximum combined churn+contraction allowance.",
+      },
+      { type: "h2", text: "Two identities (monthly)" },
+      {
+        type: "bullets",
+        items: [
+          "NRR = 1 + expansion - contraction - churn.",
+          "GRR = 1 - contraction - churn.",
+        ],
+      },
+      { type: "h2", text: "Avoid unit mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Do not plug annual NRR into a monthly model without conversion.",
+          "Monthly targets compound: small differences become huge over 12 months.",
+          "Set targets by segment (plan/channel) to avoid blended averages.",
+        ],
+      },
+      { type: "h2", text: "How to use targets operationally" },
+      {
+        type: "bullets",
+        items: [
+          "Expansion: upsells, seat growth, add-ons, pricing migrations.",
+          "Contraction: prevent downgrades via value realization and success programs.",
+          "Churn: activation, onboarding, product quality, support, pricing fit.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Should I prioritize GRR or NRR?",
+        answer:
+          "Both matter. GRR measures leakiness (product quality). NRR measures total existing-base growth including expansion. Strong NRR can hide weak GRR, so track both.",
+      },
+      {
+        question: "Do these formulas apply to all businesses?",
+        answer:
+          "They apply to recurring revenue cohorts. If you have one-time revenue, use different metrics or isolate the recurring base first.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: 1.5% churn, 0.5% contraction, target 102% NRR and 98% GRR (monthly)",
+        calculatorSlug: "retention-targets-planner-calculator",
+        params: {
+          monthlyChurnPercent: "1.5",
+          monthlyContractionPercent: "0.5",
+          targetMonthlyNrrPercent: "102",
+          targetMonthlyGrrPercent: "98",
+        },
+      },
+    ],
+  },
+  {
+    slug: "gross-margin-impact-guide",
+    title: "Gross margin improvements: how margin changes LTV, payback, and growth ability",
+    description:
+      "A practical guide to margin leverage: how improving gross margin increases gross profit LTV and speeds up CAC payback.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["gross-margin-impact-calculator", "unit-economics-dashboard-calculator"],
+    relatedGlossarySlugs: ["gross-margin", "ltv", "payback-period", "cac", "arpa", "churn-rate"],
+    sections: [
+      { type: "h2", text: "Why margin is a growth lever" },
+      {
+        type: "p",
+        text: "Higher gross margin increases gross profit per customer. That directly increases LTV (when modeled on gross profit) and reduces payback, which improves your ability to scale acquisition without running out of cash.",
+      },
+      { type: "h2", text: "Key relationships" },
+      {
+        type: "bullets",
+        items: [
+          "Gross profit/month = ARPA × gross margin.",
+          "Payback ≈ CAC ÷ gross profit/month.",
+          "Gross profit LTV ≈ (ARPA×gross margin) ÷ churn (shortcut).",
+        ],
+      },
+      { type: "h2", text: "How to improve margin (practical)" },
+      {
+        type: "bullets",
+        items: [
+          "Reduce infrastructure and delivery costs (optimize usage, contracts, architecture).",
+          "Reduce support and success costs per customer (self-serve, product improvements).",
+          "Fix refunds/returns and payment fees (where applicable).",
+          "Improve pricing and packaging (capture value delivered).",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using revenue LTV and forgetting costs.",
+          "Assuming churn stays constant after pricing changes.",
+          "Ignoring segment differences (margin and churn can vary by plan).",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Should I optimize gross margin or contribution margin?",
+        answer:
+          "If variable costs beyond COGS are meaningful, contribution margin is more decision-useful for acquisition and payback. Use the definition that matches your model.",
+      },
+      {
+        question: "Can margin improvements hurt retention?",
+        answer:
+          "Yes if margin improvements come from reducing customer value (support cuts, feature removal). Validate with cohort retention and NRR/GRR trends.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $800 ARPA, 2% churn, $6k CAC, 70%→80% margin",
+        calculatorSlug: "gross-margin-impact-calculator",
+        params: {
+          arpaMonthly: "800",
+          monthlyChurnPercent: "2",
+          cac: "6000",
+          currentGrossMarginPercent: "70",
+          targetGrossMarginPercent: "80",
+        },
+      },
+    ],
+  },
+  {
+    slug: "pricing-packaging-guardrails-guide",
+    title: "Pricing guardrails: payback-based minimum price and max discount",
+    description:
+      "A practical guide to pricing guardrails: compute minimum ARPA (or max discount) from CAC, margin, and a target payback to avoid breaking unit economics.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["pricing-packaging-guardrails-calculator", "price-increase-break-even-calculator"],
+    relatedGlossarySlugs: ["cac-payback-period", "gross-margin", "arpa", "price-increase", "discount-rate"],
+    sections: [
+      { type: "h2", text: "Why payback guardrails matter" },
+      {
+        type: "p",
+        text: "Discounts and packaging changes can quietly destroy payback. Guardrails convert a target payback into a minimum ARPA (or a maximum discount) so pricing decisions don’t break your cash model.",
+      },
+      { type: "h2", text: "Core relationship" },
+      {
+        type: "p",
+        text: "Payback ≈ CAC ÷ (ARPA×margin). Rearranging gives min ARPA and max discount allowed for a payback target.",
+      },
+      { type: "h2", text: "How to use it" },
+      {
+        type: "bullets",
+        items: [
+          "Set guardrails by segment (plan, channel, region) rather than a blended average.",
+          "Pair payback guardrails with retention risk checks (churn sensitivity).",
+          "Use in discount approval workflows to prevent out-of-policy deals.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using revenue instead of gross profit (margin).",
+          "Ignoring churn changes from pricing changes.",
+          "Using one guardrail for all segments despite different CAC and ARPA.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "If I hit payback, am I safe?",
+        answer:
+          "Not always. Payback is a cash constraint, but you still need long-run profitability and retention. Pair payback with LTV and retention curves.",
+      },
+      {
+        question: "Should I use ARR instead of ARPA?",
+        answer:
+          "For monthly payback, use monthly ARPA. You can convert annual pricing to monthly ARPA for consistent units.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $800 ARPA, $6k CAC, 80% margin, 12-month payback target",
+        calculatorSlug: "pricing-packaging-guardrails-calculator",
+        params: {
+          currentArpaMonthly: "800",
+          cac: "6000",
+          grossMarginPercent: "80",
+          targetPaybackMonths: "12",
+        },
+      },
+    ],
+  },
+  {
+    slug: "loan-payment-guide",
+    title: "Loan amortization: how monthly payments and total interest work",
+    description:
+      "A practical guide to loan amortization: monthly payment formula, why interest dominates early, and how term and rate affect total interest.",
+    category: "finance",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["loan-payment-calculator"],
+    relatedGlossarySlugs: ["apr", "amortization", "principal", "interest-rate"],
+    sections: [
+      { type: "h2", text: "What amortization means" },
+      {
+        type: "p",
+        text: "Amortization is the process of repaying a loan over time with fixed payments. Each payment includes interest on the outstanding principal and a principal repayment component.",
+      },
+      { type: "h2", text: "Why early payments are interest-heavy" },
+      {
+        type: "p",
+        text: "Interest is calculated on the remaining balance. Early on, the balance is high, so interest is high. Over time, as principal decreases, the interest portion falls and principal repayment increases.",
+      },
+      { type: "h2", text: "How to use this calculator" },
+      {
+        type: "bullets",
+        items: [
+          "Compare terms: longer term lowers monthly payment but increases total interest.",
+          "Compare rates: small APR changes can have large payment impact over long terms.",
+          "Use scenarios for refinance decisions (include fees separately).",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Does this include property taxes or insurance?",
+        answer:
+          "No. This calculator is for principal+interest only. Taxes, insurance, PMI, and fees can materially change total monthly cost.",
+      },
+      {
+        question: "How do extra payments affect the loan?",
+        answer:
+          "Extra principal payments reduce balance faster, which reduces total interest and can shorten the term. This calculator assumes no extra payments.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $300k principal, 6.5% APR, 30 years",
+        calculatorSlug: "loan-payment-calculator",
+        params: { principal: "300000", aprPercent: "6.5", termYears: "30" },
+      },
+    ],
+  },
+  {
+    slug: "apr-vs-apy-guide",
+    title: "APR vs APY: how compounding changes the effective rate",
+    description:
+      "A practical guide to APR vs APY: what each means, how to convert between them, and common comparison mistakes.",
+    category: "finance",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["apr-to-apy-calculator"],
+    relatedGlossarySlugs: ["apr", "apy", "compounding", "interest-rate"],
+    sections: [
+      { type: "h2", text: "APR vs APY in plain English" },
+      {
+        type: "p",
+        text: "APR is a nominal annual rate. APY is the effective annual rate after compounding. If interest compounds more than once per year, APY will be higher than APR (for positive rates).",
+      },
+      { type: "h2", text: "Conversion formula" },
+      {
+        type: "p",
+        text: "APY = (1 + APR/n)^n - 1, where n is compounding periods per year.",
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Comparing APRs with different compounding conventions.",
+          "Confusing APY (nominal compounding) with real return (inflation-adjusted).",
+          "Ignoring fees and points that change the effective cost/return.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Why do savings accounts advertise APY?",
+        answer:
+          "APY standardizes the effective annual yield including compounding so products are easier to compare.",
+      },
+      {
+        question: "Is APR always the right number for loans?",
+        answer:
+          "APR helps compare loans, but fees, points, and repayment structure can still matter. Always check total cost under your expected repayment plan.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: 6.0% APR compounded monthly",
+        calculatorSlug: "apr-to-apy-calculator",
+        params: { aprPercent: "6.0", compoundsPerYear: "12" },
+      },
+    ],
+  },
+  {
+    slug: "real-vs-nominal-return-guide",
+    title: "Real vs nominal return: inflation-adjusted performance",
+    description:
+      "A practical guide to real return: how inflation changes purchasing power and why nominal returns can mislead over long horizons.",
+    category: "finance",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["real-return-calculator"],
+    relatedGlossarySlugs: ["inflation", "real-return", "interest-rate"],
+    sections: [
+      { type: "h2", text: "Why real return matters" },
+      {
+        type: "p",
+        text: "Nominal returns measure how your balance changes. Real returns measure how your purchasing power changes after inflation. Over long horizons, the difference can be huge.",
+      },
+      { type: "h2", text: "Core relationship" },
+      {
+        type: "p",
+        text: "Real return ≈ (1 + nominal) ÷ (1 + inflation) - 1.",
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Comparing nominal returns across periods with different inflation regimes.",
+          "Using CPI inflation as a precise measure for personal spending baskets.",
+          "Ignoring taxes (after-tax real return can be materially lower).",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Can real return be negative when nominal return is positive?",
+        answer:
+          "Yes. If inflation exceeds nominal return, purchasing power falls even if the nominal balance grows.",
+      },
+      {
+        question: "Is real return enough to compare investments?",
+        answer:
+          "It’s necessary but not sufficient. You also need to consider risk, volatility, and liquidity. Real return is about purchasing power, not risk-adjusted performance.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: 10% nominal return, 3% inflation",
+        calculatorSlug: "real-return-calculator",
+        params: { nominalReturnPercent: "10", inflationPercent: "3" },
+      },
+    ],
+  },
 ];
 
 export function getGuide(slug: string): Guide | undefined {

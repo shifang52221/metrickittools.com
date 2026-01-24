@@ -8448,4 +8448,1390 @@ export const calculators: CalculatorDefinition[] = [
       },
     ],
   },
+  {
+    slug: "ab-test-sample-size-calculator",
+    title: "A/B Test Sample Size Calculator",
+    description:
+      "Estimate sample size per variant for a conversion rate A/B test given baseline CVR, MDE, significance, and power.",
+    category: "paid-ads",
+    guideSlug: "ab-test-sample-size-guide",
+    relatedGlossarySlugs: ["ab-test", "statistical-significance", "power", "mde", "cvr"],
+    seo: {
+      intro: [
+        "A/B tests are easy to misread when samples are small. Planning sample size upfront helps you avoid false positives, false negatives, and endless tests.",
+        "This calculator estimates required sample size per variant for a conversion rate test using a standard normal approximation (two-sided).",
+      ],
+      steps: [
+        "Enter baseline conversion rate (CVR) and your minimum detectable effect (MDE).",
+        "Choose significance level (alpha) and statistical power (1 - beta).",
+        "Use the output as a baseline and add buffer for tracking loss and seasonality.",
+      ],
+      pitfalls: [
+        "Stopping early when a result looks good (peeking inflates false positives).",
+        "Using an MDE that’s smaller than what you can act on (forces huge samples).",
+        "Mixing click-based and session-based conversion rates (definition mismatch).",
+      ],
+    },
+    inputs: [
+      {
+        key: "baselineCvrPercent",
+        label: "Baseline conversion rate",
+        placeholder: "2.5",
+        suffix: "%",
+        defaultValue: "2.5",
+        min: 0.01,
+        step: 0.01,
+      },
+      {
+        key: "mdePercentPoints",
+        label: "MDE (absolute lift)",
+        help: "Minimum detectable effect as percentage points (e.g., 0.5 means 2.5% → 3.0%).",
+        placeholder: "0.5",
+        suffix: "pp",
+        defaultValue: "0.5",
+        min: 0.01,
+        step: 0.01,
+      },
+      {
+        key: "alphaPercent",
+        label: "Significance level (alpha)",
+        placeholder: "5",
+        suffix: "%",
+        defaultValue: "5",
+        min: 0.1,
+        step: 0.1,
+      },
+      {
+        key: "powerPercent",
+        label: "Power (1 - beta)",
+        placeholder: "80",
+        suffix: "%",
+        defaultValue: "80",
+        min: 50,
+        step: 1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const p1 = values.baselineCvrPercent / 100;
+      const delta = values.mdePercentPoints / 100;
+      const p2 = p1 + delta;
+      const alpha = values.alphaPercent / 100;
+      const power = values.powerPercent / 100;
+
+      if (p1 <= 0 || p1 >= 1) warnings.push("Baseline CVR must be between 0% and 100%.");
+      if (delta <= 0) warnings.push("MDE must be greater than 0.");
+      if (p2 <= 0 || p2 >= 1) warnings.push("Baseline + MDE must be between 0% and 100%.");
+      if (alpha <= 0 || alpha >= 1) warnings.push("Alpha must be between 0% and 100%.");
+      if (power <= 0 || power >= 1) warnings.push("Power must be between 0% and 100%.");
+
+      const z = (p: number) => {
+        // Acklam's inverse normal approximation for p in (0,1)
+        const a = [
+          -3.969683028665376e1,
+          2.209460984245205e2,
+          -2.759285104469687e2,
+          1.38357751867269e2,
+          -3.066479806614716e1,
+          2.506628277459239,
+        ];
+        const b = [
+          -5.447609879822406e1,
+          1.615858368580409e2,
+          -1.556989798598866e2,
+          6.680131188771972e1,
+          -1.328068155288572e1,
+        ];
+        const c = [
+          -7.784894002430293e-3,
+          -3.223964580411365e-1,
+          -2.400758277161838,
+          -2.549732539343734,
+          4.374664141464968,
+          2.938163982698783,
+        ];
+        const d = [
+          7.784695709041462e-3,
+          3.224671290700398e-1,
+          2.445134137142996,
+          3.754408661907416,
+        ];
+
+        const plow = 0.02425;
+        const phigh = 1 - plow;
+        let q: number;
+
+        if (p < plow) {
+          q = Math.sqrt(-2 * Math.log(p));
+          return (
+            (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q +
+              c[5]) /
+            ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1)
+          );
+        }
+        if (p > phigh) {
+          q = Math.sqrt(-2 * Math.log(1 - p));
+          return (
+            -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q +
+              c[5]) /
+            ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1)
+          );
+        }
+
+        const qCentral = p - 0.5;
+        const r = qCentral * qCentral;
+        return (
+          (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r +
+            a[5]) *
+            qCentral /
+          (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1)
+        );
+      };
+
+      const zAlpha = z(1 - alpha / 2);
+      const zBeta = z(power);
+
+      const pBar = (p1 + p2) / 2;
+      const s1 = Math.sqrt(2 * pBar * (1 - pBar));
+      const s2 = Math.sqrt(p1 * (1 - p1) + p2 * (1 - p2));
+      const n =
+        delta > 0
+          ? (Math.pow(zAlpha * s1 + zBeta * s2, 2) / Math.pow(delta, 2))
+          : 0;
+      const nPerVariant = Math.ceil(n);
+
+      const total = nPerVariant * 2;
+
+      return {
+        headline: {
+          key: "nPerVariant",
+          label: "Required sample size per variant",
+          value: nPerVariant,
+          format: "number",
+          maxFractionDigits: 0,
+          detail: "Two-sided test (normal approximation)",
+        },
+        secondary: [
+          {
+            key: "totalSample",
+            label: "Total sample size (A + B)",
+            value: total,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+          {
+            key: "p1",
+            label: "Baseline CVR",
+            value: p1,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "p2",
+            label: "Variant CVR (baseline + MDE)",
+            value: p2,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "n ≈ ((z_(1-α/2)√(2p̄(1-p̄)) + z_(power)√(p1(1-p1)+p2(1-p2)))²) / (p2-p1)²",
+    assumptions: [
+      "Two-sided z-test approximation for proportions.",
+      "Independent samples and stable baseline rate.",
+      "Does not adjust for multiple testing or sequential stopping rules.",
+    ],
+    faqs: [
+      {
+        question: "Why does sample size explode when CVR is low?",
+        answer:
+          "When conversion is rare, noise is high relative to the signal. Detecting small lifts requires much larger samples.",
+      },
+      {
+        question: "Should I run until I hit the sample size exactly?",
+        answer:
+          "Use it as a baseline and add buffer. Also avoid peeking; if you want to stop early, use sequential testing methods instead of naive p-values.",
+      },
+    ],
+  },
+  {
+    slug: "cpl-to-cac-calculator",
+    title: "CPL to CAC Calculator",
+    description:
+      "Convert cost per lead (CPL) into CAC using lead-to-customer rate (and compute targets).",
+    category: "paid-ads",
+    guideSlug: "cpl-to-cac-guide",
+    relatedGlossarySlugs: ["cpl", "cac", "cpa", "conversion-rate", "lead-to-customer-rate"],
+    seo: {
+      intro: [
+        "Lead gen metrics can be misleading: a low CPL can still produce an expensive CAC if lead quality or close rate is weak.",
+        "This calculator translates CPL into CAC using lead-to-customer conversion and shows what close rate you need to hit a target CAC.",
+      ],
+      steps: [
+        "Enter your cost per lead (CPL).",
+        "Enter the % of leads that become paying customers (lead-to-customer rate).",
+        "Optionally set a target CAC to compute required lead-to-customer rate.",
+      ],
+      pitfalls: [
+        "Using MQLs as leads without a consistent definition (denominator drift).",
+        "Ignoring sales cycle length and cohort lag (today's leads close later).",
+        "Optimizing for volume and destroying lead quality (CAC rises).",
+      ],
+    },
+    inputs: [
+      {
+        key: "cpl",
+        label: "Cost per lead (CPL)",
+        placeholder: "80",
+        prefix: "$",
+        defaultValue: "80",
+        min: 0,
+      },
+      {
+        key: "leadToCustomerRatePercent",
+        label: "Lead-to-customer rate",
+        placeholder: "5",
+        suffix: "%",
+        defaultValue: "5",
+        min: 0.01,
+        step: 0.01,
+      },
+      {
+        key: "targetCac",
+        label: "Target CAC (optional)",
+        help: "Set 0 to disable target rate calculation.",
+        placeholder: "1500",
+        prefix: "$",
+        defaultValue: "1500",
+        min: 0,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const rate = values.leadToCustomerRatePercent / 100;
+      if (values.cpl <= 0) warnings.push("CPL must be greater than 0.");
+      if (rate <= 0) warnings.push("Lead-to-customer rate must be greater than 0%.");
+
+      const cac = rate > 0 ? values.cpl / rate : 0;
+      const requiredRate =
+        values.targetCac > 0 ? safeDivide(values.cpl, values.targetCac) : null;
+
+      return {
+        headline: {
+          key: "cac",
+          label: "Estimated CAC",
+          value: cac,
+          format: "currency",
+          currency: "USD",
+          detail: "CPL ÷ lead-to-customer rate",
+        },
+        secondary: [
+          {
+            key: "rate",
+            label: "Lead-to-customer rate",
+            value: rate,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "requiredRate",
+            label: "Required lead-to-customer rate for target CAC",
+            value: requiredRate ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: requiredRate === null ? "Target CAC disabled" : "CPL ÷ target CAC",
+          },
+        ],
+        breakdown: [
+          {
+            key: "cpl",
+            label: "CPL",
+            value: values.cpl,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "targetCac",
+            label: "Target CAC",
+            value: values.targetCac,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "CAC = CPL ÷ (lead-to-customer rate)",
+    assumptions: [
+      "Lead-to-customer rate reflects final paying customers (not MQLs).",
+      "CPL and close rate are measured over consistent time windows.",
+      "Excludes sales salaries unless your CPL includes them (definition matters).",
+    ],
+    faqs: [
+      {
+        question: "Should I include sales cost in CPL or CAC?",
+        answer:
+          "For planning, include sales salaries and tooling in CAC (blended CAC). For channel optimization, teams often track paid CPL/CPA separately. The key is labeling and consistency.",
+      },
+      {
+        question: "What if leads convert over multiple months?",
+        answer:
+          "Then use cohort-based tracking (lead cohorts) and measure lead-to-customer rate after enough time has passed. Short windows can undercount conversions and overstate CAC.",
+      },
+    ],
+  },
+  {
+    slug: "break-even-cvr-calculator",
+    title: "Break-even CVR Calculator",
+    description:
+      "Compute the CVR required to break even (and hit a target) given CPM, CTR, AOV, and contribution margin.",
+    category: "paid-ads",
+    guideSlug: "break-even-cvr-guide",
+    relatedGlossarySlugs: ["cvr", "cpm", "ctr", "aov", "contribution-margin", "break-even-cpm"],
+    seo: {
+      intro: [
+        "When buying impressions, CVR is a major profit lever. If CVR is too low, even great CTR won’t save economics at a given CPM.",
+        "This calculator computes break-even CVR at a given CPM and CTR, plus a target CVR with a profit buffer.",
+      ],
+      steps: [
+        "Enter CPM and CTR to determine cost per click implied by impressions buying.",
+        "Enter AOV and contribution margin to determine contribution per conversion.",
+        "Compute required CVR for break-even and target buffer.",
+      ],
+      pitfalls: [
+        "Mixing click CVR with session CVR (denominator mismatch).",
+        "Using revenue margin instead of contribution margin (overstates economics).",
+        "Ignoring incremental lift at scale (retargeting bias).",
+      ],
+    },
+    inputs: [
+      {
+        key: "cpm",
+        label: "CPM",
+        placeholder: "12",
+        prefix: "$",
+        defaultValue: "12",
+        min: 0,
+        step: 0.01,
+      },
+      {
+        key: "ctrPercent",
+        label: "CTR",
+        placeholder: "1.5",
+        suffix: "%",
+        defaultValue: "1.5",
+        min: 0.01,
+        step: 0.01,
+      },
+      {
+        key: "aov",
+        label: "AOV",
+        placeholder: "80",
+        prefix: "$",
+        defaultValue: "80",
+        min: 0,
+      },
+      {
+        key: "contributionMarginPercent",
+        label: "Contribution margin",
+        placeholder: "40",
+        suffix: "%",
+        defaultValue: "40",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "profitBufferPercent",
+        label: "Profit buffer",
+        placeholder: "20",
+        suffix: "%",
+        defaultValue: "20",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const ctr = values.ctrPercent / 100;
+      const margin = values.contributionMarginPercent / 100;
+      const buffer = values.profitBufferPercent / 100;
+
+      if (values.cpm <= 0) warnings.push("CPM must be greater than 0.");
+      if (ctr <= 0) warnings.push("CTR must be greater than 0%.");
+      if (values.aov <= 0) warnings.push("AOV must be greater than 0.");
+      if (margin <= 0) warnings.push("Contribution margin must be greater than 0%.");
+
+      const denom = 1000 * ctr * values.aov * margin;
+      const breakEvenCvr = denom > 0 ? values.cpm / denom : 0;
+      const targetCvr =
+        denom > 0 ? values.cpm / (denom * Math.max(0.0001, 1 - buffer)) : 0;
+
+      const impliedCpc = ctr > 0 ? values.cpm / (1000 * ctr) : 0;
+
+      return {
+        headline: {
+          key: "targetCvr",
+          label: "Target CVR",
+          value: targetCvr,
+          format: "percent",
+          maxFractionDigits: 2,
+          detail: "CVR needed to hit profit buffer at this CPM/CTR",
+        },
+        secondary: [
+          {
+            key: "breakEvenCvr",
+            label: "Break-even CVR",
+            value: breakEvenCvr,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: "CVR where profit = 0 (variable economics)",
+          },
+          {
+            key: "impliedCpc",
+            label: "Implied CPC from CPM and CTR",
+            value: impliedCpc,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        breakdown: [
+          {
+            key: "cpm",
+            label: "CPM",
+            value: values.cpm,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "ctr",
+            label: "CTR",
+            value: ctr,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "aov",
+            label: "AOV",
+            value: values.aov,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "margin",
+            label: "Contribution margin",
+            value: margin,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Break-even CVR = CPM / (1000×CTR×AOV×margin); Target CVR = break-even / (1-buffer)",
+    assumptions: [
+      "CTR and CVR are measured on a click basis (consistent denominators).",
+      "Margin reflects variable economics (contribution margin).",
+      "Best for one-time purchase economics; subscription needs LTV-based targets.",
+    ],
+    faqs: [
+      {
+        question: "If my CVR is below break-even, what can I do?",
+        answer:
+          "Increase CVR via landing page/offer improvements, increase AOV, improve margin, lower CPM, or improve CTR. If none are feasible, the placement may not be viable.",
+      },
+      {
+        question: "How does this relate to break-even CTR?",
+        answer:
+          "They’re symmetric levers. Break-even CTR and CVR are both derived from the same underlying economics; improving either increases allowable CPM.",
+      },
+    ],
+  },
+  {
+    slug: "retention-targets-planner-calculator",
+    title: "Retention Targets Planner (NRR/GRR)",
+    description:
+      "Compute required expansion (for a target NRR) and allowable churn+contraction (for a target GRR) using monthly rates.",
+    category: "saas-metrics",
+    guideSlug: "retention-targets-planner-guide",
+    relatedGlossarySlugs: [
+      "nrr",
+      "grr",
+      "net-retention",
+      "gross-retention",
+      "expansion-mrr",
+      "contraction-mrr",
+      "revenue-churn",
+    ],
+    seo: {
+      intro: [
+        "Targets are only useful if they translate into actionable levers. NRR targets translate into required expansion; GRR targets translate into a maximum combined churn+contraction.",
+        "This calculator uses monthly rates and shows implied annualized outcomes to help planning.",
+      ],
+      steps: [
+        "Enter current monthly churn and contraction rates (revenue).",
+        "Enter your target monthly NRR and GRR.",
+        "Use outputs to set expansion targets and churn reduction goals by segment.",
+      ],
+      pitfalls: [
+        "Mixing annual and monthly units (annual NRR used as monthly).",
+        "Using blended rates across segments (plan/channel) and hiding weak cohorts.",
+        "Assuming churn reduction and expansion are independent (often correlated).",
+      ],
+    },
+    inputs: [
+      {
+        key: "monthlyChurnPercent",
+        label: "Monthly churn rate (revenue)",
+        placeholder: "1.5",
+        suffix: "%",
+        defaultValue: "1.5",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "monthlyContractionPercent",
+        label: "Monthly contraction rate",
+        placeholder: "0.5",
+        suffix: "%",
+        defaultValue: "0.5",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "targetMonthlyNrrPercent",
+        label: "Target monthly NRR",
+        placeholder: "102",
+        suffix: "%",
+        defaultValue: "102",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "targetMonthlyGrrPercent",
+        label: "Target monthly GRR",
+        placeholder: "98",
+        suffix: "%",
+        defaultValue: "98",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const churn = values.monthlyChurnPercent / 100;
+      const contraction = values.monthlyContractionPercent / 100;
+      const targetNrr = values.targetMonthlyNrrPercent / 100;
+      const targetGrr = values.targetMonthlyGrrPercent / 100;
+
+      if (targetNrr <= 0) warnings.push("Target NRR must be greater than 0%.");
+      if (targetGrr <= 0) warnings.push("Target GRR must be greater than 0%.");
+
+      const requiredExpansion = targetNrr - 1 + contraction + churn;
+      const maxChurnPlusContraction = 1 - targetGrr;
+      const currentChurnPlusContraction = churn + contraction;
+      const gapToGrr = currentChurnPlusContraction - maxChurnPlusContraction;
+
+      const annualizedNrr = Math.pow(targetNrr, 12) - 1;
+      const annualizedGrr = Math.pow(targetGrr, 12) - 1;
+
+      if (requiredExpansion < 0) {
+        warnings.push(
+          "Required expansion is negative with these inputs (target NRR is below 100% after churn+contraction). Check targets.",
+        );
+      }
+      if (maxChurnPlusContraction < 0) {
+        warnings.push("Target GRR is above 100%, which is not typical for GRR.");
+      }
+
+      return {
+        headline: {
+          key: "requiredExpansion",
+          label: "Required monthly expansion rate (to hit target NRR)",
+          value: Math.max(0, requiredExpansion),
+          format: "percent",
+          maxFractionDigits: 2,
+          detail: "Target NRR - 1 + churn + contraction",
+        },
+        secondary: [
+          {
+            key: "maxChurnContraction",
+            label: "Max churn + contraction (to hit target GRR)",
+            value: Math.max(0, maxChurnPlusContraction),
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: "1 - target GRR",
+          },
+          {
+            key: "currentChurnContraction",
+            label: "Current churn + contraction",
+            value: currentChurnPlusContraction,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "gapToGrr",
+            label: "Gap to GRR target (needs reduction)",
+            value: Math.max(0, gapToGrr),
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: gapToGrr > 0 ? "Reduce churn and/or contraction" : "At or better than target",
+          },
+          {
+            key: "annualizedNrr",
+            label: "Implied annual NRR (from target monthly)",
+            value: annualizedNrr,
+            format: "percent",
+            maxFractionDigits: 0,
+          },
+          {
+            key: "annualizedGrr",
+            label: "Implied annual GRR (from target monthly)",
+            value: annualizedGrr,
+            format: "percent",
+            maxFractionDigits: 0,
+          },
+        ],
+        breakdown: [
+          {
+            key: "churn",
+            label: "Monthly churn",
+            value: churn,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "contraction",
+            label: "Monthly contraction",
+            value: contraction,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "targetNrr",
+            label: "Target monthly NRR",
+            value: targetNrr,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "targetGrr",
+            label: "Target monthly GRR",
+            value: targetGrr,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Target NRR = 1 + expansion - contraction - churn; Target GRR = 1 - contraction - churn",
+    assumptions: [
+      "Rates are monthly and measured on the same revenue base.",
+      "Target NRR/GRR are for an existing cohort (exclude new customers).",
+      "Annualized rates are compound transformations of monthly targets.",
+    ],
+    faqs: [
+      {
+        question: "Why annualizing monthly NRR/GRR can look extreme?",
+        answer:
+          "Because compounding is powerful. A small monthly difference compounds over 12 months, so always sanity-check annualized implied outcomes.",
+      },
+      {
+        question: "Should I set targets by segment?",
+        answer:
+          "Yes. Blended NRR/GRR can hide weak segments. Set targets by plan, channel, cohort, and customer size to make them actionable.",
+      },
+    ],
+  },
+  {
+    slug: "gross-margin-impact-calculator",
+    title: "Gross Margin Impact Calculator",
+    description:
+      "Quantify how gross margin changes affect gross profit LTV, payback, and LTV:CAC (before vs after).",
+    category: "saas-metrics",
+    guideSlug: "gross-margin-impact-guide",
+    relatedGlossarySlugs: ["gross-margin", "ltv", "payback-period", "cac", "arpa", "churn-rate"],
+    seo: {
+      intro: [
+        "Margin improvements can be as powerful as growth: they increase gross profit per customer and can reduce payback dramatically without changing CAC.",
+        "This calculator compares unit economics before vs after a gross margin change using a churn-based LTV shortcut.",
+      ],
+      steps: [
+        "Enter ARPA, churn, and CAC.",
+        "Enter current and target gross margin.",
+        "Review LTV, payback, and LTV:CAC improvements.",
+      ],
+      pitfalls: [
+        "Using revenue LTV instead of gross profit LTV.",
+        "Mixing time units (monthly churn with annual ARPA).",
+        "Assuming churn stays constant when pricing changes (may affect retention).",
+      ],
+    },
+    inputs: [
+      {
+        key: "arpaMonthly",
+        label: "ARPA (monthly)",
+        placeholder: "800",
+        prefix: "$",
+        defaultValue: "800",
+        min: 0,
+      },
+      {
+        key: "monthlyChurnPercent",
+        label: "Monthly churn",
+        placeholder: "2",
+        suffix: "%",
+        defaultValue: "2",
+        min: 0.01,
+        step: 0.01,
+      },
+      {
+        key: "cac",
+        label: "CAC",
+        placeholder: "6000",
+        prefix: "$",
+        defaultValue: "6000",
+        min: 0,
+      },
+      {
+        key: "currentGrossMarginPercent",
+        label: "Current gross margin",
+        placeholder: "70",
+        suffix: "%",
+        defaultValue: "70",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "targetGrossMarginPercent",
+        label: "Target gross margin",
+        placeholder: "80",
+        suffix: "%",
+        defaultValue: "80",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const churn = values.monthlyChurnPercent / 100;
+      if (values.arpaMonthly <= 0) warnings.push("ARPA must be greater than 0.");
+      if (churn <= 0) warnings.push("Churn must be greater than 0%.");
+      if (values.cac <= 0) warnings.push("CAC must be greater than 0.");
+
+      const m0 = values.currentGrossMarginPercent / 100;
+      const m1 = values.targetGrossMarginPercent / 100;
+      if (m0 <= 0 || m1 <= 0)
+        warnings.push("Gross margin must be greater than 0%.");
+
+      const gpPerMonth0 = values.arpaMonthly * m0;
+      const gpPerMonth1 = values.arpaMonthly * m1;
+
+      const ltv0 = churn > 0 ? gpPerMonth0 / churn : 0;
+      const ltv1 = churn > 0 ? gpPerMonth1 / churn : 0;
+
+      const payback0 = gpPerMonth0 > 0 ? values.cac / gpPerMonth0 : 0;
+      const payback1 = gpPerMonth1 > 0 ? values.cac / gpPerMonth1 : 0;
+
+      const ratio0 = values.cac > 0 ? ltv0 / values.cac : 0;
+      const ratio1 = values.cac > 0 ? ltv1 / values.cac : 0;
+
+      return {
+        headline: {
+          key: "deltaPayback",
+          label: "Payback improvement (months)",
+          value: payback0 - payback1,
+          format: "months",
+          maxFractionDigits: 1,
+          detail: "Positive means faster payback",
+        },
+        secondary: [
+          {
+            key: "ltv0",
+            label: "Gross profit LTV (current)",
+            value: ltv0,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "ltv1",
+            label: "Gross profit LTV (target)",
+            value: ltv1,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "payback0",
+            label: "Payback (current)",
+            value: payback0,
+            format: "months",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "payback1",
+            label: "Payback (target)",
+            value: payback1,
+            format: "months",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "ratio0",
+            label: "LTV:CAC (current)",
+            value: ratio0,
+            format: "multiple",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "ratio1",
+            label: "LTV:CAC (target)",
+            value: ratio1,
+            format: "multiple",
+            maxFractionDigits: 2,
+          },
+        ],
+        breakdown: [
+          {
+            key: "gpPerMonth0",
+            label: "Gross profit / month (current)",
+            value: gpPerMonth0,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "gpPerMonth1",
+            label: "Gross profit / month (target)",
+            value: gpPerMonth1,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Gross profit LTV ≈ (ARPA×gross margin) ÷ churn; Payback ≈ CAC ÷ (ARPA×gross margin)",
+    assumptions: [
+      "Churn-based LTV shortcut (constant churn).",
+      "ARPA constant; ignores expansion and contraction.",
+      "Gross margin change does not change churn (scenario test if it might).",
+    ],
+    faqs: [
+      {
+        question: "Should I use contribution margin instead of gross margin?",
+        answer:
+          "If variable costs beyond COGS materially affect profit (fees, shipping, support), contribution margin can be a better proxy. Use the definition that matches your unit economics model.",
+      },
+      {
+        question: "How can I improve gross margin?",
+        answer:
+          "Reduce COGS/infra costs, optimize support and success costs, improve pricing and packaging, and reduce refunds/returns where applicable.",
+      },
+    ],
+  },
+  {
+    slug: "pricing-packaging-guardrails-calculator",
+    title: "Pricing & Packaging Guardrails Calculator",
+    description:
+      "Set guardrails for pricing changes by translating ARPA, margin, churn, and target payback into max discount and min price targets.",
+    category: "saas-metrics",
+    guideSlug: "pricing-packaging-guardrails-guide",
+    relatedGlossarySlugs: ["arpa", "gross-margin", "cac-payback-period", "price-increase", "discount-rate"],
+    seo: {
+      intro: [
+        "Pricing changes affect unit economics through ARPA and margin, and sometimes through churn. Guardrails help you avoid shipping discounts/pricing that break payback.",
+        "This calculator translates a target payback into a minimum ARPA (or maximum discount) given CAC and gross margin assumptions.",
+      ],
+      steps: [
+        "Enter CAC, gross margin, and a target payback.",
+        "Compute required monthly gross profit and therefore minimum ARPA.",
+        "Compare to current ARPA to compute max allowable discount.",
+      ],
+      pitfalls: [
+        "Using revenue instead of gross profit for payback.",
+        "Ignoring churn changes from pricing updates.",
+        "Using blended ARPA across segments (hides price sensitivity).",
+      ],
+    },
+    inputs: [
+      {
+        key: "currentArpaMonthly",
+        label: "Current ARPA (monthly)",
+        placeholder: "800",
+        prefix: "$",
+        defaultValue: "800",
+        min: 0,
+      },
+      {
+        key: "cac",
+        label: "CAC",
+        placeholder: "6000",
+        prefix: "$",
+        defaultValue: "6000",
+        min: 0,
+      },
+      {
+        key: "grossMarginPercent",
+        label: "Gross margin",
+        placeholder: "80",
+        suffix: "%",
+        defaultValue: "80",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "targetPaybackMonths",
+        label: "Target payback (months)",
+        placeholder: "12",
+        defaultValue: "12",
+        min: 1,
+        step: 1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const margin = values.grossMarginPercent / 100;
+      const paybackMonths = Math.max(1, Math.floor(values.targetPaybackMonths));
+      if (values.targetPaybackMonths !== paybackMonths)
+        warnings.push("Target payback was rounded down to a whole number.");
+
+      if (values.currentArpaMonthly <= 0) warnings.push("Current ARPA must be greater than 0.");
+      if (values.cac <= 0) warnings.push("CAC must be greater than 0.");
+      if (margin <= 0) warnings.push("Gross margin must be greater than 0%.");
+
+      const requiredGrossProfitPerMonth = values.cac / paybackMonths;
+      const minArpa = margin > 0 ? requiredGrossProfitPerMonth / margin : 0;
+      const maxDiscount = values.currentArpaMonthly > 0 ? 1 - minArpa / values.currentArpaMonthly : 0;
+
+      return {
+        headline: {
+          key: "minArpa",
+          label: "Minimum ARPA to hit target payback",
+          value: minArpa,
+          format: "currency",
+          currency: "USD",
+          detail: "Derived from CAC, margin, and payback target",
+        },
+        secondary: [
+          {
+            key: "requiredGrossProfitPerMonth",
+            label: "Required gross profit per month",
+            value: requiredGrossProfitPerMonth,
+            format: "currency",
+            currency: "USD",
+            detail: "CAC ÷ target payback months",
+          },
+          {
+            key: "maxDiscount",
+            label: "Max discount from current ARPA",
+            value: Math.max(0, maxDiscount),
+            format: "percent",
+            maxFractionDigits: 1,
+            detail: maxDiscount < 0 ? "Current ARPA is below required minimum" : "Directional guardrail",
+          },
+        ],
+        breakdown: [
+          {
+            key: "currentArpa",
+            label: "Current ARPA",
+            value: values.currentArpaMonthly,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "cac",
+            label: "CAC",
+            value: values.cac,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "margin",
+            label: "Gross margin",
+            value: margin,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "paybackMonths",
+            label: "Target payback",
+            value: paybackMonths,
+            format: "months",
+            maxFractionDigits: 0,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Payback = CAC ÷ (ARPA×margin) ⇒ min ARPA = (CAC ÷ payback) ÷ margin; max discount = 1 - minARPA/currentARPA",
+    assumptions: [
+      "Payback is computed on gross profit (ARPA × gross margin).",
+      "Ignores churn changes from pricing; validate with cohort data.",
+      "Use segment-level ARPA/CAC for realistic guardrails.",
+    ],
+    faqs: [
+      {
+        question: "Is this the only pricing guardrail I should use?",
+        answer:
+          "No. Pair payback guardrails with retention risk (churn) and value perception. A discount can hit payback and still be bad if it changes customer quality or expansion potential.",
+      },
+      {
+        question: "Should I use contribution margin instead of gross margin?",
+        answer:
+          "If variable costs beyond COGS are meaningful, contribution margin is more conservative and usually better for payback guardrails.",
+      },
+    ],
+  },
+  {
+    slug: "loan-payment-calculator",
+    title: "Loan Payment Calculator",
+    description:
+      "Compute monthly payment, total interest, and total paid for a loan using amortization.",
+    category: "finance",
+    guideSlug: "loan-payment-guide",
+    relatedGlossarySlugs: ["apr", "amortization", "principal", "interest-rate"],
+    seo: {
+      intro: [
+        "Loan payments are driven by three things: principal, interest rate, and term. Amortization spreads principal repayment over time, so early payments are interest-heavy.",
+        "This calculator computes the standard fixed-rate monthly payment and summarizes interest cost over the full term.",
+      ],
+      steps: [
+        "Enter loan amount (principal), APR, and term in years.",
+        "Review monthly payment, total interest, and total paid.",
+        "Use it to compare refinance scenarios or affordability.",
+      ],
+      pitfalls: [
+        "Mixing APR and monthly rate incorrectly (use APR/12).",
+        "Ignoring fees and points (APR may not capture all costs).",
+        "Assuming all loans amortize the same (interest-only, balloon loans differ).",
+      ],
+    },
+    inputs: [
+      {
+        key: "principal",
+        label: "Loan principal",
+        placeholder: "300000",
+        prefix: "$",
+        defaultValue: "300000",
+        min: 0,
+      },
+      {
+        key: "aprPercent",
+        label: "APR",
+        placeholder: "6.5",
+        suffix: "%",
+        defaultValue: "6.5",
+        min: 0,
+        step: 0.01,
+      },
+      {
+        key: "termYears",
+        label: "Term (years)",
+        placeholder: "30",
+        defaultValue: "30",
+        min: 1,
+        step: 1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const years = Math.max(1, Math.floor(values.termYears));
+      if (values.termYears !== years)
+        warnings.push("Term years was rounded down to a whole number.");
+
+      const n = years * 12;
+      const r = values.aprPercent / 100 / 12;
+
+      if (values.principal <= 0) warnings.push("Principal must be greater than 0.");
+      if (values.aprPercent < 0) warnings.push("APR must be >= 0%.");
+
+      let payment = 0;
+      if (values.principal > 0) {
+        if (r === 0) payment = values.principal / n;
+        else {
+          const pow = Math.pow(1 + r, n);
+          payment = (values.principal * r * pow) / (pow - 1);
+        }
+      }
+
+      const totalPaid = payment * n;
+      const totalInterest = totalPaid - values.principal;
+
+      return {
+        headline: {
+          key: "monthlyPayment",
+          label: "Monthly payment",
+          value: payment,
+          format: "currency",
+          currency: "USD",
+          detail: "Fixed-rate amortizing loan",
+        },
+        secondary: [
+          {
+            key: "totalInterest",
+            label: "Total interest paid",
+            value: totalInterest,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "totalPaid",
+            label: "Total paid",
+            value: totalPaid,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        breakdown: [
+          {
+            key: "principal",
+            label: "Principal",
+            value: values.principal,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "apr",
+            label: "APR",
+            value: values.aprPercent / 100,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "months",
+            label: "Term (months)",
+            value: n,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Payment = P×r×(1+r)^n / ((1+r)^n - 1) where r is monthly rate and n is months (for r>0)",
+    assumptions: [
+      "Fixed-rate, fully amortizing loan with constant monthly payments.",
+      "Does not include taxes, insurance, or extra fees.",
+      "APR is treated as nominal annual rate divided by 12 for monthly rate.",
+    ],
+    faqs: [
+      {
+        question: "Why is total interest so high on long terms?",
+        answer:
+          "Because interest accrues on outstanding principal over many months. Longer terms reduce payment but increase total interest paid.",
+      },
+      {
+        question: "What if I make extra payments?",
+        answer:
+          "Extra principal payments reduce outstanding balance faster, lowering total interest and shortening term. This calculator assumes no extra payments.",
+      },
+    ],
+  },
+  {
+    slug: "apr-to-apy-calculator",
+    title: "APR to APY Calculator",
+    description:
+      "Convert APR to APY (and APY to APR) given compounding frequency.",
+    category: "finance",
+    guideSlug: "apr-vs-apy-guide",
+    relatedGlossarySlugs: ["apr", "apy", "interest-rate", "compounding"],
+    seo: {
+      intro: [
+        "APR is a nominal rate; APY reflects compounding. For comparing savings products or loans with frequent compounding, APY is often the better comparison metric.",
+        "This calculator converts between APR and APY using the chosen compounding frequency.",
+      ],
+      steps: [
+        "Enter APR (or APY) and compounding periods per year.",
+        "Review the converted rate and the effective periodic rate.",
+      ],
+      pitfalls: [
+        "Comparing APRs with different compounding conventions.",
+        "Confusing APY with real return (inflation matters).",
+        "Ignoring fees that change effective cost/return.",
+      ],
+    },
+    inputs: [
+      {
+        key: "aprPercent",
+        label: "APR",
+        placeholder: "6.0",
+        suffix: "%",
+        defaultValue: "6.0",
+        min: 0,
+        step: 0.01,
+      },
+      {
+        key: "compoundsPerYear",
+        label: "Compounds per year",
+        placeholder: "12",
+        defaultValue: "12",
+        min: 1,
+        step: 1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const n = Math.max(1, Math.floor(values.compoundsPerYear));
+      if (values.compoundsPerYear !== n)
+        warnings.push("Compounds per year was rounded down to a whole number.");
+
+      const apr = values.aprPercent / 100;
+      const apy = Math.pow(1 + apr / n, n) - 1;
+      const periodic = apr / n;
+
+      return {
+        headline: {
+          key: "apy",
+          label: "APY (effective annual rate)",
+          value: apy,
+          format: "percent",
+          maxFractionDigits: 3,
+          detail: "Includes compounding",
+        },
+        secondary: [
+          {
+            key: "apr",
+            label: "APR (nominal annual rate)",
+            value: apr,
+            format: "percent",
+            maxFractionDigits: 3,
+          },
+          {
+            key: "periodic",
+            label: "Periodic rate",
+            value: periodic,
+            format: "percent",
+            maxFractionDigits: 3,
+            detail: `APR ÷ ${n}`,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "APY = (1 + APR/n)^n - 1",
+    assumptions: [
+      "Compounding frequency is constant.",
+      "APR is nominal and evenly split across compounding periods.",
+      "Fees are not included; they can change effective return/cost.",
+    ],
+    faqs: [
+      {
+        question: "Is APY always higher than APR?",
+        answer:
+          "If APR is positive and compounding occurs more than once per year, APY is higher because interest earns interest. If APR is 0, APY is 0.",
+      },
+      {
+        question: "Why do banks advertise APY for savings?",
+        answer:
+          "APY standardizes the effective annual yield including compounding, making products easier to compare.",
+      },
+    ],
+  },
+  {
+    slug: "real-return-calculator",
+    title: "Real Return (Inflation-adjusted) Calculator",
+    description:
+      "Convert nominal return into real return given an inflation rate (and compare the difference).",
+    category: "finance",
+    guideSlug: "real-vs-nominal-return-guide",
+    relatedGlossarySlugs: ["inflation", "real-return", "interest-rate"],
+    seo: {
+      intro: [
+        "Nominal returns don’t account for inflation. Real return measures how much purchasing power you gain after inflation.",
+        "This calculator converts nominal return to real return and shows the inflation drag.",
+      ],
+      steps: [
+        "Enter nominal annual return and inflation rate.",
+        "Review real return and the difference vs nominal.",
+      ],
+      pitfalls: [
+        "Ignoring inflation when comparing long-term returns.",
+        "Using CPI inflation when your personal basket differs (approximation).",
+        "Mixing monthly and annual rates (unit mismatch).",
+      ],
+    },
+    inputs: [
+      {
+        key: "nominalReturnPercent",
+        label: "Nominal annual return",
+        placeholder: "10",
+        suffix: "%",
+        defaultValue: "10",
+        step: 0.1,
+      },
+      {
+        key: "inflationPercent",
+        label: "Inflation rate",
+        placeholder: "3",
+        suffix: "%",
+        defaultValue: "3",
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const nominal = values.nominalReturnPercent / 100;
+      const inflation = values.inflationPercent / 100;
+      const real = (1 + nominal) / (1 + inflation) - 1;
+      const drag = nominal - real;
+
+      return {
+        headline: {
+          key: "real",
+          label: "Real return (inflation-adjusted)",
+          value: real,
+          format: "percent",
+          maxFractionDigits: 2,
+          detail: "Approx: (1+nominal)/(1+inflation) - 1",
+        },
+        secondary: [
+          {
+            key: "nominal",
+            label: "Nominal return",
+            value: nominal,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "inflation",
+            label: "Inflation rate",
+            value: inflation,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "drag",
+            label: "Inflation drag",
+            value: drag,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: "Nominal - real (approx)",
+          },
+        ],
+      };
+    },
+    formula: "Real return = (1 + nominal) ÷ (1 + inflation) - 1",
+    assumptions: [
+      "Inflation rate is an approximation (e.g., CPI).",
+      "Uses annual rates; use consistent units for inputs.",
+      "Does not model taxes; real after-tax return can be lower.",
+    ],
+    faqs: [
+      {
+        question: "Why can real return be negative?",
+        answer:
+          "If inflation exceeds nominal return, your purchasing power declines even though your nominal balance grows.",
+      },
+      {
+        question: "Is real return the same as risk-adjusted return?",
+        answer:
+          "No. Real return adjusts for inflation. Risk-adjusted return accounts for volatility and risk (e.g., Sharpe ratio).",
+      },
+    ],
+  },
 ];

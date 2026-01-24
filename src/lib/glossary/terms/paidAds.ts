@@ -51,6 +51,72 @@ function make(seed: Seed): GlossaryTerm {
 
 const seeds: Seed[] = [
   {
+    slug: "ab-test",
+    title: "A/B Test",
+    description:
+      "An A/B test compares two variants (A and B) to measure whether a change improves an outcome (e.g., conversion rate).",
+    bullets: [
+      "Define a primary metric and a fixed test duration/sample size before starting.",
+      "Avoid peeking and stopping early based on noisy intermediate results.",
+    ],
+    relatedGuideSlugs: ["ab-test-sample-size-guide"],
+    relatedCalculatorSlugs: ["ab-test-sample-size-calculator"],
+  },
+  {
+    slug: "statistical-significance",
+    title: "Statistical Significance",
+    description:
+      "Statistical significance is a measure of whether an observed effect is likely to be real rather than due to random chance under a chosen false positive rate (alpha).",
+    bullets: [
+      "A statistically significant result is not automatically a practically meaningful result.",
+      "Avoid repeated peeking; it inflates false positives unless you use sequential methods.",
+    ],
+    relatedGuideSlugs: ["ab-test-sample-size-guide"],
+    relatedCalculatorSlugs: ["ab-test-sample-size-calculator"],
+  },
+  {
+    slug: "power",
+    title: "Statistical Power",
+    description:
+      "Statistical power is the probability of detecting an effect of a given size if it truly exists (1 - beta). Higher power requires larger sample sizes.",
+    relatedGuideSlugs: ["ab-test-sample-size-guide"],
+    relatedCalculatorSlugs: ["ab-test-sample-size-calculator"],
+  },
+  {
+    slug: "mde",
+    title: "Minimum Detectable Effect (MDE)",
+    description:
+      "MDE is the smallest effect size you want your experiment to reliably detect. Smaller MDE requires much larger samples.",
+    bullets: [
+      "Choose an MDE that is both realistic and action-worthy.",
+      "Use absolute percentage points for conversion rates to avoid confusion.",
+    ],
+    relatedGuideSlugs: ["ab-test-sample-size-guide"],
+    relatedCalculatorSlugs: ["ab-test-sample-size-calculator"],
+  },
+  {
+    slug: "cpl",
+    title: "CPL (Cost Per Lead)",
+    description:
+      "CPL is ad spend divided by leads generated. CPL is a top-of-funnel metric and should be connected to paying-customer outcomes (CAC).",
+    formula: "CPL = ad spend ÷ leads",
+    mistakes: [
+      "Optimizing CPL and destroying lead quality (CAC rises).",
+      "Changing lead definitions (MQL/SQL drift) and breaking comparisons.",
+    ],
+    relatedGuideSlugs: ["cpl-to-cac-guide"],
+    relatedCalculatorSlugs: ["cpl-to-cac-calculator"],
+  },
+  {
+    slug: "lead-to-customer-rate",
+    title: "Lead-to-customer Rate",
+    description:
+      "Lead-to-customer rate is the % of leads that become paying customers over a defined time window. It is a key bridge from CPL to CAC.",
+    formula: "Lead-to-customer rate = customers ÷ leads",
+    relatedGuideSlugs: ["cpl-to-cac-guide"],
+    relatedCalculatorSlugs: ["cpl-to-cac-calculator"],
+  },
+  {
     slug: "cpa",
     title: "CPA (Cost Per Acquisition)",
     description:

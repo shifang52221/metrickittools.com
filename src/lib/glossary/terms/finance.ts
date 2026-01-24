@@ -185,6 +185,76 @@ const seeds: Seed[] = [
     relatedCalculatorSlugs: ["dcf-sensitivity-calculator"],
   },
   {
+    slug: "apr",
+    title: "APR (Annual Percentage Rate)",
+    description:
+      "APR is a nominal annual interest rate used to describe the cost of borrowing or the return on a product. APR does not directly include the effect of compounding.",
+    bullets: [
+      "APR is often used as a standardized comparison, but fees and structure can still matter.",
+      "Convert APR to APY to compare effective annual yield under compounding.",
+    ],
+    relatedGuideSlugs: ["apr-vs-apy-guide", "loan-payment-guide"],
+    relatedCalculatorSlugs: ["apr-to-apy-calculator", "loan-payment-calculator"],
+  },
+  {
+    slug: "apy",
+    title: "APY (Annual Percentage Yield)",
+    description:
+      "APY is the effective annual rate after compounding. It makes products with different compounding frequencies easier to compare.",
+    formula: "APY = (1 + APR/n)^n - 1",
+    relatedGuideSlugs: ["apr-vs-apy-guide"],
+    relatedCalculatorSlugs: ["apr-to-apy-calculator"],
+  },
+  {
+    slug: "compounding",
+    title: "Compounding",
+    description:
+      "Compounding is earning interest on interest. More frequent compounding increases the effective annual rate (APY) for a given APR.",
+    relatedGuideSlugs: ["apr-vs-apy-guide"],
+    relatedCalculatorSlugs: ["apr-to-apy-calculator"],
+  },
+  {
+    slug: "amortization",
+    title: "Amortization",
+    description:
+      "Amortization is the process of paying down a loan over time with scheduled payments that include both interest and principal.",
+    relatedGuideSlugs: ["loan-payment-guide"],
+    relatedCalculatorSlugs: ["loan-payment-calculator"],
+  },
+  {
+    slug: "principal",
+    title: "Principal",
+    description:
+      "Principal is the amount borrowed (or invested) before interest. For loans, interest is calculated on the outstanding principal balance.",
+    relatedGuideSlugs: ["loan-payment-guide"],
+    relatedCalculatorSlugs: ["loan-payment-calculator"],
+  },
+  {
+    slug: "interest-rate",
+    title: "Interest Rate",
+    description:
+      "Interest rate is the price of borrowing (or return on lending) expressed as a percentage over a time period. Make sure rates are compared on consistent bases (APR vs APY).",
+    relatedGuideSlugs: ["apr-vs-apy-guide", "loan-payment-guide", "real-vs-nominal-return-guide"],
+    relatedCalculatorSlugs: ["apr-to-apy-calculator", "loan-payment-calculator", "real-return-calculator"],
+  },
+  {
+    slug: "inflation",
+    title: "Inflation",
+    description:
+      "Inflation is the general rise in prices over time, which reduces purchasing power. Inflation is why real return can differ from nominal return.",
+    relatedGuideSlugs: ["real-vs-nominal-return-guide"],
+    relatedCalculatorSlugs: ["real-return-calculator"],
+  },
+  {
+    slug: "real-return",
+    title: "Real Return",
+    description:
+      "Real return is the inflation-adjusted return that reflects change in purchasing power rather than just nominal balances.",
+    formula: "Real return ≈ (1 + nominal return) ÷ (1 + inflation) - 1",
+    relatedGuideSlugs: ["real-vs-nominal-return-guide"],
+    relatedCalculatorSlugs: ["real-return-calculator"],
+  },
+  {
     slug: "gross-margin",
     title: "Gross Margin",
     description:
