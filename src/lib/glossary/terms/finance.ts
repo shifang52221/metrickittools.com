@@ -394,6 +394,11 @@ const seeds: Seed[] = [
     title: "Billings",
     description:
       "Billings are amounts invoiced in a period. Billings can differ from cash collected and recognized revenue due to timing.",
+    relatedGuideSlugs: ["deferred-revenue-guide", "bookings-vs-arr-guide"],
+    relatedCalculatorSlugs: [
+      "deferred-revenue-rollforward-calculator",
+      "bookings-vs-arr-calculator",
+    ],
   },
   {
     slug: "cash-receipts",
@@ -406,6 +411,8 @@ const seeds: Seed[] = [
     title: "Recognized Revenue",
     description:
       "Recognized revenue is revenue recorded as earned based on delivery over time. It can differ from billings and cash receipts.",
+    relatedGuideSlugs: ["deferred-revenue-guide"],
+    relatedCalculatorSlugs: ["deferred-revenue-rollforward-calculator"],
   },
   {
     slug: "deferred-revenue",
@@ -416,12 +423,16 @@ const seeds: Seed[] = [
       "Annual prepay increases deferred revenue up front.",
       "Deferred revenue declines as revenue is recognized.",
     ],
+    relatedGuideSlugs: ["deferred-revenue-guide"],
+    relatedCalculatorSlugs: ["deferred-revenue-rollforward-calculator"],
   },
   {
     slug: "revenue-recognition",
     title: "Revenue Recognition",
     description:
       "Revenue recognition is the accounting process of recording revenue when earned (delivered), not necessarily when billed or collected.",
+    relatedGuideSlugs: ["deferred-revenue-guide"],
+    relatedCalculatorSlugs: ["deferred-revenue-rollforward-calculator"],
   },
   {
     slug: "capex",

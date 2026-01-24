@@ -1261,6 +1261,199 @@ export const calculators: CalculatorDefinition[] = [
     ],
   },
   {
+    slug: "cac-payback-sensitivity-calculator",
+    title: "CAC Payback Sensitivity Calculator",
+    description:
+      "See how CAC payback months change as ARPA and gross margin vary (simple 3×3 sensitivity).",
+    category: "saas-metrics",
+    guideSlug: "cac-payback-sensitivity-guide",
+    relatedGlossarySlugs: [
+      "cac",
+      "cac-payback-period",
+      "arpa",
+      "gross-margin",
+      "sensitivity-analysis",
+    ],
+    seo: {
+      intro: [
+        "CAC payback is a simple formula, but your inputs move in the real world (pricing, mix, and margin). Sensitivity analysis helps you see how fragile (or robust) payback is.",
+        "This calculator generates a 3×3 payback grid by varying ARPA and gross margin around your base assumptions.",
+      ],
+      steps: [
+        "Enter your base CAC, ARPA per month, and gross margin.",
+        "Choose step sizes for ARPA and margin (e.g., ±10% ARPA, ±5% margin).",
+        "Review the payback grid and identify which lever improves payback fastest for your model.",
+      ],
+      pitfalls: [
+        "Using revenue payback while CAC is fully-loaded (mismatch).",
+        "Mixing monthly ARPA with annualized CAC (time window mismatch).",
+        "Picking step ranges that are too narrow and concluding payback is stable (false confidence).",
+      ],
+    },
+    inputs: [
+      {
+        key: "cac",
+        label: "CAC",
+        placeholder: "6000",
+        prefix: "$",
+        defaultValue: "6000",
+        min: 0,
+      },
+      {
+        key: "arpaMonthly",
+        label: "ARPA per month (base)",
+        placeholder: "800",
+        prefix: "$",
+        defaultValue: "800",
+        min: 0,
+      },
+      {
+        key: "grossMarginPercent",
+        label: "Gross margin (base)",
+        placeholder: "80",
+        suffix: "%",
+        defaultValue: "80",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "arpaStepPercent",
+        label: "ARPA step",
+        help: "Uses ± step around ARPA base to create a 3×3 grid.",
+        placeholder: "10",
+        suffix: "%",
+        defaultValue: "10",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "grossMarginStepPercent",
+        label: "Gross margin step",
+        help: "Uses ± step around margin base to create a 3×3 grid.",
+        placeholder: "5",
+        suffix: "%",
+        defaultValue: "5",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+
+      if (values.cac <= 0) warnings.push("CAC must be greater than 0.");
+      if (values.arpaMonthly <= 0) warnings.push("ARPA must be greater than 0.");
+
+      const baseMargin = values.grossMarginPercent / 100;
+      if (baseMargin <= 0) warnings.push("Gross margin must be greater than 0%.");
+      if (baseMargin > 1) warnings.push("Gross margin must be 100% or less.");
+
+      const arpaStep = values.arpaStepPercent / 100;
+      const marginStep = values.grossMarginStepPercent / 100;
+      if (arpaStep < 0) warnings.push("ARPA step must be 0% or greater.");
+      if (marginStep < 0) warnings.push("Margin step must be 0% or greater.");
+
+      const paybackAt = (arpa: number, margin: number) => {
+        const grossProfitPerMonth = arpa * margin;
+        return safeDivide(values.cac, grossProfitPerMonth);
+      };
+
+      const arpaLow = Math.max(0, values.arpaMonthly * (1 - arpaStep));
+      const arpaMid = values.arpaMonthly;
+      const arpaHigh = values.arpaMonthly * (1 + arpaStep);
+
+      const marginLow = Math.max(0, baseMargin - marginStep);
+      const marginMid = baseMargin;
+      const marginHigh = Math.min(1, baseMargin + marginStep);
+
+      const basePayback = paybackAt(arpaMid, marginMid);
+      if (basePayback === null) warnings.push("Base inputs are invalid for payback.");
+
+      const grid: Array<{ key: string; label: string; value: number }> = [];
+      const points: Array<[string, number, number]> = [
+        ["payback_arpaLow_marginLow", arpaLow, marginLow],
+        ["payback_arpaLow_marginMid", arpaLow, marginMid],
+        ["payback_arpaLow_marginHigh", arpaLow, marginHigh],
+        ["payback_arpaMid_marginLow", arpaMid, marginLow],
+        ["payback_arpaMid_marginMid", arpaMid, marginMid],
+        ["payback_arpaMid_marginHigh", arpaMid, marginHigh],
+        ["payback_arpaHigh_marginLow", arpaHigh, marginLow],
+        ["payback_arpaHigh_marginMid", arpaHigh, marginMid],
+        ["payback_arpaHigh_marginHigh", arpaHigh, marginHigh],
+      ];
+
+      for (const [key, arpa, margin] of points) {
+        const payback = paybackAt(arpa, margin);
+        if (payback === null) continue;
+        grid.push({
+          key,
+          label: `Payback @ $${arpa.toFixed(0)} / ${(margin * 100).toFixed(1)}%`,
+          value: payback,
+        });
+      }
+
+      if (grid.length < 5) {
+        warnings.push(
+          "Many grid points are invalid (gross profit/month is too close to 0). Increase ARPA/margin or reduce steps.",
+        );
+      }
+
+      const headlinePayback = basePayback ?? (grid[0]?.value ?? 0);
+
+      return {
+        headline: {
+          key: "paybackBase",
+          label: "CAC payback (base case)",
+          value: headlinePayback,
+          format: "months",
+          maxFractionDigits: 1,
+          detail: `Base: $${values.arpaMonthly.toFixed(0)} / ${values.grossMarginPercent.toFixed(1)}%`,
+        },
+        secondary: grid.map((g) => ({
+          key: g.key,
+          label: g.label,
+          value: g.value,
+          format: "months",
+          maxFractionDigits: 1,
+        })),
+        warnings,
+      };
+    },
+    formula:
+      "Payback (months) = CAC ÷ (ARPA × gross margin); Sensitivity varies ARPA and gross margin around a base case",
+    assumptions: [
+      "Uses gross profit payback: ARPA × gross margin approximates monthly gross profit per account.",
+      "Assumes ARPA and gross margin are stable during the payback period (planning shortcut).",
+      "Only shows a small grid; use broader scenarios for full planning.",
+    ],
+    faqs: [
+      {
+        question: "Why use gross margin instead of revenue for payback?",
+        answer:
+          "Because payback should reflect contribution (value created after COGS). Revenue-based payback can overstate how fast you recover CAC.",
+      },
+      {
+        question: "What ARPA and margin ranges should I test?",
+        answer:
+          "Test ranges that reflect pricing/mix uncertainty. A common starting point is ±10–20% ARPA and ±5–10% margin, then widen if your business is volatile.",
+      },
+      {
+        question: "Is this the same as cohort payback curves?",
+        answer:
+          "No. This is a simple sensitivity tool for steady-state assumptions. Cohort payback curves model early churn and changing revenue/margin over time.",
+      },
+    ],
+    guide: [
+      {
+        title: "How to use payback sensitivity",
+        bullets: [
+          "If payback is extremely sensitive to margin, focus on COGS and variable cost control.",
+          "If payback is extremely sensitive to ARPA, focus on pricing, packaging, and upsell.",
+          "Use segment-level inputs (plan/channel) instead of blended averages when possible.",
+        ],
+      },
+    ],
+  },
+  {
     slug: "churn-rate-calculator",
     title: "Churn Rate Calculator",
     description: "Calculate customer churn rate for a period.",
@@ -1510,6 +1703,219 @@ export const calculators: CalculatorDefinition[] = [
           "Using total signups as the denominator instead of active users.",
           "Mixing gross revenue with net revenue (refunds/discounts) without noting it.",
           "Comparing ARPU across periods while changing pricing or activation criteria without segmentation.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "arpu-growth-decomposition-calculator",
+    title: "ARPU Growth Decomposition Calculator",
+    description:
+      "Decompose revenue growth into ARPU change vs user growth (and interaction) between two periods.",
+    category: "saas-metrics",
+    guideSlug: "arpu-growth-decomposition-guide",
+    relatedGlossarySlugs: ["arpu", "arpa", "arpa-vs-arpu"],
+    seo: {
+      intro: [
+        "Revenue changes because user count changes, ARPU changes, or both. Decomposing growth helps you see whether pricing/monetization or distribution/scale is doing the work.",
+        "This calculator uses a standard two-factor decomposition: revenue = users × ARPU.",
+      ],
+      steps: [
+        "Enter revenue and average active users for the start period.",
+        "Enter revenue and average active users for the end period.",
+        "Review how much of revenue growth is explained by ARPU change vs user growth.",
+      ],
+      pitfalls: [
+        "Comparing periods with different 'active user' definitions (denominator drift).",
+        "Mixing net revenue in one period with gross revenue in another (inconsistent revenue base).",
+        "Attributing interaction effects incorrectly; use it as a directional decomposition.",
+      ],
+    },
+    inputs: [
+      {
+        key: "startRevenue",
+        label: "Revenue (start period)",
+        placeholder: "50000",
+        prefix: "$",
+        defaultValue: "50000",
+        min: 0,
+      },
+      {
+        key: "startUsers",
+        label: "Average active users (start period)",
+        placeholder: "2000",
+        defaultValue: "2000",
+        min: 0,
+      },
+      {
+        key: "endRevenue",
+        label: "Revenue (end period)",
+        placeholder: "65000",
+        prefix: "$",
+        defaultValue: "65000",
+        min: 0,
+      },
+      {
+        key: "endUsers",
+        label: "Average active users (end period)",
+        placeholder: "2300",
+        defaultValue: "2300",
+        min: 0,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      if (values.startUsers <= 0) warnings.push("Start users must be greater than 0.");
+      if (values.endUsers <= 0) warnings.push("End users must be greater than 0.");
+
+      const startArpu = safeDivide(values.startRevenue, values.startUsers);
+      const endArpu = safeDivide(values.endRevenue, values.endUsers);
+      if (startArpu === null || endArpu === null) {
+        return {
+          headline: {
+            key: "revenueChange",
+            label: "Revenue change",
+            value: 0,
+            format: "currency",
+            currency: "USD",
+          },
+          warnings,
+        };
+      }
+
+      const deltaUsers = values.endUsers - values.startUsers;
+      const deltaArpu = endArpu - startArpu;
+      const revenueChange = values.endRevenue - values.startRevenue;
+
+      const userEffect = deltaUsers * startArpu;
+      const arpuEffect = deltaArpu * values.startUsers;
+      const interaction = deltaUsers * deltaArpu;
+
+      const userGrowth = safeDivide(deltaUsers, values.startUsers);
+      const arpuGrowth = safeDivide(deltaArpu, startArpu);
+
+      return {
+        headline: {
+          key: "revenueChange",
+          label: "Revenue change",
+          value: revenueChange,
+          format: "currency",
+          currency: "USD",
+          detail: "End revenue − start revenue",
+        },
+        secondary: [
+          {
+            key: "startArpu",
+            label: "ARPU (start)",
+            value: startArpu,
+            format: "currency",
+            currency: "USD",
+            detail: "Start revenue ÷ start users",
+          },
+          {
+            key: "endArpu",
+            label: "ARPU (end)",
+            value: endArpu,
+            format: "currency",
+            currency: "USD",
+            detail: "End revenue ÷ end users",
+          },
+          {
+            key: "userEffect",
+            label: "Revenue from user growth (holding ARPU constant)",
+            value: userEffect,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "arpuEffect",
+            label: "Revenue from ARPU change (holding users constant)",
+            value: arpuEffect,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "interaction",
+            label: "Interaction (users × ARPU change)",
+            value: interaction,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "userGrowth",
+            label: "User growth rate",
+            value: userGrowth ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: userGrowth === null ? "Start users must be > 0" : "Δ users ÷ start users",
+          },
+          {
+            key: "arpuGrowth",
+            label: "ARPU growth rate",
+            value: arpuGrowth ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: arpuGrowth === null ? "Start ARPU must be > 0" : "Δ ARPU ÷ start ARPU",
+          },
+        ],
+        breakdown: [
+          {
+            key: "startRevenue",
+            label: "Start revenue",
+            value: values.startRevenue,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "startUsers",
+            label: "Start users",
+            value: values.startUsers,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+          {
+            key: "endRevenue",
+            label: "End revenue",
+            value: values.endRevenue,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "endUsers",
+            label: "End users",
+            value: values.endUsers,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Revenue = users × ARPU; ΔRevenue = ΔUsers×ARPU_start + ΔARPU×Users_start + ΔUsers×ΔARPU",
+    assumptions: [
+      "Start/end periods use the same definition of revenue (gross vs net) and 'active user'.",
+      "Decomposition is directional; it helps explain changes but does not prove causality.",
+    ],
+    faqs: [
+      {
+        question: "Why is there an 'interaction' term?",
+        answer:
+          "Because users and ARPU can change at the same time. The interaction term captures growth that comes from both increasing together (or offsetting each other).",
+      },
+      {
+        question: "Should I use ARPU or ARPA for B2B SaaS?",
+        answer:
+          "If you bill per company (accounts), ARPA is usually more natural. If you bill per seat or per user, ARPU may match pricing better.",
+      },
+    ],
+    guide: [
+      {
+        title: "How to interpret the decomposition",
+        bullets: [
+          "User-driven growth often points to distribution, acquisition, or activation improvements.",
+          "ARPU-driven growth often points to pricing, packaging, upsell, or mix shifts to higher-value segments.",
+          "If ARPU rises but user growth stalls, check conversion and retention by segment (pricing can shift who you attract).",
         ],
       },
     ],
@@ -2796,6 +3202,143 @@ export const calculators: CalculatorDefinition[] = [
           "Use bookings to evaluate sales performance and contracted demand.",
           "Use ARR to compare recurring scale and momentum across time/companies.",
           "Use cash to plan runway; billing terms can move cash without changing ARR.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "deferred-revenue-rollforward-calculator",
+    title: "Deferred Revenue Rollforward Calculator",
+    description:
+      "Bridge billings to recognized revenue by rolling deferred revenue forward for a period.",
+    category: "finance",
+    guideSlug: "deferred-revenue-guide",
+    relatedGlossarySlugs: ["billings", "recognized-revenue", "deferred-revenue", "revenue-recognition"],
+    seo: {
+      intro: [
+        "Billings, cash receipts, and recognized revenue can differ due to timing. Deferred revenue is the bridge: it increases when you bill/collect ahead of delivery and decreases as you recognize revenue.",
+        "This calculator models a simple deferred revenue rollforward: ending deferred = beginning deferred + billings − recognized revenue.",
+      ],
+      steps: [
+        "Enter beginning deferred revenue (start-of-period balance).",
+        "Enter billings in the period (invoices issued).",
+        "Enter recognized revenue for the period.",
+        "Review ending deferred revenue and the change during the period.",
+      ],
+      pitfalls: [
+        "Mixing cash receipts with billings (not always the same).",
+        "Using bookings/TCV as billings (bookings can include future-period billing).",
+        "Forgetting that deferred revenue can go negative only in edge cases (check definitions).",
+      ],
+    },
+    inputs: [
+      {
+        key: "beginningDeferred",
+        label: "Beginning deferred revenue",
+        placeholder: "250000",
+        prefix: "$",
+        defaultValue: "250000",
+        min: 0,
+      },
+      {
+        key: "billings",
+        label: "Billings (in period)",
+        help: "Invoices issued in the period (not necessarily cash collected).",
+        placeholder: "400000",
+        prefix: "$",
+        defaultValue: "400000",
+        min: 0,
+      },
+      {
+        key: "recognizedRevenue",
+        label: "Recognized revenue (in period)",
+        placeholder: "350000",
+        prefix: "$",
+        defaultValue: "350000",
+        min: 0,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const endingDeferred = values.beginningDeferred + values.billings - values.recognizedRevenue;
+      const change = endingDeferred - values.beginningDeferred;
+
+      if (endingDeferred < 0) {
+        warnings.push(
+          "Ending deferred revenue is negative. Double-check definitions (billings vs cash, revenue timing) or inputs.",
+        );
+      }
+
+      return {
+        headline: {
+          key: "endingDeferred",
+          label: "Ending deferred revenue",
+          value: endingDeferred,
+          format: "currency",
+          currency: "USD",
+          detail: "Begin + billings − recognized",
+        },
+        secondary: [
+          {
+            key: "change",
+            label: "Change in deferred revenue",
+            value: change,
+            format: "currency",
+            currency: "USD",
+            detail: "Ending − beginning",
+          },
+        ],
+        breakdown: [
+          {
+            key: "beginningDeferred",
+            label: "Beginning deferred",
+            value: values.beginningDeferred,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "billings",
+            label: "Billings",
+            value: values.billings,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "recognizedRevenue",
+            label: "Recognized revenue",
+            value: values.recognizedRevenue,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "Ending deferred = beginning deferred + billings − recognized revenue",
+    assumptions: [
+      "Billings are invoices issued in the period (simplified).",
+      "Recognized revenue reflects what was earned/delivered in the period.",
+      "Ignores FX effects, write-offs, and detailed revenue recognition policies (simplified).",
+    ],
+    faqs: [
+      {
+        question: "Is deferred revenue the same as cash?",
+        answer:
+          "No. Deferred revenue is a balance sheet liability (unearned revenue). Cash is cash. Deferred revenue often increases with annual prepay, but cash and deferred can still differ due to collections timing.",
+      },
+      {
+        question: "Why does deferred revenue matter for SaaS metrics?",
+        answer:
+          "Because it explains timing differences between billings/cash and recognized revenue. It’s especially important when customers prepay annually or when billing terms change.",
+      },
+    ],
+    guide: [
+      {
+        title: "How to use the rollforward",
+        bullets: [
+          "If deferred revenue is growing, billings are outpacing recognized revenue (often prepay or faster sales).",
+          "If deferred revenue is shrinking, you may be recognizing past billings faster than new billings (or billing terms shifted).",
+          "Use alongside bookings/ARR to avoid mixing contracted value with recognized revenue timing.",
         ],
       },
     ],

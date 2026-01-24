@@ -643,6 +643,90 @@ export const guides: Guide[] = [
     ],
   },
   {
+    slug: "cac-payback-sensitivity-guide",
+    title: "CAC payback sensitivity: ARPA × margin scenarios (months to recover CAC)",
+    description:
+      "A practical guide to CAC payback sensitivity: vary ARPA and gross margin to see how months to recover CAC changes under realistic scenarios.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: [
+      "cac-payback-sensitivity-calculator",
+      "cac-payback-period-calculator",
+      "unit-economics-dashboard-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "cac",
+      "cac-payback-period",
+      "arpa",
+      "gross-margin",
+      "sensitivity-analysis",
+    ],
+    sections: [
+      { type: "h2", text: "Why sensitivity matters" },
+      {
+        type: "p",
+        text: "CAC payback is a simple formula, but the inputs are not stable. ARPA shifts with pricing and mix, and gross margin shifts with COGS and usage. Sensitivity analysis helps you avoid false confidence by showing how payback changes under a small set of scenarios.",
+      },
+      { type: "h2", text: "Payback formula (gross profit payback)" },
+      {
+        type: "p",
+        text: "Payback (months) = CAC ÷ (ARPA × gross margin).",
+      },
+      { type: "h2", text: "How to pick scenario ranges" },
+      {
+        type: "bullets",
+        items: [
+          "Start with ranges that reflect your uncertainty: e.g., ±10–20% ARPA and ±5–10% gross margin.",
+          "If you have segmented data, do sensitivity per segment (plan/channel) instead of using blended averages.",
+          "Widen ranges when channels are volatile or pricing is changing; narrow them once economics stabilize.",
+        ],
+      },
+      { type: "h2", text: "How to interpret the grid" },
+      {
+        type: "bullets",
+        items: [
+          "If payback is highly sensitive to margin, invest in COGS reduction and variable cost control.",
+          "If payback is highly sensitive to ARPA, focus on pricing, packaging, and upsell/expansion paths.",
+          "Use payback with retention: long payback + high early churn can still be unprofitable even if LTV is high on paper.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using revenue-based payback while CAC is fully-loaded (mismatch).",
+          "Mixing time units (monthly ARPA with annual CAC, or vice-versa).",
+          "Treating sensitivity outputs as precision instead of scenario planning.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is this the same as cohort payback curves?",
+        answer:
+          "No. Sensitivity analysis varies assumptions (ARPA/margin) around a steady-state model. Cohort payback curves model payback over time with early churn and changing revenue/margin.",
+      },
+      {
+        question: "What should I change first to improve payback?",
+        answer:
+          "Start with the lever that moves payback the most in sensitivity: ARPA (pricing/mix) or gross margin (COGS/variable cost). Then validate the change with cohort retention so you don’t trade payback for churn.",
+      },
+    ],
+    examples: [
+      {
+        label: "Sensitivity example (CAC $6k; ARPA $800; margin 80%; ±10% ARPA; ±5% margin)",
+        calculatorSlug: "cac-payback-sensitivity-calculator",
+        params: {
+          cac: "6000",
+          arpaMonthly: "800",
+          grossMarginPercent: "80",
+          arpaStepPercent: "10",
+          grossMarginStepPercent: "5",
+        },
+      },
+    ],
+  },
+  {
     slug: "churn-guide",
     title: "Churn: How to measure churn rate correctly",
     description:
@@ -851,6 +935,76 @@ export const guides: Guide[] = [
         label: "Monthly example ($50,000 revenue; 2,000 avg users)",
         calculatorSlug: "arpu-calculator",
         params: { revenue: "50000", avgUsers: "2000" },
+      },
+    ],
+  },
+  {
+    slug: "arpu-growth-decomposition-guide",
+    title: "ARPU growth decomposition: what drove revenue (ARPU vs users)",
+    description:
+      "A practical guide to decomposing revenue growth into ARPU change vs user growth (and interaction), with a worked example.",
+    category: "saas-metrics",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: [
+      "arpu-growth-decomposition-calculator",
+      "arpu-calculator",
+      "mrr-calculator",
+    ],
+    relatedGlossarySlugs: ["arpu", "arpa", "arpa-vs-arpu"],
+    sections: [
+      { type: "h2", text: "What this decomposition answers" },
+      {
+        type: "p",
+        text: "Revenue can grow because you have more active users, because you earn more per user (ARPU), or both. Decomposition is a quick way to explain growth without guessing: it splits the change into a user effect, an ARPU effect, and an interaction term.",
+      },
+      { type: "h2", text: "Core identity" },
+      { type: "p", text: "Revenue = users × ARPU." },
+      { type: "h2", text: "Decomposition formula" },
+      {
+        type: "p",
+        text: "ΔRevenue = ΔUsers×ARPU_start + ΔARPU×Users_start + ΔUsers×ΔARPU.",
+      },
+      { type: "h2", text: "How to use it in practice" },
+      {
+        type: "bullets",
+        items: [
+          "User-driven growth often points to acquisition, distribution, or activation improvements.",
+          "ARPU-driven growth often points to pricing/packaging, upsell, or mix shifts toward higher-value segments.",
+          "If ARPU rises but user growth slows, segment conversion and retention (pricing can change who you attract).",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Changing the definition of 'active user' between periods.",
+          "Mixing net revenue (after refunds/credits) with gross revenue across periods.",
+          "Treating the decomposition as proof of causality; it’s an explanation tool, not an experiment.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Why is there an interaction term?",
+        answer:
+          "Because users and ARPU can change simultaneously. The interaction term captures the portion of growth created by both changing at the same time.",
+      },
+      {
+        question: "Should I use ARPU or ARPA?",
+        answer:
+          "Use ARPU when your denominator is users/seats. Use ARPA when you bill per company account/customer. Pick the metric that matches how you price and report.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example (start $50k / 2,000 users → end $65k / 2,300 users)",
+        calculatorSlug: "arpu-growth-decomposition-calculator",
+        params: {
+          startRevenue: "50000",
+          startUsers: "2000",
+          endRevenue: "65000",
+          endUsers: "2300",
+        },
       },
     ],
   },
@@ -2751,6 +2905,84 @@ export const guides: Guide[] = [
           diminishingReturnsExponent: "0.75",
           maxSpendCap: "0",
         },
+      },
+    ],
+  },
+  {
+    slug: "deferred-revenue-guide",
+    title: "Deferred revenue: bridge billings to recognized revenue (with formulas)",
+    description:
+      "A practical guide to deferred revenue: what it is, why billings and recognized revenue differ, and how to use a rollforward to stay consistent.",
+    category: "finance",
+    updatedAt: "2026-01-24",
+    relatedCalculatorSlugs: [
+      "deferred-revenue-rollforward-calculator",
+      "bookings-vs-arr-calculator",
+      "arr-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "billings",
+      "recognized-revenue",
+      "deferred-revenue",
+      "revenue-recognition",
+      "arr-vs-bookings",
+    ],
+    sections: [
+      { type: "h2", text: "Why this topic matters" },
+      {
+        type: "p",
+        text: "Teams often mix bookings, billings, cash, and recognized revenue. Deferred revenue is the bridge that explains timing: it increases when you bill/collect ahead of delivery and decreases as you recognize revenue over time.",
+      },
+      { type: "h2", text: "Key definitions (quick)" },
+      {
+        type: "bullets",
+        items: [
+          "Billings: invoices issued in a period.",
+          "Recognized revenue: revenue recorded as earned/delivered.",
+          "Deferred revenue: unearned revenue liability (what you billed/collected but haven’t earned yet).",
+        ],
+      },
+      { type: "h2", text: "Deferred revenue rollforward formula" },
+      {
+        type: "p",
+        text: "Ending deferred = beginning deferred + billings − recognized revenue.",
+      },
+      { type: "h2", text: "How this relates to bookings vs ARR" },
+      {
+        type: "bullets",
+        items: [
+          "Bookings are contracted value; they are not automatically billings or revenue.",
+          "ARR is a recurring run-rate snapshot; it is not recognized revenue.",
+          "Deferred revenue helps explain why billings/cash can spike (annual prepay) while ARR and recognized revenue move differently.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Treating billings as cash receipts (collections timing matters).",
+          "Using bookings/TCV as billings without checking invoicing timing.",
+          "Ignoring negative deferred revenue outputs (usually indicates definition mismatch).",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Can deferred revenue go down even if you are growing?",
+        answer:
+          "Yes. If you shift from annual prepay to monthly billing, or if recognized revenue outpaces new billings for a period, deferred revenue can decline while the business still grows.",
+      },
+      {
+        question: "Is deferred revenue the same as cash collected?",
+        answer:
+          "No. Deferred revenue is a liability balance. Cash collected is cash. They can move together under prepay, but they differ when collections timing, write-offs, or payment terms differ.",
+      },
+    ],
+    examples: [
+      {
+        label: "Rollforward example (begin $250k; billings $400k; recognized $350k)",
+        calculatorSlug: "deferred-revenue-rollforward-calculator",
+        params: { beginningDeferred: "250000", billings: "400000", recognizedRevenue: "350000" },
       },
     ],
   },
