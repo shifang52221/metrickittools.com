@@ -7235,4 +7235,576 @@ export const calculators: CalculatorDefinition[] = [
       },
     ],
   },
+  {
+    slug: "unit-economics-dashboard-calculator",
+    title: "Unit Economics Dashboard Calculator",
+    description:
+      "Compute a unit economics snapshot: gross profit LTV, CAC payback, LTV:CAC, and break-even targets from a few inputs.",
+    category: "saas-metrics",
+    guideSlug: "unit-economics-dashboard-guide",
+    relatedGlossarySlugs: [
+      "unit-economics",
+      "ltv",
+      "cac",
+      "payback-period",
+      "arpa",
+      "gross-margin",
+      "logo-churn",
+      "cohorted-ltv",
+    ],
+    seo: {
+      intro: [
+        "Unit economics answer: do we create enough gross profit per customer to justify what we spend to acquire them, and how fast do we get cash back?",
+        "This dashboard calculator computes gross profit LTV, CAC payback months, LTV:CAC, and simple break-even targets. It’s designed for fast scenario testing and planning.",
+      ],
+      steps: [
+        "Enter ARPA, gross margin, and monthly churn to estimate gross profit LTV.",
+        "Enter CAC to compute payback months and LTV:CAC ratio.",
+        "Optionally add a target payback to see a max CAC target.",
+      ],
+      pitfalls: [
+        "Using revenue LTV instead of gross profit LTV (overstates value).",
+        "Mixing monthly churn with annual ARPA (time unit mismatch).",
+        "Comparing fully-loaded CAC to revenue-based LTV (mismatch).",
+      ],
+    },
+    inputs: [
+      {
+        key: "arpaMonthly",
+        label: "ARPA (monthly)",
+        placeholder: "800",
+        prefix: "$",
+        defaultValue: "800",
+        min: 0,
+      },
+      {
+        key: "grossMarginPercent",
+        label: "Gross margin",
+        placeholder: "80",
+        suffix: "%",
+        defaultValue: "80",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "monthlyLogoChurnPercent",
+        label: "Monthly churn (logo)",
+        help: "Used as a shortcut lifetime estimate; cohort LTV is more accurate.",
+        placeholder: "2",
+        suffix: "%",
+        defaultValue: "2",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "cac",
+        label: "CAC (per new customer)",
+        placeholder: "6000",
+        prefix: "$",
+        defaultValue: "6000",
+        min: 0,
+      },
+      {
+        key: "targetPaybackMonths",
+        label: "Target payback (months, optional)",
+        help: "Set 0 to disable target CAC calculation.",
+        placeholder: "12",
+        defaultValue: "12",
+        min: 0,
+        step: 1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const margin = values.grossMarginPercent / 100;
+      const churn = values.monthlyLogoChurnPercent / 100;
+
+      if (values.arpaMonthly <= 0) warnings.push("ARPA must be greater than 0.");
+      if (margin <= 0) warnings.push("Gross margin must be greater than 0%.");
+      if (churn <= 0) warnings.push("Monthly churn must be greater than 0% to estimate lifetime from churn.");
+      if (values.cac <= 0) warnings.push("CAC must be greater than 0.");
+
+      const grossProfitPerMonth = values.arpaMonthly * margin;
+      const lifetimeMonths = churn > 0 ? 1 / churn : null;
+      const grossProfitLtv = lifetimeMonths ? grossProfitPerMonth * lifetimeMonths : null;
+
+      const paybackMonths =
+        grossProfitPerMonth > 0 ? values.cac / grossProfitPerMonth : null;
+      const ltvToCac = grossProfitLtv ? grossProfitLtv / values.cac : null;
+
+      const targetPayback = Math.floor(values.targetPaybackMonths);
+      if (values.targetPaybackMonths !== targetPayback)
+        warnings.push("Target payback was rounded down to a whole number.");
+
+      const maxCacForTargetPayback =
+        targetPayback > 0 ? grossProfitPerMonth * targetPayback : null;
+
+      const breakEvenMonthlyChurn =
+        grossProfitLtv && grossProfitLtv > 0
+          ? safeDivide(grossProfitPerMonth, grossProfitLtv)
+          : churn;
+
+      return {
+        headline: {
+          key: "ltvToCac",
+          label: "LTV:CAC (gross profit)",
+          value: ltvToCac ?? 0,
+          format: "multiple",
+          maxFractionDigits: 2,
+          detail: ltvToCac === null ? "Enter valid churn and CAC" : "Gross profit LTV ÷ CAC",
+        },
+        secondary: [
+          {
+            key: "grossProfitLtv",
+            label: "Gross profit LTV (shortcut)",
+            value: grossProfitLtv ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: grossProfitLtv === null ? "Requires churn > 0" : "Gross profit/month × lifetime",
+          },
+          {
+            key: "paybackMonths",
+            label: "CAC payback (months)",
+            value: paybackMonths ?? 0,
+            format: "months",
+            maxFractionDigits: 1,
+            detail: paybackMonths === null ? "Requires margin and ARPA" : "CAC ÷ gross profit/month",
+          },
+          {
+            key: "grossProfitPerMonth",
+            label: "Gross profit per month",
+            value: grossProfitPerMonth,
+            format: "currency",
+            currency: "USD",
+            detail: "ARPA × gross margin",
+          },
+          {
+            key: "lifetimeMonths",
+            label: "Approx. lifetime (months)",
+            value: lifetimeMonths ?? 0,
+            format: "months",
+            maxFractionDigits: 1,
+            detail: lifetimeMonths === null ? "Churn is 0%" : "1 ÷ monthly churn",
+          },
+          {
+            key: "maxCac",
+            label: `Max CAC for ${targetPayback} month payback`,
+            value: maxCacForTargetPayback ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: maxCacForTargetPayback === null ? "Set target payback > 0" : "Gross profit/month × target months",
+          },
+          {
+            key: "breakEvenChurn",
+            label: "Break-even churn (for this LTV shortcut)",
+            value: breakEvenMonthlyChurn ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: "Directional only (shortcut model)",
+          },
+        ],
+        breakdown: [
+          {
+            key: "arpaMonthly",
+            label: "ARPA (monthly)",
+            value: values.arpaMonthly,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "grossMargin",
+            label: "Gross margin",
+            value: margin,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "monthlyChurn",
+            label: "Monthly churn",
+            value: churn,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "cac",
+            label: "CAC",
+            value: values.cac,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Gross profit LTV ≈ (ARPA×gross margin) ÷ churn; Payback ≈ CAC ÷ (ARPA×gross margin); LTV:CAC ≈ LTV ÷ CAC",
+    assumptions: [
+      "Uses logo churn as a shortcut lifetime estimate (1/churn).",
+      "Assumes constant ARPA and gross margin over lifetime.",
+      "For accuracy, use cohort-based LTV and segment-level retention curves.",
+    ],
+    faqs: [
+      {
+        question: "What LTV:CAC is good?",
+        answer:
+          "It depends on growth stage and payback constraints. Many teams use ~3× as a rough rule of thumb, but payback and cash constraints matter more than a single ratio.",
+      },
+      {
+        question: "Why can this be misleading?",
+        answer:
+          "Because churn is rarely constant and expansion can change revenue over time. This is a planning shortcut; validate with cohort curves when possible.",
+      },
+    ],
+  },
+  {
+    slug: "break-even-cpm-calculator",
+    title: "Break-even CPM Calculator",
+    description:
+      "Compute break-even and target CPM from CTR, CVR, AOV, and contribution margin assumptions.",
+    category: "paid-ads",
+    guideSlug: "break-even-cpm-guide",
+    relatedGlossarySlugs: [
+      "cpm",
+      "ctr",
+      "cvr",
+      "aov",
+      "contribution-margin",
+      "break-even-roas",
+    ],
+    seo: {
+      intro: [
+        "If you buy impressions (CPM), you need to know how much you can pay per 1,000 impressions and still break even.",
+        "This calculator converts CTR and CVR into expected conversions per 1,000 impressions, then computes the break-even CPM and a target CPM with buffer.",
+      ],
+      steps: [
+        "Enter CTR and CVR to estimate conversions per 1,000 impressions.",
+        "Enter AOV and contribution margin to estimate contribution per conversion.",
+        "Add a buffer to compute a target CPM below break-even.",
+      ],
+      pitfalls: [
+        "Using mismatched denominators (session CVR vs click CVR).",
+        "Overstating margin by ignoring returns, shipping, and fees.",
+        "Assuming CPM buying is profitable without incrementality validation.",
+      ],
+    },
+    inputs: [
+      {
+        key: "ctrPercent",
+        label: "CTR",
+        placeholder: "1.5",
+        suffix: "%",
+        defaultValue: "1.5",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "cvrPercent",
+        label: "CVR (click → conversion)",
+        placeholder: "2.5",
+        suffix: "%",
+        defaultValue: "2.5",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "aov",
+        label: "AOV",
+        placeholder: "80",
+        prefix: "$",
+        defaultValue: "80",
+        min: 0,
+      },
+      {
+        key: "contributionMarginPercent",
+        label: "Contribution margin",
+        placeholder: "40",
+        suffix: "%",
+        defaultValue: "40",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "profitBufferPercent",
+        label: "Profit buffer",
+        placeholder: "20",
+        suffix: "%",
+        defaultValue: "20",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const ctr = values.ctrPercent / 100;
+      const cvr = values.cvrPercent / 100;
+      const margin = values.contributionMarginPercent / 100;
+      const buffer = values.profitBufferPercent / 100;
+
+      if (ctr <= 0) warnings.push("CTR must be greater than 0%.");
+      if (cvr <= 0) warnings.push("CVR must be greater than 0%.");
+      if (values.aov <= 0) warnings.push("AOV must be greater than 0.");
+      if (margin <= 0) warnings.push("Contribution margin must be greater than 0%.");
+
+      const clicksPerThousand = 1000 * ctr;
+      const conversionsPerThousand = clicksPerThousand * cvr;
+      const contributionPerConversion = values.aov * margin;
+      const contributionPerThousand = conversionsPerThousand * contributionPerConversion;
+
+      const breakEvenCpm = contributionPerThousand;
+      const targetCpm = breakEvenCpm * Math.max(0, 1 - buffer);
+
+      return {
+        headline: {
+          key: "targetCpm",
+          label: "Target CPM",
+          value: targetCpm,
+          format: "currency",
+          currency: "USD",
+          detail: "Break-even CPM with profit buffer",
+        },
+        secondary: [
+          {
+            key: "breakEvenCpm",
+            label: "Break-even CPM",
+            value: breakEvenCpm,
+            format: "currency",
+            currency: "USD",
+            detail: "Contribution per 1,000 impressions",
+          },
+          {
+            key: "conversionsPerThousand",
+            label: "Conversions per 1,000 impressions",
+            value: conversionsPerThousand,
+            format: "number",
+            maxFractionDigits: 2,
+            detail: "1000×CTR×CVR",
+          },
+          {
+            key: "contributionPerConversion",
+            label: "Contribution per conversion",
+            value: contributionPerConversion,
+            format: "currency",
+            currency: "USD",
+            detail: "AOV×margin",
+          },
+          {
+            key: "clicksPerThousand",
+            label: "Clicks per 1,000 impressions",
+            value: clicksPerThousand,
+            format: "number",
+            maxFractionDigits: 1,
+          },
+        ],
+        breakdown: [
+          {
+            key: "ctr",
+            label: "CTR",
+            value: ctr,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "cvr",
+            label: "CVR",
+            value: cvr,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "aov",
+            label: "AOV",
+            value: values.aov,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "margin",
+            label: "Contribution margin",
+            value: margin,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "buffer",
+            label: "Profit buffer",
+            value: buffer,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Conversions/1000 = 1000×CTR×CVR; Break-even CPM = conversions/1000 × (AOV×margin); Target CPM = break-even × (1-buffer)",
+    assumptions: [
+      "CVR is click-based (conversions ÷ clicks).",
+      "Contribution margin captures variable costs (not fixed overhead).",
+      "Ignores long-term LTV; best for one-time purchase economics.",
+    ],
+    faqs: [
+      {
+        question: "How is this different from max CPC?",
+        answer:
+          "Max CPC tells you what you can pay per click. Break-even CPM tells you what you can pay per 1,000 impressions. They are linked via CTR: CPM ≈ CPC×CTR×1000.",
+      },
+      {
+        question: "What if my platform charges CPM but optimizes for conversions?",
+        answer:
+          "You can still use this as a sanity check, but ensure CTR and CVR reflect observed performance for that campaign and placement mix.",
+      },
+    ],
+  },
+  {
+    slug: "multiple-valuation-calculator",
+    title: "Multiple Valuation Calculator",
+    description:
+      "Estimate enterprise value and equity value from a metric (ARR or revenue) and a valuation multiple (with net debt adjustments).",
+    category: "finance",
+    guideSlug: "multiple-valuation-guide",
+    relatedGlossarySlugs: [
+      "enterprise-value",
+      "equity-value",
+      "net-debt",
+      "arr",
+      "arr-valuation-multiple",
+    ],
+    seo: {
+      intro: [
+        "Multiple-based valuation is a fast way to estimate enterprise value by applying a market multiple to a metric like ARR or revenue.",
+        "This calculator estimates enterprise value (metric × multiple) and then bridges to equity value using cash and debt.",
+      ],
+      steps: [
+        "Choose a metric value (ARR or annual revenue) and a multiple.",
+        "Compute enterprise value = metric × multiple.",
+        "Bridge to equity value using cash and debt (net debt).",
+      ],
+      pitfalls: [
+        "Mixing EV multiples with equity value comparables (mismatch).",
+        "Using the wrong metric definition (gross vs net revenue, recurring vs one-time).",
+        "Using a multiple without context (growth, margin, retention).",
+      ],
+    },
+    inputs: [
+      {
+        key: "metricValue",
+        label: "Metric value (ARR or revenue)",
+        placeholder: "5000000",
+        prefix: "$",
+        defaultValue: "5000000",
+        min: 0,
+      },
+      {
+        key: "multiple",
+        label: "Valuation multiple",
+        placeholder: "6",
+        defaultValue: "6",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "cash",
+        label: "Cash",
+        placeholder: "1000000",
+        prefix: "$",
+        defaultValue: "1000000",
+        min: 0,
+      },
+      {
+        key: "debt",
+        label: "Debt",
+        placeholder: "2000000",
+        prefix: "$",
+        defaultValue: "2000000",
+        min: 0,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      if (values.metricValue <= 0) warnings.push("Metric value must be greater than 0.");
+      if (values.multiple <= 0) warnings.push("Multiple must be greater than 0.");
+
+      const enterpriseValue = values.metricValue * values.multiple;
+      const netDebt = values.debt - values.cash;
+      const equityValue = enterpriseValue - netDebt;
+
+      return {
+        headline: {
+          key: "enterpriseValue",
+          label: "Enterprise value (EV)",
+          value: enterpriseValue,
+          format: "currency",
+          currency: "USD",
+          detail: "Metric × multiple",
+        },
+        secondary: [
+          {
+            key: "equityValue",
+            label: "Equity value",
+            value: equityValue,
+            format: "currency",
+            currency: "USD",
+            detail: "EV - net debt",
+          },
+          {
+            key: "netDebt",
+            label: "Net debt",
+            value: netDebt,
+            format: "currency",
+            currency: "USD",
+            detail: "Debt - cash",
+          },
+        ],
+        breakdown: [
+          {
+            key: "metricValue",
+            label: "Metric value",
+            value: values.metricValue,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "multiple",
+            label: "Multiple",
+            value: values.multiple,
+            format: "multiple",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "cash",
+            label: "Cash",
+            value: values.cash,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "debt",
+            label: "Debt",
+            value: values.debt,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "EV = metric × multiple; Equity value = EV + cash - debt",
+    assumptions: [
+      "Multiple is applied to a single metric definition (be consistent).",
+      "Uses a simplified EV→equity bridge (cash and debt only).",
+      "Multiple selection should reflect growth, margin, and retention context.",
+    ],
+    faqs: [
+      {
+        question: "ARR multiple vs revenue multiple: which should I use?",
+        answer:
+          "For subscription businesses, ARR multiples are common because ARR captures recurring run-rate. Revenue multiples can be more appropriate when revenue is mostly recurring and recognized consistently. Always match the multiple to the metric definition used by comps.",
+      },
+      {
+        question: "Why does equity value differ from EV?",
+        answer:
+          "Because EV represents the operating business value before financing. Equity value is what remains for shareholders after adjusting for net debt and other claims.",
+      },
+    ],
+  },
 ];

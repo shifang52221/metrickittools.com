@@ -82,6 +82,8 @@ const seeds: Seed[] = [
     description:
       "CPM is the cost per 1,000 impressions. It varies by audience, placement, seasonality, and competition.",
     formula: "CPM = (ad spend ÷ impressions) × 1000",
+    relatedGuideSlugs: ["break-even-cpm-guide", "paid-ads-funnel-guide"],
+    relatedCalculatorSlugs: ["break-even-cpm-calculator", "paid-ads-funnel-calculator"],
   },
   {
     slug: "max-cpc",

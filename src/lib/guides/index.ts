@@ -3465,6 +3465,210 @@ export const guides: Guide[] = [
       },
     ],
   },
+  {
+    slug: "unit-economics-dashboard-guide",
+    title: "Unit economics dashboard: LTV, CAC, payback, and what to improve",
+    description:
+      "A practical guide to unit economics: how to compute gross profit LTV, CAC payback, and LTV:CAC (and what levers improve them).",
+    category: "saas-metrics",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: [
+      "unit-economics-dashboard-calculator",
+      "ltv-calculator",
+      "blended-cac-calculator",
+      "cac-payback-period-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "unit-economics",
+      "ltv",
+      "cac",
+      "payback-period",
+      "arpa",
+      "gross-margin",
+      "logo-churn",
+      "cohorted-ltv",
+    ],
+    sections: [
+      { type: "h2", text: "What unit economics tells you" },
+      {
+        type: "p",
+        text: "Unit economics evaluates whether acquiring a customer creates enough gross profit to justify acquisition cost, and whether payback is fast enough for your cash constraints.",
+      },
+      { type: "h2", text: "Core metrics" },
+      {
+        type: "bullets",
+        items: [
+          "Gross profit LTV: expected gross profit from a customer over their lifetime.",
+          "CAC payback: months to recover CAC from monthly gross profit.",
+          "LTV:CAC: value relative to acquisition cost (helpful, but not sufficient).",
+        ],
+      },
+      { type: "h2", text: "How to improve the dashboard" },
+      {
+        type: "bullets",
+        items: [
+          "Increase ARPA: pricing, packaging, upsells, better monetization.",
+          "Increase gross margin: reduce COGS/variable costs, optimize infra and support.",
+          "Reduce churn: activation, onboarding, product quality, customer success.",
+          "Reduce CAC: improve conversion rates, targeting, and sales efficiency.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using revenue LTV instead of gross profit LTV.",
+          "Mixing fully-loaded CAC with revenue-based LTV (mismatch).",
+          "Relying on a single ratio (track payback and cash runway too).",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is LTV:CAC of 3× always good?",
+        answer:
+          "Not always. If payback is long, you can still run out of cash. For fast-growing businesses, payback and cash constraints often matter more than a single ratio.",
+      },
+      {
+        question: "Should I use logo churn or revenue churn in LTV?",
+        answer:
+          "For accuracy, use cohort-based revenue retention curves (especially if expansion is meaningful). Logo churn is a shortcut that can mislead when revenue per account changes over time.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $800 ARPA, 80% margin, 2% churn, $6k CAC, 12 month target payback",
+        calculatorSlug: "unit-economics-dashboard-calculator",
+        params: {
+          arpaMonthly: "800",
+          grossMarginPercent: "80",
+          monthlyLogoChurnPercent: "2",
+          cac: "6000",
+          targetPaybackMonths: "12",
+        },
+      },
+    ],
+  },
+  {
+    slug: "break-even-cpm-guide",
+    title: "Break-even CPM: how to price impressions from CTR, CVR, and margin",
+    description:
+      "A practical guide to break-even CPM: translate CTR, CVR, AOV, and contribution margin into a max CPM and a target CPM with buffer.",
+    category: "paid-ads",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["break-even-cpm-calculator", "max-cpc-calculator"],
+    relatedGlossarySlugs: ["cpm", "ctr", "cvr", "aov", "contribution-margin", "max-cpc"],
+    sections: [
+      { type: "h2", text: "Why break-even CPM matters" },
+      {
+        type: "p",
+        text: "If you buy impressions, your economics flow through CTR and CVR. Break-even CPM tells you the maximum cost per 1,000 impressions you can pay while still breaking even on variable economics.",
+      },
+      { type: "h2", text: "Core math" },
+      {
+        type: "bullets",
+        items: [
+          "Clicks/1000 = 1000×CTR.",
+          "Conversions/1000 = clicks/1000 × CVR = 1000×CTR×CVR.",
+          "Contribution per conversion ≈ AOV × contribution margin.",
+          "Break-even CPM = conversions/1000 × contribution per conversion.",
+        ],
+      },
+      { type: "h2", text: "Best practices" },
+      {
+        type: "bullets",
+        items: [
+          "Use click-based CVR if you’re using click-based CTR.",
+          "Add a profit buffer; don’t operate at break-even.",
+          "Validate incrementality as spend scales (attribution can overstate value).",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "How do I choose CTR and CVR inputs?",
+        answer:
+          "Start with observed averages for the same placement mix. Then run scenarios: small changes in CTR or CVR can materially change break-even CPM.",
+      },
+      {
+        question: "How does this relate to CPC?",
+        answer:
+          "They’re linked: CPM ≈ CPC × CTR × 1000. If you know your max CPC and CTR, you can infer a max CPM and vice versa.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: 1.5% CTR, 2.5% CVR, $80 AOV, 40% margin, 20% buffer",
+        calculatorSlug: "break-even-cpm-calculator",
+        params: {
+          ctrPercent: "1.5",
+          cvrPercent: "2.5",
+          aov: "80",
+          contributionMarginPercent: "40",
+          profitBufferPercent: "20",
+        },
+      },
+    ],
+  },
+  {
+    slug: "multiple-valuation-guide",
+    title: "Multiple valuation: how to use ARR/revenue multiples and avoid mix-ups",
+    description:
+      "A practical guide to multiple-based valuation: choosing a metric, applying EV multiples, and bridging to equity value via net debt.",
+    category: "finance",
+    updatedAt: "2026-01-23",
+    relatedCalculatorSlugs: ["multiple-valuation-calculator", "equity-value-calculator"],
+    relatedGlossarySlugs: ["arr", "arr-valuation-multiple", "enterprise-value", "equity-value", "net-debt"],
+    sections: [
+      { type: "h2", text: "What multiple valuation is doing" },
+      {
+        type: "p",
+        text: "Multiple valuation estimates enterprise value by multiplying a metric (ARR or revenue) by a market multiple from comparable companies. It’s fast and useful for scenario planning, but it requires clean definitions and context.",
+      },
+      { type: "h2", text: "Key rules" },
+      {
+        type: "bullets",
+        items: [
+          "Match the multiple to the metric definition used by comps (ARR definition matters).",
+          "EV multiples produce enterprise value; bridge to equity value using net debt.",
+          "Use scenarios: multiples vary with growth, margin, and retention.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Comparing market cap (equity value) to EV/Revenue multiples (mismatch).",
+          "Including one-time revenue in ARR and overvaluing the business.",
+          "Ignoring retention and margin differences when picking a multiple.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Why do ARR multiples differ so much?",
+        answer:
+          "Because the market prices growth quality: higher growth, higher gross margin, and stronger NRR/GRR often support higher multiples. Interest rates and risk appetite also move multiples materially.",
+      },
+      {
+        question: "Is multiple valuation better than DCF?",
+        answer:
+          "Neither is 'better' universally. Multiples are fast and market-anchored; DCF is assumption-driven and can be more detailed. Many teams use both as cross-checks.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $5M ARR, 6× multiple, $1M cash, $2M debt",
+        calculatorSlug: "multiple-valuation-calculator",
+        params: {
+          metricValue: "5000000",
+          multiple: "6",
+          cash: "1000000",
+          debt: "2000000",
+        },
+      },
+    ],
+  },
 ];
 
 export function getGuide(slug: string): Guide | undefined {
