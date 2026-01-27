@@ -50,6 +50,18 @@ export default function GlossaryIndexPage() {
         calculators and guides, or browse terms below.
       </div>
 
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold tracking-tight">How to use the glossary</h2>
+        <ul className="list-disc space-y-1 pl-5 text-zinc-700 dark:text-zinc-300">
+          <li>Read the definition first, then check the formula (if applicable).</li>
+          <li>Use the example to validate units and denominators.</li>
+          <li>Scan common mistakes before you set targets or report results.</li>
+          <li>Use related calculators to sanity-check break-even points and constraints.</li>
+          <li>Use related guides for decision-making context (not just definitions).</li>
+          <li>Keep your team’s definitions consistent so trends remain comparable.</li>
+        </ul>
+      </section>
+
       <div className="space-y-8">
         {order
           .filter((k) => groups.get(k)?.length)
@@ -86,4 +98,3 @@ export default function GlossaryIndexPage() {
     </div>
   );
 }
-

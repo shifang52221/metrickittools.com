@@ -21,6 +21,12 @@ export default function TermsPage() {
         informational purposes only. They do not constitute financial,
         accounting, tax, or legal advice.
       </p>
+      <ul>
+        <li>Always validate assumptions (time windows, margins, and definitions).</li>
+        <li>Use results as directional guidance, not as guarantees.</li>
+        <li>Consider your specific context (industry, pricing model, and risk).</li>
+        <li>When in doubt, consult a qualified professional.</li>
+      </ul>
       <h2>No warranties</h2>
       <p>
         We provide the site on an &quot;as is&quot; basis without warranties of

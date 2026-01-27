@@ -44,6 +44,28 @@ export default async function CalculatorPage({ params }: PageProps) {
   const categoryTitle =
     categories.find((c) => c.slug === category)?.title ?? category;
 
+  const quickChecks = (() => {
+    if (category === "paid-ads") {
+      return [
+        "Keep attribution model and window consistent when comparing campaigns.",
+        "Pair efficiency metrics (ROAS/CPA) with profit assumptions (margin, refunds, fees).",
+        "Validate tracking after site changes (pixels/events can silently break).",
+      ];
+    }
+    if (category === "finance") {
+      return [
+        "Use consistent time units (monthly vs annual) when entering rates and cash flows.",
+        "Run a sensitivity check on the input that drives the result most (often discount rate or growth).",
+        "Treat the output as a decision aid, not a prediction; validate assumptions with reality.",
+      ];
+    }
+    return [
+      "Keep time units consistent (monthly vs annual) across inputs and outputs.",
+      "Segment by cohort/channel/plan before trusting a blended average.",
+      "Use the related guide to avoid common definition and denominator mismatches.",
+    ];
+  })();
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -114,6 +136,14 @@ export default async function CalculatorPage({ params }: PageProps) {
         </div>
       </noscript>
       <CalculatorPageClient slug={calc.slug} />
+      <section className="mt-10 space-y-3">
+        <h2 className="text-lg font-semibold tracking-tight">Quick checks</h2>
+        <ul className="list-disc space-y-1 pl-5 text-zinc-700 dark:text-zinc-300">
+          {quickChecks.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </section>
     </>
   );
 }

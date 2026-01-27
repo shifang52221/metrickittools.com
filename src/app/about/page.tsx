@@ -23,6 +23,14 @@ export default function AboutPage() {
         <li>Inputs are user-provided; we don&apos;t pull live data.</li>
         <li>Results are estimates and can vary by definition and context.</li>
       </ul>
+      <h2>What you can do here</h2>
+      <ul>
+        <li>Compute metrics fast with transparent assumptions.</li>
+        <li>Use guides to avoid denominator and time-window mismatches.</li>
+        <li>Use the glossary to align definitions across your team.</li>
+        <li>Share calculator links with pre-filled inputs for reviews.</li>
+        <li>Cross-check decisions with break-even and sensitivity thinking.</li>
+      </ul>
       <h2>Contact</h2>
       <p>
         Email: <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>

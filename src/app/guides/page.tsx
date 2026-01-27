@@ -36,6 +36,18 @@ export default function GuidesIndexPage() {
         </p>
       </div>
 
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold tracking-tight">How to use these guides</h2>
+        <ul className="list-disc space-y-1 pl-5 text-zinc-700 dark:text-zinc-300">
+          <li>Start with the guide that matches your decision (bidding, payback, retention, runway).</li>
+          <li>Use formulas as a baseline, then validate assumptions with your data.</li>
+          <li>Prefer cohort and segment views over blended averages when diagnosing issues.</li>
+          <li>Use the linked calculators to sanity-check targets and break-even points.</li>
+          <li>Watch common pitfalls (time windows, denominators, attribution bias) before changing budgets.</li>
+          <li>Bookmark the hubs for ongoing operations (retention/churn, unit economics, measurement).</li>
+        </ul>
+      </section>
+
       <section className="space-y-4">
         <h2 className="text-lg font-semibold tracking-tight">Paid ads</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
