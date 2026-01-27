@@ -3255,6 +3255,9 @@ export const guides: Guide[] = [
     title: "Cohort vs aggregate metrics: why averages can mislead",
     description:
       "Aggregate metrics hide churn and expansion dynamics. Learn when to use cohort analysis and how to interpret retention and LTV.",
+    seo: {
+      title: "Cohort vs aggregate metrics guide: why averages mislead",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-12",
     relatedCalculatorSlugs: [
@@ -3486,6 +3489,9 @@ export const guides: Guide[] = [
     title: "Blended CAC vs paid CAC: when each is the right metric",
     description:
       "CAC depends on what you include. Learn paid-only CAC vs fully-loaded blended CAC, how to avoid mismatches, and how to connect CAC to payback.",
+    seo: {
+      title: "Blended CAC guide: paid vs fully-loaded CAC",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: [
@@ -3566,6 +3572,9 @@ export const guides: Guide[] = [
     title: "Cohort LTV forecasting: churn, expansion, discounting (practical model)",
     description:
       "A practical guide to cohort-based LTV: why it beats simple churn formulas, how to choose assumptions, and how to interpret discounted LTV.",
+    seo: {
+      title: "Cohort LTV forecast guide: churn, expansion, discounting",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: ["cohort-ltv-forecast-calculator", "ltv-calculator"],
@@ -3644,6 +3653,9 @@ export const guides: Guide[] = [
     title: "Incrementality lift: how to compute incremental ROAS from holdouts",
     description:
       "Turn an exposed vs holdout test into incremental conversions, incremental ROAS, and incremental profit for decision-making.",
+    seo: {
+      title: "Incrementality lift guide: incremental ROAS from holdouts",
+    },
     category: "paid-ads",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: [
@@ -3801,6 +3813,9 @@ export const guides: Guide[] = [
     title: "Price increases in SaaS: break-even churn, segmentation, and rollout",
     description:
       "A practical guide to price increases: how to compute break-even churn, model revenue impact, and roll out changes safely.",
+    seo: {
+      title: "Price increase guide: break-even churn and rollout",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: ["price-increase-break-even-calculator"],
@@ -3876,6 +3891,9 @@ export const guides: Guide[] = [
     title: "Quota attainment: formulas, pacing, and how to forecast safely",
     description:
       "Learn how to calculate quota attainment and pacing, how to interpret projections, and what to pair it with (pipeline coverage, win rate).",
+    seo: {
+      title: "Quota attainment guide: formulas, pacing, and forecasting",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: ["quota-attainment-calculator", "pipeline-coverage-calculator"],
@@ -3985,6 +4003,9 @@ export const guides: Guide[] = [
     title: "Required pipeline: how much pipeline (and how many deals) you need",
     description:
       "Translate a revenue target into required pipeline dollars, wins, and opportunities using win rate and average deal size.",
+    seo: {
+      title: "Required pipeline guide: pipeline dollars and deal count",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: ["pipeline-required-calculator", "pipeline-coverage-calculator"],
@@ -4036,6 +4057,9 @@ export const guides: Guide[] = [
     title: "Sales capacity planning: quota, attainment, ramp, and what to watch",
     description:
       "A practical guide to sales capacity: estimate bookings capacity using headcount, quota, expected attainment, and ramped vs ramping mix.",
+    seo: {
+      title: "Sales capacity guide: quota, ramp, and attainment",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: ["sales-capacity-calculator", "quota-attainment-calculator"],
@@ -4127,6 +4151,9 @@ export const guides: Guide[] = [
     title: "Sales funnel targets: leads -> MQL -> SQL -> opp -> win (how to plan)",
     description:
       "A practical guide to back-solving funnel volume targets from a revenue goal using conversion rates and average deal size.",
+    seo: {
+      title: "Sales funnel targets guide: leads to wins planning",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: ["sales-funnel-targets-calculator", "pipeline-required-calculator"],
@@ -4186,6 +4213,9 @@ export const guides: Guide[] = [
     title: "Activation rate: definition, formula, and how to improve activation",
     description:
       "Activation rate explained: how to define activation, the activation rate formula, and practical ways to improve activation without vanity metrics.",
+    seo: {
+      title: "Activation rate guide: definition, formula, improvements",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: ["activation-rate-calculator"],
