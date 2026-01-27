@@ -7,7 +7,7 @@ const PASS_THROUGH_PATHS = new Set([
   "/favicon.ico",
 ]);
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   if (PASS_THROUGH_PATHS.has(pathname) || pathname.startsWith("/.well-known/")) {
     return NextResponse.next();
