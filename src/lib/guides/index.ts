@@ -2776,6 +2776,9 @@ export const guides: Guide[] = [
     title: "SaaS Magic Number: definition, formula, and how to use it",
     description:
       "SaaS Magic Number explained: what it measures, the formula, lag assumptions, and how to interpret it alongside burn multiple and payback.",
+    seo: {
+      title: "SaaS Magic Number guide: definition, formula, interpretation",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: ["saas-magic-number-calculator", "burn-multiple-calculator"],
@@ -2829,6 +2832,9 @@ export const guides: Guide[] = [
     title: "Customer lifetime: definition, formula, and how to estimate it",
     description:
       "Customer lifetime explained: how to estimate lifetime from churn, why the simple formula can be wrong, and how to improve the estimate with cohorts.",
+    seo: {
+      title: "Customer lifetime guide: churn-based estimate and cohorts",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: ["customer-lifetime-calculator", "churn-rate-calculator"],
@@ -2887,6 +2893,9 @@ export const guides: Guide[] = [
     title: "NPV (Net Present Value): definition, formula, and example",
     description:
       "NPV explained: what net present value means, how to calculate NPV, how to pick a discount rate (MARR), and common pitfalls.",
+    seo: {
+      title: "NPV guide: definition, formula, discount rate, pitfalls",
+    },
     category: "finance",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: ["npv-calculator"],
@@ -2942,6 +2951,9 @@ export const guides: Guide[] = [
     title: "IRR (Internal Rate of Return): definition, formula, and how to use it",
     description:
       "IRR explained: what internal rate of return means, how to calculate IRR, and when IRR can be misleading (use NPV too).",
+    seo: {
+      title: "IRR guide: definition, calculation, pitfalls (use NPV)",
+    },
     category: "finance",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: ["irr-calculator", "npv-calculator"],
@@ -3016,6 +3028,9 @@ export const guides: Guide[] = [
     title: "Discounted payback period: definition, formula, and how to calculate",
     description:
       "Discounted payback explained: how it differs from simple payback, the formula, and when discounted payback is the right metric.",
+    seo: {
+      title: "Discounted payback guide: definition, formula, use",
+    },
     category: "finance",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: ["discounted-payback-period-calculator"],
@@ -3078,6 +3093,9 @@ export const guides: Guide[] = [
     title: "Break-even revenue: calculate your break-even point",
     description:
       "Understand break-even revenue with gross margin and fixed costs, plus tips for improving contribution margin and pricing.",
+    seo: {
+      title: "Break-even revenue guide: formula, margin, fixed costs",
+    },
     category: "finance",
     updatedAt: "2026-01-05",
     relatedCalculatorSlugs: ["break-even-revenue-calculator"],
@@ -3114,6 +3132,9 @@ export const guides: Guide[] = [
     title: "Contribution margin: what it is and why it matters",
     description:
       "Contribution margin connects revenue to variable costs. It's the foundation for break-even analysis, ROAS targets, and scaling decisions.",
+    seo: {
+      title: "Contribution margin guide: definition, formula, use cases",
+    },
     category: "finance",
     updatedAt: "2026-01-12",
     relatedCalculatorSlugs: [
@@ -3171,6 +3192,9 @@ export const guides: Guide[] = [
     title: "Incrementality: how to tell if ads are actually driving growth",
     description:
       "Platform-reported ROAS can overstate impact. Learn what incrementality means, when it matters, and practical ways to test it.",
+    seo: {
+      title: "Incrementality guide: what it is and how to test lift",
+    },
     category: "paid-ads",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: [
@@ -3281,6 +3305,9 @@ export const guides: Guide[] = [
     title: "MRR forecasting: a simple bridge model (new, expansion, churn)",
     description:
       "A practical way to forecast MRR using a monthly bridge: starting MRR + new MRR + expansion - contraction - churn.",
+    seo: {
+      title: "MRR forecasting guide: bridge model for new, expansion, churn",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: [
@@ -3373,6 +3400,9 @@ export const guides: Guide[] = [
     title: "Cash runway: how to estimate burn, break-even, and survival time",
     description:
       "A practical guide to runway: net burn, gross profit, break-even revenue, and how to avoid common cash planning mistakes.",
+    seo: {
+      title: "Cash runway guide: burn, break-even, and survival time",
+    },
     category: "finance",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: ["cash-runway-calculator"],
