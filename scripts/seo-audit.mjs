@@ -231,6 +231,26 @@ function classify(urlString) {
   return "resource";
 }
 
+function looksLikeHtmlPage(urlString) {
+  try {
+    const u = new URL(urlString);
+    const path = u.pathname;
+    if (path === "/") return true;
+    if (path.endsWith(".xml")) return false;
+    if (path.endsWith(".txt")) return false;
+    if (path.endsWith(".json")) return false;
+    if (path.endsWith(".svg")) return false;
+    if (path.endsWith(".ico")) return false;
+    if (path.endsWith(".png")) return false;
+    if (path.endsWith(".jpg") || path.endsWith(".jpeg")) return false;
+    if (path.endsWith(".webp") || path.endsWith(".gif")) return false;
+    if (path.endsWith(".css") || path.endsWith(".js")) return false;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 async function fetchWithRedirects(url, preferredMethod = "GET") {
   const chain = [];
   let current = url;
@@ -440,78 +460,115 @@ async function main() {
     ]);
     const targetUrls = [...new Set([...sitemapUrls, ...seedCrawl])];
 
-    const pages = await runPool(
-      targetUrls,
-      async (url) => {
-        try {
-          const { res, chain, finalUrl } = await fetchWithRedirects(url, "GET");
-          if (!res) {
-            return { url, status: 0, finalUrl, redirectChain: chain, ok: false, error: "fetch failed" };
+    const fetchPages = async (urls) =>
+      runPool(
+        urls,
+        async (url) => {
+          try {
+            const { res, chain, finalUrl } = await fetchWithRedirects(url, "GET");
+            if (!res) {
+              return { url, status: 0, finalUrl, redirectChain: chain, ok: false, error: "fetch failed" };
+            }
+            const contentType = res.headers.get("content-type") || "";
+            const isHtml = contentType.includes("text/html");
+            const html = isHtml ? await res.text() : null;
+            const headerRobots = parseRobotsFromHeader(res);
+            const title = html ? extractTitle(html) : null;
+            const description = html ? extractMetaContent(html, "description") : null;
+            const robotsMeta = html ? extractMetaContent(html, "robots") : null;
+            const canonicalRaw = html ? extractLinkHref(html, "canonical") : null;
+            const canonical = html ? resolveCanonical(canonicalRaw, finalUrl) : null;
+            const hreflang = html ? extractHreflangs(html, finalUrl) : [];
+            const internalLinks = html
+              ? extractInternalLinks(html, finalUrl, baseOrigin)
+              : [];
+            const main = html ? mainTextWords(html) : { words: 0, sample: "" };
+            const info = html
+              ? extractInfoPoints(html)
+              : { points: 0, breakdown: { h2: 0, h3: 0, li: 0, tr: 0, p: 0 } };
+            const schema = html ? extractJsonLd(html) : { count: 0, parsed: [], errors: [] };
+
+            const canonicalExpected = preferredCanonicalFor(finalUrl);
+            const canonicalMismatch =
+              canonical && normalizeUrl(canonical) !== normalizeUrl(canonicalExpected);
+
+            const robotsCombined = [robotsMeta, headerRobots].filter(Boolean).join(" | ") || null;
+            const noindex = hasNoindex(robotsMeta) || hasNoindex(headerRobots);
+
+            const mainTextSample = html
+              ? stripTags(extractBetween(html, /<main\b/i, /<\/main>/i) || html).slice(0, 800)
+              : "";
+            const hash = html ? simhash64(mainTextSample) : 0n;
+
+            return {
+              url,
+              type: classify(finalUrl),
+              status: res.status,
+              ok: res.status >= 200 && res.status < 400,
+              finalUrl,
+              redirectChain: chain,
+              title,
+              description,
+              canonical,
+              canonicalExpected,
+              canonicalMismatch,
+              robots: robotsCombined,
+              noindex,
+              hreflang,
+              mainContentWords: main.words,
+              mainContentSample: main.sample,
+              infoPoints: info.points,
+              infoPointsBreakdown: info.breakdown,
+              internalLinks: internalLinks.map(normalizeUrl),
+              schema: {
+                count: schema.count,
+                parsedTypes: schema.parsed
+                  .map((x) => (x && typeof x === "object" ? x["@type"] : null))
+                  .filter(Boolean),
+                errors: schema.errors,
+              },
+              hash: hash.toString(),
+            };
+          } catch (e) {
+            return { url, status: 0, finalUrl: url, ok: false, error: String(e) };
           }
-          const contentType = res.headers.get("content-type") || "";
-          const isHtml = contentType.includes("text/html");
-          const html = isHtml ? await res.text() : null;
-          const headerRobots = parseRobotsFromHeader(res);
-          const title = html ? extractTitle(html) : null;
-          const description = html ? extractMetaContent(html, "description") : null;
-          const robotsMeta = html ? extractMetaContent(html, "robots") : null;
-          const canonicalRaw = html ? extractLinkHref(html, "canonical") : null;
-          const canonical = html ? resolveCanonical(canonicalRaw, finalUrl) : null;
-          const hreflang = html ? extractHreflangs(html, finalUrl) : [];
-          const internalLinks = html
-            ? extractInternalLinks(html, finalUrl, baseOrigin)
-            : [];
-          const main = html ? mainTextWords(html) : { words: 0, sample: "" };
-          const info = html
-            ? extractInfoPoints(html)
-            : { points: 0, breakdown: { h2: 0, h3: 0, li: 0, tr: 0, p: 0 } };
-          const schema = html ? extractJsonLd(html) : { count: 0, parsed: [], errors: [] };
+        },
+        CONCURRENCY,
+      );
 
-          const canonicalExpected = preferredCanonicalFor(finalUrl);
-          const canonicalMismatch =
-            canonical && normalizeUrl(canonical) !== normalizeUrl(canonicalExpected);
+    let pages = await fetchPages(targetUrls);
 
-          const robotsCombined = [robotsMeta, headerRobots].filter(Boolean).join(" | ") || null;
-          const noindex = hasNoindex(robotsMeta) || hasNoindex(headerRobots);
-
-          const mainTextSample = html ? stripTags(extractBetween(html, /<main\b/i, /<\/main>/i) || html).slice(0, 800) : "";
-          const hash = html ? simhash64(mainTextSample) : 0n;
-
-          return {
-            url,
-            type: classify(finalUrl),
-            status: res.status,
-            ok: res.status >= 200 && res.status < 400,
-            finalUrl,
-            redirectChain: chain,
-            title,
-            description,
-            canonical,
-            canonicalExpected,
-            canonicalMismatch,
-            robots: robotsCombined,
-            noindex,
-            hreflang,
-            mainContentWords: main.words,
-            mainContentSample: main.sample,
-            infoPoints: info.points,
-            infoPointsBreakdown: info.breakdown,
-            internalLinks: internalLinks.map(normalizeUrl),
-            schema: {
-              count: schema.count,
-              parsedTypes: schema.parsed
-                .map((x) => (x && typeof x === "object" ? x["@type"] : null))
-                .filter(Boolean),
-              errors: schema.errors,
-            },
-            hash: hash.toString(),
-          };
-        } catch (e) {
-          return { url, status: 0, finalUrl: url, ok: false, error: String(e) };
+    // Internal crawler: iteratively fetch internal pages discovered via links (not just sitemap)
+    const seenPaths = new Set(pages.map((p) => pageKey(p.finalUrl || p.url)));
+    for (let round = 0; round < 10; round += 1) {
+      const discovered = new Set();
+      for (const p of pages) {
+        for (const to of p.internalLinks || []) {
+          if (!sameOrigin(to, BASE)) continue;
+          if (!looksLikeHtmlPage(to)) continue;
+          const key = pageKey(to);
+          if (seenPaths.has(key)) continue;
+          discovered.add(new URL(key, BASE).toString());
         }
-      },
-      CONCURRENCY,
-    );
+      }
+      const newUrls = [...discovered].slice(0, Math.max(0, MAX_CRAWL_PAGES - seenPaths.size));
+      if (!newUrls.length) break;
+      const more = await fetchPages(newUrls);
+      for (const m of more) seenPaths.add(pageKey(m.finalUrl || m.url));
+      pages = [...pages, ...more];
+    }
+
+    const pagesByPathDedup = new Map();
+    for (const p of pages) {
+      const key = pageKey(p.finalUrl || p.url);
+      if (!pagesByPathDedup.has(key)) pagesByPathDedup.set(key, p);
+    }
+    pages = [...pagesByPathDedup.values()];
+
+    const sitemapSet = new Set(sitemapUrls.map(pageKey));
+    const crawledNotInSitemap = pages.filter(
+      (p) => !sitemapSet.has(pageKey(p.url)) && sameOrigin(p.url, BASE),
+    ).length;
 
     const byPath = new Map(pages.map((p) => [pageKey(p.finalUrl || p.url), p]));
 
@@ -539,8 +596,6 @@ async function main() {
       hreflangErrors: [],
       nearDuplicate: [],
     };
-
-    const sitemapSet = new Set(sitemapUrls.map(pageKey));
 
     for (const p of pages) {
       const key = pageKey(p.finalUrl || p.url);
@@ -595,6 +650,7 @@ async function main() {
         if (bad.length) issues.hreflangErrors.push({ url: p.url, bad });
       }
       {
+        if (p.noindex) continue;
         const reasons = [];
         if ((p.mainContentWords ?? 0) < VERY_SHORT_WORDS) reasons.push("lowWords");
         if ((p.infoPoints ?? 0) < MIN_INFO_POINTS) reasons.push("lowInfoPoints");
@@ -679,6 +735,7 @@ async function main() {
         totalTargets: targetUrls.length,
         sitemapUrls: sitemapUrls.length,
         crawled: pages.length,
+        crawledNotInSitemap,
       },
       issues,
       thresholds: {
@@ -694,9 +751,37 @@ async function main() {
     await fs.writeFile(jsonPath, JSON.stringify(report, null, 2) + "\n", "utf8");
 
     const lines = [];
+    const fixGuidance = {
+      non200:
+        "Fix the route or remove it from sitemap; sitemap URLs must return 200.",
+      redirectChains:
+        "Remove chained redirects; link directly to the final canonical URL.",
+      canonicalMismatch:
+        "Set canonical to the preferred https host + same path (no query for canonical pages).",
+      hreflangErrors:
+        "Fix invalid hreflang codes or wrong hosts; keep hreflang consistent with canonical.",
+      noindexInSitemap:
+        "Remove noindex pages from sitemap or remove noindex if they should be indexed.",
+      duplicateTitle:
+        "Make titles unique per page intent; avoid template-only titles without page-specific context.",
+      duplicateDescription:
+        "Make meta descriptions unique; derive from the page's unique content (not a shared template string).",
+      veryShort:
+        "Add substantive sections (definition, example, checklist, pitfalls, FAQ, and context) so each page has >=8 unique info points.",
+      orphan:
+        "Add internal links (from hubs/indexes/related sections) so every sitemap page has at least one inbound link.",
+      badLinks:
+        "Update or remove broken internal links; prefer linking by slug enums to prevent drift.",
+      schemaErrors:
+        "Fix invalid JSON-LD and ensure the schema matches the page type (FAQPage, Article, etc.).",
+      "nearDuplicate(pairs<=3)":
+        "Differentiate intent and content structure for similar slugs; avoid repeating the same checklist/FAQ across pages.",
+    };
+
     const pushIssue = (name, arr) => {
       lines.push(`## ${name}`);
       lines.push(`count: ${arr.length}`);
+      if (fixGuidance[name]) lines.push(`fix: ${fixGuidance[name]}`);
       lines.push("");
       for (const item of arr.slice(0, 50)) {
         lines.push(`- ${JSON.stringify(item)}`);
@@ -705,7 +790,9 @@ async function main() {
     };
     lines.push(`# SEO Audit (${BASE})`);
     lines.push(`preferredSiteUrl: ${PREFERRED_SITE_URL}`);
-    lines.push(`checked: ${report.counts.sitemapUrls} sitemap URLs, ${report.counts.totalTargets} total targets`);
+    lines.push(
+      `checked: ${report.counts.sitemapUrls} sitemap URLs, ${report.counts.totalTargets} total targets, ${report.counts.crawledNotInSitemap} crawled-not-in-sitemap`,
+    );
     lines.push(`durationMs: ${report.durationMs}`);
     lines.push("");
     pushIssue("non200", issues.non200);
