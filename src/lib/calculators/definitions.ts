@@ -28,10 +28,41 @@ export const calculators: CalculatorDefinition[] = [
   {
     slug: "roas-calculator",
     title: "ROAS Calculator",
-    description: "Calculate Return on Ad Spend (ROAS) as a multiple and percent.",
+    description:
+      "Calculate Return on Ad Spend (ROAS) and estimate contribution profit after ad spend.",
     category: "paid-ads",
     featured: true,
     guideSlug: "roas-guide",
+    relatedGlossarySlugs: [
+      "roas",
+      "break-even-roas",
+      "target-roas",
+      "mer",
+      "blended-roas",
+      "contribution-margin",
+    ],
+    seo: {
+      intro: [
+        "ROAS (return on ad spend) is the fastest way to compare campaigns: attributed revenue divided by ad spend over the same window.",
+        "But ROAS is not profit. This calculator also estimates contribution profit after ad spend using margin, fees, shipping, and returns assumptions.",
+      ],
+      steps: [
+        "Enter attributed revenue and ad spend for the same time window.",
+        "Add your gross margin and variable cost assumptions (fees, shipping, returns).",
+        "Review ROAS, break-even ROAS, and contribution profit after ad spend.",
+        "Use the profit metrics to decide whether to scale, pause, or improve unit economics first.",
+      ],
+      benchmarks: [
+        "Break-even ROAS is a floor; target ROAS should be higher to cover overhead and volatility.",
+        "If profit after ads is negative, scaling spend will typically scale losses unless marginal performance improves.",
+        "Compare ROAS only when attribution windows and conversion value tracking are consistent.",
+      ],
+      pitfalls: [
+        "Mixing attribution windows (for example 7-day click vs 1-day view).",
+        "Using gross revenue instead of net revenue (refunds and discounts matter).",
+        "Comparing ROAS across campaigns with different product margins or different value tracking quality.",
+      ],
+    },
     inputs: [
       {
         key: "revenue",
@@ -48,11 +79,65 @@ export const calculators: CalculatorDefinition[] = [
         prefix: "$",
         defaultValue: "1000",
       },
+      {
+        key: "grossMarginPercent",
+        label: "Gross margin",
+        help: "Gross margin before marketing (COGS only).",
+        placeholder: "60",
+        suffix: "%",
+        defaultValue: "60",
+      },
+      {
+        key: "paymentFeesPercent",
+        label: "Payment fees",
+        help: "Card/processing fees as % of revenue (optional).",
+        placeholder: "3",
+        suffix: "%",
+        defaultValue: "3",
+      },
+      {
+        key: "shippingPercent",
+        label: "Shipping & fulfillment",
+        help: "As % of revenue (optional).",
+        placeholder: "0",
+        suffix: "%",
+        defaultValue: "0",
+      },
+      {
+        key: "returnsPercent",
+        label: "Returns & refunds",
+        help: "As % of revenue (optional).",
+        placeholder: "0",
+        suffix: "%",
+        defaultValue: "0",
+      },
     ],
     compute(values) {
       const warnings: string[] = [];
       const roasMultiple = safeDivide(values.revenue, values.adSpend);
       if (values.adSpend <= 0) warnings.push("Ad spend must be greater than 0.");
+
+      const contributionMargin =
+        (values.grossMarginPercent -
+          values.paymentFeesPercent -
+          values.shippingPercent -
+          values.returnsPercent) /
+        100;
+      if (contributionMargin <= 0) {
+        warnings.push(
+          "Contribution margin must be greater than 0%. Check margin and variable cost assumptions.",
+        );
+      }
+      if (contributionMargin > 1) {
+        warnings.push("Contribution margin cannot exceed 100%. Check inputs.");
+      }
+
+      const contributionProfitBeforeAds =
+        values.revenue * Math.max(contributionMargin, 0);
+      const profitAfterAds = contributionProfitBeforeAds - values.adSpend;
+      const breakEvenRoas = contributionMargin > 0 ? 1 / contributionMargin : 0;
+      const profitPerDollar =
+        values.adSpend > 0 ? profitAfterAds / values.adSpend : 0;
       if (roasMultiple === null) {
         return {
           headline: {
@@ -73,7 +158,7 @@ export const calculators: CalculatorDefinition[] = [
           value: roasMultiple,
           format: "multiple",
           maxFractionDigits: 2,
-          detail: "Revenue ÷ Ad spend",
+          detail: "Revenue / ad spend",
         },
         secondary: [
           {
@@ -83,6 +168,39 @@ export const calculators: CalculatorDefinition[] = [
             format: "percent",
             maxFractionDigits: 0,
             detail: "Shown as a percentage of spend",
+          },
+          {
+            key: "profitAfterAds",
+            label: "Contribution profit after ads",
+            value: profitAfterAds,
+            format: "currency",
+            currency: "USD",
+            detail: "Revenue * contribution margin - ad spend",
+          },
+          {
+            key: "profitPerDollar",
+            label: "Profit per $1 of ad spend",
+            value: profitPerDollar,
+            format: "currency",
+            currency: "USD",
+            maxFractionDigits: 2,
+            detail: "Contribution profit after ads / ad spend",
+          },
+          {
+            key: "contributionMargin",
+            label: "Contribution margin",
+            value: Math.max(contributionMargin, 0),
+            format: "percent",
+            maxFractionDigits: 1,
+            detail: "Gross margin - fees - shipping - returns",
+          },
+          {
+            key: "breakEvenRoas",
+            label: "Break-even ROAS (variable economics)",
+            value: breakEvenRoas,
+            format: "multiple",
+            maxFractionDigits: 2,
+            detail: "1 / contribution margin",
           },
         ],
         breakdown: [
@@ -100,11 +218,39 @@ export const calculators: CalculatorDefinition[] = [
             format: "currency",
             currency: "USD",
           },
+          {
+            key: "grossMarginPercent",
+            label: "Gross margin",
+            value: values.grossMarginPercent / 100,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "paymentFeesPercent",
+            label: "Payment fees",
+            value: values.paymentFeesPercent / 100,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "shippingPercent",
+            label: "Shipping & fulfillment",
+            value: values.shippingPercent / 100,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "returnsPercent",
+            label: "Returns & refunds",
+            value: values.returnsPercent / 100,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
         ],
         warnings,
       };
     },
-    formula: "ROAS = Revenue ÷ Ad Spend",
+    formula: "ROAS = Revenue / Ad Spend",
     assumptions: [
       "Revenue and spend are measured over the same time window.",
       "Revenue is net of refunds/returns if you want ROAS to reflect reality.",
@@ -139,7 +285,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         title: "Common pitfalls",
         bullets: [
-          "Mixing attribution windows (e.g., 7‑day click vs. 1‑day view).",
+          "Mixing attribution windows (for example 7-day click vs 1-day view).",
           "Ignoring returns, discounts, shipping, and payment fees.",
           "Counting revenue but excluding subscription churn impact.",
         ],
@@ -154,6 +300,29 @@ export const calculators: CalculatorDefinition[] = [
     category: "paid-ads",
     featured: true,
     guideSlug: "break-even-roas-guide",
+    relatedGlossarySlugs: ["break-even-roas", "contribution-margin", "gross-margin", "roas"],
+    seo: {
+      intro: [
+        "Break-even ROAS is the minimum ROAS required to avoid losing money on variable economics (COGS and other variable costs).",
+        "Use it as a floor. Your target ROAS should usually be higher to cover overhead, uncertainty, and desired profit.",
+      ],
+      steps: [
+        "Enter gross margin (COGS only).",
+        "Add variable cost percentages that scale with revenue (fees, shipping, returns).",
+        "Compute contribution margin and break-even ROAS = 1 / contribution margin.",
+        "Compare your current ROAS to break-even to see if spend is structurally profitable.",
+      ],
+      benchmarks: [
+        "If contribution margin is 40%, break-even ROAS is 2.5x (1 / 0.40).",
+        "If break-even ROAS is very high, fix unit economics (margin/fees/returns) before scaling spend.",
+        "Use consistent net revenue (after refunds) when evaluating profitability.",
+      ],
+      pitfalls: [
+        "Treating break-even ROAS as a scaling target (it is a floor, not a goal).",
+        "Omitting variable costs that scale with revenue (fees, fulfillment, refunds).",
+        "Mixing time windows or attribution models when comparing to platform ROAS.",
+      ],
+    },
     inputs: [
       {
         key: "grossMarginPercent",
@@ -303,6 +472,29 @@ export const calculators: CalculatorDefinition[] = [
     category: "paid-ads",
     featured: true,
     guideSlug: "target-roas-guide",
+    relatedGlossarySlugs: ["target-roas", "break-even-roas", "contribution-margin", "roas"],
+    seo: {
+      intro: [
+        "Target ROAS is the ROAS you aim for to cover variable costs, fixed cost allocation, and a profit buffer.",
+        "Unlike break-even ROAS (a floor), target ROAS is a planning constraint that reflects your business model and risk tolerance.",
+      ],
+      steps: [
+        "Enter gross margin and variable costs to compute contribution margin.",
+        "Choose a fixed cost allocation (as % of revenue) if you want ROAS to cover overhead.",
+        "Add a desired profit margin buffer to stay conservative.",
+        "Compute target ROAS = 1 / (contribution margin - fixed allocation - desired profit).",
+      ],
+      benchmarks: [
+        "Target ROAS should be higher than break-even ROAS to cover overhead and volatility.",
+        "If target ROAS is impossible (<= 0 ad budget), reduce buffers or improve margin first.",
+        "Use different targets by channel if volatility and incrementality differ.",
+      ],
+      pitfalls: [
+        "Allocating all fixed costs into target ROAS without considering growth investments and timing.",
+        "Assuming target ROAS is universal across products (margins differ).",
+        "Not revisiting the target when refund rate, shipping, or fees change.",
+      ],
+    },
     inputs: [
       {
         key: "grossMarginPercent",
@@ -1117,6 +1309,7 @@ export const calculators: CalculatorDefinition[] = [
     category: "saas-metrics",
     featured: true,
     guideSlug: "ltv-guide",
+    relatedGlossarySlugs: ["ltv", "arpa", "gross-margin", "churn-rate"],
     seo: {
       intro: [
         "This is a quick LTV (Lifetime Value) model based on monthly ARPA, gross margin, and churn. It estimates how much gross profit you earn per customer over their expected lifetime.",
@@ -1126,7 +1319,7 @@ export const calculators: CalculatorDefinition[] = [
         "Choose a segment (plan/channel/geo) and a time unit (monthly).",
         "Enter ARPA per month and gross margin for the segment.",
         "Enter monthly churn rate (customer churn for this model).",
-        "Compute LTV ≈ (ARPA × gross margin) ÷ churn.",
+        "Compute LTV = (ARPA * gross margin) / churn.",
       ],
       pitfalls: [
         "Mixing annual ARPA with monthly churn (unit mismatch).",
@@ -1157,6 +1350,16 @@ export const calculators: CalculatorDefinition[] = [
         suffix: "%",
         defaultValue: "3",
       },
+      {
+        key: "annualDiscountRatePercent",
+        label: "Annual discount rate (optional)",
+        help: "Used to compute discounted LTV. Set 0 to disable.",
+        placeholder: "10",
+        suffix: "%",
+        defaultValue: "0",
+        min: 0,
+        step: 0.1,
+      },
     ],
     compute(values) {
       const warnings: string[] = [];
@@ -1179,6 +1382,14 @@ export const calculators: CalculatorDefinition[] = [
         };
       }
 
+      const annualDiscount = values.annualDiscountRatePercent / 100;
+      const monthlyDiscount =
+        annualDiscount > 0 ? Math.pow(1 + annualDiscount, 1 / 12) - 1 : 0;
+      const discountedLifetimeMonths =
+        safeDivide(1 + monthlyDiscount, churn + monthlyDiscount) ?? 0;
+      const discountedLtv =
+        values.arpaMonthly * grossMargin * discountedLifetimeMonths;
+
       return {
         headline: {
           key: "ltv",
@@ -1186,7 +1397,7 @@ export const calculators: CalculatorDefinition[] = [
           value: ltv,
           format: "currency",
           currency: "USD",
-          detail: "(ARPA × Gross margin) ÷ Churn",
+          detail: "(ARPA * gross margin) / churn",
         },
         secondary: [
           {
@@ -1202,13 +1413,40 @@ export const calculators: CalculatorDefinition[] = [
             value: safeDivide(1, churn) ?? 0,
             format: "months",
             maxFractionDigits: 1,
-            detail: "1 ÷ churn rate",
+            detail: "1 / churn rate",
+          },
+          {
+            key: "discountedLtv",
+            label: "Discounted LTV",
+            value: discountedLtv,
+            format: "currency",
+            currency: "USD",
+            detail:
+              annualDiscount > 0
+                ? "Uses a constant churn + constant discount rate shortcut"
+                : "Set annual discount rate to use a discounted view",
+          },
+          {
+            key: "discountedLifetimeMonths",
+            label: "Discounted lifetime (months)",
+            value: discountedLifetimeMonths,
+            format: "months",
+            maxFractionDigits: 1,
+            detail: "Shorter than 1/churn when discount rate > 0",
+          },
+          {
+            key: "monthlyDiscountRate",
+            label: "Monthly discount rate",
+            value: monthlyDiscount,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: annualDiscount > 0 ? "Derived from annual rate" : "0%",
           },
         ],
         warnings,
       };
     },
-    formula: "LTV = (ARPA × Gross Margin) ÷ Churn Rate",
+    formula: "LTV = (ARPA * Gross Margin) / Churn Rate",
     assumptions: [
       "Churn is steady over time (a simplifying assumption).",
       "ARPA and churn use the same time unit (monthly).",
@@ -1422,18 +1660,35 @@ export const calculators: CalculatorDefinition[] = [
   {
     slug: "ltv-to-cac-calculator",
     title: "LTV:CAC Calculator",
-    description: "Calculate the LTV to CAC ratio.",
+    description:
+      "Compute LTV:CAC ratio and CAC payback using ARPA, gross margin, churn, and CAC.",
     category: "saas-metrics",
     featured: true,
     guideSlug: "ltv-cac-guide",
+    relatedGlossarySlugs: ["ltv", "cac", "ltv-to-cac", "cac-payback-period", "gross-margin"],
+    seo: {
+      intro: [
+        "LTV:CAC is a shortcut metric for unit economics: how much gross profit you earn over the expected lifetime relative to what you paid to acquire the customer.",
+        "This calculator keeps definitions consistent by computing LTV from ARPA, gross margin, and churn, and also reports CAC payback months.",
+      ],
+      steps: [
+        "Pick a segment (channel/plan/geo) and keep time units monthly.",
+        "Enter CAC and ARPA per month for the segment.",
+        "Enter gross margin and monthly churn for the same revenue base.",
+        "Review LTV, payback months, and the LTV:CAC ratio together.",
+      ],
+      benchmarks: [
+        "Many SaaS teams target around 3:1, but the right ratio depends on growth and cash constraints.",
+        "A strong ratio with very long payback can still be risky in volatile channels.",
+        "If churn is underestimated, LTV and LTV:CAC will be overstated (sensitivity matters).",
+      ],
+      pitfalls: [
+        "Mixing fully-loaded CAC with LTV that excludes gross margin (definition mismatch).",
+        "Using revenue retention as if it were customer churn in a simple churn model.",
+        "Using blended averages that hide weak cohorts (segment before deciding budgets).",
+      ],
+    },
     inputs: [
-      {
-        key: "ltv",
-        label: "LTV",
-        placeholder: "5333",
-        prefix: "$",
-        defaultValue: "5333",
-      },
       {
         key: "cac",
         label: "CAC",
@@ -1441,12 +1696,45 @@ export const calculators: CalculatorDefinition[] = [
         prefix: "$",
         defaultValue: "500",
       },
+      {
+        key: "arpaMonthly",
+        label: "ARPA per month",
+        help: "Average revenue per account (monthly).",
+        placeholder: "200",
+        prefix: "$",
+        defaultValue: "200",
+      },
+      {
+        key: "grossMarginPercent",
+        label: "Gross margin",
+        placeholder: "80",
+        suffix: "%",
+        defaultValue: "80",
+      },
+      {
+        key: "churnPercent",
+        label: "Monthly churn",
+        placeholder: "3",
+        suffix: "%",
+        defaultValue: "3",
+      },
     ],
     compute(values) {
       const warnings: string[] = [];
-      const ratio = safeDivide(values.ltv, values.cac);
       if (values.cac <= 0) warnings.push("CAC must be greater than 0.");
-      if (ratio === null) {
+
+      const grossMargin = values.grossMarginPercent / 100;
+      const churn = values.churnPercent / 100;
+      if (values.arpaMonthly <= 0) warnings.push("ARPA must be greater than 0.");
+      if (grossMargin <= 0) warnings.push("Gross margin must be greater than 0%.");
+      if (churn <= 0) warnings.push("Churn must be greater than 0%.");
+
+      const grossProfitPerMonth = values.arpaMonthly * Math.max(grossMargin, 0);
+      const ltv = safeDivide(grossProfitPerMonth, churn) ?? 0;
+      const ratio = safeDivide(ltv, values.cac);
+      const paybackMonths = safeDivide(values.cac, grossProfitPerMonth);
+
+      if (ratio === null || paybackMonths === null) {
         return {
           headline: {
             key: "ratio",
@@ -1466,13 +1754,73 @@ export const calculators: CalculatorDefinition[] = [
           value: ratio,
           format: "ratio",
           maxFractionDigits: 2,
-          detail: "LTV ÷ CAC",
+          detail: "LTV / CAC",
         },
+        secondary: [
+          {
+            key: "ltv",
+            label: "LTV (gross profit)",
+            value: ltv,
+            format: "currency",
+            currency: "USD",
+            detail: "(ARPA * gross margin) / churn",
+          },
+          {
+            key: "paybackMonths",
+            label: "CAC payback (months)",
+            value: paybackMonths,
+            format: "months",
+            maxFractionDigits: 1,
+            detail: "CAC / (ARPA * gross margin)",
+          },
+          {
+            key: "grossProfitPerMonth",
+            label: "Gross profit / month",
+            value: grossProfitPerMonth,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
+        breakdown: [
+          {
+            key: "cac",
+            label: "CAC",
+            value: values.cac,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "arpaMonthly",
+            label: "ARPA per month",
+            value: values.arpaMonthly,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "grossMarginPercent",
+            label: "Gross margin",
+            value: grossMargin,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "churnPercent",
+            label: "Monthly churn",
+            value: churn,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+        ],
         warnings,
       };
     },
-    formula: "LTV:CAC = LTV ÷ CAC",
-    assumptions: ["LTV and CAC are calculated consistently for the same segment."],
+    formula:
+      "LTV = (ARPA * gross margin) / churn; LTV:CAC = LTV / CAC; Payback = CAC / (ARPA * gross margin)",
+    assumptions: [
+      "Uses a constant-churn shortcut model (planning).",
+      "LTV is modeled as gross profit to align with CAC and payback.",
+      "Use segment-level inputs (channel/plan/geo) for decision-making.",
+    ],
     faqs: [
       {
         question: "What is a good LTV:CAC ratio?",
@@ -1502,17 +1850,17 @@ export const calculators: CalculatorDefinition[] = [
     seo: {
       intro: [
         "CAC payback period tells you how many months it takes to earn back CAC from monthly gross profit. It is one of the fastest ways to assess cash efficiency for subscription businesses.",
-        "When people search “months to recover CAC”, they usually mean this payback period: CAC divided by gross profit per month.",
+        "When people search \"months to recover CAC\", they usually mean this payback period: CAC divided by gross profit per month.",
       ],
       steps: [
         "Choose a segment (channel/plan/geo) and a time window (usually monthly).",
         "Estimate ARPA per month for the segment.",
         "Choose gross margin for the same revenue base (product gross margin is common).",
-        "Compute gross profit per month: ARPA × gross margin.",
+        "Compute gross profit per month: ARPA * gross margin.",
         "Divide CAC by gross profit per month to get payback months.",
       ],
       benchmarks: [
-        "Many B2B SaaS teams target ~6–18 months depending on stage and burn.",
+        "Many B2B SaaS teams target around 6-18 months depending on stage and burn.",
         "Shorter payback reduces risk when channels fluctuate.",
         "Long payback can work if retention is strong and expansion revenue is significant.",
       ],
@@ -1544,6 +1892,16 @@ export const calculators: CalculatorDefinition[] = [
         suffix: "%",
         defaultValue: "80",
       },
+      {
+        key: "annualDiscountRatePercent",
+        label: "Annual discount rate (optional)",
+        help: "Used to compute discounted payback. Set 0 to disable.",
+        placeholder: "10",
+        suffix: "%",
+        defaultValue: "0",
+        min: 0,
+        step: 0.1,
+      },
     ],
     compute(values) {
       const warnings: string[] = [];
@@ -1567,6 +1925,23 @@ export const calculators: CalculatorDefinition[] = [
         };
       }
 
+      const annualDiscount = values.annualDiscountRatePercent / 100;
+      const monthlyDiscount =
+        annualDiscount > 0 ? Math.pow(1 + annualDiscount, 1 / 12) - 1 : 0;
+
+      let discountedPaybackMonths: number | null = null;
+      if (monthlyDiscount > 0) {
+        const ratio = safeDivide(values.cac * monthlyDiscount, grossProfitPerMonth);
+        if (ratio === null || ratio >= 1) {
+          warnings.push(
+            "Discounted payback is not reachable with this discount rate (present value of future gross profit is capped).",
+          );
+        } else {
+          discountedPaybackMonths =
+            Math.log(1 / (1 - ratio)) / Math.log(1 + monthlyDiscount);
+        }
+      }
+
       return {
         headline: {
           key: "payback",
@@ -1574,7 +1949,7 @@ export const calculators: CalculatorDefinition[] = [
           value: months,
           format: "months",
           maxFractionDigits: 1,
-          detail: "CAC ÷ (ARPA × Gross margin)",
+          detail: "CAC / (ARPA * gross margin)",
         },
         secondary: [
           {
@@ -1584,11 +1959,32 @@ export const calculators: CalculatorDefinition[] = [
             format: "currency",
             currency: "USD",
           },
+          {
+            key: "discountedPayback",
+            label: "Discounted payback (months)",
+            value: discountedPaybackMonths ?? 0,
+            format: "months",
+            maxFractionDigits: 1,
+            detail:
+              monthlyDiscount > 0
+                ? discountedPaybackMonths === null
+                  ? "Not reachable with these inputs"
+                  : "Uses discounted cash flow of monthly gross profit"
+                : "Set annual discount rate to compute discounted payback",
+          },
+          {
+            key: "monthlyDiscountRate",
+            label: "Monthly discount rate",
+            value: monthlyDiscount,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: annualDiscount > 0 ? "Derived from annual rate" : "0%",
+          },
         ],
         warnings,
       };
     },
-    formula: "Payback (months) = CAC ÷ (ARPA × Gross Margin)",
+    formula: "Payback (months) = CAC / (ARPA * Gross Margin)",
     assumptions: [
       "ARPA and gross margin remain stable over the payback period.",
     ],
@@ -1601,7 +1997,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         question: "How do I calculate months to recover CAC?",
         answer:
-          "Compute gross profit per month (ARPA × gross margin), then divide CAC by gross profit per month. The result is the CAC payback period in months.",
+          "Compute gross profit per month (ARPA * gross margin), then divide CAC by gross profit per month. The result is the CAC payback period in months.",
       },
     ],
     guide: [
@@ -1609,8 +2005,8 @@ export const calculators: CalculatorDefinition[] = [
         title: "How to calculate CAC payback",
         bullets: [
           "Pick a time window (usually month) and a segment (plan/channel/geo).",
-          "Compute gross profit per month: ARPA × gross margin.",
-          "Compute payback months: CAC ÷ gross profit per month.",
+          "Compute gross profit per month: ARPA * gross margin.",
+          "Compute payback months: CAC / gross profit per month.",
           "Compare across channels and cohorts, not just blended averages.",
         ],
       },
@@ -3370,7 +3766,7 @@ export const calculators: CalculatorDefinition[] = [
         "Pick a cohort and time window (often monthly or quarterly).",
         "Measure starting MRR for that cohort at the beginning of the window.",
         "Add expansion MRR and subtract contraction and churned MRR.",
-        "Compute NRR = ending MRR ÷ starting MRR.",
+        "Compute NRR = ending MRR / starting MRR.",
       ],
       pitfalls: [
         "Mixing new customer revenue into NRR (NRR is existing cohort only).",
@@ -3426,6 +3822,8 @@ export const calculators: CalculatorDefinition[] = [
         values.expansionMrr -
         values.contractionMrr -
         values.churnedMrr;
+      const netExpansionMrr =
+        values.expansionMrr - values.contractionMrr - values.churnedMrr;
 
       const nrr = safeDivide(endingMrr, values.startingMrr);
       if (nrr === null) {
@@ -3448,7 +3846,7 @@ export const calculators: CalculatorDefinition[] = [
           value: nrr,
           format: "percent",
           maxFractionDigits: 1,
-          detail: "Ending MRR ÷ Starting MRR",
+          detail: "Ending MRR / Starting MRR",
         },
         secondary: [
           {
@@ -3457,6 +3855,22 @@ export const calculators: CalculatorDefinition[] = [
             value: endingMrr,
             format: "currency",
             currency: "USD",
+          },
+          {
+            key: "netExpansionMrr",
+            label: "Net expansion MRR",
+            value: netExpansionMrr,
+            format: "currency",
+            currency: "USD",
+            detail: "Expansion - contraction - churn",
+          },
+          {
+            key: "nrrMultiple",
+            label: "NRR (multiple)",
+            value: nrr,
+            format: "multiple",
+            maxFractionDigits: 2,
+            detail: "Same metric in multiple form",
           },
         ],
         breakdown: [
@@ -3492,7 +3906,8 @@ export const calculators: CalculatorDefinition[] = [
         warnings,
       };
     },
-    formula: "NRR = (Starting MRR + Expansion − Contraction − Churn) ÷ Starting MRR",
+    formula:
+      "NRR = (Starting MRR + Expansion - Contraction - Churn) / Starting MRR",
     assumptions: [
       "NRR measures an existing cohort only; exclude new customers in the period.",
       "All components use the same MRR definition and time window.",
@@ -7565,8 +7980,13 @@ export const calculators: CalculatorDefinition[] = [
       steps: [
         "Enter current ad spend and revenue (or attributed revenue proxy).",
         "Enter contribution margin to convert revenue into gross profit.",
-        "Set a diminishing returns exponent (0–1) and optionally a max spend cap.",
+        "Set a diminishing returns exponent (0 to 1) and optionally a max spend cap.",
         "Review optimal spend, expected profit, and implied marginal ROAS.",
+      ],
+      benchmarks: [
+        "If marginal profit per $1 at the optimum is near 0, you are near the spend ceiling for your current economics.",
+        "If optimal spend is far above current spend, validate incrementality before scaling (attribution may overstate).",
+        "Curves differ by channel, audience, and creative; fit and optimize per segment when possible.",
       ],
       pitfalls: [
         "Using platform-attributed revenue when incrementality is low (overstates the curve).",
@@ -7603,8 +8023,8 @@ export const calculators: CalculatorDefinition[] = [
       },
       {
         key: "diminishingReturnsExponent",
-        label: "Diminishing returns exponent (0–1)",
-        help: "Lower means stronger diminishing returns. 0.6–0.9 is a common range.",
+        label: "Diminishing returns exponent (0 to 1)",
+        help: "Lower means stronger diminishing returns. 0.6 to 0.9 is a common range.",
         placeholder: "0.75",
         defaultValue: "0.75",
         min: 0.01,
@@ -8755,7 +9175,7 @@ export const calculators: CalculatorDefinition[] = [
     ],
     seo: {
       intro: [
-        "MER (marketing efficiency ratio) is total revenue divided by total marketing spend over the same period. It’s a useful top-down health metric that reduces channel attribution noise.",
+        "MER (marketing efficiency ratio) is total revenue divided by total marketing spend over the same period. It's a useful top-down health metric that reduces channel attribution noise.",
         "To make MER decision-useful, translate it into profit using contribution margin and compute break-even and target MER thresholds.",
       ],
       steps: [
@@ -8763,8 +9183,13 @@ export const calculators: CalculatorDefinition[] = [
         "Enter contribution margin to estimate gross profit after variable costs.",
         "Optionally set a profit buffer to compute a target MER (more conservative than break-even).",
       ],
+      benchmarks: [
+        "Break-even MER is 1 / contribution margin (a floor, not a scaling target).",
+        "If profit after spend is negative at the blended level, scaling spend typically scales losses unless mix or margin improves.",
+        "Use MER for top-down health and use channel metrics (ROAS, marginal ROAS) for allocation decisions.",
+      ],
       pitfalls: [
-        "Using MER alone to optimize channel budgets (it hides what’s working).",
+        "Using MER alone to optimize channel budgets (it hides what's working).",
         "Mixing time windows (weekly spend with monthly revenue).",
         "Ignoring promos/seasonality and concluding performance changed structurally.",
       ],
@@ -9407,6 +9832,11 @@ export const calculators: CalculatorDefinition[] = [
         "Add a profit buffer to compute a target CPC (more conservative than break-even).",
         "Optionally enter CTR to translate max CPC into max CPM.",
       ],
+      benchmarks: [
+        "If CVR is uncertain, set a larger buffer or use a conservative CVR (pessimistic scenario).",
+        "If break-even CPC is below market CPC, improve conversion rate, AOV, or margin before scaling spend.",
+        "For subscription, use LTV-based targets instead of single-purchase AOV.",
+      ],
       pitfalls: [
         "Using session CVR while using click-based CPC (mismatch).",
         "Ignoring returns, discounts, shipping, and fees (use contribution margin).",
@@ -9434,7 +9864,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         key: "conversionRatePercent",
         label: "Conversion rate (CVR)",
-        help: "Conversions ÷ clicks (use click-based CVR if possible).",
+        help: "Conversions / clicks (use click-based CVR if possible).",
         placeholder: "2.5",
         suffix: "%",
         defaultValue: "2.5",
@@ -9444,7 +9874,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         key: "profitBufferPercent",
         label: "Profit buffer",
-        help: "Buffer as % of contribution per conversion (e.g., 20% means spend ≤ 80% of contribution).",
+        help: "Buffer as % of contribution per conversion (e.g., 20% means spend <= 80% of contribution).",
         placeholder: "20",
         suffix: "%",
         defaultValue: "20",
@@ -9568,7 +9998,7 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "Contribution/conversion = AOV×margin; Break-even CPA = contribution; Break-even CPC = CPA×CVR; CPM = CPC×CTR×1000",
+      "Contribution/conversion = AOV * margin; Break-even CPA = contribution; Break-even CPC = CPA * CVR; CPM = CPC * CTR * 1000",
     assumptions: [
       "Uses contribution margin as a simplified variable-profit proxy per conversion.",
       "CVR is click-based (conversions ÷ clicks).",
