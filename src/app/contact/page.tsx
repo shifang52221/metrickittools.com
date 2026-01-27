@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Contact",
-  description: `How to contact ${siteConfig.name}.`,
+  title: { absolute: "Contact MetricKit — support, bug reports, and feedback" },
+  description:
+    "Contact MetricKit for calculator support, bug reports, and content feedback. Include the URL, inputs, outputs, and your time-unit assumptions (monthly vs annual).",
   alternates: { canonical: "/contact" },
 };
 

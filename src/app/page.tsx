@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { CalculatorCard } from "@/components/site/CalculatorCard";
 import { calculators, categories } from "@/lib/calculators";
@@ -6,6 +7,22 @@ import { glossaryTerms } from "@/lib/glossary";
 import { siteConfig } from "@/lib/site";
 import { AdUnit } from "@/components/ads/AdUnit";
 import { getAdSenseSlot } from "@/lib/adsense";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: "MetricKit — free SaaS metrics & paid ads calculators",
+  },
+  description:
+    "Free calculators for SaaS metrics, paid ads, and finance. Compute CAC, LTV, ROAS, payback, churn, and more with clear formulas, assumptions, and practical guidance.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "MetricKit — free SaaS metrics & paid ads calculators",
+    description:
+      "Free calculators for SaaS metrics, paid ads, and finance. Compute CAC, LTV, ROAS, payback, churn, and more with clear formulas, assumptions, and practical guidance.",
+    url: "/",
+    type: "website",
+  },
+};
 
 export default function Home() {
   const featured = calculators.filter((c) => c.featured).slice(0, 6);

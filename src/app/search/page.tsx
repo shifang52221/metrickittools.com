@@ -3,13 +3,15 @@ import { Suspense } from "react";
 import { SearchClient } from "@/components/search/SearchClient";
 
 export const metadata: Metadata = {
-  title: "Search",
-  description: "Search calculators, guides, and glossary definitions.",
+  title: { absolute: "Search MetricKit calculators, guides, and definitions" },
+  description:
+    "Search MetricKit calculators, guides, and glossary definitions by metric name, acronym, or workflow (ROAS, CAC, LTV, churn, payback, margin).",
   alternates: { canonical: "/search" },
   robots: { index: false, follow: true },
   openGraph: {
-    title: "Search",
-    description: "Search calculators, guides, and glossary definitions.",
+    title: "Search MetricKit calculators, guides, and definitions",
+    description:
+      "Search MetricKit calculators, guides, and glossary definitions by metric name, acronym, or workflow (ROAS, CAC, LTV, churn, payback, margin).",
     url: "/search",
     type: "website",
   },

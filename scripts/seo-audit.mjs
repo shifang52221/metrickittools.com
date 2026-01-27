@@ -10,8 +10,12 @@ const CONCURRENCY = Number(process.env.SEO_AUDIT_CONCURRENCY || 15);
 const TIMEOUT_MS = Number(process.env.SEO_AUDIT_TIMEOUT_MS || 20000);
 const MAX_REDIRECTS = Number(process.env.SEO_AUDIT_MAX_REDIRECTS || 10);
 const MAX_CRAWL_PAGES = Number(process.env.SEO_AUDIT_MAX_CRAWL_PAGES || 2000);
-const VERY_SHORT_WORDS = Number(process.env.SEO_VERY_SHORT_WORDS || 80);
+const VERY_SHORT_WORDS = Number(process.env.SEO_VERY_SHORT_WORDS || 100);
 const MIN_INFO_POINTS = Number(process.env.SEO_MIN_INFO_POINTS || 8);
+const TITLE_MIN = Number(process.env.SEO_TITLE_MIN || 20);
+const TITLE_MAX = Number(process.env.SEO_TITLE_MAX || 60);
+const DESC_MIN = Number(process.env.SEO_DESC_MIN || 50);
+const DESC_MAX = Number(process.env.SEO_DESC_MAX || 160);
 
 function nowStamp() {
   const d = new Date();
@@ -418,6 +422,22 @@ function pageKey(urlString) {
   return normalizePath(urlString);
 }
 
+function csvEscape(value) {
+  if (value === null || value === undefined) return "";
+  const s = String(value);
+  if (/[,"\r\n]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+  return s;
+}
+
+function toCsv(rows, columns) {
+  const out = [];
+  out.push(columns.map(csvEscape).join(","));
+  for (const row of rows) {
+    out.push(columns.map((c) => csvEscape(row[c])).join(","));
+  }
+  return out.join("\n") + "\n";
+}
+
 async function main() {
   const base = new URL(BASE);
   const baseOrigin = base.origin;
@@ -499,11 +519,17 @@ async function main() {
               ? stripTags(extractBetween(html, /<main\b/i, /<\/main>/i) || html).slice(0, 800)
               : "";
             const hash = html ? simhash64(mainTextSample) : 0n;
+            const redirectCount = (chain || []).filter(
+              (c) => c.status >= 300 && c.status < 400,
+            ).length;
 
             return {
               url,
               type: classify(finalUrl),
+              path: pageKey(finalUrl),
               status: res.status,
+              firstStatus: chain?.[0]?.status ?? res.status,
+              redirectCount,
               ok: res.status >= 200 && res.status < 400,
               finalUrl,
               redirectChain: chain,
@@ -566,9 +592,13 @@ async function main() {
     pages = [...pagesByPathDedup.values()];
 
     const sitemapSet = new Set(sitemapUrls.map(pageKey));
-    const crawledNotInSitemap = pages.filter(
-      (p) => !sitemapSet.has(pageKey(p.url)) && sameOrigin(p.url, BASE),
-    ).length;
+    pages = pages.map((p) => {
+      const key = pageKey(p.finalUrl || p.url);
+      const inSitemap = sitemapSet.has(pageKey(p.url)) || sitemapSet.has(key);
+      return { ...p, inSitemap };
+    });
+
+    const crawledNotInSitemap = pages.filter((p) => !p.inSitemap).length;
 
     const byPath = new Map(pages.map((p) => [pageKey(p.finalUrl || p.url), p]));
 
@@ -587,19 +617,27 @@ async function main() {
       redirectChains: [],
       canonicalMismatch: [],
       noindexInSitemap: [],
+      titleMissing: [],
+      descriptionMissing: [],
+      titleTooShort: [],
+      titleTooLong: [],
+      descriptionTooShort: [],
+      descriptionTooLong: [],
       duplicateTitle: [],
       duplicateDescription: [],
       veryShort: [],
       orphan: [],
       badLinks: [],
       schemaErrors: [],
+      schemaMismatch: [],
       hreflangErrors: [],
       nearDuplicate: [],
     };
 
     for (const p of pages) {
       const key = pageKey(p.finalUrl || p.url);
-      const inSitemap = sitemapSet.has(pageKey(p.url)) || sitemapSet.has(key);
+      const inSitemap = Boolean(p.inSitemap);
+
       if (inSitemap && !(p.status >= 200 && p.status < 300)) {
         issues.non200.push({
           url: p.url,
@@ -608,7 +646,7 @@ async function main() {
           redirectChain: p.redirectChain,
         });
       }
-      if (p.redirectChain && p.redirectChain.length > 2) {
+      if ((p.redirectCount ?? 0) >= 2) {
         issues.redirectChains.push({
           url: p.url,
           finalUrl: p.finalUrl,
@@ -629,11 +667,57 @@ async function main() {
           robots: p.robots,
         });
       }
+      if (!p.title) {
+        issues.titleMissing.push({ url: p.url });
+      } else {
+        const n = p.title.trim().length;
+        if (n < TITLE_MIN) issues.titleTooShort.push({ url: p.url, title: p.title, length: n });
+        if (n > TITLE_MAX) issues.titleTooLong.push({ url: p.url, title: p.title, length: n });
+      }
+      if (!p.description) {
+        issues.descriptionMissing.push({ url: p.url });
+      } else {
+        const n = p.description.trim().length;
+        if (n < DESC_MIN)
+          issues.descriptionTooShort.push({
+            url: p.url,
+            description: p.description,
+            length: n,
+          });
+        if (n > DESC_MAX)
+          issues.descriptionTooLong.push({
+            url: p.url,
+            description: p.description,
+            length: n,
+          });
+      }
       if (p.schema?.errors?.length) {
         issues.schemaErrors.push({
           url: p.url,
           errors: p.schema.errors,
         });
+      }
+      if (p.schema?.parsedTypes?.length) {
+        const expected = [];
+        if (p.type === "calculator") expected.push("SoftwareApplication", "BreadcrumbList");
+        if (p.type === "guide") expected.push("Article");
+        if (normalizePath(p.finalUrl || p.url).startsWith("/glossary/"))
+          expected.push("DefinedTerm");
+        if (expected.length) {
+          const types = new Set(
+            p.schema.parsedTypes
+              .flatMap((t) => (Array.isArray(t) ? t : [t]))
+              .filter(Boolean),
+          );
+          const missing = expected.filter((t) => !types.has(t));
+          if (missing.length) {
+            issues.schemaMismatch.push({
+              url: p.url,
+              expected: missing,
+              found: [...types],
+            });
+          }
+        }
       }
       if (p.hreflang?.length) {
         const bad = [];
@@ -741,6 +825,10 @@ async function main() {
       thresholds: {
         VERY_SHORT_WORDS,
         MIN_INFO_POINTS,
+        TITLE_MIN,
+        TITLE_MAX,
+        DESC_MIN,
+        DESC_MAX,
       },
     };
 
@@ -749,6 +837,108 @@ async function main() {
     const baseSlug = base.host.replace(/[^a-z0-9.-]/gi, "_");
     const jsonPath = `reports/seo-audit-${baseSlug}-${stamp}.json`;
     await fs.writeFile(jsonPath, JSON.stringify(report, null, 2) + "\n", "utf8");
+
+    const inventory = pages
+      .map((p) => ({
+        url: p.url,
+        final_url: p.finalUrl,
+        path: pageKey(p.finalUrl || p.url),
+        classification: p.type,
+        in_sitemap: Boolean(p.inSitemap),
+        first_status: p.firstStatus ?? p.status ?? 0,
+        status: p.status ?? 0,
+      }))
+      .sort((a, b) => a.path.localeCompare(b.path));
+
+    const inventoryJson = `reports/url-inventory-${baseSlug}-${stamp}.json`;
+    await fs.writeFile(inventoryJson, JSON.stringify(inventory, null, 2) + "\n", "utf8");
+    const inventoryCsv = `reports/url-inventory-${baseSlug}-${stamp}.csv`;
+    await fs.writeFile(
+      inventoryCsv,
+      toCsv(inventory, [
+        "url",
+        "final_url",
+        "path",
+        "classification",
+        "in_sitemap",
+        "first_status",
+        "status",
+      ]),
+      "utf8",
+    );
+
+    const extractRows = pages.map((p) => ({
+      url: p.url,
+      final_url: p.finalUrl,
+      classification: p.type,
+      in_sitemap: Boolean(p.inSitemap),
+      status: p.status ?? 0,
+      title: p.title,
+      description: p.description,
+      canonical: p.canonical,
+      robots: p.robots,
+      hreflang: p.hreflang,
+      main_content_words: p.mainContentWords ?? 0,
+      internal_links: p.internalLinks ?? [],
+      schema: p.schema ?? { count: 0, parsedTypes: [], errors: [] },
+    }));
+
+    const extractJson = `reports/html-extract-${baseSlug}-${stamp}.json`;
+    await fs.writeFile(extractJson, JSON.stringify(extractRows, null, 2) + "\n", "utf8");
+
+    const types = ["calculator", "guide", "resource", "static", "category"];
+    for (const t of types) {
+      const rows = extractRows.filter((r) => r.classification === t);
+      const outPath = `reports/html-extract-${baseSlug}-${stamp}-${t}.json`;
+      await fs.writeFile(outPath, JSON.stringify(rows, null, 2) + "\n", "utf8");
+    }
+
+    const issueMeta = [
+      { key: "non200", priority: 0, fix: "Fix route or remove from sitemap. Sitemap URLs must return 200." },
+      { key: "redirectChains", priority: 0, fix: "Remove chained redirects; link directly to the final canonical URL." },
+      { key: "canonicalMismatch", priority: 0, fix: "Canonical must be preferred https host + same path (no query)." },
+      { key: "hreflangErrors", priority: 0, fix: "Fix invalid hreflang codes and ensure href uses the preferred host." },
+      { key: "noindexInSitemap", priority: 0, fix: "Remove noindex pages from sitemap or remove noindex if indexable." },
+      { key: "duplicateTitle", priority: 1, fix: "Make titles unique per intent; avoid template-only titles." },
+      { key: "duplicateDescription", priority: 1, fix: "Make meta descriptions unique; derive from page-specific content." },
+      { key: "titleMissing", priority: 1, fix: "Set a descriptive, unique <title> for every indexable page." },
+      { key: "descriptionMissing", priority: 1, fix: "Set a unique meta description for every indexable page." },
+      { key: "titleTooShort", priority: 2, fix: `Increase title specificity (>=${TITLE_MIN} chars) without keyword stuffing.` },
+      { key: "titleTooLong", priority: 2, fix: `Shorten titles to <=${TITLE_MAX} chars while keeping intent clear.` },
+      { key: "descriptionTooShort", priority: 2, fix: `Add a more informative description (>=${DESC_MIN} chars).` },
+      { key: "descriptionTooLong", priority: 2, fix: `Shorten descriptions to <=${DESC_MAX} chars; keep the primary value prop.` },
+      { key: "veryShort", priority: 2, fix: `Add substantive sections so main content >=${VERY_SHORT_WORDS} words and >=${MIN_INFO_POINTS} info points.` },
+      { key: "orphan", priority: 3, fix: "Add internal links from hubs/indexes/related sections to eliminate orphans." },
+      { key: "badLinks", priority: 3, fix: "Fix or remove broken internal links (prefer linking by slugs/enums)." },
+      { key: "schemaErrors", priority: 4, fix: "Fix invalid JSON-LD blocks." },
+      { key: "schemaMismatch", priority: 4, fix: "Ensure schema types match page intent (Calculator/Guide/Glossary)." },
+      { key: "nearDuplicate", priority: 1, fix: "Differentiate intent and structure for similar slugs; avoid repeating the same sections." },
+    ];
+
+    const pagesByUrl = new Map(pages.map((p) => [p.url, p]));
+    const issueList = [];
+    for (const meta of issueMeta) {
+      const items = issues[meta.key] || [];
+      for (const item of items) {
+        const url =
+          typeof item === "string"
+            ? item
+            : item.url || item.from || item.a || item.b || null;
+        const page = url ? pagesByUrl.get(url) : null;
+        issueList.push({
+          issue_type: meta.key,
+          priority: meta.priority,
+          classification: page?.type ?? null,
+          url,
+          evidence: item,
+          fix: meta.fix,
+        });
+      }
+    }
+
+    const issuesJson = `reports/seo-issues-${baseSlug}-${stamp}.json`;
+    issueList.sort((a, b) => a.priority - b.priority);
+    await fs.writeFile(issuesJson, JSON.stringify(issueList, null, 2) + "\n", "utf8");
 
     const lines = [];
     const fixGuidance = {
@@ -762,6 +952,13 @@ async function main() {
         "Fix invalid hreflang codes or wrong hosts; keep hreflang consistent with canonical.",
       noindexInSitemap:
         "Remove noindex pages from sitemap or remove noindex if they should be indexed.",
+      titleMissing: "Set a descriptive, unique <title> for every indexable page.",
+      descriptionMissing:
+        "Set a unique meta description for every indexable page.",
+      titleTooShort: "Increase title specificity without keyword stuffing.",
+      titleTooLong: "Shorten titles while keeping page intent clear.",
+      descriptionTooShort: "Add a more informative meta description.",
+      descriptionTooLong: "Shorten meta descriptions; keep the primary value prop.",
       duplicateTitle:
         "Make titles unique per page intent; avoid template-only titles without page-specific context.",
       duplicateDescription:
@@ -774,6 +971,8 @@ async function main() {
         "Update or remove broken internal links; prefer linking by slug enums to prevent drift.",
       schemaErrors:
         "Fix invalid JSON-LD and ensure the schema matches the page type (FAQPage, Article, etc.).",
+      schemaMismatch:
+        "Ensure each page has the expected schema types for its intent (SoftwareApplication/Article/DefinedTerm + breadcrumbs where applicable).",
       "nearDuplicate(pairs<=3)":
         "Differentiate intent and content structure for similar slugs; avoid repeating the same checklist/FAQ across pages.",
     };
@@ -799,12 +998,19 @@ async function main() {
     pushIssue("redirectChains", issues.redirectChains);
     pushIssue("canonicalMismatch", issues.canonicalMismatch);
     pushIssue("noindexInSitemap", issues.noindexInSitemap);
+    pushIssue("titleMissing", issues.titleMissing);
+    pushIssue("descriptionMissing", issues.descriptionMissing);
+    pushIssue("titleTooShort", issues.titleTooShort);
+    pushIssue("titleTooLong", issues.titleTooLong);
+    pushIssue("descriptionTooShort", issues.descriptionTooShort);
+    pushIssue("descriptionTooLong", issues.descriptionTooLong);
     pushIssue("duplicateTitle", issues.duplicateTitle);
     pushIssue("duplicateDescription", issues.duplicateDescription);
     pushIssue("veryShort", issues.veryShort);
     pushIssue("orphan", issues.orphan);
     pushIssue("badLinks", issues.badLinks);
     pushIssue("schemaErrors", issues.schemaErrors);
+    pushIssue("schemaMismatch", issues.schemaMismatch);
     pushIssue("hreflangErrors", issues.hreflangErrors);
     pushIssue("nearDuplicate(pairs<=3)", issues.nearDuplicate);
     const mdPath = `reports/seo-audit-${baseSlug}-${stamp}.md`;
@@ -822,11 +1028,17 @@ async function main() {
       console.error("SEO audit failed hard requirements.");
       console.error(`Report: ${jsonPath}`);
       console.error(`Report: ${mdPath}`);
+      console.error(`Inventory: ${inventoryCsv}`);
+      console.error(`Extract: ${extractJson}`);
+      console.error(`Issues: ${issuesJson}`);
       process.exitCode = 1;
     } else {
       console.log("SEO audit OK (hard requirements met).");
       console.log(`Report: ${jsonPath}`);
       console.log(`Report: ${mdPath}`);
+      console.log(`Inventory: ${inventoryCsv}`);
+      console.log(`Extract: ${extractJson}`);
+      console.log(`Issues: ${issuesJson}`);
     }
   } finally {
     if (server && !server.killed) server.kill();
