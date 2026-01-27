@@ -1,11 +1,11 @@
 export const defaultAdSenseConfig = {
   client: "ca-pub-8677561632094995",
   slots: {
-    homeMid: "5561416389",
-    categoryMid: "5561416389",
-    guidesIndexMid: "5561416389",
-    guideBottom: "5561416389",
-    calculatorSidebar: "5561416389",
+    homeMid: "5105480188",
+    categoryMid: "6454220877",
+    guidesIndexMid: "3087667414",
+    guideBottom: "5141139208",
+    calculatorSidebar: "7178955666",
   },
 } as const;
 
