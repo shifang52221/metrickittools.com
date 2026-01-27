@@ -881,6 +881,28 @@ export const calculators: CalculatorDefinition[] = [
     category: "paid-ads",
     featured: true,
     guideSlug: "roi-guide",
+    seo: {
+      intro: [
+        "ROI (return on investment) measures profit relative to cost: (revenue - cost) / cost. It answers whether an initiative creates incremental value.",
+        "ROI can be compared across projects only when the time window and cost definition are consistent. This calculator also estimates an annualized ROI when you provide a horizon.",
+      ],
+      steps: [
+        "Enter revenue attributable to the campaign or project.",
+        "Enter total incremental cost (ads, tools, labor, agencies) for the same window.",
+        "Optionally enter the horizon in months to compute annualized ROI.",
+        "Review ROI, profit, and the return multiple together.",
+      ],
+      benchmarks: [
+        "Positive ROI means profit exceeds cost; ROI of 0% means break-even.",
+        "High ROI on small spend can be less useful than moderate ROI at scalable volume; pair ROI with capacity constraints.",
+        "For paid ads, compare ROI to ROAS and margin assumptions to avoid misattribution.",
+      ],
+      pitfalls: [
+        "Using lifetime revenue for some campaigns but short-window cost for others (time mismatch).",
+        "Leaving out 'hidden' costs like agency fees or salaries (definition drift).",
+        "Treating attributed revenue as causal truth when incrementality is unknown.",
+      ],
+    },
     inputs: [
       {
         key: "revenue",
@@ -897,9 +919,23 @@ export const calculators: CalculatorDefinition[] = [
         prefix: "$",
         defaultValue: "3000",
       },
+      {
+        key: "horizonMonths",
+        label: "Horizon (months)",
+        help: "Used to compute annualized ROI. Set to 12 if your inputs are annual.",
+        placeholder: "12",
+        defaultValue: "12",
+        min: 1,
+        step: 1,
+      },
     ],
     compute(values) {
       const warnings: string[] = [];
+      const horizonMonths = Math.max(1, Math.floor(values.horizonMonths));
+      if (values.horizonMonths !== horizonMonths) {
+        warnings.push("Horizon months was rounded down to a whole number.");
+      }
+
       const profit = values.revenue - values.cost;
       const roi = safeDivide(profit, values.cost);
       if (values.cost <= 0) warnings.push("Total cost must be greater than 0.");
@@ -916,6 +952,14 @@ export const calculators: CalculatorDefinition[] = [
         };
       }
 
+      const annualizedRoi =
+        roi > -1 ? Math.pow(1 + roi, 12 / horizonMonths) - 1 : null;
+      if (annualizedRoi === null) {
+        warnings.push(
+          "Annualized ROI is not available when ROI is <= -100% (revenue is too low vs cost).",
+        );
+      }
+
       return {
         headline: {
           key: "roi",
@@ -926,6 +970,17 @@ export const calculators: CalculatorDefinition[] = [
           detail: "(Revenue - Cost) / Cost",
         },
         secondary: [
+          {
+            key: "annualizedRoi",
+            label: "Annualized ROI",
+            value: annualizedRoi ?? 0,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail:
+              annualizedRoi === null
+                ? "Not available"
+                : `Annualized from a ${horizonMonths}-month horizon`,
+          },
           {
             key: "profit",
             label: "Profit",
@@ -942,11 +997,28 @@ export const calculators: CalculatorDefinition[] = [
             maxFractionDigits: 2,
             detail: "Revenue / Cost",
           },
+          {
+            key: "profitMargin",
+            label: "Profit margin (on revenue)",
+            value: values.revenue > 0 ? profit / values.revenue : 0,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail: "Profit / revenue",
+          },
+          {
+            key: "breakEvenRevenue",
+            label: "Break-even revenue",
+            value: values.cost,
+            format: "currency",
+            currency: "USD",
+            detail: "Revenue needed for ROI = 0%",
+          },
         ],
         warnings,
       };
     },
-    formula: "ROI = (Revenue - Cost) / Cost",
+    formula:
+      "ROI = (Revenue - Cost) / Cost; Annualized ROI = (1 + ROI)^(12 / months) - 1",
     assumptions: [
       "Revenue and cost are measured over the same time window.",
       "Cost includes all incremental costs you attribute to the initiative.",
@@ -2219,6 +2291,28 @@ export const calculators: CalculatorDefinition[] = [
     description: "Calculate customer churn rate for a period.",
     category: "saas-metrics",
     guideSlug: "churn-guide",
+    seo: {
+      intro: [
+        "Customer churn rate measures the share of customers you lost over a period. It is a core retention metric for subscription businesses.",
+        "Churn can be misleading if you mix segments. Track churn by cohort, plan, and acquisition channel before you make budget decisions.",
+      ],
+      steps: [
+        "Pick a time window (month/quarter) and a segment (plan/channel/geo).",
+        "Enter customers at the start of the period and customers lost during the period.",
+        "Compute churn = lost / start and retention = 1 - churn.",
+        "Optionally annualize churn by specifying periods per year (12 for monthly, 4 for quarterly).",
+      ],
+      benchmarks: [
+        "Small changes in churn compound over time; pair churn with LTV and payback.",
+        "If churn is mostly involuntary (failed payments), fix dunning before you change acquisition budgets.",
+        "Revenue retention (NRR/GRR) can look better than customer churn if expansion is strong.",
+      ],
+      pitfalls: [
+        "Comparing churn across periods with different definitions of 'active customer'.",
+        "Using blended churn across segments with different retention (the blend can drift).",
+        "Annualizing a period that is not consistent (for example mixing monthly and quarterly inputs).",
+      ],
+    },
     inputs: [
       {
         key: "startingCustomers",
@@ -2232,11 +2326,26 @@ export const calculators: CalculatorDefinition[] = [
         placeholder: "30",
         defaultValue: "30",
       },
+      {
+        key: "periodsPerYear",
+        label: "Periods per year (optional)",
+        help: "12 for monthly, 4 for quarterly. Used to compute annualized churn.",
+        placeholder: "12",
+        defaultValue: "12",
+        min: 1,
+        step: 1,
+      },
     ],
     compute(values) {
       const warnings: string[] = [];
       if (values.startingCustomers <= 0)
         warnings.push("Customers at start must be greater than 0.");
+
+      const periodsPerYear = Math.max(1, Math.floor(values.periodsPerYear));
+      if (values.periodsPerYear !== periodsPerYear) {
+        warnings.push("Periods per year was rounded down to a whole number.");
+      }
+
       const churn = safeDivide(values.lostCustomers, values.startingCustomers);
       if (churn === null) {
         return {
@@ -2250,6 +2359,11 @@ export const calculators: CalculatorDefinition[] = [
           warnings,
         };
       }
+
+      const retention = Math.max(0, 1 - churn);
+      const annualRetention = Math.pow(retention, periodsPerYear);
+      const annualChurn = 1 - annualRetention;
+      const retainedCustomers = values.startingCustomers - values.lostCustomers;
       return {
         headline: {
           key: "churn",
@@ -2257,12 +2371,53 @@ export const calculators: CalculatorDefinition[] = [
           value: churn,
           format: "percent",
           maxFractionDigits: 2,
-          detail: "Lost ÷ Start",
+          detail: "Lost / start",
         },
+        secondary: [
+          {
+            key: "retention",
+            label: "Retention rate (same period)",
+            value: retention,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: "1 - churn",
+          },
+          {
+            key: "retainedCustomers",
+            label: "Customers retained",
+            value: retainedCustomers,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+          {
+            key: "annualChurn",
+            label: "Annualized churn rate",
+            value: annualChurn,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: `${periodsPerYear} periods/year`,
+          },
+        ],
+        breakdown: [
+          {
+            key: "startingCustomers",
+            label: "Customers at start",
+            value: values.startingCustomers,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+          {
+            key: "lostCustomers",
+            label: "Customers lost",
+            value: values.lostCustomers,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+        ],
         warnings,
       };
     },
-    formula: "Churn Rate = Customers Lost ÷ Customers at Start",
+    formula: "Churn Rate = Customers Lost / Customers at Start",
     assumptions: ["Inputs represent the same period (e.g., month, quarter)."],
     faqs: [
       {
@@ -2288,6 +2443,28 @@ export const calculators: CalculatorDefinition[] = [
     description: "Calculate retention rate for a period accounting for new customers.",
     category: "saas-metrics",
     guideSlug: "retention-guide",
+    seo: {
+      intro: [
+        "Customer retention rate measures how many of your starting customers are still active at the end of the period, excluding new customers acquired during the period.",
+        "Retention is the inverse view of churn for the same window. Use revenue retention (NRR/GRR) when upsells and downgrades materially change dollars retained.",
+      ],
+      steps: [
+        "Pick a time window (month/quarter) and a segment (plan/channel/geo).",
+        "Enter customers at start and customers at end of the period.",
+        "Enter new customers added during the period.",
+        "Compute retention = (end - new) / start and optionally annualize via periods per year.",
+      ],
+      benchmarks: [
+        "Retention above 100% is unusual for customer retention; it typically indicates an input mismatch.",
+        "Even small retention improvements can materially raise LTV due to compounding.",
+        "Use cohort retention curves to understand early vs late retention dynamics.",
+      ],
+      pitfalls: [
+        "Mixing definitions of 'active customer' between start and end counts.",
+        "Counting reactivations inconsistently (treat as retained vs new).",
+        "Using blended retention across segments with different behaviors (mix shifts).",
+      ],
+    },
     inputs: [
       {
         key: "startingCustomers",
@@ -2307,11 +2484,26 @@ export const calculators: CalculatorDefinition[] = [
         placeholder: "80",
         defaultValue: "80",
       },
+      {
+        key: "periodsPerYear",
+        label: "Periods per year (optional)",
+        help: "12 for monthly, 4 for quarterly. Used to compute annualized retention.",
+        placeholder: "12",
+        defaultValue: "12",
+        min: 1,
+        step: 1,
+      },
     ],
     compute(values) {
       const warnings: string[] = [];
       if (values.startingCustomers <= 0)
         warnings.push("Customers at start must be greater than 0.");
+
+      const periodsPerYear = Math.max(1, Math.floor(values.periodsPerYear));
+      if (values.periodsPerYear !== periodsPerYear) {
+        warnings.push("Periods per year was rounded down to a whole number.");
+      }
+
       const retained = values.endingCustomers - values.newCustomers;
       const retention = safeDivide(retained, values.startingCustomers);
       if (retention === null) {
@@ -2326,6 +2518,17 @@ export const calculators: CalculatorDefinition[] = [
           warnings,
         };
       }
+
+      if (retained < 0) {
+        warnings.push("Retained customers is negative (new customers exceeds ending customers).");
+      }
+      if (retained > values.startingCustomers) {
+        warnings.push("Retained customers exceeds starting customers (check inputs).");
+      }
+
+      const churn = 1 - retention;
+      const annualRetention = Math.pow(Math.max(0, retention), periodsPerYear);
+      const annualChurn = 1 - annualRetention;
       return {
         headline: {
           key: "retention",
@@ -2333,7 +2536,7 @@ export const calculators: CalculatorDefinition[] = [
           value: retention,
           format: "percent",
           maxFractionDigits: 2,
-          detail: "(End − New) ÷ Start",
+          detail: "(End - new) / start",
         },
         secondary: [
           {
@@ -2343,17 +2546,64 @@ export const calculators: CalculatorDefinition[] = [
             format: "number",
             maxFractionDigits: 0,
           },
+          {
+            key: "churn",
+            label: "Churn rate (same period)",
+            value: churn,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: "1 - retention",
+          },
+          {
+            key: "annualRetention",
+            label: "Annualized retention rate",
+            value: annualRetention,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: `${periodsPerYear} periods/year`,
+          },
+          {
+            key: "annualChurn",
+            label: "Annualized churn rate",
+            value: annualChurn,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+        ],
+        breakdown: [
+          {
+            key: "startingCustomers",
+            label: "Customers at start",
+            value: values.startingCustomers,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+          {
+            key: "endingCustomers",
+            label: "Customers at end",
+            value: values.endingCustomers,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+          {
+            key: "newCustomers",
+            label: "New customers",
+            value: values.newCustomers,
+            format: "number",
+            maxFractionDigits: 0,
+          },
         ],
         warnings,
       };
     },
-    formula: "Retention Rate = (Customers at End − New Customers) ÷ Customers at Start",
+    formula:
+      "Retention Rate = (Customers at End - New Customers) / Customers at Start",
     assumptions: ["Inputs represent the same period (e.g., month, quarter)."],
     faqs: [
       {
         question: "Can retention rate be above 100%?",
         answer:
-          "Customer retention typically stays ≤100%. If you're above 100%, double-check inputs or consider revenue retention instead.",
+          "Customer retention typically stays <= 100%. If you're above 100%, double-check inputs or consider revenue retention instead.",
       },
     ],
     guide: [
@@ -3520,6 +3770,28 @@ export const calculators: CalculatorDefinition[] = [
       "Estimate a SaaS valuation from ARR and a revenue multiple (ARR valuation).",
     category: "saas-metrics",
     guideSlug: "arr-guide",
+    seo: {
+      intro: [
+        "ARR valuation is a quick heuristic: enterprise value is often discussed as ARR multiplied by a revenue multiple.",
+        "Multiples vary widely based on growth, margins, retention, and market conditions. This calculator helps you model a point estimate and a range.",
+      ],
+      steps: [
+        "Enter ARR (clean recurring run-rate).",
+        "Enter a base revenue multiple for a point estimate.",
+        "Optionally enter a low/high multiple to produce a valuation range.",
+        "Use the range for scenario planning rather than relying on a single number.",
+      ],
+      benchmarks: [
+        "Ranges are more realistic than point estimates; market multiples can change quickly.",
+        "Use consistent ARR definitions (recurring only) to avoid inflating valuations.",
+        "Pair valuation scenarios with unit economics (payback, burn multiple) to sanity-check sustainability.",
+      ],
+      pitfalls: [
+        "Mixing enterprise value and equity value (this is an EV-style heuristic, not per-share equity value).",
+        "Using ARR that includes one-time items or services revenue (definition mismatch).",
+        "Picking a multiple without checking growth, retention, and margin context.",
+      ],
+    },
     inputs: [
       {
         key: "arr",
@@ -3534,6 +3806,24 @@ export const calculators: CalculatorDefinition[] = [
         placeholder: "6",
         defaultValue: "6",
       },
+      {
+        key: "multipleLow",
+        label: "Multiple (low, optional)",
+        help: "Used for a valuation range. Set 0 to disable.",
+        placeholder: "4",
+        defaultValue: "4",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "multipleHigh",
+        label: "Multiple (high, optional)",
+        help: "Used for a valuation range. Set 0 to disable.",
+        placeholder: "10",
+        defaultValue: "10",
+        min: 0,
+        step: 0.1,
+      },
     ],
     compute(values) {
       const warnings: string[] = [];
@@ -3541,6 +3831,11 @@ export const calculators: CalculatorDefinition[] = [
       if (values.multiple <= 0) warnings.push("Multiple must be greater than 0.");
 
       const valuation = values.arr * values.multiple;
+      const low = values.multipleLow > 0 ? values.arr * values.multipleLow : null;
+      const high = values.multipleHigh > 0 ? values.arr * values.multipleHigh : null;
+      if (values.multipleLow > 0 && values.multipleHigh > 0 && values.multipleLow > values.multipleHigh) {
+        warnings.push("Low multiple exceeds high multiple (swap the inputs).");
+      }
       if (!Number.isFinite(valuation)) {
         return {
           headline: {
@@ -3561,12 +3856,54 @@ export const calculators: CalculatorDefinition[] = [
           value: valuation,
           format: "currency",
           currency: "USD",
-          detail: "ARR x multiple",
+          detail: "ARR * multiple",
         },
+        secondary: [
+          {
+            key: "valuationLow",
+            label: "Valuation (low)",
+            value: low ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: low === null ? "Set low multiple to enable" : `${values.multipleLow}x`,
+          },
+          {
+            key: "valuationHigh",
+            label: "Valuation (high)",
+            value: high ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: high === null ? "Set high multiple to enable" : `${values.multipleHigh}x`,
+          },
+          {
+            key: "valuationPer1m",
+            label: "Valuation per $1M ARR (base)",
+            value: values.multiple * 1_000_000,
+            format: "currency",
+            currency: "USD",
+            detail: "Multiple * $1,000,000",
+          },
+        ],
+        breakdown: [
+          {
+            key: "arr",
+            label: "ARR",
+            value: values.arr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "multiple",
+            label: "Base multiple",
+            value: values.multiple,
+            format: "multiple",
+            maxFractionDigits: 2,
+          },
+        ],
         warnings,
       };
     },
-    formula: "Valuation = ARR x multiple",
+    formula: "Valuation = ARR * multiple",
     assumptions: [
       "Multiples vary widely by growth, margins, retention, and market conditions.",
       "This is a simple heuristic, not investment advice.",
@@ -5764,8 +6101,9 @@ export const calculators: CalculatorDefinition[] = [
       ],
       steps: [
         "Pick a quarter (or month) and measure net new ARR for that period.",
-        "Use the prior period’s sales & marketing spend as the input spend (to account for lag).",
-        "Compute Magic Number ≈ (net new ARR × 4) ÷ prior-period S&M spend.",
+        "Use the prior period's sales & marketing spend as the input spend (to account for lag).",
+        "Set periods per year (4 for quarterly, 12 for monthly) to annualize net new ARR.",
+        "Compute Magic Number ~= (net new ARR * periods per year) / prior-period S&M spend.",
       ],
       pitfalls: [
         "Ignoring lag effects (spend today converts later).",
@@ -5787,12 +6125,28 @@ export const calculators: CalculatorDefinition[] = [
         prefix: "$",
         defaultValue: "400000",
       },
+      {
+        key: "periodsPerYear",
+        label: "Periods per year",
+        help: "4 for quarterly, 12 for monthly (used to annualize net new ARR).",
+        placeholder: "4",
+        defaultValue: "4",
+        min: 1,
+        step: 1,
+      },
     ],
     compute(values) {
       const warnings: string[] = [];
       if (values.salesMarketingSpend <= 0)
         warnings.push("Sales & marketing spend must be greater than 0.");
-      const magic = safeDivide(values.netNewArr * 4, values.salesMarketingSpend);
+
+      const periodsPerYear = Math.max(1, Math.floor(values.periodsPerYear));
+      if (values.periodsPerYear !== periodsPerYear) {
+        warnings.push("Periods per year was rounded down to a whole number.");
+      }
+
+      const annualizedNetNewArr = values.netNewArr * periodsPerYear;
+      const magic = safeDivide(annualizedNetNewArr, values.salesMarketingSpend);
       if (magic === null) {
         return {
           headline: {
@@ -5812,12 +6166,54 @@ export const calculators: CalculatorDefinition[] = [
           value: magic,
           format: "multiple",
           maxFractionDigits: 2,
-          detail: "(Net new ARR × 4) ÷ prior S&M spend",
+          detail: "(Net new ARR * periods per year) / prior S&M spend",
         },
+        secondary: [
+          {
+            key: "annualizedNetNewArr",
+            label: "Annualized net new ARR",
+            value: annualizedNetNewArr,
+            format: "currency",
+            currency: "USD",
+            detail: `${periodsPerYear} periods/year`,
+          },
+          {
+            key: "netNewArrPerDollar",
+            label: "Net new ARR per $1 spend (unannualized)",
+            value: safeDivide(values.netNewArr, values.salesMarketingSpend) ?? 0,
+            format: "multiple",
+            maxFractionDigits: 3,
+            detail: "Net new ARR / prior spend",
+          },
+        ],
+        breakdown: [
+          {
+            key: "netNewArr",
+            label: "Net new ARR (period)",
+            value: values.netNewArr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "salesMarketingSpend",
+            label: "Prior period S&M spend",
+            value: values.salesMarketingSpend,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "periodsPerYear",
+            label: "Periods per year",
+            value: periodsPerYear,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+        ],
         warnings,
       };
     },
-    formula: "Magic Number ≈ (Net new ARR in period × 4) ÷ prior-period S&M spend",
+    formula:
+      "Magic Number ~= (Net new ARR in period * periods per year) / prior-period S&M spend",
     assumptions: [
       "Uses a lag: prior-period S&M spend is compared to current revenue output.",
       "Works best as a trend metric and when measured consistently (often quarterly).",
@@ -5837,6 +6233,28 @@ export const calculators: CalculatorDefinition[] = [
       "Estimate customer lifetime (months) from monthly churn rate (a simple approximation).",
     category: "saas-metrics",
     guideSlug: "customer-lifetime-guide",
+    seo: {
+      intro: [
+        "Customer lifetime is an intuitive way to translate churn into a time horizon: how long a typical customer stays active before churning.",
+        "This calculator uses a constant monthly churn shortcut. It also reports median lifetime and retention after a chosen horizon to help you reason about compounding.",
+      ],
+      steps: [
+        "Enter monthly churn rate (customer churn, not revenue churn).",
+        "Review expected lifetime (1 / churn) as a quick estimate.",
+        "Review median lifetime and retention at a horizon (for example 12 months).",
+        "Use cohort curves for precision when churn changes by tenure.",
+      ],
+      benchmarks: [
+        "Small changes in churn can create large changes in lifetime because churn is in the denominator.",
+        "Median lifetime is often more conservative than 1/churn when churn is not very small.",
+        "Pair lifetime with gross margin to estimate LTV and with CAC to estimate payback feasibility.",
+      ],
+      pitfalls: [
+        "Mixing monthly churn with annual ARPA or annual retention (unit mismatch).",
+        "Using NRR/GRR as if it were customer churn (different denominators).",
+        "Assuming churn is constant when early churn is much higher than steady-state churn.",
+      ],
+    },
     inputs: [
       {
         key: "monthlyChurnPercent",
@@ -5846,12 +6264,32 @@ export const calculators: CalculatorDefinition[] = [
         defaultValue: "3",
         min: 0,
       },
+      {
+        key: "horizonMonths",
+        label: "Horizon (months)",
+        help: "Used to compute retention after N months (for example 12).",
+        placeholder: "12",
+        defaultValue: "12",
+        min: 1,
+        step: 1,
+      },
     ],
     compute(values) {
       const warnings: string[] = [];
       const churn = values.monthlyChurnPercent / 100;
       if (churn <= 0) warnings.push("Churn must be greater than 0 for this model.");
+      if (churn >= 1) warnings.push("Churn must be less than 100% for this model.");
+
+      const horizonMonths = Math.max(1, Math.floor(values.horizonMonths));
+      if (values.horizonMonths !== horizonMonths) {
+        warnings.push("Horizon months was rounded down to a whole number.");
+      }
+
       const lifetimeMonths = churn > 0 ? 1 / churn : 0;
+      const medianLifetimeMonths =
+        churn > 0 && churn < 1 ? Math.log(0.5) / Math.log(1 - churn) : 0;
+      const retentionAtHorizon =
+        churn >= 0 && churn < 1 ? Math.pow(1 - churn, horizonMonths) : 0;
       return {
         headline: {
           key: "lifetime",
@@ -5859,12 +6297,46 @@ export const calculators: CalculatorDefinition[] = [
           value: lifetimeMonths,
           format: "months",
           maxFractionDigits: 1,
-          detail: "1 ÷ monthly churn rate",
+          detail: "1 / monthly churn rate",
         },
+        secondary: [
+          {
+            key: "medianLifetime",
+            label: "Median lifetime (months)",
+            value: medianLifetimeMonths,
+            format: "months",
+            maxFractionDigits: 1,
+            detail: "Time until 50% of customers churn (constant churn model)",
+          },
+          {
+            key: "retentionAtHorizon",
+            label: `Retention after ${horizonMonths} months`,
+            value: retentionAtHorizon,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail: "(1 - churn)^months",
+          },
+        ],
+        breakdown: [
+          {
+            key: "monthlyChurnPercent",
+            label: "Monthly churn",
+            value: churn,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "horizonMonths",
+            label: "Horizon months",
+            value: horizonMonths,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+        ],
         warnings,
       };
     },
-    formula: "Customer lifetime (months) ≈ 1 ÷ monthly churn rate",
+    formula: "Customer lifetime (months) ~= 1 / monthly churn rate",
     assumptions: [
       "Assumes churn is roughly constant over time (often untrue early vs late).",
       "Useful as a planning shortcut; cohort curves are more accurate.",
@@ -5884,6 +6356,28 @@ export const calculators: CalculatorDefinition[] = [
     category: "finance",
     featured: true,
     guideSlug: "break-even-guide",
+    seo: {
+      intro: [
+        "Break-even revenue answers: how much revenue do you need to cover fixed costs given a contribution margin (gross margin is a common proxy)?",
+        "This calculator assumes a simple model: fixed costs are covered by gross profit, so break-even revenue = fixed costs / gross margin.",
+      ],
+      steps: [
+        "Enter fixed costs for the period (monthly by default).",
+        "Enter gross margin as a percent of revenue.",
+        "Compute break-even revenue and optional daily break-even run rate.",
+        "Use scenarios to stress-test margin changes and fixed cost changes.",
+      ],
+      benchmarks: [
+        "If gross margin is 80%, break-even revenue is 1.25x fixed costs (1 / 0.80).",
+        "If break-even revenue is far above current revenue, reduce fixed costs or improve margin before scaling.",
+        "Gross margin is a proxy; include variable costs (fees, shipping, returns) if they matter materially.",
+      ],
+      pitfalls: [
+        "Using accounting gross margin when variable fulfillment costs are excluded (understates break-even revenue).",
+        "Mixing time units (monthly fixed costs with annual margin assumptions).",
+        "Treating this as a full P&L model (it is a simplified planning shortcut).",
+      ],
+    },
     inputs: [
       {
         key: "fixedCosts",
@@ -5898,6 +6392,15 @@ export const calculators: CalculatorDefinition[] = [
         placeholder: "80",
         suffix: "%",
         defaultValue: "80",
+      },
+      {
+        key: "daysInPeriod",
+        label: "Days in period (optional)",
+        help: "Used to compute a daily break-even run rate.",
+        placeholder: "30",
+        defaultValue: "30",
+        min: 1,
+        step: 1,
       },
     ],
     compute(values) {
@@ -5917,6 +6420,12 @@ export const calculators: CalculatorDefinition[] = [
           warnings,
         };
       }
+
+      const days = Math.max(1, Math.floor(values.daysInPeriod));
+      if (values.daysInPeriod !== days) {
+        warnings.push("Days in period was rounded down to a whole number.");
+      }
+      const dailyBreakEven = breakevenRevenue / days;
       return {
         headline: {
           key: "breakeven",
@@ -5924,12 +6433,46 @@ export const calculators: CalculatorDefinition[] = [
           value: breakevenRevenue,
           format: "currency",
           currency: "USD",
-          detail: "Fixed costs ÷ Gross margin",
+          detail: "Fixed costs / gross margin",
         },
+        secondary: [
+          {
+            key: "dailyBreakEven",
+            label: "Daily break-even revenue",
+            value: dailyBreakEven,
+            format: "currency",
+            currency: "USD",
+            detail: `Assumes ${days} days in period`,
+          },
+          {
+            key: "requiredGrossProfit",
+            label: "Gross profit required",
+            value: values.fixedCosts,
+            format: "currency",
+            currency: "USD",
+            detail: "Equals fixed costs in this model",
+          },
+        ],
+        breakdown: [
+          {
+            key: "fixedCosts",
+            label: "Fixed costs",
+            value: values.fixedCosts,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "grossMargin",
+            label: "Gross margin",
+            value: grossMargin,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+        ],
         warnings,
       };
     },
-    formula: "Break-even Revenue = Fixed Costs ÷ Gross Margin",
+    formula: "Break-even Revenue = Fixed Costs / Gross Margin",
     assumptions: ["Gross margin is expressed as a percent of revenue."],
     faqs: [
       {
@@ -5957,6 +6500,28 @@ export const calculators: CalculatorDefinition[] = [
     category: "finance",
     guideSlug: "npv-guide",
     relatedGlossarySlugs: ["npv", "discount-rate", "marr"],
+    seo: {
+      intro: [
+        "NPV (net present value) measures how much value a project creates after discounting future cash flows back to today's dollars.",
+        "A positive NPV means the project beats your required return (discount rate). A negative NPV means it fails the hurdle rate.",
+      ],
+      steps: [
+        "Enter the upfront investment (time 0 cash outflow).",
+        "Enter annual cash flow, the number of years, and a discount rate (required return).",
+        "Review NPV and the present value (PV) of cash flows.",
+        "Use sensitivity: the same project can flip from positive to negative as the discount rate changes.",
+      ],
+      benchmarks: [
+        "NPV > 0: creates value at the chosen discount rate.",
+        "NPV = 0: break-even at the chosen discount rate (meets the hurdle rate).",
+        "Profitability index (PV / investment) helps compare projects of different sizes.",
+      ],
+      pitfalls: [
+        "Using nominal cash flows with a real discount rate (inflation mismatch).",
+        "Ignoring working capital timing or terminal value when they are material.",
+        "Using a single discount rate without testing a range of outcomes.",
+      ],
+    },
     inputs: [
       {
         key: "initialInvestment",
@@ -6010,7 +6575,7 @@ export const calculators: CalculatorDefinition[] = [
           value: npv,
           format: "currency",
           currency: "USD",
-          detail: "PV of cash flows − initial investment",
+          detail: "PV of cash flows - initial investment",
         },
         secondary: [
           {
@@ -6020,12 +6585,21 @@ export const calculators: CalculatorDefinition[] = [
             format: "currency",
             currency: "USD",
           },
+          {
+            key: "profitabilityIndex",
+            label: "Profitability index",
+            value:
+              values.initialInvestment > 0 ? pv / values.initialInvestment : 0,
+            format: "multiple",
+            maxFractionDigits: 2,
+            detail: "PV / initial investment",
+          },
         ],
         warnings,
       };
     },
     formula:
-      "NPV = Σ (cash flow_t / (1 + r)^t) − initial investment (annuity PV for constant cash flow)",
+      "NPV = sum_{t=1..n} cash_flow_t / (1 + r)^t - initial investment (annuity PV for constant cash flow)",
     assumptions: [
       "Assumes constant annual cash flow (real projects vary).",
       "Discount rate reflects required return (hurdle rate / MARR).",
@@ -6034,7 +6608,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         question: "What discount rate should I use?",
         answer:
-          "Use your required return or hurdle rate (often called MARR). Many teams test a range (e.g., 8%–20%) to see sensitivity.",
+          "Use your required return or hurdle rate (often called MARR). Many teams test a range (e.g., 8%-20%) to see sensitivity.",
       },
       {
         question: "NPV vs IRR?",
@@ -6272,6 +6846,28 @@ export const calculators: CalculatorDefinition[] = [
     category: "finance",
     guideSlug: "discounted-payback-period-guide",
     relatedGlossarySlugs: ["payback-period", "discount-rate", "npv", "marr"],
+    seo: {
+      intro: [
+        "Discounted payback answers: how long until the present value of cash flows pays back the initial investment?",
+        "It is stricter than simple payback because it accounts for the time value of money via a discount rate (required return / MARR).",
+      ],
+      steps: [
+        "Enter the initial investment (upfront cash outflow).",
+        "Enter annual cash flow, a discount rate, and a max evaluation horizon.",
+        "Review discounted payback vs simple payback (undiscounted).",
+        "If discounted payback is not reached, the project may still have positive NPV depending on the horizon and discount rate.",
+      ],
+      benchmarks: [
+        "Discounted payback is typically longer than simple payback because future cash flows are worth less today.",
+        "Use discounted payback for risk management; use NPV to measure value created at the hurdle rate.",
+        "If payback depends heavily on late-year cash flows, results are sensitive to discount rate and execution risk.",
+      ],
+      pitfalls: [
+        "Using a discount rate that does not match the risk of the cash flows (too low overstates value).",
+        "Mixing nominal cash flows with a real discount rate (inflation mismatch).",
+        "Treating payback as the only decision rule (NPV and strategic value still matter).",
+      ],
+    },
     inputs: [
       {
         key: "initialInvestment",
@@ -6308,6 +6904,8 @@ export const calculators: CalculatorDefinition[] = [
     compute(values) {
       const warnings: string[] = [];
       const r = values.discountRatePercent / 100;
+      const years = Math.max(1, Math.floor(values.years));
+      if (values.years !== years) warnings.push("Years was rounded down to a whole number.");
 
       if (values.annualCashFlow <= 0)
         warnings.push("Annual cash flow must be greater than 0.");
@@ -6317,9 +6915,15 @@ export const calculators: CalculatorDefinition[] = [
         values.annualCashFlow,
       );
 
+      const pvTotal =
+        r === 0
+          ? values.annualCashFlow * years
+          : values.annualCashFlow * ((1 - Math.pow(1 + r, -years)) / r);
+      const npv = pvTotal - values.initialInvestment;
+
       let cumulative = 0;
       let paybackYears: number | null = null;
-      for (let year = 1; year <= Math.floor(values.years); year++) {
+      for (let year = 1; year <= years; year++) {
         const pv = values.annualCashFlow / Math.pow(1 + r, year);
         const next = cumulative + pv;
         if (next >= values.initialInvestment && pv > 0) {
@@ -6352,12 +6956,27 @@ export const calculators: CalculatorDefinition[] = [
             format: "months",
             maxFractionDigits: 1,
           },
+          {
+            key: "npv",
+            label: "NPV (over horizon)",
+            value: npv,
+            format: "currency",
+            currency: "USD",
+            detail: `Over ${years} years`,
+          },
+          {
+            key: "pvTotal",
+            label: "PV of cash flows (over horizon)",
+            value: pvTotal,
+            format: "currency",
+            currency: "USD",
+          },
         ],
         warnings,
       };
     },
     formula:
-      "Discounted payback is the earliest time where cumulative discounted cash flows ≥ initial investment",
+      "Discounted payback is the earliest time where cumulative discounted cash flows >= initial investment",
     assumptions: [
       "Cash flows occur at the end of each year (discounted by year index).",
       "Uses a constant annual cash flow for simplicity.",
@@ -14203,6 +14822,11 @@ export const calculators: CalculatorDefinition[] = [
         "Enter WAU and MAU for the same period and same 'active' definition.",
         "Review WAU/MAU and implied active weeks per month.",
       ],
+      benchmarks: [
+        "Higher WAU/MAU usually implies a tighter weekly habit (stickiness), but expectations vary by product type.",
+        "Compare WAU/MAU by segment (plan, team size, use case) to find where engagement is strongest.",
+        "Track WAU/MAU alongside retention; stickiness without retention can still be fragile.",
+      ],
       pitfalls: [
         "Mixing different 'active' definitions between WAU and MAU.",
         "Comparing across segments with different usage frequency expectations.",
@@ -14257,7 +14881,7 @@ export const calculators: CalculatorDefinition[] = [
           value: ratio ?? 0,
           format: "percent",
           maxFractionDigits: 2,
-          detail: "WAU ÷ MAU",
+          detail: "WAU / MAU",
         },
         secondary: [
           {
@@ -14266,7 +14890,7 @@ export const calculators: CalculatorDefinition[] = [
             value: weeksPerMonth,
             format: "number",
             maxFractionDigits: 2,
-            detail: "WAU/MAU × 4.33",
+            detail: "WAU/MAU * 4.33",
           },
           {
             key: "requiredWau",
@@ -14274,13 +14898,21 @@ export const calculators: CalculatorDefinition[] = [
             value: requiredWau ?? 0,
             format: "number",
             maxFractionDigits: 0,
-            detail: requiredWau === null ? "Target disabled" : `${values.targetPercent}% × MAU`,
+            detail: requiredWau === null ? "Target disabled" : `${values.targetPercent}% * MAU`,
+          },
+          {
+            key: "wauGap",
+            label: "WAU gap to target",
+            value: requiredWau === null ? 0 : Math.max(0, requiredWau - wau),
+            format: "number",
+            maxFractionDigits: 0,
+            detail: requiredWau === null ? "Target disabled" : "Max(0, required - current)",
           },
         ],
         warnings,
       };
     },
-    formula: "WAU/MAU = WAU ÷ MAU",
+    formula: "WAU/MAU = WAU / MAU",
     assumptions: [
       "WAU and MAU use the same 'active' definition and time period.",
       "Implied active weeks per month uses a 4.33-week approximation.",
