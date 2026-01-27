@@ -1811,17 +1811,49 @@ export const guides: Guide[] = [
       title: "LTV:CAC ratio guide: benchmarks, interpretation, mistakes",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-05",
+    updatedAt: "2026-01-27",
     relatedCalculatorSlugs: [
       "ltv-to-cac-calculator",
       "ltv-calculator",
       "cac-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "ltv",
+      "cac",
+      "payback-period",
+      "gross-margin",
+      "arpa",
+      "churn-rate",
+      "logo-churn",
+      "unit-economics",
     ],
     sections: [
       { type: "h2", text: "Definition" },
       {
         type: "p",
         text: "LTV:CAC compares the lifetime value you earn to the cost to acquire a customer.",
+      },
+      { type: "h2", text: "How to calculate LTV:CAC (practical)" },
+      {
+        type: "bullets",
+        items: [
+          "LTV:CAC = LTV / CAC.",
+          "Use gross profit LTV when possible: (ARPA * gross margin) / churn is a common shortcut (cohort curves are better).",
+          "Make CAC comparable to your LTV: if CAC is fully-loaded, use fully-loaded contribution in LTV (or use paid-only CAC with paid-only economics).",
+        ],
+      },
+      { type: "h2", text: "Why payback matters as much as the ratio" },
+      {
+        type: "p",
+        text: "Two companies can have the same LTV:CAC and very different outcomes if one takes 6 months to pay back CAC and the other takes 24 months. Cash constraints, sales cycle length, and churn timing make payback a first-class metric.",
+      },
+      {
+        type: "bullets",
+        items: [
+          "Short payback can tolerate lower LTV:CAC (you recycle cash faster).",
+          "Long payback needs stronger confidence in retention and expansion (and usually more capital).",
+          "If churn is front-loaded (customers leave early), ratio math can overstate reality unless you use cohorts.",
+        ],
       },
       { type: "h2", text: "Benchmarks (rule of thumb)" },
       {
@@ -1832,6 +1864,17 @@ export const guides: Guide[] = [
           "Lower ratios can be acceptable with short payback and strong retention.",
         ],
       },
+      { type: "h2", text: "A checklist for using LTV:CAC correctly" },
+      {
+        type: "bullets",
+        items: [
+          "Choose a consistent time window for CAC (e.g., last 3 months) and segment by channel if mixes differ.",
+          "Use the same unit basis: monthly ARPA with monthly churn, annual ARPA with annual churn.",
+          "Prefer cohort-based LTV for products with meaningful expansion, contraction, or changing churn over time.",
+          "Pair ratio with payback months, gross margin, and NRR/GRR so you do not optimize a single number.",
+          "Sanity-check with sensitivity: small churn changes can swing LTV a lot.",
+        ],
+      },
       { type: "h2", text: "Common pitfalls" },
       {
         type: "bullets",
@@ -1839,6 +1882,9 @@ export const guides: Guide[] = [
           "Using inconsistent definitions for CAC (fully-loaded vs paid-only).",
           "Using revenue LTV but comparing to fully-loaded CAC (mismatched bases).",
           "Ignoring payback period and cash constraints.",
+          "Mixing annual and monthly inputs (ARPA and churn units do not match).",
+          "Using blended averages across segments with different economics (SMB vs enterprise).",
+          "Treating a shortcut LTV as exact (validate with cohorts and retention curves).",
         ],
       },
     ],
@@ -3097,8 +3143,14 @@ export const guides: Guide[] = [
       title: "Break-even revenue guide: formula, margin, fixed costs",
     },
     category: "finance",
-    updatedAt: "2026-01-05",
+    updatedAt: "2026-01-27",
     relatedCalculatorSlugs: ["break-even-revenue-calculator"],
+    relatedGlossarySlugs: [
+      "gross-margin",
+      "contribution-margin",
+      "fixed-costs",
+      "variable-costs",
+    ],
     sections: [
       { type: "h2", text: "Definition" },
       {
@@ -3107,6 +3159,41 @@ export const guides: Guide[] = [
       },
       { type: "h2", text: "Formula" },
       { type: "p", text: "Break-even revenue = fixed costs / gross margin" },
+      { type: "h2", text: "Step-by-step (how to model it)" },
+      {
+        type: "bullets",
+        items: [
+          "List fixed costs for the period (rent, core salaries, base tools, minimum infrastructure).",
+          "Pick a margin definition: gross margin or contribution margin (be explicit).",
+          "Convert margin to a decimal (40% -> 0.40).",
+          "Compute break-even revenue and compare to your realistic demand capacity.",
+          "Run scenarios: margin moves and cost moves are often more important than the exact base case.",
+        ],
+      },
+      { type: "h2", text: "Break-even revenue vs break-even units" },
+      {
+        type: "p",
+        text: "Revenue break-even works well when you have one main product and a stable margin. If you have multiple products or a variable mix, it can be more accurate to model break-even units (or break-even customers) by tier.",
+      },
+      { type: "h2", text: "What margin should you use?" },
+      {
+        type: "bullets",
+        items: [
+          "Gross margin is common when COGS is the primary variable cost (many SaaS models).",
+          "Contribution margin is better when variable fees, shipping/returns, or channel costs are meaningful.",
+          "Do not use net margin in the break-even formula; net margin already includes fixed costs and will double-count them.",
+        ],
+      },
+      { type: "h2", text: "Sensitivity table (why small changes matter)" },
+      {
+        type: "table",
+        columns: ["Fixed costs", "Margin", "Break-even revenue"],
+        rows: [
+          ["$50,000/mo", "30%", "$166,667/mo"],
+          ["$50,000/mo", "40%", "$125,000/mo"],
+          ["$60,000/mo", "40%", "$150,000/mo"],
+        ],
+      },
       { type: "h2", text: "Common pitfalls" },
       {
         type: "bullets",
@@ -3114,6 +3201,8 @@ export const guides: Guide[] = [
           "Using net margin instead of gross/contribution margin.",
           "Forgetting overhead items that are effectively fixed (core tools, base salaries).",
           "Not updating the model after pricing or COGS changes.",
+          "Mixing time units (monthly costs with annual revenue).",
+          "Assuming the margin is constant across growth (costs can scale and change).",
         ],
       },
       { type: "h2", text: "How to improve break-even" },
@@ -3123,6 +3212,8 @@ export const guides: Guide[] = [
           "Increase gross margin (reduce COGS, improve infrastructure efficiency).",
           "Increase prices or move customers to higher tiers where value supports it.",
           "Reduce fixed costs carefully (avoid harming retention or delivery).",
+          "Reduce refund/return leakage and payment fees (often hidden margin killers).",
+          "Improve conversion so fixed costs are spread over more revenue.",
         ],
       },
     ],
@@ -4061,7 +4152,7 @@ export const guides: Guide[] = [
       title: "Sales capacity guide: quota, ramp, and attainment",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-27",
     relatedCalculatorSlugs: ["sales-capacity-calculator", "quota-attainment-calculator"],
     relatedGlossarySlugs: ["sales-ramp", "quota", "quota-attainment", "pipeline"],
     sections: [
@@ -4080,6 +4171,34 @@ export const guides: Guide[] = [
           "Sanity-check that you have enough pipeline to feed the capacity.",
         ],
       },
+      { type: "h2", text: "A simple formula (ramped vs ramping)" },
+      {
+        type: "table",
+        columns: ["Component", "Input", "Contribution (example)"],
+        rows: [
+          ["Ramped reps", "ramped_reps * quota * attainment", "7 reps * $150k * 85% = $892.5k"],
+          ["Ramping reps", "ramping_reps * quota * ramp_productivity", "3 reps * $150k * 40% = $180k"],
+          ["Total capacity", "sum", "$1.0725M bookings capacity"],
+        ],
+      },
+      { type: "h2", text: "Pipeline is often the real constraint" },
+      {
+        type: "bullets",
+        items: [
+          "If pipeline coverage is low, capacity math will not save the quarter.",
+          "Align pipeline to time: only include pipeline that can close in the period.",
+          "Check pipeline per rep: too little means idle time, too much means slippage and poor follow-up.",
+        ],
+      },
+      { type: "h2", text: "How to use capacity in a hiring plan" },
+      {
+        type: "bullets",
+        items: [
+          "Model ramp by month, not as a single average (timing creates misses).",
+          "Add a buffer for attrition and vacation time (capacity is not 100% available).",
+          "Tie hiring to lead/pipeline generation; hiring without demand increases burn, not bookings.",
+        ],
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -4087,6 +4206,8 @@ export const guides: Guide[] = [
           "Treating new hires as fully ramped.",
           "Assuming attainment is stable while pipeline quality changes.",
           "Forecasting capacity without a pipeline plan (input constraint).",
+          "Using a single attainment number across segments or ACV bands (variance is real).",
+          "Ignoring seasonality and close-rate changes near quarter-end.",
         ],
       },
     ],
@@ -4110,7 +4231,7 @@ export const guides: Guide[] = [
     description:
       "Understand OTE, how to compute commission rate from variable pay and quota, and how to avoid common comp modeling mistakes.",
     category: "saas-metrics",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-27",
     relatedCalculatorSlugs: ["ote-commission-rate-calculator"],
     relatedGlossarySlugs: ["ote", "quota", "quota-attainment"],
     sections: [
@@ -4128,6 +4249,26 @@ export const guides: Guide[] = [
           "Split = base / OTE (and variable / OTE).",
         ],
       },
+      { type: "h2", text: "From OTE to a commission plan (what to sanity-check)" },
+      {
+        type: "bullets",
+        items: [
+          "Align time units: annual OTE with annual quota (or quarterly with quarterly).",
+          "Define what counts toward quota (bookings, ARR, revenue) and keep it consistent.",
+          "Check payout timing and clawbacks; cash flow can differ from earned commission.",
+          "If you use ramp or draw, model it explicitly so you do not overstate cost-of-sales.",
+        ],
+      },
+      { type: "h2", text: "Payout curve basics (why the average rate differs from the headline rate)" },
+      {
+        type: "table",
+        columns: ["Attainment band", "Payout rate", "Notes"],
+        rows: [
+          ["< 50%", "Often reduced or $0", "Some plans have thresholds"],
+          ["50% to 100%", "1.0x", "Core earnings zone"],
+          ["> 100%", "1.2x to 2.0x+", "Accelerators to reward over-performance"],
+        ],
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -4135,6 +4276,8 @@ export const guides: Guide[] = [
           "Mixing annual OTE with quarterly quota (unit mismatch).",
           "Ignoring accelerators/decels and thresholds when comparing plans.",
           "Optimizing comp without checking CAC/payback and sales cycle constraints.",
+          "Setting quota without validating pipeline capacity and win rates.",
+          "Copying market OTE without matching your ACV and sales cycle reality.",
         ],
       },
     ],
@@ -4367,7 +4510,7 @@ export const guides: Guide[] = [
     description:
       "WAU/MAU explained: when to use it instead of DAU/MAU, how to calculate it correctly, and how to interpret it.",
     category: "saas-metrics",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-27",
     relatedCalculatorSlugs: ["wau-mau-calculator", "dau-mau-calculator"],
     relatedGlossarySlugs: ["wau", "mau", "stickiness"],
     sections: [
@@ -4378,6 +4521,45 @@ export const guides: Guide[] = [
       },
       { type: "h2", text: "Formula" },
       { type: "p", text: "WAU/MAU = WAU / MAU" },
+      { type: "h2", text: "Define 'active' before you compute anything" },
+      {
+        type: "bullets",
+        items: [
+          "Active should be a meaningful value event (not just a login).",
+          "Keep the event definition identical for WAU and MAU; otherwise the ratio is meaningless.",
+          "Use a threshold when needed (e.g., created >= 1 report) to avoid counting one-off clicks.",
+        ],
+      },
+      { type: "h2", text: "How to interpret WAU/MAU (rough ranges)" },
+      {
+        type: "table",
+        columns: ["Product cadence", "What WAU/MAU suggests", "Notes"],
+        rows: [
+          ["Weekly workflow", "Higher is expected", "Planning/reviews naturally repeat weekly"],
+          ["Monthly workflow", "Lower can be normal", "Invoices and month-end close are lumpy"],
+          ["Mixed usage", "Segment first", "Blended averages hide power users vs casual users"],
+        ],
+      },
+      { type: "h2", text: "Measurement details that trip teams up" },
+      { type: "h3", text: "Rolling windows" },
+      {
+        type: "p",
+        text: "WAU is often defined as unique actives in the last 7 days and MAU as unique actives in the last 28-30 days. If you use calendar weeks/months, the ratio will jump around due to boundary effects.",
+      },
+      { type: "h3", text: "Cohorts and segments" },
+      {
+        type: "p",
+        text: "Segment WAU/MAU by persona, plan, or acquisition channel. If you mix onboarding cohorts with mature cohorts, WAU/MAU can fall even when mature retention is stable.",
+      },
+      { type: "h2", text: "How to improve WAU/MAU (without gaming it)" },
+      {
+        type: "bullets",
+        items: [
+          "Strengthen the weekly habit loop: reminders, templates, and recurring workflows.",
+          "Reduce time-to-value for the weekly task (fewer steps, better defaults).",
+          "Instrument and fix churn drivers: reliability, onboarding, and missing product value.",
+        ],
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -4385,6 +4567,7 @@ export const guides: Guide[] = [
           "Using different active definitions for WAU vs MAU.",
           "Comparing segments with different cadences and calling one 'better'.",
           "Ignoring seasonality (weekly usage can spike around business cycles).",
+          "Treating stickiness as a retention metric (it is an engagement proxy; cohorts still matter).",
         ],
       },
     ],
@@ -5633,7 +5816,7 @@ export const guides: Guide[] = [
     description:
       "Understand 1* non-participating liquidation preference, when investors convert to common, and how this changes proceeds at different exit values.",
     category: "finance",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-27",
     relatedCalculatorSlugs: ["liquidation-preference-calculator"],
     relatedGlossarySlugs: ["liquidation-preference", "equity-value"],
     sections: [
@@ -5650,6 +5833,36 @@ export const guides: Guide[] = [
           "At low exit values, preference often dominates; at high exit values, conversion often dominates.",
         ],
       },
+      { type: "h2", text: "Convert or take preference: the decision rule" },
+      {
+        type: "bullets",
+        items: [
+          "Preference payout ~= investment * preferenceMultiple (for 1x, it is the investment).",
+          "As-converted common payout ~= ownershipPercent * exitValue (ignoring other classes).",
+          "Break-even exit value ~= preferenceAmount / ownershipPercent.",
+        ],
+      },
+      { type: "h2", text: "A practical waterfall checklist" },
+      {
+        type: "table",
+        columns: ["Step", "Question", "Why it matters"],
+        rows: [
+          ["1", "Who is senior to whom?", "Seniority decides payout order"],
+          ["2", "What is each class's preference multiple?", "1x vs 2x changes low-exit outcomes"],
+          ["3", "Is it participating or non-participating?", "Participation adds extra upside after preference"],
+          ["4", "When can/should investors convert?", "Conversion flips the payout regime"],
+        ],
+      },
+      { type: "h2", text: "Variants to watch (terms that change outcomes)" },
+      {
+        type: "bullets",
+        items: [
+          "Participating preferred: investors may get preference plus a share of remaining proceeds.",
+          "Multiple classes: stacked preferences can wipe out common at moderate exits.",
+          "Capped participation: participation may stop after a cap (e.g., 3x total).",
+          "Carve-outs and management incentives: proceeds may be allocated before common (deal-specific).",
+        ],
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -5657,6 +5870,7 @@ export const guides: Guide[] = [
           "Ignoring multiple classes and seniority (stacked preference waterfall).",
           "Ignoring participation features (participating preferred is different).",
           "Using ownership % that doesn't match the cap table at exit.",
+          "Forgetting option pool increases or convertible conversions that change ownership at the priced round.",
         ],
       },
     ],
@@ -6277,7 +6491,7 @@ export const guides: Guide[] = [
     description:
       "A practical guide to break-even CVR: compute required CVR from CPM, CTR, AOV, and margin, and how to use it for landing page targets.",
     category: "paid-ads",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-27",
     relatedCalculatorSlugs: ["break-even-cvr-calculator", "break-even-ctr-calculator", "break-even-cpm-calculator"],
     relatedGlossarySlugs: ["cvr", "cpm", "ctr", "aov", "contribution-margin", "break-even-cpm"],
     sections: [
@@ -6291,6 +6505,28 @@ export const guides: Guide[] = [
         type: "p",
         text: "Break-even CVR = CPM / (1000 * CTR * AOV * margin).",
       },
+      { type: "h2", text: "Where the formula comes from (one minute derivation)" },
+      {
+        type: "bullets",
+        items: [
+          "Spend per 1,000 impressions = CPM.",
+          "Clicks per 1,000 = 1000 * CTR.",
+          "Conversions per 1,000 = 1000 * CTR * CVR.",
+          "Contribution per conversion ~= AOV * margin.",
+          "Break-even means contribution per 1,000 equals CPM; solve for CVR.",
+        ],
+      },
+      { type: "h2", text: "Sensitivity example (why improving any lever helps)" },
+      {
+        type: "table",
+        columns: ["Change", "Effect on required CVR", "Why"],
+        rows: [
+          ["Lower CPM", "Down", "Less cost per 1,000 impressions"],
+          ["Higher CTR", "Down", "More clicks for the same CPM"],
+          ["Higher AOV or margin", "Down", "More contribution per conversion"],
+          ["Add profit buffer", "Up", "You need CVR above break-even to profit"],
+        ],
+      },
       { type: "h2", text: "How to use it" },
       {
         type: "bullets",
@@ -6298,6 +6534,25 @@ export const guides: Guide[] = [
           "If required CVR is unrealistic, you need lower CPM, higher CTR, higher AOV, or higher margin.",
           "Add a buffer; operating at break-even is fragile under noise and attribution error.",
           "Validate with incrementality as spend scales.",
+        ],
+      },
+      { type: "h2", text: "Landing page checklist (fast CVR improvements)" },
+      {
+        type: "bullets",
+        items: [
+          "Match intent: the headline and first screen should mirror the ad promise.",
+          "Reduce friction: fewer fields, fewer steps, clear primary CTA, fast load time.",
+          "Increase trust: reviews, guarantees, security/payment info, clear pricing.",
+          "Improve offer clarity: who it is for, outcomes, and what happens after purchase/lead.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using CVR defined on sessions while CTR is defined on clicks (unit mismatch).",
+          "Ignoring refunds/returns and using gross margin that is too optimistic.",
+          "Comparing across placements without controlling for intent (retargeting vs prospecting).",
         ],
       },
     ],
@@ -6542,7 +6797,7 @@ export const guides: Guide[] = [
     description:
       "A practical guide to loan amortization: monthly payment formula, why interest dominates early, and how term and rate affect total interest.",
     category: "finance",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-27",
     relatedCalculatorSlugs: ["loan-payment-calculator"],
     relatedGlossarySlugs: ["apr", "amortization", "principal", "interest-rate"],
     sections: [
@@ -6551,10 +6806,21 @@ export const guides: Guide[] = [
         type: "p",
         text: "Amortization is the process of repaying a loan over time with fixed payments. Each payment includes interest on the outstanding principal and a principal repayment component.",
       },
+      { type: "h2", text: "Monthly payment formula (fixed-rate)" },
+      {
+        type: "p",
+        text: "Payment = P * r * (1 + r)^n / ((1 + r)^n - 1), where P is principal, r is the monthly rate (APR/12), and n is number of monthly payments (years * 12).",
+      },
       { type: "h2", text: "Why early payments are interest-heavy" },
       {
         type: "p",
         text: "Interest is calculated on the remaining balance. Early on, the balance is high, so interest is high. Over time, as principal decreases, the interest portion falls and principal repayment increases.",
+      },
+      { type: "h2", text: "What changes over time (amortization schedule intuition)" },
+      {
+        type: "table",
+        columns: ["Early months", "Middle months", "Late months"],
+        rows: [["High interest, low principal", "More balanced split", "Low interest, high principal"]],
       },
       { type: "h2", text: "How to use this calculator" },
       {
@@ -6563,6 +6829,24 @@ export const guides: Guide[] = [
           "Compare terms: longer term lowers monthly payment but increases total interest.",
           "Compare rates: small APR changes can have large payment impact over long terms.",
           "Use scenarios for refinance decisions (include fees separately).",
+        ],
+      },
+      { type: "h2", text: "Extra payments and refinancing (what to consider)" },
+      {
+        type: "bullets",
+        items: [
+          "Extra principal payments reduce the balance faster, reducing total interest and often shortening term.",
+          "Refinancing can lower APR or term, but fees and reset timing matter (compare total cost).",
+          "For adjustable-rate loans, amortization may change when the rate resets; model scenarios.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Mixing APR with other fees and calling it the full monthly cost (taxes/insurance/PMI are separate).",
+          "Comparing loans with different compounding or fee structures without total-cost modeling.",
+          "Assuming the payment is 'mostly principal' early on (it usually is not).",
         ],
       },
     ],
@@ -6592,7 +6876,7 @@ export const guides: Guide[] = [
     description:
       "A practical guide to APR vs APY: what each means, how to convert between them, and common comparison mistakes.",
     category: "finance",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-27",
     relatedCalculatorSlugs: ["apr-to-apy-calculator"],
     relatedGlossarySlugs: ["apr", "apy", "compounding", "interest-rate"],
     sections: [
@@ -6606,6 +6890,34 @@ export const guides: Guide[] = [
         type: "p",
         text: "APY = (1 + APR/n)^n - 1, where n is compounding periods per year.",
       },
+      { type: "h2", text: "Quick conversion examples" },
+      {
+        type: "table",
+        columns: ["APR", "Compounds/year", "APY (approx)"],
+        rows: [
+          ["6.0%", "12 (monthly)", "~6.17%"],
+          ["6.0%", "365 (daily)", "~6.18%"],
+          ["12.0%", "12 (monthly)", "~12.68%"],
+        ],
+      },
+      { type: "h2", text: "APR/APY for deposits vs loans" },
+      {
+        type: "bullets",
+        items: [
+          "Savings products often advertise APY to standardize yield including compounding.",
+          "Loans often quote APR, but total cost also depends on amortization and fees.",
+          "For a mortgage, the effective cost depends on points, closing costs, and how long you hold the loan.",
+        ],
+      },
+      { type: "h2", text: "A comparison checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Confirm compounding frequency and whether the rate is variable or fixed.",
+          "Include fees/points when comparing loans (APR may not capture everything).",
+          "Use the same time horizon: holding 2 years vs 10 years changes which option wins.",
+        ],
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -6613,6 +6925,7 @@ export const guides: Guide[] = [
           "Comparing APRs with different compounding conventions.",
           "Confusing APY (nominal compounding) with real return (inflation-adjusted).",
           "Ignoring fees and points that change the effective cost/return.",
+          "Using APR as if it were the same as the monthly rate (APR/12 is the monthly nominal rate, not an effective rate).",
         ],
       },
     ],
@@ -6642,7 +6955,7 @@ export const guides: Guide[] = [
     description:
       "A practical guide to real return: how inflation changes purchasing power and why nominal returns can mislead over long horizons.",
     category: "finance",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-27",
     relatedCalculatorSlugs: ["real-return-calculator"],
     relatedGlossarySlugs: ["inflation", "real-return", "interest-rate"],
     sections: [
@@ -6656,6 +6969,38 @@ export const guides: Guide[] = [
         type: "p",
         text: "Real return ~ (1 + nominal) / (1 + inflation) - 1.",
       },
+      { type: "h2", text: "Worked example (quick)" },
+      {
+        type: "bullets",
+        items: [
+          "Nominal return: 10% means $100 becomes $110.",
+          "Inflation: 3% means prices rise so $100 of goods now costs $103.",
+          "Real return compares purchasing power: 110/103 - 1 ~= 6.8%.",
+        ],
+      },
+      { type: "h2", text: "When the approximation is good enough" },
+      {
+        type: "p",
+        text: "For small rates, a common shortcut is real ~= nominal - inflation. It is close when both rates are low, but the exact formula is better for high inflation or long horizons.",
+      },
+      { type: "h2", text: "Taxes and fees matter for real outcomes" },
+      {
+        type: "bullets",
+        items: [
+          "After-tax real return can be much lower if taxes apply to nominal gains (not inflation-adjusted gains).",
+          "Fees compound too; a 1% fee reduces long-run purchasing power materially.",
+          "For cash, inflation is the 'fee' you always pay even when nominal return is zero.",
+        ],
+      },
+      { type: "h2", text: "Common use cases" },
+      {
+        type: "bullets",
+        items: [
+          "Retirement planning: translate portfolio growth into future buying power.",
+          "Comparing periods: high nominal returns in a high-inflation era can be less impressive in real terms.",
+          "Evaluating loans: compare nominal interest rates to expected inflation to understand real cost of borrowing.",
+        ],
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -6663,6 +7008,7 @@ export const guides: Guide[] = [
           "Comparing nominal returns across periods with different inflation regimes.",
           "Using CPI inflation as a precise measure for personal spending baskets.",
           "Ignoring taxes (after-tax real return can be materially lower).",
+          "Mixing real and nominal assumptions in a model (discount rate and cash flows must match).",
         ],
       },
     ],
