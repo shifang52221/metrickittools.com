@@ -13,6 +13,10 @@ export type Guide = {
   slug: string;
   title: string;
   description: string;
+  seo?: {
+    title?: string;
+    description?: string;
+  };
   category: "saas-metrics" | "paid-ads" | "finance";
   updatedAt: string; // YYYY-MM-DD
   sections: GuideSection[];

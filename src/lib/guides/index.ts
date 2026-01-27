@@ -71,6 +71,9 @@ export const guides: Guide[] = [
     title: "Paid ads funnel: CPM, CTR, CVR -> CPC, CPA, ROAS (with profit)",
     description:
       "A practical guide to the paid ads funnel: how CPM, CTR, and CVR drive CPC, CPA, ROAS, and profit - with formulas and common pitfalls.",
+    seo: {
+      title: "Paid ads funnel guide: CPM, CTR, CVR to ROAS (profit)",
+    },
     category: "paid-ads",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: [
@@ -170,6 +173,9 @@ export const guides: Guide[] = [
     title: "ROI vs ROAS: definitions, formulas, and when to use each",
     description:
       "A concise guide to ROI and ROAS: what each metric measures, how to interpret results, and pitfalls in cost attribution.",
+    seo: {
+      title: "ROI vs ROAS guide: definitions, formulas, and use cases",
+    },
     category: "paid-ads",
     updatedAt: "2026-01-05",
     relatedCalculatorSlugs: ["roi-calculator", "roas-calculator"],
@@ -231,6 +237,9 @@ export const guides: Guide[] = [
     title: "Break-even ROAS: how to calculate it (and set a target ROAS)",
     description:
       "Learn how break-even ROAS works using contribution margin, what to include in the model, and how to turn it into a realistic target ROAS.",
+    seo: {
+      title: "Break-even ROAS guide: formula, margin model, target ROAS",
+    },
     category: "paid-ads",
     updatedAt: "2026-01-05",
     relatedCalculatorSlugs: ["break-even-roas-calculator", "roas-calculator"],
@@ -379,6 +388,9 @@ export const guides: Guide[] = [
     title: "CAC: how to calculate Customer Acquisition Cost (formula + examples)",
     description:
       "Customer acquisition cost (CAC) explained: formula, what to include, and practical CAC metrics (paid vs fully-loaded) you can trust.",
+    seo: {
+      title: "CAC guide: formula, what to include, and examples",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: [
@@ -494,6 +506,9 @@ export const guides: Guide[] = [
     title: "Fully-loaded CAC: definition, formula, and what to include",
     description:
       "A practical guide to fully-loaded CAC: how it differs from paid CAC, what to include, and how to keep the definition consistent for planning.",
+    seo: {
+      title: "Fully-loaded CAC guide: definition, formula, and inclusions",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: [
@@ -586,6 +601,9 @@ export const guides: Guide[] = [
     title: "LTV: How to estimate Lifetime Value (and when not to)",
     description:
       "A practical LTV guide: quick models vs cohort-based LTV, unit consistency, and pitfalls with churn and gross margin.",
+    seo: {
+      title: "LTV guide: lifetime value models, churn pitfalls, and usage",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-05",
     relatedCalculatorSlugs: [
@@ -732,6 +750,9 @@ export const guides: Guide[] = [
     title: "CAC Payback Period (Months to Recover CAC): definition, formula, benchmarks",
     description:
       "Learn how to calculate CAC payback (months to recover CAC) using gross profit, plus benchmarks and levers to improve it.",
+    seo: {
+      title: "CAC payback guide: definition, formula, and benchmarks",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-05",
     relatedCalculatorSlugs: ["cac-payback-period-calculator", "cac-calculator"],
@@ -811,6 +832,9 @@ export const guides: Guide[] = [
     title: "CAC payback sensitivity: ARPA * margin scenarios (months to recover CAC)",
     description:
       "A practical guide to CAC payback sensitivity: vary ARPA and gross margin to see how months to recover CAC changes under realistic scenarios.",
+    seo: {
+      title: "CAC payback sensitivity guide: ARPA and margin scenarios",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: [
@@ -1039,6 +1063,9 @@ export const guides: Guide[] = [
     title: "Retention rate: how to measure retention correctly",
     description:
       "Learn retention rate definitions, how it differs from churn, and how to measure retention by cohort and segment.",
+    seo: {
+      title: "Retention rate guide: definition, formula, and cohorts",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-05",
     relatedCalculatorSlugs: ["retention-rate-calculator", "churn-rate-calculator"],
@@ -1199,6 +1226,9 @@ export const guides: Guide[] = [
     title: "ARPA: how to calculate Average Revenue Per Account (formula + examples)",
     description:
       "ARPA explained: definition, ARPA formula, step-by-step calculation, and how to use ARPA with churn, payback, and LTV.",
+    seo: {
+      title: "ARPA guide: definition, formula, and examples",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: [

@@ -35,13 +35,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const guide = getGuide(slug);
   if (!guide) return {};
+  const metaTitle = guide.seo?.title ?? guide.title;
+  const metaDescription = guide.seo?.description ?? guide.description;
   return {
-    title: guide.title,
-    description: guide.description,
+    title: guide.seo?.title ? { absolute: metaTitle } : metaTitle,
+    description: metaDescription,
     alternates: { canonical: `/guides/${guide.slug}` },
     openGraph: {
-      title: guide.title,
-      description: guide.description,
+      title: metaTitle,
+      description: metaDescription,
       url: `/guides/${guide.slug}`,
       type: "article",
     },
