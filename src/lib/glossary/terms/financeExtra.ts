@@ -239,10 +239,18 @@ const seeds: Seed[] = [
     slug: "bad-debt",
     title: "Bad Debt",
     description:
-      "Bad debt is receivables you do not expect to collect. Bad debt reduces profit and can create sudden cash problems if it is not anticipated.",
+      "Bad debt is accounts receivable that are unlikely to be collected. It reduces profit and can create sudden cash strain if not forecasted.",
+    updatedAt: "2026-01-27",
     bullets: [
-      "Track bad debt rate by segment and billing terms.",
-      "Use stricter credit policies or prepay for higher-risk segments.",
+      "Track bad debt rate by segment, payment terms, and cohort month.",
+      "Age receivables and flag accounts that pass your collection threshold.",
+      "Use credit checks, deposit requirements, or shorter terms for higher-risk segments.",
+      "Review write-offs vs allowance so expected losses are visible before cash gaps hit.",
+    ],
+    mistakes: [
+      "Treating bad debt as a one-time event instead of a recurring rate.",
+      "Mixing cash timing with revenue recognition (watch the AR ledger).",
+      "Ignoring concentration risk in a few large customers.",
     ],
     relatedGuideSlugs: ["cash-conversion-cycle-guide"],
   },

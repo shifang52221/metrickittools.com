@@ -3400,10 +3400,10 @@ export const guides: Guide[] = [
     description:
       "A practical way to forecast MRR using a monthly bridge: starting MRR + new MRR + expansion - contraction - churn.",
     seo: {
-      title: "MRR forecasting guide: bridge model for new, expansion, churn",
+      title: "MRR forecast guide: simple bridge model",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-27",
     relatedCalculatorSlugs: [
       "mrr-forecast-calculator",
       "net-new-mrr-calculator",
@@ -3830,8 +3830,11 @@ export const guides: Guide[] = [
     title: "Break-even pricing: contribution margin, break-even units, and profit",
     description:
       "A practical guide to break-even pricing: how to compute contribution margin, break-even units, and profit at expected volume.",
+    seo: {
+      title: "Break-even pricing guide: margin, units, profit",
+    },
     category: "finance",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-27",
     relatedCalculatorSlugs: ["break-even-pricing-calculator"],
     relatedGlossarySlugs: [
       "break-even-revenue",
@@ -4043,8 +4046,11 @@ export const guides: Guide[] = [
     title: "Pipeline coverage: what it is, how to calculate it, and benchmarks",
     description:
       "Pipeline coverage explained: pipeline / quota, how win rate translates to required coverage, and how to avoid inflated pipeline.",
+    seo: {
+      title: "Pipeline coverage guide: formula and benchmarks",
+    },
     category: "saas-metrics",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-27",
     relatedCalculatorSlugs: ["pipeline-coverage-calculator", "pipeline-required-calculator"],
     relatedGlossarySlugs: ["pipeline", "pipeline-coverage", "quota", "win-rate", "sales-cycle"],
     sections: [
@@ -4230,6 +4236,9 @@ export const guides: Guide[] = [
     title: "OTE (on-target earnings): definition, commission rate, and pitfalls",
     description:
       "Understand OTE, how to compute commission rate from variable pay and quota, and how to avoid common comp modeling mistakes.",
+    seo: {
+      title: "OTE guide: definition, commission rate, pitfalls",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-27",
     relatedCalculatorSlugs: ["ote-commission-rate-calculator"],
@@ -4412,8 +4421,11 @@ export const guides: Guide[] = [
     title: "Trial-to-paid conversion: definition, formula, and how to improve it",
     description:
       "Trial-to-paid conversion explained: how to calculate it, choose a window, and improve conversion without harming retention.",
+    seo: {
+      title: "Trial-to-paid guide: formula and improvements",
+    },
     category: "saas-metrics",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-27",
     relatedCalculatorSlugs: ["trial-to-paid-calculator"],
     relatedGlossarySlugs: ["trial-to-paid", "conversion-rate", "funnel", "arrr-funnel"],
     sections: [
@@ -4465,8 +4477,11 @@ export const guides: Guide[] = [
     title: "DAU/MAU (stickiness): definition, how to calculate, and benchmarks",
     description:
       "DAU/MAU explained: what it measures, how to compute it correctly, and how to interpret stickiness for different product cadences.",
+    seo: {
+      title: "DAU/MAU guide: stickiness definition and use",
+    },
     category: "saas-metrics",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-27",
     relatedCalculatorSlugs: ["dau-mau-calculator", "wau-mau-calculator"],
     relatedGlossarySlugs: ["dau", "mau", "wau", "stickiness"],
     sections: [
@@ -4509,6 +4524,9 @@ export const guides: Guide[] = [
     title: "WAU/MAU: a weekly stickiness metric for B2B and weekly workflows",
     description:
       "WAU/MAU explained: when to use it instead of DAU/MAU, how to calculate it correctly, and how to interpret it.",
+    seo: {
+      title: "WAU/MAU guide: weekly stickiness metric",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-27",
     relatedCalculatorSlugs: ["wau-mau-calculator", "dau-mau-calculator"],

@@ -238,8 +238,19 @@ const seeds: Seed[] = [
     slug: "net-debt",
     title: "Net Debt",
     description:
-      "Net debt is debt minus cash. It is a common bridge item between enterprise value and equity value.",
+      "Net debt is total debt minus cash and cash equivalents. It bridges enterprise value to equity value in valuation models.",
+    updatedAt: "2026-01-27",
     formula: "Net debt = debt - cash",
+    bullets: [
+      "Include short-term and long-term debt; exclude operating liabilities unless they are debt-like.",
+      "Use the same balance sheet date as your enterprise value inputs.",
+      "If cash exceeds debt, net debt is negative (net cash).",
+    ],
+    mistakes: [
+      "Mixing market value of equity with a balance sheet from a different date.",
+      "Counting restricted cash as fully available.",
+      "Double-counting lease liabilities if EV already includes them.",
+    ],
     relatedGuideSlugs: ["equity-value-guide"],
     relatedCalculatorSlugs: ["equity-value-calculator"],
   },

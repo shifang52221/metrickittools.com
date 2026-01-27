@@ -11645,26 +11645,26 @@ export const calculators: CalculatorDefinition[] = [
   },
   {
     slug: "liquidation-preference-calculator",
-    title: "Liquidation Preference Calculator (1× Non-participating)",
+    title: "Liquidation Preference Calculator (1x)",
     description:
-      "Estimate investor proceeds at exit under a simple 1× non-participating liquidation preference vs converting to common (simplified).",
+      "Estimate investor proceeds at exit under a simple 1x non-participating liquidation preference vs converting to common (simplified).",
     category: "finance",
     guideSlug: "liquidation-preference-guide",
     relatedGlossarySlugs: ["liquidation-preference", "equity-value"],
     seo: {
       intro: [
-        "Liquidation preference determines what investors receive at an exit before common shareholders. A common structure is 1× non-participating preferred.",
+        "Liquidation preference determines what investors receive at an exit before common shareholders. A common structure is 1x non-participating preferred.",
         "With non-participating preferred, an investor typically takes the greater of (a) their preference amount or (b) what they would receive if they convert to common at their ownership percentage.",
       ],
       steps: [
         "Enter the exit equity value (sale price).",
-        "Enter the investor’s original investment and their ownership if converted to common.",
+        "Enter the investor's original investment and their ownership if converted to common.",
         "Review whether preference or conversion produces a higher payout.",
       ],
       pitfalls: [
         "Ignoring multiple share classes and seniority (stacked preferences).",
-        "Using post-money ownership that doesn’t match the cap table at exit.",
-        "Assuming participating preferred behaves the same (it doesn’t).",
+        "Using post-money ownership that does not match the cap table at exit.",
+        "Assuming participating preferred behaves the same (it does not).",
       ],
     },
     inputs: [
@@ -11696,7 +11696,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         key: "preferenceMultiple",
         label: "Preference multiple",
-        help: "1× is common for non-participating preferred. Set to 1 unless you have a different term.",
+        help: "1x is common for non-participating preferred. Set to 1 unless you have a different term.",
         placeholder: "1",
         defaultValue: "1",
         min: 0,
