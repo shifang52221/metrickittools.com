@@ -5,12 +5,12 @@ import { AdUnit } from "@/components/ads/AdUnit";
 import { getAdSenseSlot } from "@/lib/adsense";
 
 export const metadata: Metadata = {
-  title: { absolute: "SaaS metrics & paid ads guides" },
+  title: { absolute: "SaaS metrics and paid ads guides" },
   description:
     "Practical guides for SaaS metrics and paid ads: definitions, formulas, benchmarks, and pitfalls.",
   alternates: { canonical: "/guides" },
   openGraph: {
-    title: "SaaS metrics & paid ads guides",
+    title: "SaaS metrics and paid ads guides",
     description:
       "Practical guides for SaaS metrics and paid ads: definitions, formulas, benchmarks, and pitfalls.",
     url: "/guides",

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: { absolute: "About MetricKit — calculators, formulas, and assumptions" },
+  title: { absolute: "About MetricKit: calculators, formulas, and assumptions" },
   description:
     "Learn how MetricKit calculators work: definitions, formulas, assumptions, and the methodology we use so you can interpret outputs consistently across your team.",
   alternates: { canonical: "/about" },

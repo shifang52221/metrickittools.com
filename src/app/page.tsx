@@ -10,13 +10,13 @@ import { getAdSenseSlot } from "@/lib/adsense";
 
 export const metadata: Metadata = {
   title: {
-    absolute: "MetricKit — free SaaS metrics & paid ads calculators",
+    absolute: "MetricKit: free SaaS metrics and paid ads calculators",
   },
   description:
     "Free calculators for SaaS metrics, paid ads, and finance. Compute CAC, LTV, ROAS, payback, churn, and more with clear formulas, assumptions, and practical guidance.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "MetricKit — free SaaS metrics & paid ads calculators",
+    title: "MetricKit: free SaaS metrics and paid ads calculators",
     description:
       "Free calculators for SaaS metrics, paid ads, and finance. Compute CAC, LTV, ROAS, payback, churn, and more with clear formulas, assumptions, and practical guidance.",
     url: "/",
