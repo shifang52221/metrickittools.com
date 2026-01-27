@@ -4602,8 +4602,11 @@ export const guides: Guide[] = [
     title: "Feature adoption rate: definition, how to measure adoption, and pitfalls",
     description:
       "Feature adoption explained: how to define adoption events, choose the right denominator, and use adoption to improve activation and retention.",
+    seo: {
+      title: "Feature adoption guide: definition and measurement",
+    },
     category: "saas-metrics",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["feature-adoption-rate-calculator"],
     relatedGlossarySlugs: ["feature-adoption", "activation-rate", "conversion-rate"],
     sections: [
@@ -4646,8 +4649,11 @@ export const guides: Guide[] = [
     title: "PQL to paid: how to define PQLs and track conversion to revenue",
     description:
       "A practical guide to PQL-to-paid conversion: define predictive PQL events, measure cohorts, and use segmentation to improve conversion and retention.",
+    seo: {
+      title: "PQL to paid guide: definition and conversion",
+    },
     category: "saas-metrics",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["pql-to-paid-calculator"],
     relatedGlossarySlugs: ["pql", "pql-to-paid", "trial-to-paid", "conversion-rate"],
     sections: [
@@ -4690,8 +4696,11 @@ export const guides: Guide[] = [
     title: "Marginal ROAS: how to scale ads with diminishing returns",
     description:
       "A practical guide to marginal ROAS: why average ROAS misleads at scale, how diminishing returns work, and how to pick a profit-maximizing spend level.",
+    seo: {
+      title: "Marginal ROAS guide: scale and diminishing returns",
+    },
     category: "paid-ads",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: [
       "marginal-roas-calculator",
       "break-even-roas-calculator",
@@ -4765,8 +4774,11 @@ export const guides: Guide[] = [
     title: "Deferred revenue: bridge billings to recognized revenue (with formulas)",
     description:
       "A practical guide to deferred revenue: what it is, why billings and recognized revenue differ, and how to use a rollforward to stay consistent.",
+    seo: {
+      title: "Deferred revenue guide: definition and rollforward",
+    },
     category: "finance",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: [
       "deferred-revenue-rollforward-calculator",
       "bookings-vs-arr-calculator",
@@ -4843,8 +4855,11 @@ export const guides: Guide[] = [
     title: "DCF valuation: forecast cash flows, discount rate, and terminal value",
     description:
       "A practical guide to DCF valuation: how to forecast FCF, choose a discount rate, and avoid terminal value traps.",
+    seo: {
+      title: "DCF valuation guide: steps and inputs",
+    },
     category: "finance",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["dcf-valuation-calculator", "npv-calculator", "irr-calculator"],
     relatedGlossarySlugs: [
       "dcf",
@@ -4920,8 +4935,11 @@ export const guides: Guide[] = [
     title: "Retention curves: how to read them and why they matter",
     description:
       "A practical guide to retention curves: what they show, how to interpret churn vs retention, and how to connect retention to LTV and payback.",
+    seo: {
+      title: "Retention curve guide: cohort math and use",
+    },
     category: "saas-metrics",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["retention-curve-calculator", "cohort-ltv-forecast-calculator"],
     relatedGlossarySlugs: [
       "retention-rate",
@@ -4998,8 +5016,11 @@ export const guides: Guide[] = [
     title: "Target CPA: how to set acquisition targets from LTV and margin",
     description:
       "A practical guide to target CPA: connect acquisition cost to LTV, contribution margin, and payback constraints (and avoid common mismatches).",
+    seo: {
+      title: "Target CPA guide: set CPA from economics",
+    },
     category: "paid-ads",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["target-cpa-ltv-calculator", "incrementality-lift-calculator"],
     relatedGlossarySlugs: ["cpa", "cac", "ltv", "contribution-margin", "payback-period", "incrementality"],
     sections: [
@@ -5065,8 +5086,11 @@ export const guides: Guide[] = [
     title: "Investment decision metrics: NPV vs IRR vs payback vs PI",
     description:
       "A practical guide to investment decision metrics: when to use NPV, when IRR misleads, and how payback and profitability index fit in.",
+    seo: {
+      title: "Investment decision guide: NPV, IRR, payback",
+    },
     category: "finance",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: [
       "investment-decision-calculator",
       "npv-calculator",
@@ -5135,8 +5159,11 @@ export const guides: Guide[] = [
     title: "WACC explained: how to estimate a discount rate for DCF",
     description:
       "A practical guide to WACC: what it is, how to compute it, and how to use it (carefully) as a DCF discount rate.",
+    seo: {
+      title: "WACC guide: cost of capital calculation",
+    },
     category: "finance",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["wacc-calculator", "dcf-valuation-calculator"],
     relatedGlossarySlugs: ["wacc", "discount-rate", "cost-of-equity", "cost-of-debt", "terminal-value"],
     sections: [
@@ -5201,8 +5228,11 @@ export const guides: Guide[] = [
     title: "MER (blended ROAS): how to use it without fooling yourself",
     description:
       "A practical guide to MER: what it is, how it differs from ROAS, how to compute break-even/target MER, and common pitfalls.",
+    seo: {
+      title: "MER guide: marketing efficiency ratio",
+    },
     category: "paid-ads",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["mer-calculator", "break-even-roas-calculator", "marginal-roas-calculator"],
     relatedGlossarySlugs: ["mer", "blended-roas", "roas", "contribution-margin", "incrementality", "attribution-window"],
     sections: [
