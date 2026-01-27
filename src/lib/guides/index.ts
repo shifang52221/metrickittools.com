@@ -1001,6 +1001,9 @@ export const guides: Guide[] = [
     title: "Gross revenue churn: definition, formula, and how to calculate it",
     description:
       "Gross revenue churn explained: contraction + churned MRR relative to starting MRR, with monthly-equivalent conversion and pitfalls.",
+    seo: {
+      title: "Gross revenue churn guide: definition, formula, pitfalls",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: [
@@ -1302,6 +1305,9 @@ export const guides: Guide[] = [
     title: "ARPU growth decomposition: what drove revenue (ARPU vs users)",
     description:
       "A practical guide to decomposing revenue growth into ARPU change vs user growth (and interaction), with a worked example.",
+    seo: {
+      title: "ARPU growth decomposition guide: ARPU vs users breakdown",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: [
@@ -1487,6 +1493,9 @@ export const guides: Guide[] = [
     title: "ARR vs MRR: definitions, formulas, and how to convert",
     description:
       "ARR vs MRR explained: what each metric means, the formulas (MRR*12 and ARR/12), and common pitfalls.",
+    seo: {
+      title: "ARR vs MRR guide: definitions, formulas, and conversion",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: ["arr-vs-mrr-calculator", "arr-calculator", "mrr-calculator"],
@@ -1548,6 +1557,9 @@ export const guides: Guide[] = [
     title: "MRR growth rate: how to measure recurring momentum",
     description:
       "A practical MRR growth guide: compute period growth, CMGR, and annualized growth (CAGR) from start and end MRR.",
+    seo: {
+      title: "MRR growth rate guide: period growth, CMGR, annualized",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: ["mrr-growth-rate-calculator", "mrr-calculator", "mrr-waterfall-calculator"],
@@ -1599,6 +1611,9 @@ export const guides: Guide[] = [
     title: "MRR churn rate: definition, formula, and monthly-equivalent conversion",
     description:
       "MRR churn rate explained: churned MRR / starting MRR, plus how to convert non-monthly windows into a monthly-equivalent rate.",
+    seo: {
+      title: "MRR churn rate guide: formula and monthly-equivalent rate",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: ["mrr-churn-rate-calculator", "mrr-waterfall-calculator", "grr-calculator", "nrr-calculator"],
@@ -1653,6 +1668,9 @@ export const guides: Guide[] = [
     title: "Bookings vs ARR: what ARR means (and what it doesn't)",
     description:
       "Bookings vs ARR explained: what ARR is (and isn't), plus how it differs from bookings and cash receipts.",
+    seo: {
+      title: "Bookings vs ARR guide: what ARR means and what it is not",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: [
@@ -1789,6 +1807,9 @@ export const guides: Guide[] = [
     title: "LTV:CAC ratio: how to interpret the ratio (and avoid mistakes)",
     description:
       "Learn what LTV:CAC tells you, rough benchmarks, and how churn and payback change what 'good' looks like.",
+    seo: {
+      title: "LTV:CAC ratio guide: benchmarks, interpretation, mistakes",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-05",
     relatedCalculatorSlugs: [
@@ -1827,6 +1848,9 @@ export const guides: Guide[] = [
     title: "NRR (Net Revenue Retention): definition, formula, how to calculate",
     description:
       "NRR explained: what net revenue retention measures, the NRR formula, how to calculate it by cohort, and common mistakes.",
+    seo: {
+      title: "NRR guide: net revenue retention formula and calculation",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: ["nrr-calculator", "grr-calculator"],
@@ -1939,6 +1963,9 @@ export const guides: Guide[] = [
     title: "GRR (Gross Revenue Retention): definition, formula, how to calculate",
     description:
       "GRR explained: gross revenue retention definition, GRR formula, how to calculate it, and why it matters alongside NRR.",
+    seo: {
+      title: "GRR guide: gross revenue retention formula and calculation",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: ["grr-calculator", "nrr-calculator"],
@@ -2100,6 +2127,9 @@ export const guides: Guide[] = [
     title: "Net new MRR: definition, formula, and how to calculate it",
     description:
       "Net new MRR explained: how to calculate net new MRR from new, expansion, contraction, and churned MRR - plus common mistakes.",
+    seo: {
+      title: "Net new MRR guide: definition, formula, and calculation",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: ["net-new-mrr-calculator"],
