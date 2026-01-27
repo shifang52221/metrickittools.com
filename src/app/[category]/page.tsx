@@ -23,12 +23,14 @@ export async function generateMetadata({
   const { category } = await params;
   if (!isCategorySlug(category)) return {};
   const cat = categories.find((c) => c.slug === category);
+  const financeTitle = "Finance calculators for runway, burn, and planning";
+  const title = category === "finance" ? financeTitle : cat?.title;
   return {
-    title: cat?.title,
+    title: category === "finance" ? { absolute: financeTitle } : title,
     description: cat?.description,
     alternates: { canonical: `/${category}` },
     openGraph: {
-      title: cat?.title,
+      title,
       description: cat?.description,
       url: `/${category}`,
       type: "website",
