@@ -5298,8 +5298,11 @@ export const guides: Guide[] = [
     title: "Two-stage churn: modeling early drop-off vs steady-state retention",
     description:
       "A practical guide to two-stage churn models: why early churn matters, how to model it, and how to connect retention improvements to LTV.",
+    seo: {
+      title: "Two-stage churn guide: early vs steady retention",
+    },
     category: "saas-metrics",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["two-stage-retention-curve-calculator", "retention-curve-calculator", "cohort-ltv-forecast-calculator"],
     relatedGlossarySlugs: ["retention-rate", "logo-churn", "activation-rate", "customer-lifetime", "cohorted-ltv", "arpa", "gross-margin"],
     sections: [
@@ -5368,8 +5371,11 @@ export const guides: Guide[] = [
     title: "Revenue retention curves: GRR vs NRR over time (how to model)",
     description:
       "A practical guide to revenue retention curves: how GRR and NRR compound, how to interpret expansion vs churn, and how to avoid common mistakes.",
+    seo: {
+      title: "Revenue retention curve guide: GRR vs NRR",
+    },
     category: "saas-metrics",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["revenue-retention-curve-calculator", "nrr-calculator", "grr-calculator"],
     relatedGlossarySlugs: [
       "nrr",
@@ -5447,8 +5453,11 @@ export const guides: Guide[] = [
     title: "Max CPC and break-even CPC: how to set bidding targets from margin",
     description:
       "A practical guide to max CPC: translate AOV, CVR, and contribution margin into break-even CPC and a target CPC with buffer.",
+    seo: {
+      title: "Max CPC guide: break-even CPC from margin",
+    },
     category: "paid-ads",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["max-cpc-calculator", "target-cpa-ltv-calculator", "break-even-roas-calculator"],
     relatedGlossarySlugs: ["cpc", "cpa", "cvr", "aov", "contribution-margin", "break-even-roas"],
     sections: [
@@ -5517,8 +5526,11 @@ export const guides: Guide[] = [
     title: "Enterprise value vs equity value: how to bridge EV to equity",
     description:
       "A practical guide to converting enterprise value (EV) into equity value using net debt and other claims (and avoiding common valuation mix-ups).",
+    seo: {
+      title: "Equity value guide: bridge EV to equity",
+    },
     category: "finance",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["equity-value-calculator", "dcf-valuation-calculator"],
     relatedGlossarySlugs: ["enterprise-value", "equity-value", "net-debt", "dcf", "wacc"],
     sections: [
@@ -5584,8 +5596,11 @@ export const guides: Guide[] = [
     title: "Pre-money vs post-money valuation: formulas, ownership, and pitfalls",
     description:
       "Learn pre-money vs post-money valuation, how investor ownership is estimated, and why the option pool shuffle changes effective dilution.",
+    seo: {
+      title: "Pre vs post-money guide: valuation and dilution",
+    },
     category: "finance",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: [
       "pre-money-post-money-calculator",
       "option-pool-shuffle-calculator",
@@ -5650,8 +5665,11 @@ export const guides: Guide[] = [
     title: "Pro rata rights: what they mean and how to estimate your check size",
     description:
       "A practical guide to pro rata rights: maintaining ownership, estimating dilution if you don't participate, and common allocation pitfalls.",
+    seo: {
+      title: "Pro rata rights guide: maintain ownership",
+    },
     category: "finance",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["pro-rata-investment-calculator"],
     relatedGlossarySlugs: ["pro-rata-rights", "dilution", "pre-money-valuation", "post-money-valuation"],
     sections: [
@@ -5693,8 +5711,11 @@ export const guides: Guide[] = [
     title: "Option pool shuffle: how it impacts founder dilution (with example)",
     description:
       "Understand the option pool shuffle, why it's negotiated, and how a post-money option pool target changes dilution for existing holders.",
+    seo: {
+      title: "Option pool shuffle guide: dilution math",
+    },
     category: "finance",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["option-pool-shuffle-calculator", "pre-money-post-money-calculator"],
     relatedGlossarySlugs: ["option-pool", "dilution", "pre-money-valuation", "post-money-valuation"],
     sections: [
@@ -5748,8 +5769,11 @@ export const guides: Guide[] = [
     title: "SAFE: what it is, valuation cap vs discount, and conversion basics",
     description:
       "A practical guide to SAFEs: how valuation caps and discounts work, what converts in a priced round, and common modeling pitfalls.",
+    seo: {
+      title: "SAFE guide: cap vs discount and conversion",
+    },
     category: "finance",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["safe-conversion-calculator"],
     relatedGlossarySlugs: ["safe", "valuation-cap", "discount-rate", "dilution"],
     sections: [
@@ -5807,8 +5831,11 @@ export const guides: Guide[] = [
     title: "Convertible note: interest, cap/discount, and conversion basics",
     description:
       "A practical guide to convertible notes: how interest accrues, how caps and discounts affect conversion price, and common modeling pitfalls.",
+    seo: {
+      title: "Convertible note guide: interest and conversion",
+    },
     category: "finance",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["convertible-note-conversion-calculator"],
     relatedGlossarySlugs: ["convertible-note", "interest-rate", "valuation-cap", "discount-rate", "dilution"],
     sections: [
@@ -5863,8 +5890,11 @@ export const guides: Guide[] = [
     title: "Liquidation preference (1* non-participating): what it means at exit",
     description:
       "Understand 1* non-participating liquidation preference, when investors convert to common, and how this changes proceeds at different exit values.",
+    seo: {
+      title: "Liquidation preference guide: 1x non-participating",
+    },
     category: "finance",
-    updatedAt: "2026-01-27",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["liquidation-preference-calculator"],
     relatedGlossarySlugs: ["liquidation-preference", "equity-value"],
     sections: [
