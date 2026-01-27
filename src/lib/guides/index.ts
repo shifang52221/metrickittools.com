@@ -2034,6 +2034,9 @@ export const guides: Guide[] = [
     title: "NRR vs GRR: differences, formulas, and how to use both",
     description:
       "NRR includes expansion; GRR excludes it. Learn when each metric matters, how to compute both from the same cohort, and how to interpret the gap.",
+    seo: {
+      title: "NRR vs GRR guide: formulas, interpretation, and use",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: [
@@ -2193,6 +2196,9 @@ export const guides: Guide[] = [
     title: "MRR waterfall: reconcile starting MRR to ending MRR",
     description:
       "A practical MRR waterfall guide: starting MRR + new + expansion - contraction - churn = ending MRR, with an example and pitfalls.",
+    seo: {
+      title: "MRR waterfall guide: reconcile MRR movements",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: ["mrr-waterfall-calculator", "net-new-mrr-calculator", "saas-quick-ratio-calculator"],
@@ -2246,6 +2252,9 @@ export const guides: Guide[] = [
     title: "SaaS Quick Ratio: definition, formula, and how to use it",
     description:
       "SaaS quick ratio explained: (new + expansion) / (contraction + churn). Learn how to compute it and what it tells you about growth quality.",
+    seo: {
+      title: "SaaS quick ratio guide: formula and interpretation",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: ["saas-quick-ratio-calculator", "net-new-mrr-calculator"],
@@ -2301,6 +2310,9 @@ export const guides: Guide[] = [
     title: "Rule of 40: definition, formula, and how to interpret it",
     description:
       "Rule of 40 explained: growth rate + profit margin. Learn which margin to use, how to compute it, and common pitfalls.",
+    seo: {
+      title: "Rule of 40 guide: formula, margin choice, pitfalls",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: ["rule-of-40-calculator"],
@@ -2345,6 +2357,9 @@ export const guides: Guide[] = [
     title: "ARR growth rate: how to measure recurring momentum",
     description:
       "A practical ARR growth guide: compute period growth, CMGR, and annualized growth (CAGR) from start and end ARR.",
+    seo: {
+      title: "ARR growth rate guide: period, CMGR, annualized",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: ["arr-growth-rate-calculator", "arr-calculator", "mrr-calculator"],
@@ -2396,6 +2411,9 @@ export const guides: Guide[] = [
     title: "ARR waterfall: reconcile starting ARR to ending ARR (net new ARR)",
     description:
       "A practical ARR waterfall guide: starting ARR + new + expansion - contraction - churn = ending ARR, with examples and pitfalls.",
+    seo: {
+      title: "ARR waterfall guide: reconcile ARR and net new ARR",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: ["arr-waterfall-calculator", "net-new-arr-calculator", "burn-multiple-calculator"],
@@ -2449,6 +2467,9 @@ export const guides: Guide[] = [
     title: "Burn multiple: definition, formula, and how to use it",
     description:
       "Burn multiple explained: net burn / net new ARR. Learn how to compute it, interpret it, and avoid common mistakes.",
+    seo: {
+      title: "Burn multiple guide: net burn vs net new ARR",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: ["burn-multiple-calculator"],
@@ -2492,6 +2513,9 @@ export const guides: Guide[] = [
     title: "Net new ARR: definition, formula, and how to calculate it",
     description:
       "Net new ARR explained: how to calculate net new ARR from new, expansion, contraction, and churned ARR movements - plus common mistakes.",
+    seo: {
+      title: "Net new ARR guide: definition, formula, mistakes",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-24",
     relatedCalculatorSlugs: ["net-new-arr-calculator", "burn-multiple-calculator"],
@@ -2549,6 +2573,9 @@ export const guides: Guide[] = [
     title: "Unit economics: CAC, payback, LTV, and LTV:CAC (how to model them)",
     description:
       "A practical unit economics guide: consistent definitions for CAC and LTV, how to calculate CAC payback period, and how to interpret LTV:CAC.",
+    seo: {
+      title: "Unit economics guide: CAC, payback, LTV, and ratios",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: [
@@ -2653,6 +2680,9 @@ export const guides: Guide[] = [
     title: "Bookings vs ARR: definitions, formulas, and examples",
     description:
       "Bookings vs ARR explained: what each metric measures, the formulas, and how to avoid common mistakes with annual prepay and one-time fees.",
+    seo: {
+      title: "Bookings vs ARR guide: definitions, formulas, examples",
+    },
     category: "saas-metrics",
     updatedAt: "2026-01-23",
     relatedCalculatorSlugs: ["bookings-vs-arr-calculator", "arr-calculator", "mrr-calculator"],
