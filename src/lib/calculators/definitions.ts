@@ -7119,21 +7119,30 @@ export const calculators: CalculatorDefinition[] = [
         suffix: "%",
         defaultValue: "80",
       },
-      {
-        key: "daysInPeriod",
-        label: "Days in period (optional)",
-        help: "Used to compute a daily break-even run rate.",
-        placeholder: "30",
-        defaultValue: "30",
-        min: 1,
-        step: 1,
-      },
-    ],
-    compute(values) {
-      const warnings: string[] = [];
-      const grossMargin = values.grossMarginPercent / 100;
-      if (grossMargin <= 0) warnings.push("Gross margin must be greater than 0.");
-      const breakevenRevenue = safeDivide(values.fixedCosts, grossMargin);
+        {
+          key: "daysInPeriod",
+          label: "Days in period (optional)",
+          help: "Used to compute a daily break-even run rate.",
+          placeholder: "30",
+          defaultValue: "30",
+          min: 1,
+          step: 1,
+        },
+        {
+          key: "currentRevenue",
+          label: "Current revenue (optional)",
+          help: "Used to compute gap vs break-even.",
+          placeholder: "25000",
+          prefix: "$",
+          defaultValue: "0",
+          min: 0,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        const grossMargin = values.grossMarginPercent / 100;
+        if (grossMargin <= 0) warnings.push("Gross margin must be greater than 0.");
+        const breakevenRevenue = safeDivide(values.fixedCosts, grossMargin);
       if (breakevenRevenue === null) {
         return {
           headline: {
@@ -7148,14 +7157,18 @@ export const calculators: CalculatorDefinition[] = [
       }
 
       const days = Math.max(1, Math.floor(values.daysInPeriod));
-      if (values.daysInPeriod !== days) {
-        warnings.push("Days in period was rounded down to a whole number.");
-      }
-      const dailyBreakEven = breakevenRevenue / days;
-      return {
-        headline: {
-          key: "breakeven",
-          label: "Break-even revenue (monthly)",
+        if (values.daysInPeriod !== days) {
+          warnings.push("Days in period was rounded down to a whole number.");
+        }
+        const dailyBreakEven = breakevenRevenue / days;
+        const revenueGap =
+          values.currentRevenue > 0 ? breakevenRevenue - values.currentRevenue : null;
+        const percentToBreakeven =
+          values.currentRevenue > 0 ? values.currentRevenue / breakevenRevenue : null;
+        return {
+          headline: {
+            key: "breakeven",
+            label: "Break-even revenue (monthly)",
           value: breakevenRevenue,
           format: "currency",
           currency: "USD",
@@ -7170,34 +7183,62 @@ export const calculators: CalculatorDefinition[] = [
             currency: "USD",
             detail: `Assumes ${days} days in period`,
           },
-          {
-            key: "requiredGrossProfit",
-            label: "Gross profit required",
-            value: values.fixedCosts,
-            format: "currency",
-            currency: "USD",
-            detail: "Equals fixed costs in this model",
-          },
-        ],
-        breakdown: [
-          {
-            key: "fixedCosts",
-            label: "Fixed costs",
-            value: values.fixedCosts,
-            format: "currency",
-            currency: "USD",
-          },
-          {
-            key: "grossMargin",
-            label: "Gross margin",
-            value: grossMargin,
-            format: "percent",
-            maxFractionDigits: 1,
-          },
-        ],
-        warnings,
-      };
-    },
+            {
+              key: "requiredGrossProfit",
+              label: "Gross profit required",
+              value: values.fixedCosts,
+              format: "currency",
+              currency: "USD",
+              detail: "Equals fixed costs in this model",
+            },
+            {
+              key: "revenueGap",
+              label: "Gap to break-even (monthly)",
+              value: revenueGap ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail:
+                revenueGap === null
+                  ? "Add current revenue"
+                  : revenueGap > 0
+                    ? "Shortfall to break-even"
+                    : "Above break-even",
+            },
+            {
+              key: "percentToBreakeven",
+              label: "Percent of break-even reached",
+              value: percentToBreakeven ?? 0,
+              format: "percent",
+              maxFractionDigits: 1,
+              detail: percentToBreakeven === null ? "Add current revenue" : "Current / break-even",
+            },
+          ],
+          breakdown: [
+            {
+              key: "fixedCosts",
+              label: "Fixed costs",
+              value: values.fixedCosts,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "grossMargin",
+              label: "Gross margin",
+              value: grossMargin,
+              format: "percent",
+              maxFractionDigits: 1,
+            },
+            {
+              key: "currentRevenue",
+              label: "Current revenue",
+              value: values.currentRevenue,
+              format: "currency",
+              currency: "USD",
+            },
+          ],
+          warnings,
+        };
+      },
     formula: "Break-even Revenue = Fixed Costs / Gross Margin",
     assumptions: ["Gross margin is expressed as a percent of revenue."],
     faqs: [
@@ -7272,33 +7313,49 @@ export const calculators: CalculatorDefinition[] = [
         min: 1,
         step: 1,
       },
-      {
-        key: "discountRatePercent",
-        label: "Discount rate",
-        placeholder: "12",
-        suffix: "%",
-        defaultValue: "12",
-        min: 0,
-      },
-    ],
-    compute(values) {
-      const warnings: string[] = [];
-      const r = values.discountRatePercent / 100;
-      if (values.years <= 0) warnings.push("Years must be greater than 0.");
-
-      let pv = 0;
-      if (r === 0) {
-        pv = values.annualCashFlow * values.years;
-      } else {
-        pv = values.annualCashFlow * ((1 - Math.pow(1 + r, -values.years)) / r);
-      }
-
-      const npv = pv - values.initialInvestment;
-      return {
-        headline: {
-          key: "npv",
-          label: "Net present value (NPV)",
-          value: npv,
+        {
+          key: "discountRatePercent",
+          label: "Discount rate",
+          placeholder: "12",
+          suffix: "%",
+          defaultValue: "12",
+          min: 0,
+        },
+        {
+          key: "targetNpv",
+          label: "Target NPV (optional)",
+          help: "Used to estimate required annual cash flow.",
+          placeholder: "0",
+          prefix: "$",
+          defaultValue: "0",
+          min: 0,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        const r = values.discountRatePercent / 100;
+        if (values.years <= 0) warnings.push("Years must be greater than 0.");
+  
+        let pv = 0;
+        let annuityFactor = 0;
+        if (r === 0) {
+          annuityFactor = values.years;
+          pv = values.annualCashFlow * annuityFactor;
+        } else {
+          annuityFactor = (1 - Math.pow(1 + r, -values.years)) / r;
+          pv = values.annualCashFlow * annuityFactor;
+        }
+  
+        const npv = pv - values.initialInvestment;
+        const requiredCashFlow =
+          annuityFactor > 0
+            ? (values.initialInvestment + values.targetNpv) / annuityFactor
+            : null;
+        return {
+          headline: {
+            key: "npv",
+            label: "Net present value (NPV)",
+            value: npv,
           format: "currency",
           currency: "USD",
           detail: "PV of cash flows - initial investment",
@@ -7311,19 +7368,38 @@ export const calculators: CalculatorDefinition[] = [
             format: "currency",
             currency: "USD",
           },
-          {
-            key: "profitabilityIndex",
-            label: "Profitability index",
-            value:
-              values.initialInvestment > 0 ? pv / values.initialInvestment : 0,
-            format: "multiple",
-            maxFractionDigits: 2,
-            detail: "PV / initial investment",
-          },
-        ],
-        warnings,
-      };
-    },
+            {
+              key: "profitabilityIndex",
+              label: "Profitability index",
+              value:
+                values.initialInvestment > 0 ? pv / values.initialInvestment : 0,
+              format: "multiple",
+              maxFractionDigits: 2,
+              detail: "PV / initial investment",
+            },
+            {
+              key: "annuityFactor",
+              label: "Annuity PV factor",
+              value: annuityFactor,
+              format: "number",
+              maxFractionDigits: 3,
+              detail: "PV per $1 annual cash flow",
+            },
+            {
+              key: "requiredCashFlow",
+              label: "Required annual cash flow for target NPV",
+              value: requiredCashFlow ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail:
+                requiredCashFlow === null
+                  ? "Invalid years or discount rate"
+                  : "(Initial investment + target NPV) / factor",
+            },
+          ],
+          warnings,
+        };
+      },
     formula:
       "NPV = sum_{t=1..n} cash_flow_t / (1 + r)^t - initial investment (annuity PV for constant cash flow)",
     assumptions: [
@@ -7433,14 +7509,45 @@ export const calculators: CalculatorDefinition[] = [
     compute(values) {
       const warnings: string[] = [];
       const r = values.discountRatePercent / 100;
-      const cashFlows = [
-        -values.initialInvestment,
-        values.cashFlow1,
-        values.cashFlow2,
-        values.cashFlow3,
-        values.cashFlow4,
-        values.cashFlow5 + values.terminalValue,
-      ];
+        const cashFlows = [
+          -values.initialInvestment,
+          values.cashFlow1,
+          values.cashFlow2,
+          values.cashFlow3,
+          values.cashFlow4,
+          values.cashFlow5 + values.terminalValue,
+        ];
+        const totalInflows =
+          values.cashFlow1 +
+          values.cashFlow2 +
+          values.cashFlow3 +
+          values.cashFlow4 +
+          values.cashFlow5 +
+          values.terminalValue;
+        const netCash = totalInflows - values.initialInvestment;
+        const cashMultiple =
+          values.initialInvestment > 0 ? totalInflows / values.initialInvestment : null;
+        let simplePaybackYears: number | null = null;
+        if (values.initialInvestment > 0) {
+          let cumulative = 0;
+          const inflows = [
+            values.cashFlow1,
+            values.cashFlow2,
+            values.cashFlow3,
+            values.cashFlow4,
+            values.cashFlow5 + values.terminalValue,
+          ];
+          for (let i = 0; i < inflows.length; i++) {
+            const flow = inflows[i];
+            const next = cumulative + flow;
+            if (next >= values.initialInvestment && flow > 0) {
+              const remaining = values.initialInvestment - cumulative;
+              simplePaybackYears = i + remaining / flow;
+              break;
+            }
+            cumulative = next;
+          }
+        }
 
       function npvAt(rate: number) {
         let sum = 0;
@@ -7534,15 +7641,48 @@ export const calculators: CalculatorDefinition[] = [
           maxFractionDigits: 2,
           detail: "Discount rate where NPV = 0",
         },
-        secondary: [
-          {
-            key: "npv",
-            label: `NPV @ ${values.discountRatePercent}%`,
-            value: npvAtDiscount,
-            format: "currency",
-            currency: "USD",
-          },
-        ],
+          secondary: [
+            {
+              key: "npv",
+              label: `NPV @ ${values.discountRatePercent}%`,
+              value: npvAtDiscount,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "totalInflows",
+              label: "Total cash inflows",
+              value: totalInflows,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "netCash",
+              label: "Net cash (inflows - investment)",
+              value: netCash,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "cashMultiple",
+              label: "Cash multiple",
+              value: cashMultiple ?? 0,
+              format: "multiple",
+              maxFractionDigits: 2,
+              detail: cashMultiple === null ? "Investment is 0" : "Total inflows / investment",
+            },
+            {
+              key: "simplePaybackYears",
+              label: "Simple payback (years)",
+              value: simplePaybackYears ?? 0,
+              format: "number",
+              maxFractionDigits: 1,
+              detail:
+                simplePaybackYears === null
+                  ? "Not reached in 5 years"
+                  : "Undiscounted payback",
+            },
+          ],
         warnings,
       };
     },
@@ -7641,14 +7781,16 @@ export const calculators: CalculatorDefinition[] = [
         values.annualCashFlow,
       );
 
-      const pvTotal =
-        r === 0
-          ? values.annualCashFlow * years
-          : values.annualCashFlow * ((1 - Math.pow(1 + r, -years)) / r);
-      const npv = pvTotal - values.initialInvestment;
+        const pvTotal =
+          r === 0
+            ? values.annualCashFlow * years
+            : values.annualCashFlow * ((1 - Math.pow(1 + r, -years)) / r);
+        const npv = pvTotal - values.initialInvestment;
+        const pvCoverage =
+          values.initialInvestment > 0 ? pvTotal / values.initialInvestment : null;
 
-      let cumulative = 0;
-      let paybackYears: number | null = null;
+        let cumulative = 0;
+        let paybackYears: number | null = null;
       for (let year = 1; year <= years; year++) {
         const pv = values.annualCashFlow / Math.pow(1 + r, year);
         const next = cumulative + pv;
@@ -7674,30 +7816,49 @@ export const calculators: CalculatorDefinition[] = [
           maxFractionDigits: 1,
           detail: "Time to recover investment using discounted cash flows",
         },
-        secondary: [
-          {
-            key: "simplePayback",
-            label: "Simple payback (undiscounted)",
-            value: (simplePaybackYears ?? 0) * 12,
-            format: "months",
-            maxFractionDigits: 1,
-          },
-          {
-            key: "npv",
-            label: "NPV (over horizon)",
-            value: npv,
-            format: "currency",
-            currency: "USD",
-            detail: `Over ${years} years`,
-          },
-          {
-            key: "pvTotal",
-            label: "PV of cash flows (over horizon)",
-            value: pvTotal,
-            format: "currency",
-            currency: "USD",
-          },
-        ],
+          secondary: [
+            {
+              key: "simplePayback",
+              label: "Simple payback (undiscounted)",
+              value: (simplePaybackYears ?? 0) * 12,
+              format: "months",
+              maxFractionDigits: 1,
+            },
+            {
+              key: "discountedPaybackYears",
+              label: "Discounted payback (years)",
+              value: paybackYears ?? 0,
+              format: "number",
+              maxFractionDigits: 2,
+              detail: paybackYears === null ? "Not reached in horizon" : "Discounted",
+            },
+            {
+              key: "npv",
+              label: "NPV (over horizon)",
+              value: npv,
+              format: "currency",
+              currency: "USD",
+              detail: `Over ${years} years`,
+            },
+            {
+              key: "pvTotal",
+              label: "PV of cash flows (over horizon)",
+              value: pvTotal,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "pvCoverage",
+              label: "PV coverage of investment",
+              value: pvCoverage ?? 0,
+              format: "multiple",
+              maxFractionDigits: 2,
+              detail:
+                pvCoverage === null
+                  ? "Initial investment is 0"
+                  : "PV of cash flows / investment",
+            },
+          ],
         warnings,
       };
     },
@@ -8051,19 +8212,28 @@ export const calculators: CalculatorDefinition[] = [
         defaultValue: "0",
         step: 0.1,
       },
-      {
-        key: "monthsToSimulate",
-        label: "Months to simulate",
-        placeholder: "24",
-        defaultValue: "24",
-        min: 1,
-        step: 1,
-      },
-    ],
-    compute(values) {
-      const warnings: string[] = [];
-      const months = Math.max(1, Math.floor(values.monthsToSimulate));
-      if (values.monthsToSimulate !== months)
+        {
+          key: "monthsToSimulate",
+          label: "Months to simulate",
+          placeholder: "24",
+          defaultValue: "24",
+          min: 1,
+          step: 1,
+        },
+        {
+          key: "targetRunwayMonths",
+          label: "Target runway (months) (optional)",
+          help: "Used to estimate required revenue for the target runway.",
+          placeholder: "18",
+          defaultValue: "0",
+          min: 0,
+          step: 1,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        const months = Math.max(1, Math.floor(values.monthsToSimulate));
+        if (values.monthsToSimulate !== months)
         warnings.push("Months to simulate was rounded down to a whole number.");
 
       const grossMargin = values.grossMarginPercent / 100;
@@ -8077,23 +8247,25 @@ export const calculators: CalculatorDefinition[] = [
         currentNetBurn > 0 ? (safeDivide(values.cashBalance, currentNetBurn) ?? 0) : months;
 
       const monthlyGrowth = values.monthlyRevenueGrowthPercent / 100;
-      let cash = values.cashBalance;
-      let revenue = values.monthlyRevenue;
-      let runwayWithGrowth: number | null = null;
-      let breakevenMonth: number | null = null;
+        let cash = values.cashBalance;
+        let revenue = values.monthlyRevenue;
+        let runwayWithGrowth: number | null = null;
+        let breakevenMonth: number | null = null;
+        let cashEnd = values.cashBalance;
 
-      for (let month = 1; month <= months; month++) {
-        const grossProfit = revenue * grossMargin;
-        const netBurn = values.monthlyOperatingExpenses - grossProfit;
-        if (breakevenMonth === null && netBurn <= 0) breakevenMonth = month;
+        for (let month = 1; month <= months; month++) {
+          const grossProfit = revenue * grossMargin;
+          const netBurn = values.monthlyOperatingExpenses - grossProfit;
+          if (breakevenMonth === null && netBurn <= 0) breakevenMonth = month;
 
-        cash -= netBurn;
-        if (cash <= 0) {
-          runwayWithGrowth = month;
-          break;
+          cash -= netBurn;
+          if (cash <= 0) {
+            runwayWithGrowth = month;
+            break;
+          }
+          cashEnd = cash;
+          revenue *= 1 + monthlyGrowth;
         }
-        revenue *= 1 + monthlyGrowth;
-      }
 
       if (currentNetBurn <= 0) {
         warnings.push(
@@ -8101,15 +8273,28 @@ export const calculators: CalculatorDefinition[] = [
         );
       }
 
-      const breakEvenRevenue =
-        grossMargin > 0
-          ? (safeDivide(values.monthlyOperatingExpenses, grossMargin) ?? 0)
-          : 0;
+        const breakEvenRevenue =
+          grossMargin > 0
+            ? (safeDivide(values.monthlyOperatingExpenses, grossMargin) ?? 0)
+            : 0;
+        const targetRunwayMonths = Math.max(0, Math.floor(values.targetRunwayMonths));
+        if (values.targetRunwayMonths !== targetRunwayMonths && targetRunwayMonths > 0) {
+          warnings.push("Target runway was rounded down to a whole number.");
+        }
+        const allowedNetBurn =
+          targetRunwayMonths > 0 ? values.cashBalance / targetRunwayMonths : null;
+        const requiredRevenueForTarget =
+          allowedNetBurn !== null && grossMargin > 0
+            ? Math.max(
+                0,
+                (values.monthlyOperatingExpenses - allowedNetBurn) / grossMargin,
+              )
+            : null;
 
-      return {
-        headline: {
-          key: "runwayMonths",
-          label: "Cash runway (months)",
+        return {
+          headline: {
+            key: "runwayMonths",
+            label: "Cash runway (months)",
           value: runwayWithGrowth ?? noGrowthRunwayMonths,
           format: "months",
           maxFractionDigits: 1,
@@ -8149,15 +8334,34 @@ export const calculators: CalculatorDefinition[] = [
             currency: "USD",
             detail: "Opex / gross margin",
           },
-          {
-            key: "breakevenMonth",
-            label: "Estimated month to cash break-even (if growth applied)",
-            value: breakevenMonth ?? 0,
-            format: "months",
-            maxFractionDigits: 0,
-            detail: breakevenMonth ? "First month where net burn <= 0" : "Not reached in horizon",
-          },
-        ],
+            {
+              key: "breakevenMonth",
+              label: "Estimated month to cash break-even (if growth applied)",
+              value: breakevenMonth ?? 0,
+              format: "months",
+              maxFractionDigits: 0,
+              detail: breakevenMonth ? "First month where net burn <= 0" : "Not reached in horizon",
+            },
+            {
+              key: "cashEnd",
+              label: "Cash remaining at end of horizon",
+              value: runwayWithGrowth ? 0 : cashEnd,
+              format: "currency",
+              currency: "USD",
+              detail: runwayWithGrowth ? "Cash hits zero before horizon" : `After ${months} months`,
+            },
+            {
+              key: "requiredRevenueForTarget",
+              label: "Required revenue for target runway",
+              value: requiredRevenueForTarget ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail:
+                requiredRevenueForTarget === null
+                  ? "Add target runway and gross margin"
+                  : "Opex minus allowed burn, divided by margin",
+            },
+          ],
         breakdown: [
           {
             key: "cashBalance",
@@ -9644,18 +9848,22 @@ export const calculators: CalculatorDefinition[] = [
       }
 
       const fcfTerminal = fcf * (1 + tg);
-      const terminalValue =
-        tg < r ? fcfTerminal / (r - tg) : 0;
-      const pvTerminal = terminalValue / Math.pow(1 + r, years);
-      const enterpriseValue = pvForecast + pvTerminal;
-      const terminalShare = enterpriseValue > 0 ? pvTerminal / enterpriseValue : 0;
-      const equityValue = enterpriseValue - values.netDebt;
-      const terminalGrowthGap = r - tg;
+        const terminalValue =
+          tg < r ? fcfTerminal / (r - tg) : 0;
+        const pvTerminal = terminalValue / Math.pow(1 + r, years);
+        const enterpriseValue = pvForecast + pvTerminal;
+        const terminalShare = enterpriseValue > 0 ? pvTerminal / enterpriseValue : 0;
+        const equityValue = enterpriseValue - values.netDebt;
+        const terminalGrowthGap = r - tg;
+        const evToFcf =
+          values.annualFcf > 0 ? enterpriseValue / values.annualFcf : null;
+        const terminalMultiple =
+          fcfTerminal > 0 ? terminalValue / fcfTerminal : null;
 
-      return {
-        headline: {
-          key: "enterpriseValue",
-          label: "Enterprise value (DCF)",
+        return {
+          headline: {
+            key: "enterpriseValue",
+            label: "Enterprise value (DCF)",
           value: enterpriseValue,
           format: "currency",
           currency: "USD",
@@ -9669,21 +9877,28 @@ export const calculators: CalculatorDefinition[] = [
             format: "currency",
             currency: "USD",
           },
-          {
-            key: "pvTerminal",
-            label: "PV of terminal value",
-            value: pvTerminal,
-            format: "currency",
-            currency: "USD",
-          },
-          {
-            key: "equityValue",
-            label: "Equity value (EV - net debt)",
-            value: equityValue,
-            format: "currency",
-            currency: "USD",
-            detail: "Approximate equity value",
-          },
+            {
+              key: "pvTerminal",
+              label: "PV of terminal value",
+              value: pvTerminal,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "terminalValue",
+              label: "Terminal value (undiscounted)",
+              value: terminalValue,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "equityValue",
+              label: "Equity value (EV - net debt)",
+              value: equityValue,
+              format: "currency",
+              currency: "USD",
+              detail: "Approximate equity value",
+            },
           {
             key: "terminalShare",
             label: "Terminal value share",
@@ -9692,22 +9907,38 @@ export const calculators: CalculatorDefinition[] = [
             maxFractionDigits: 0,
             detail: "How much of EV comes from terminal",
           },
-          {
-            key: "terminalGrowthGap",
-            label: "Discount minus terminal growth (r - g)",
-            value: terminalGrowthGap,
-            format: "percent",
-            maxFractionDigits: 2,
-            detail: "Keep positive; larger gap lowers terminal value",
-          },
-          {
-            key: "fcfTerminal",
-            label: `FCF in year ${years} (end of forecast)`,
-            value: fcf,
-            format: "currency",
-            currency: "USD",
-          },
-        ],
+            {
+              key: "terminalGrowthGap",
+              label: "Discount minus terminal growth (r - g)",
+              value: terminalGrowthGap,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: "Keep positive; larger gap lowers terminal value",
+            },
+            {
+              key: "fcfTerminal",
+              label: `FCF in year ${years} (end of forecast)`,
+              value: fcf,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "evToFcf",
+              label: "EV / current FCF",
+              value: evToFcf ?? 0,
+              format: "multiple",
+              maxFractionDigits: 2,
+              detail: evToFcf === null ? "FCF is 0" : "Enterprise value multiple",
+            },
+            {
+              key: "terminalMultiple",
+              label: "Terminal value / year-end FCF",
+              value: terminalMultiple ?? 0,
+              format: "multiple",
+              maxFractionDigits: 2,
+              detail: terminalMultiple === null ? "Year-end FCF is 0" : "Terminal multiple",
+            },
+          ],
         breakdown: [
           {
             key: "annualFcf",
@@ -10616,10 +10847,12 @@ export const calculators: CalculatorDefinition[] = [
       const kd = values.costOfDebtPercent / 100;
       const tax = values.taxRatePercent / 100;
 
-      const afterTaxDebt = kd * (1 - tax);
-      const wacc = we * ke + wd * afterTaxDebt;
-      const spread = ke - afterTaxDebt;
-      const taxShield = kd * tax;
+        const afterTaxDebt = kd * (1 - tax);
+        const wacc = we * ke + wd * afterTaxDebt;
+        const spread = ke - afterTaxDebt;
+        const taxShield = kd * tax;
+        const equityContribution = we * ke;
+        const debtContribution = wd * afterTaxDebt;
 
       return {
         headline: {
@@ -10639,14 +10872,30 @@ export const calculators: CalculatorDefinition[] = [
             maxFractionDigits: 2,
             detail: "Cost of debt × (1 - tax rate)",
           },
-          {
-            key: "equityDebtSpread",
-            label: "Equity vs debt spread",
-            value: spread,
-            format: "percent",
-            maxFractionDigits: 2,
-            detail: "Cost of equity - after-tax debt",
-          },
+            {
+              key: "equityDebtSpread",
+              label: "Equity vs debt spread",
+              value: spread,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: "Cost of equity - after-tax debt",
+            },
+            {
+              key: "equityContribution",
+              label: "Equity contribution to WACC",
+              value: equityContribution,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: "Equity weight x cost of equity",
+            },
+            {
+              key: "debtContribution",
+              label: "Debt contribution to WACC",
+              value: debtContribution,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: "Debt weight x after-tax cost",
+            },
           {
             key: "taxShield",
             label: "Debt tax shield (rate)",
@@ -11751,11 +12000,14 @@ export const calculators: CalculatorDefinition[] = [
         step: 1,
       },
     ],
-    compute(values) {
-      const warnings: string[] = [];
-      const netDebt = values.debt - values.cash;
-      const equityValue =
-        values.enterpriseValue - netDebt - values.preferredStock - values.minorityInterest + values.otherAdjustments;
+      compute(values) {
+        const warnings: string[] = [];
+        const netDebt = values.debt - values.cash;
+        const netCash = values.cash - values.debt;
+        const equityValue =
+          values.enterpriseValue - netDebt - values.preferredStock - values.minorityInterest + values.otherAdjustments;
+        const equityToEv =
+          values.enterpriseValue > 0 ? equityValue / values.enterpriseValue : null;
 
       let perShare: number | null = null;
       const shares = Math.floor(values.sharesOutstanding);
@@ -11776,23 +12028,39 @@ export const calculators: CalculatorDefinition[] = [
           detail: "EV - net debt - other claims + adjustments",
         },
         secondary: [
-          {
-            key: "netDebt",
-            label: "Net debt",
-            value: netDebt,
-            format: "currency",
-            currency: "USD",
-            detail: "Debt - cash",
-          },
-          {
-            key: "perShare",
-            label: "Implied value per share",
-            value: perShare ?? 0,
-            format: "currency",
-            currency: "USD",
-            detail: perShare === null ? "Enter shares outstanding to calculate" : undefined,
-          },
-        ],
+            {
+              key: "netDebt",
+              label: "Net debt",
+              value: netDebt,
+              format: "currency",
+              currency: "USD",
+              detail: "Debt - cash",
+            },
+            {
+              key: "netCash",
+              label: "Net cash",
+              value: netCash,
+              format: "currency",
+              currency: "USD",
+              detail: "Cash - debt",
+            },
+            {
+              key: "perShare",
+              label: "Implied value per share",
+              value: perShare ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail: perShare === null ? "Enter shares outstanding to calculate" : undefined,
+            },
+            {
+              key: "equityToEv",
+              label: "Equity value as % of EV",
+              value: equityToEv ?? 0,
+              format: "percent",
+              maxFractionDigits: 1,
+              detail: equityToEv === null ? "EV is 0" : "Equity value / EV",
+            },
+          ],
         breakdown: [
           {
             key: "enterpriseValue",
@@ -11894,10 +12162,14 @@ export const calculators: CalculatorDefinition[] = [
         min: 0,
       },
     ],
-    compute(values) {
-      const warnings: string[] = [];
-      const postMoney = values.preMoney + values.investment;
-      const investorOwnership = safeDivide(values.investment, postMoney);
+      compute(values) {
+        const warnings: string[] = [];
+        const postMoney = values.preMoney + values.investment;
+        const investorOwnership = safeDivide(values.investment, postMoney);
+        const existingOwnership =
+          investorOwnership !== null ? 1 - investorOwnership : null;
+        const postMoneyMultiple =
+          values.preMoney > 0 ? postMoney / values.preMoney : null;
 
       if (values.preMoney <= 0) warnings.push("Pre-money valuation must be greater than 0.");
       if (values.investment < 0) warnings.push("Investment must be 0 or greater.");
@@ -11913,16 +12185,32 @@ export const calculators: CalculatorDefinition[] = [
           maxFractionDigits: 2,
           detail: "Investment ÷ post-money",
         },
-        secondary: [
-          {
-            key: "postMoney",
-            label: "Post-money valuation",
-            value: postMoney,
-            format: "currency",
-            currency: "USD",
-            detail: "Pre-money + investment",
-          },
-        ],
+          secondary: [
+            {
+              key: "postMoney",
+              label: "Post-money valuation",
+              value: postMoney,
+              format: "currency",
+              currency: "USD",
+              detail: "Pre-money + investment",
+            },
+            {
+              key: "existingOwnership",
+              label: "Existing ownership (post-round)",
+              value: existingOwnership ?? 0,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: existingOwnership === null ? "Post-money is 0" : "1 - investor ownership",
+            },
+            {
+              key: "postMoneyMultiple",
+              label: "Post-money / pre-money",
+              value: postMoneyMultiple ?? 0,
+              format: "multiple",
+              maxFractionDigits: 2,
+              detail: postMoneyMultiple === null ? "Pre-money is 0" : "Post-money multiple",
+            },
+          ],
         breakdown: [
           {
             key: "preMoney",
@@ -17115,34 +17403,76 @@ export const calculators: CalculatorDefinition[] = [
         }
       }
 
-      const totalPaid = payment * n;
-      const totalInterest = totalPaid - values.principal;
+        const totalPaid = payment * n;
+        const totalInterest = totalPaid - values.principal;
+        const firstMonthInterest = values.principal * r;
+        const firstMonthPrincipal =
+          payment > 0 ? Math.max(0, payment - firstMonthInterest) : 0;
+        const interestShare =
+          payment > 0 ? firstMonthInterest / payment : null;
+        const totalInterestPercent =
+          values.principal > 0 ? totalInterest / values.principal : null;
 
-      return {
-        headline: {
-          key: "monthlyPayment",
-          label: "Monthly payment",
+        return {
+          headline: {
+            key: "monthlyPayment",
+            label: "Monthly payment",
           value: payment,
           format: "currency",
           currency: "USD",
           detail: "Fixed-rate amortizing loan",
         },
         secondary: [
-          {
-            key: "totalInterest",
-            label: "Total interest paid",
-            value: totalInterest,
-            format: "currency",
-            currency: "USD",
-          },
-          {
-            key: "totalPaid",
-            label: "Total paid",
-            value: totalPaid,
-            format: "currency",
-            currency: "USD",
-          },
-        ],
+            {
+              key: "totalInterest",
+              label: "Total interest paid",
+              value: totalInterest,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "totalPaid",
+              label: "Total paid",
+              value: totalPaid,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "firstMonthInterest",
+              label: "First-month interest",
+              value: firstMonthInterest,
+              format: "currency",
+              currency: "USD",
+              detail: "Principal x monthly rate",
+            },
+            {
+              key: "firstMonthPrincipal",
+              label: "First-month principal",
+              value: firstMonthPrincipal,
+              format: "currency",
+              currency: "USD",
+              detail: "Payment - interest",
+            },
+            {
+              key: "interestShare",
+              label: "Interest share of first payment",
+              value: interestShare ?? 0,
+              format: "percent",
+              maxFractionDigits: 1,
+              detail: interestShare === null ? "Payment is 0" : "Interest / payment",
+            },
+            {
+              key: "totalInterestPercent",
+              label: "Total interest as % of principal",
+              value: totalInterestPercent ?? 0,
+              format: "percent",
+              maxFractionDigits: 1,
+              detail:
+                totalInterestPercent === null
+                  ? "Principal is 0"
+                  : "Total interest / principal",
+            },
+          ],
         breakdown: [
           {
             key: "principal",
