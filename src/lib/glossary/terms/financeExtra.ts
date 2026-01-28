@@ -652,6 +652,191 @@ const seeds: Seed[] = [
     ],
     relatedGuideSlugs: ["wacc-guide", "dcf-valuation-guide"],
   },
+  {
+    slug: "fixed-charge-coverage",
+    title: "Fixed Charge Coverage",
+    description:
+      "Fixed charge coverage measures how well cash flow covers fixed obligations like interest and lease payments.",
+    updatedAt: "2026-01-28",
+    formula: "Fixed charge coverage = (EBIT + fixed charges) / fixed charges",
+    example:
+      "If EBIT is $900k and fixed charges are $300k, coverage is (900 + 300) / 300 = 4.0x.",
+    bullets: [
+      "Use cash-based variants when working capital swings are large.",
+      "Track coverage alongside debt covenants to avoid surprises.",
+    ],
+    mistakes: [
+      "Mixing operating leases and capital leases inconsistently.",
+      "Using one-time EBIT without normalization.",
+    ],
+    relatedGuideSlugs: ["loan-payment-guide", "runway-burn-cash-guide"],
+  },
+  {
+    slug: "debt-amortization",
+    title: "Debt Amortization",
+    description:
+      "Debt amortization is the scheduled repayment of principal over time, reducing the outstanding balance.",
+    updatedAt: "2026-01-28",
+    formula: "Ending balance = beginning balance - principal payments",
+    example:
+      "A $1M loan with $20k monthly principal payments amortizes by $240k in year one.",
+    bullets: [
+      "Amortization reduces interest expense over time as the balance falls.",
+      "Model amortization explicitly in cash forecasts and covenants.",
+    ],
+    mistakes: [
+      "Confusing amortization with interest-only periods.",
+      "Ignoring prepayment penalties when accelerating principal.",
+    ],
+    relatedGuideSlugs: ["loan-payment-guide"],
+  },
+  {
+    slug: "operating-cash-conversion",
+    title: "Operating Cash Conversion",
+    description:
+      "Operating cash conversion compares operating cash flow to operating profit to show how much profit turns into cash.",
+    updatedAt: "2026-01-28",
+    formula: "Operating cash conversion = operating cash flow / operating profit",
+    example: "Operating cash flow $800k and operating profit $1M yields 80%.",
+    bullets: [
+      "Low conversion often points to receivables or deferred revenue shifts.",
+      "Track conversion by quarter to catch working capital stress early.",
+    ],
+    mistakes: [
+      "Using net income instead of operating profit in the denominator.",
+      "Comparing periods with different revenue recognition policies.",
+    ],
+    relatedGuideSlugs: ["cash-conversion-cycle-guide", "runway-burn-cash-guide"],
+  },
+  {
+    slug: "capex-budget",
+    title: "CapEx Budget",
+    description:
+      "A CapEx budget is a plan for capital spending on long-lived assets over a period, split into maintenance and growth projects.",
+    updatedAt: "2026-01-28",
+    formula: "CapEx budget = maintenance CapEx + growth CapEx",
+    example:
+      "If maintenance CapEx is $300k and growth CapEx is $500k, the annual budget is $800k.",
+    bullets: [
+      "Review expected ROI and payback before approving growth projects.",
+      "Match CapEx timing to cash flow seasonality to protect runway.",
+    ],
+    mistakes: [
+      "Treating all CapEx as discretionary and delaying required maintenance.",
+      "Approving projects without a post-investment review plan.",
+    ],
+    relatedGuideSlugs: ["investment-decision-guide", "capital-budgeting-hub-guide"],
+  },
+  {
+    slug: "cash-buffer-policy",
+    title: "Cash Buffer Policy",
+    description:
+      "A cash buffer policy sets the minimum cash balance the business will maintain to absorb shocks and avoid liquidity crises.",
+    updatedAt: "2026-01-28",
+    formula: "Minimum cash = target months of net burn * monthly net burn",
+    example:
+      "If target buffer is 3 months and net burn is $200k, minimum cash is $600k.",
+    bullets: [
+      "Set buffers based on revenue volatility and access to capital.",
+      "Revisit the buffer after major headcount or pricing changes.",
+    ],
+    mistakes: [
+      "Using a fixed dollar buffer while burn rate changes.",
+      "Assuming revolver availability is always fully accessible.",
+    ],
+    relatedGuideSlugs: ["cash-runway-guide", "runway-burn-cash-guide"],
+  },
+  {
+    slug: "debt-schedule",
+    title: "Debt Schedule",
+    description:
+      "A debt schedule tracks each facility's balance, interest rate, amortization, and maturity to model cash and covenant impacts.",
+    updatedAt: "2026-01-28",
+    formula: "Ending balance = beginning balance + draws - principal payments",
+    example:
+      "A schedule shows $1M term debt declining by $25k per month with 7% interest.",
+    bullets: [
+      "Separate term loans, revolvers, and leases for clarity.",
+      "Update rates when debt is floating to avoid forecast errors.",
+    ],
+    mistakes: [
+      "Ignoring fees and amortized financing costs.",
+      "Assuming refinancing without validating lender terms.",
+    ],
+    relatedGuideSlugs: ["loan-payment-guide", "runway-burn-cash-guide"],
+  },
+  {
+    slug: "free-cash-flow-margin",
+    title: "Free Cash Flow Margin",
+    description:
+      "Free cash flow margin shows free cash flow as a share of revenue, reflecting how much revenue turns into cash after CapEx.",
+    updatedAt: "2026-01-28",
+    formula: "Free cash flow margin = free cash flow / revenue",
+    example: "Free cash flow $500k on $5M revenue yields a 10% margin.",
+    bullets: [
+      "Track margin over time to see operating leverage and discipline.",
+      "Use normalized CapEx for comparability across years.",
+    ],
+    mistakes: [
+      "Treating one-time working capital releases as recurring margin.",
+      "Comparing margins without adjusting for seasonality.",
+    ],
+    relatedGuideSlugs: ["runway-burn-cash-guide", "investment-decision-guide"],
+  },
+  {
+    slug: "interest-rate-sensitivity",
+    title: "Interest Rate Sensitivity",
+    description:
+      "Interest rate sensitivity shows how changes in rates affect interest expense and cash flow, especially for floating-rate debt.",
+    updatedAt: "2026-01-28",
+    formula: "Interest change = floating debt balance * rate change",
+    example:
+      "If floating debt is $5M, a 1% rate increase adds $50k annual interest.",
+    bullets: [
+      "Model multiple rate scenarios to stress-test coverage.",
+      "Consider hedges if rate exposure is large.",
+    ],
+    mistakes: [
+      "Ignoring base rate floors or caps in the debt agreement.",
+      "Using ending debt balance instead of average balance.",
+    ],
+    relatedGuideSlugs: ["loan-payment-guide", "runway-burn-cash-guide"],
+  },
+  {
+    slug: "days-cash-on-hand",
+    title: "Days Cash on Hand",
+    description:
+      "Days cash on hand estimates how long cash can cover operating expenses without new inflows.",
+    updatedAt: "2026-01-28",
+    formula: "Days cash on hand = cash balance / (operating expenses per day)",
+    example:
+      "Cash $900k and expenses $12k per day gives 75 days of cash on hand.",
+    bullets: [
+      "Use it with runway to communicate liquidity to stakeholders.",
+      "Update frequently during periods of rapid burn changes.",
+    ],
+    mistakes: [
+      "Using revenue instead of expenses in the denominator.",
+      "Ignoring seasonal expense spikes in the calculation.",
+    ],
+    relatedGuideSlugs: ["cash-runway-guide", "runway-burn-cash-guide"],
+  },
+  {
+    slug: "working-capital-policy",
+    title: "Working Capital Policy",
+    description:
+      "Working capital policy defines targets for receivables, payables, and inventory to balance growth with cash stability.",
+    updatedAt: "2026-01-28",
+    bullets: [
+      "Set DSO/DPO targets by segment and enforce them with owners.",
+      "Tie policy to forecast accuracy so cash plans remain reliable.",
+    ],
+    mistakes: [
+      "Setting targets without changing billing and collections processes.",
+      "Optimizing DPO without considering supplier risk.",
+    ],
+    relatedGuideSlugs: ["cash-conversion-cycle-guide", "runway-burn-cash-guide"],
+  },
 ];
 
 export const termsFinanceExtra: GlossaryTerm[] = seeds.map(make);
