@@ -351,28 +351,47 @@ export const calculators: CalculatorDefinition[] = [
         suffix: "%",
         defaultValue: "0",
       },
-      {
-        key: "returnsPercent",
-        label: "Returns & refunds",
-        help: "As % of revenue (optional).",
-        placeholder: "0",
-        suffix: "%",
-        defaultValue: "0",
-      },
-    ],
-    compute(values) {
-      const warnings: string[] = [];
-      const contributionMargin =
-        (values.grossMarginPercent -
-          values.paymentFeesPercent -
-          values.shippingPercent -
-          values.returnsPercent) /
-        100;
+        {
+          key: "returnsPercent",
+          label: "Returns & refunds",
+          help: "As % of revenue (optional).",
+          placeholder: "0",
+          suffix: "%",
+          defaultValue: "0",
+        },
+        {
+          key: "aov",
+          label: "Average order value (AOV) (optional)",
+          placeholder: "80",
+          prefix: "$",
+          defaultValue: "80",
+          min: 0,
+        },
+        {
+          key: "cvrPercent",
+          label: "Conversion rate (CVR) (optional)",
+          help: "Used to translate break-even ROAS into CPC/CPA targets.",
+          placeholder: "2.5",
+          suffix: "%",
+          defaultValue: "2.5",
+          min: 0,
+          step: 0.1,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        const contributionMargin =
+          (values.grossMarginPercent -
+            values.paymentFeesPercent -
+            values.shippingPercent -
+            values.returnsPercent) /
+          100;
+        const cvr = values.cvrPercent / 100;
 
-      if (contributionMargin <= 0) {
-        warnings.push(
-          "Contribution margin must be greater than 0. Check your inputs.",
-        );
+        if (contributionMargin <= 0) {
+          warnings.push(
+            "Contribution margin must be greater than 0. Check your inputs.",
+          );
         return {
           headline: {
             key: "breakevenRoas",
@@ -383,13 +402,17 @@ export const calculators: CalculatorDefinition[] = [
           },
           warnings,
         };
-      }
+        }
 
-      const breakevenRoas = 1 / contributionMargin;
+        const breakevenRoas = 1 / contributionMargin;
+        const breakevenCpa =
+          values.aov > 0 ? values.aov * contributionMargin : 0;
+        const breakevenCpc =
+          values.aov > 0 && cvr > 0 ? breakevenCpa * cvr : 0;
 
-      return {
-        headline: {
-          key: "breakevenRoas",
+        return {
+          headline: {
+            key: "breakevenRoas",
           label: "Break-even ROAS",
           value: breakevenRoas,
           format: "multiple",
@@ -397,19 +420,35 @@ export const calculators: CalculatorDefinition[] = [
           detail: "1 / contribution margin",
         },
         secondary: [
-          {
-            key: "contributionMargin",
-            label: "Contribution margin",
-            value: contributionMargin,
-            format: "percent",
-            maxFractionDigits: 1,
-            detail: "Gross margin - fees - shipping - returns",
-          },
-        ],
-        breakdown: [
-          {
-            key: "grossMarginPercent",
-            label: "Gross margin",
+            {
+              key: "contributionMargin",
+              label: "Contribution margin",
+              value: contributionMargin,
+              format: "percent",
+              maxFractionDigits: 1,
+              detail: "Gross margin - fees - shipping - returns",
+            },
+            {
+              key: "breakevenCpa",
+              label: "Break-even CPA (from AOV)",
+              value: breakevenCpa,
+              format: "currency",
+              currency: "USD",
+              detail: values.aov > 0 ? "AOV x contribution margin" : "Add AOV",
+            },
+            {
+              key: "breakevenCpc",
+              label: "Break-even CPC (from CVR)",
+              value: breakevenCpc,
+              format: "currency",
+              currency: "USD",
+              detail: cvr > 0 ? "Break-even CPA x CVR" : "Add CVR",
+            },
+          ],
+          breakdown: [
+            {
+              key: "grossMarginPercent",
+              label: "Gross margin",
             value: values.grossMarginPercent / 100,
             format: "percent",
             maxFractionDigits: 1,
@@ -428,17 +467,31 @@ export const calculators: CalculatorDefinition[] = [
             format: "percent",
             maxFractionDigits: 1,
           },
-          {
-            key: "returnsPercent",
-            label: "Returns & refunds",
-            value: values.returnsPercent / 100,
-            format: "percent",
-            maxFractionDigits: 1,
-          },
-        ],
-        warnings,
-      };
-    },
+            {
+              key: "returnsPercent",
+              label: "Returns & refunds",
+              value: values.returnsPercent / 100,
+              format: "percent",
+              maxFractionDigits: 1,
+            },
+            {
+              key: "aov",
+              label: "AOV",
+              value: values.aov,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "cvr",
+              label: "CVR",
+              value: cvr,
+              format: "percent",
+              maxFractionDigits: 2,
+            },
+          ],
+          warnings,
+        };
+      },
     formula: "Break-even ROAS = 1 / (Contribution margin)",
     assumptions: [
       "This is a simplified contribution-margin model (not a full P&L).",
@@ -539,27 +592,46 @@ export const calculators: CalculatorDefinition[] = [
         suffix: "%",
         defaultValue: "10",
       },
-      {
-        key: "desiredProfitPercent",
-        label: "Desired profit margin",
-        help: "Extra buffer as % of revenue (optional).",
-        placeholder: "10",
-        suffix: "%",
-        defaultValue: "10",
-      },
-    ],
-    compute(values) {
-      const warnings: string[] = [];
-      const contributionMargin =
-        (values.grossMarginPercent -
-          values.paymentFeesPercent -
-          values.shippingPercent -
-          values.returnsPercent) /
-        100;
+        {
+          key: "desiredProfitPercent",
+          label: "Desired profit margin",
+          help: "Extra buffer as % of revenue (optional).",
+          placeholder: "10",
+          suffix: "%",
+          defaultValue: "10",
+        },
+        {
+          key: "aov",
+          label: "Average order value (AOV) (optional)",
+          placeholder: "80",
+          prefix: "$",
+          defaultValue: "80",
+          min: 0,
+        },
+        {
+          key: "cvrPercent",
+          label: "Conversion rate (CVR) (optional)",
+          help: "Used to translate target ROAS into CPC/CPA targets.",
+          placeholder: "2.5",
+          suffix: "%",
+          defaultValue: "2.5",
+          min: 0,
+          step: 0.1,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        const contributionMargin =
+          (values.grossMarginPercent -
+            values.paymentFeesPercent -
+            values.shippingPercent -
+            values.returnsPercent) /
+          100;
 
-      const fixed = values.fixedCostPercent / 100;
-      const desired = values.desiredProfitPercent / 100;
-      const availableForAds = contributionMargin - fixed - desired;
+        const fixed = values.fixedCostPercent / 100;
+        const desired = values.desiredProfitPercent / 100;
+        const availableForAds = contributionMargin - fixed - desired;
+        const cvr = values.cvrPercent / 100;
 
       if (contributionMargin <= 0) {
         warnings.push(
@@ -572,11 +644,17 @@ export const calculators: CalculatorDefinition[] = [
         );
       }
 
-      const targetRoas = availableForAds > 0 ? 1 / availableForAds : 0;
+        const targetRoas = availableForAds > 0 ? 1 / availableForAds : 0;
+        const maxCpa =
+          availableForAds > 0 && values.aov > 0
+            ? values.aov * availableForAds
+            : 0;
+        const maxCpc =
+          availableForAds > 0 && values.aov > 0 && cvr > 0 ? maxCpa * cvr : 0;
 
-      return {
-        headline: {
-          key: "targetRoas",
+        return {
+          headline: {
+            key: "targetRoas",
           label: "Target ROAS",
           value: targetRoas,
           format: "multiple",
@@ -592,18 +670,53 @@ export const calculators: CalculatorDefinition[] = [
             maxFractionDigits: 1,
             detail: "Contribution margin minus allocations",
           },
-          {
-            key: "contributionMargin",
-            label: "Contribution margin",
-            value: Math.max(contributionMargin, 0),
-            format: "percent",
-            maxFractionDigits: 1,
-            detail: "Gross margin - fees - shipping - returns",
-          },
-        ],
-        warnings,
-      };
-    },
+            {
+              key: "contributionMargin",
+              label: "Contribution margin",
+              value: Math.max(contributionMargin, 0),
+              format: "percent",
+              maxFractionDigits: 1,
+              detail: "Gross margin - fees - shipping - returns",
+            },
+            {
+              key: "maxCpa",
+              label: "Target CPA (from AOV)",
+              value: maxCpa,
+              format: "currency",
+              currency: "USD",
+              detail:
+                availableForAds > 0 && values.aov > 0
+                  ? "AOV x budget for ads"
+                  : "Add AOV or reduce allocations",
+            },
+            {
+              key: "maxCpc",
+              label: "Target CPC (from CVR)",
+              value: maxCpc,
+              format: "currency",
+              currency: "USD",
+              detail: cvr > 0 ? "Target CPA x CVR" : "Add CVR",
+            },
+          ],
+          breakdown: [
+            {
+              key: "aov",
+              label: "AOV",
+              value: values.aov,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "cvr",
+              label: "CVR",
+              value: cvr,
+              format: "percent",
+              maxFractionDigits: 2,
+            },
+          ],
+          warnings,
+        };
+      },
     formula:
       "Target ROAS = 1 / (Contribution margin - Fixed cost allocation - Desired profit margin)",
     assumptions: [
@@ -939,11 +1052,11 @@ export const calculators: CalculatorDefinition[] = [
         warnings.push("Horizon months was rounded down to a whole number.");
       }
 
-      const profit = values.revenue - values.cost;
-      const roi = safeDivide(profit, values.cost);
-      if (values.cost <= 0) warnings.push("Total cost must be greater than 0.");
-      if (roi === null) {
-        return {
+        const profit = values.revenue - values.cost;
+        const roi = safeDivide(profit, values.cost);
+        if (values.cost <= 0) warnings.push("Total cost must be greater than 0.");
+        if (roi === null) {
+          return {
           headline: {
             key: "roi",
             label: "ROI",
@@ -955,13 +1068,15 @@ export const calculators: CalculatorDefinition[] = [
         };
       }
 
-      const annualizedRoi =
-        roi > -1 ? Math.pow(1 + roi, 12 / horizonMonths) - 1 : null;
-      if (annualizedRoi === null) {
-        warnings.push(
-          "Annualized ROI is not available when ROI is <= -100% (revenue is too low vs cost).",
-        );
-      }
+        const annualizedRoi =
+          roi > -1 ? Math.pow(1 + roi, 12 / horizonMonths) - 1 : null;
+        if (annualizedRoi === null) {
+          warnings.push(
+            "Annualized ROI is not available when ROI is <= -100% (revenue is too low vs cost).",
+          );
+        }
+        const monthlyProfit = profit / horizonMonths;
+        const paybackMonths = monthlyProfit > 0 ? values.cost / monthlyProfit : null;
 
       return {
         headline: {
@@ -1008,18 +1123,37 @@ export const calculators: CalculatorDefinition[] = [
             maxFractionDigits: 1,
             detail: "Profit / revenue",
           },
-          {
-            key: "breakEvenRevenue",
-            label: "Break-even revenue",
-            value: values.cost,
-            format: "currency",
-            currency: "USD",
-            detail: "Revenue needed for ROI = 0%",
-          },
-        ],
-        warnings,
-      };
-    },
+            {
+              key: "breakEvenRevenue",
+              label: "Break-even revenue",
+              value: values.cost,
+              format: "currency",
+              currency: "USD",
+              detail: "Revenue needed for ROI = 0%",
+            },
+            {
+              key: "monthlyProfit",
+              label: "Average monthly profit",
+              value: monthlyProfit,
+              format: "currency",
+              currency: "USD",
+              detail: `Profit / ${horizonMonths} months`,
+            },
+            {
+              key: "paybackMonths",
+              label: "Payback months (from profit)",
+              value: paybackMonths ?? 0,
+              format: "number",
+              maxFractionDigits: 1,
+              detail:
+                paybackMonths === null
+                  ? "Profit must be positive"
+                  : "Cost / monthly profit",
+            },
+          ],
+          warnings,
+        };
+      },
     formula:
       "ROI = (Revenue - Cost) / Cost; Annualized ROI = (1 + ROI)^(12 / months) - 1",
     assumptions: [
@@ -10233,21 +10367,30 @@ export const calculators: CalculatorDefinition[] = [
         min: 0,
         step: 0.1,
       },
-      {
-        key: "profitBufferPercent",
-        label: "Profit buffer (optional)",
-        help: "Percent of gross profit to keep as profit (target MER increases as buffer increases).",
-        placeholder: "20",
-        suffix: "%",
-        defaultValue: "20",
-        min: 0,
-        step: 0.1,
-      },
-    ],
-    compute(values) {
-      const warnings: string[] = [];
-      if (values.totalMarketingSpend <= 0)
-        warnings.push("Marketing spend must be greater than 0.");
+        {
+          key: "profitBufferPercent",
+          label: "Profit buffer (optional)",
+          help: "Percent of gross profit to keep as profit (target MER increases as buffer increases).",
+          placeholder: "20",
+          suffix: "%",
+          defaultValue: "20",
+          min: 0,
+          step: 0.1,
+        },
+        {
+          key: "targetProfit",
+          label: "Target profit (optional)",
+          help: "Used to estimate required revenue for a profit target.",
+          placeholder: "50000",
+          prefix: "$",
+          defaultValue: "0",
+          min: 0,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        if (values.totalMarketingSpend <= 0)
+          warnings.push("Marketing spend must be greater than 0.");
 
       const mer = safeDivide(values.totalRevenue, values.totalMarketingSpend) ?? 0;
       if (values.targetMer < 0) warnings.push("Target MER must be 0 or greater.");
@@ -10258,9 +10401,15 @@ export const calculators: CalculatorDefinition[] = [
       const grossProfit = values.totalRevenue * margin;
       const profitAfterSpend = grossProfit - values.totalMarketingSpend;
 
-      const breakEvenMer = margin > 0 ? 1 / margin : null;
-      const buffer = values.profitBufferPercent / 100;
-      const targetMer = margin > 0 ? 1 / (margin * Math.max(0.0001, 1 - buffer)) : null;
+        const breakEvenMer = margin > 0 ? 1 / margin : null;
+        const buffer = values.profitBufferPercent / 100;
+        const targetMer = margin > 0 ? 1 / (margin * Math.max(0.0001, 1 - buffer)) : null;
+        const requiredRevenueForTargetProfit =
+          margin > 0 ? (values.targetProfit + values.totalMarketingSpend) / margin : null;
+        const requiredMerForTargetProfit =
+          requiredRevenueForTargetProfit && values.totalMarketingSpend > 0
+            ? requiredRevenueForTargetProfit / values.totalMarketingSpend
+            : null;
 
       if (margin <= 0) {
         warnings.push("Enter a contribution margin above 0% to compute profit and MER thresholds.");
@@ -10307,15 +10456,37 @@ export const calculators: CalculatorDefinition[] = [
             maxFractionDigits: 2,
             detail: targetMer === null ? "Margin is 0%" : "1 ÷ (margin × (1 - buffer))",
           },
-          {
-            key: "maxSpendAtTargetMer",
-            label: "Max spend at target MER",
-            value: maxSpendAtTargetMer ?? 0,
-            format: "currency",
-            currency: "USD",
-            detail: values.targetMer > 0 ? "Revenue ÷ target MER" : "Target MER is 0",
-          },
-        ],
+            {
+              key: "maxSpendAtTargetMer",
+              label: "Max spend at target MER",
+              value: maxSpendAtTargetMer ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail: values.targetMer > 0 ? "Revenue ÷ target MER" : "Target MER is 0",
+            },
+            {
+              key: "requiredRevenueForTargetProfit",
+              label: "Required revenue for target profit",
+              value: requiredRevenueForTargetProfit ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail:
+                requiredRevenueForTargetProfit === null
+                  ? "Add contribution margin"
+                  : "(Target profit + spend) / margin",
+            },
+            {
+              key: "requiredMerForTargetProfit",
+              label: "Required MER for target profit",
+              value: requiredMerForTargetProfit ?? 0,
+              format: "multiple",
+              maxFractionDigits: 2,
+              detail:
+                requiredMerForTargetProfit === null
+                  ? "Add target profit and margin"
+                  : "Required revenue / spend",
+            },
+          ],
         breakdown: [
           {
             key: "totalRevenue",
@@ -10904,23 +11075,34 @@ export const calculators: CalculatorDefinition[] = [
         min: 0,
         step: 0.1,
       },
-      {
-        key: "ctrPercent",
-        label: "Click-through rate (optional)",
-        help: "If provided, computes max CPM from max CPC. Set 0 to disable.",
-        placeholder: "1.5",
-        suffix: "%",
-        defaultValue: "0",
-        min: 0,
-        step: 0.1,
-      },
-    ],
-    compute(values) {
-      const warnings: string[] = [];
-      const margin = values.contributionMarginPercent / 100;
-      const cvr = values.conversionRatePercent / 100;
-      const buffer = values.profitBufferPercent / 100;
-      const ctr = values.ctrPercent / 100;
+        {
+          key: "ctrPercent",
+          label: "Click-through rate (optional)",
+          help: "If provided, computes max CPM from max CPC. Set 0 to disable.",
+          placeholder: "1.5",
+          suffix: "%",
+          defaultValue: "0",
+          min: 0,
+          step: 0.1,
+        },
+        {
+          key: "leadToCustomerRatePercent",
+          label: "Lead-to-customer rate (optional)",
+          help: "If you buy leads, use this to translate CAC into max CPL.",
+          placeholder: "5",
+          suffix: "%",
+          defaultValue: "0",
+          min: 0,
+          step: 0.1,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        const margin = values.contributionMarginPercent / 100;
+        const cvr = values.conversionRatePercent / 100;
+        const buffer = values.profitBufferPercent / 100;
+        const ctr = values.ctrPercent / 100;
+        const leadToCustomerRate = values.leadToCustomerRatePercent / 100;
 
       if (values.aov <= 0) warnings.push("AOV must be greater than 0.");
       if (margin <= 0) warnings.push("Contribution margin must be greater than 0%.");
@@ -10933,8 +11115,12 @@ export const calculators: CalculatorDefinition[] = [
       const breakEvenCpc = breakEvenCpa * cvr;
       const targetCpc = targetCpa * cvr;
 
-      const breakEvenCpm = ctr > 0 ? breakEvenCpc * 1000 * ctr : null;
-      const targetCpm = ctr > 0 ? targetCpc * 1000 * ctr : null;
+        const breakEvenCpm = ctr > 0 ? breakEvenCpc * 1000 * ctr : null;
+        const targetCpm = ctr > 0 ? targetCpc * 1000 * ctr : null;
+        const breakEvenCpl =
+          leadToCustomerRate > 0 ? breakEvenCpa * leadToCustomerRate : null;
+        const targetCpl =
+          leadToCustomerRate > 0 ? targetCpa * leadToCustomerRate : null;
 
       return {
         headline: {
@@ -10978,15 +11164,37 @@ export const calculators: CalculatorDefinition[] = [
             currency: "USD",
             detail: breakEvenCpm === null ? "CTR is 0%" : "CPC × CTR × 1000",
           },
-          {
-            key: "targetCpm",
-            label: "Target CPM (if CTR provided)",
-            value: targetCpm ?? 0,
-            format: "currency",
-            currency: "USD",
-            detail: targetCpm === null ? "CTR is 0%" : "Target CPC × CTR × 1000",
-          },
-        ],
+            {
+              key: "targetCpm",
+              label: "Target CPM (if CTR provided)",
+              value: targetCpm ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail: targetCpm === null ? "CTR is 0%" : "Target CPC × CTR × 1000",
+            },
+            {
+              key: "breakEvenCpl",
+              label: "Break-even CPL",
+              value: breakEvenCpl ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail:
+                breakEvenCpl === null
+                  ? "Add lead-to-customer rate"
+                  : "CAC x lead-to-customer rate",
+            },
+            {
+              key: "targetCpl",
+              label: "Target CPL",
+              value: targetCpl ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail:
+                targetCpl === null
+                  ? "Add lead-to-customer rate"
+                  : "Target CAC x lead-to-customer rate",
+            },
+          ],
         breakdown: [
           {
             key: "aov",
@@ -12496,16 +12704,20 @@ export const calculators: CalculatorDefinition[] = [
 
       const clicksPerThousand = 1000 * ctr;
       const conversionsPerThousand = clicksPerThousand * cvr;
-      const contributionPerConversion = values.aov * margin;
-      const contributionPerThousand = conversionsPerThousand * contributionPerConversion;
+        const contributionPerConversion = values.aov * margin;
+        const contributionPerThousand = conversionsPerThousand * contributionPerConversion;
 
-      const breakEvenCpm = contributionPerThousand;
-      const targetCpm = breakEvenCpm * Math.max(0, 1 - buffer);
+        const breakEvenCpm = contributionPerThousand;
+        const targetCpm = breakEvenCpm * Math.max(0, 1 - buffer);
+        const breakEvenCpc = ctr > 0 ? breakEvenCpm / (1000 * ctr) : 0;
+        const targetCpc = ctr > 0 ? targetCpm / (1000 * ctr) : 0;
+        const breakEvenCpa = cvr > 0 ? breakEvenCpc / cvr : 0;
+        const targetCpa = cvr > 0 ? targetCpc / cvr : 0;
 
-      return {
-        headline: {
-          key: "targetCpm",
-          label: "Target CPM",
+        return {
+          headline: {
+            key: "targetCpm",
+            label: "Target CPM",
           value: targetCpm,
           format: "currency",
           currency: "USD",
@@ -12528,19 +12740,51 @@ export const calculators: CalculatorDefinition[] = [
             maxFractionDigits: 2,
             detail: "1000×CTR×CVR",
           },
-          {
-            key: "contributionPerConversion",
-            label: "Contribution per conversion",
-            value: contributionPerConversion,
-            format: "currency",
-            currency: "USD",
-            detail: "AOV×margin",
-          },
-          {
-            key: "clicksPerThousand",
-            label: "Clicks per 1,000 impressions",
-            value: clicksPerThousand,
-            format: "number",
+            {
+              key: "contributionPerConversion",
+              label: "Contribution per conversion",
+              value: contributionPerConversion,
+              format: "currency",
+              currency: "USD",
+              detail: "AOV×margin",
+            },
+            {
+              key: "breakEvenCpc",
+              label: "Break-even CPC",
+              value: breakEvenCpc,
+              format: "currency",
+              currency: "USD",
+              detail: "Break-even CPM / (1000 x CTR)",
+            },
+            {
+              key: "breakEvenCpa",
+              label: "Break-even CPA",
+              value: breakEvenCpa,
+              format: "currency",
+              currency: "USD",
+              detail: "Break-even CPC / CVR",
+            },
+            {
+              key: "targetCpc",
+              label: "Target CPC",
+              value: targetCpc,
+              format: "currency",
+              currency: "USD",
+              detail: "Target CPM / (1000 x CTR)",
+            },
+            {
+              key: "targetCpa",
+              label: "Target CPA",
+              value: targetCpa,
+              format: "currency",
+              currency: "USD",
+              detail: "Target CPC / CVR",
+            },
+            {
+              key: "clicksPerThousand",
+              label: "Clicks per 1,000 impressions",
+              value: clicksPerThousand,
+              format: "number",
             maxFractionDigits: 1,
           },
         ],
@@ -13083,38 +13327,55 @@ export const calculators: CalculatorDefinition[] = [
         min: 0,
         step: 0.1,
       },
-      {
-        key: "profitBufferPercent",
-        label: "Profit buffer",
-        placeholder: "20",
-        suffix: "%",
-        defaultValue: "20",
-        min: 0,
-        step: 0.1,
-      },
-    ],
-    compute(values) {
-      const warnings: string[] = [];
-      const cvr = values.cvrPercent / 100;
-      const margin = values.contributionMarginPercent / 100;
-      const buffer = values.profitBufferPercent / 100;
+        {
+          key: "profitBufferPercent",
+          label: "Profit buffer",
+          placeholder: "20",
+          suffix: "%",
+          defaultValue: "20",
+          min: 0,
+          step: 0.1,
+        },
+        {
+          key: "currentCtrPercent",
+          label: "Current CTR (optional)",
+          help: "Used to estimate current ROAS and profit per 1,000 impressions.",
+          placeholder: "1.2",
+          suffix: "%",
+          defaultValue: "1.2",
+          min: 0,
+          step: 0.1,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        const cvr = values.cvrPercent / 100;
+        const margin = values.contributionMarginPercent / 100;
+        const buffer = values.profitBufferPercent / 100;
+        const currentCtr = values.currentCtrPercent / 100;
 
-      if (values.cpm <= 0) warnings.push("CPM must be greater than 0.");
-      if (cvr <= 0) warnings.push("CVR must be greater than 0%.");
-      if (values.aov <= 0) warnings.push("AOV must be greater than 0.");
-      if (margin <= 0) warnings.push("Contribution margin must be greater than 0%.");
+        if (values.cpm <= 0) warnings.push("CPM must be greater than 0.");
+        if (cvr <= 0) warnings.push("CVR must be greater than 0%.");
+        if (values.aov <= 0) warnings.push("AOV must be greater than 0.");
+        if (margin <= 0) warnings.push("Contribution margin must be greater than 0%.");
 
-      const denom = 1000 * cvr * values.aov * margin;
-      const breakEvenCtr = denom > 0 ? values.cpm / denom : 0;
-      const targetCtr =
-        denom > 0 ? values.cpm / (denom * Math.max(0.0001, 1 - buffer)) : 0;
+        const denom = 1000 * cvr * values.aov * margin;
+        const breakEvenCtr = denom > 0 ? values.cpm / denom : 0;
+        const targetCtr =
+          denom > 0 ? values.cpm / (denom * Math.max(0.0001, 1 - buffer)) : 0;
 
-      const breakEvenCpc = breakEvenCtr > 0 ? values.cpm / (1000 * breakEvenCtr) : 0;
-      const targetCpc = targetCtr > 0 ? values.cpm / (1000 * targetCtr) : 0;
+        const breakEvenCpc = breakEvenCtr > 0 ? values.cpm / (1000 * breakEvenCtr) : 0;
+        const targetCpc = targetCtr > 0 ? values.cpm / (1000 * targetCtr) : 0;
+        const currentClicksPerThousand = 1000 * currentCtr;
+        const currentConversionsPerThousand = currentClicksPerThousand * cvr;
+        const currentRevenuePerThousand = currentConversionsPerThousand * values.aov;
+        const currentContributionPerThousand = currentRevenuePerThousand * margin;
+        const currentProfitPerThousand = currentContributionPerThousand - values.cpm;
+        const currentRoas = values.cpm > 0 ? currentRevenuePerThousand / values.cpm : 0;
 
-      return {
-        headline: {
-          key: "targetCtr",
+        return {
+          headline: {
+            key: "targetCtr",
           label: "Target CTR",
           value: targetCtr,
           format: "percent",
@@ -13138,18 +13399,34 @@ export const calculators: CalculatorDefinition[] = [
             currency: "USD",
             detail: "CPC implied by CPM and break-even CTR",
           },
-          {
-            key: "targetCpc",
-            label: "Implied target CPC",
-            value: targetCpc,
-            format: "currency",
-            currency: "USD",
-            detail: "CPC implied by CPM and target CTR",
-          },
-        ],
-        breakdown: [
-          {
-            key: "cpm",
+            {
+              key: "targetCpc",
+              label: "Implied target CPC",
+              value: targetCpc,
+              format: "currency",
+              currency: "USD",
+              detail: "CPC implied by CPM and target CTR",
+            },
+            {
+              key: "currentRoas",
+              label: "Current ROAS (from current CTR)",
+              value: currentRoas,
+              format: "multiple",
+              maxFractionDigits: 2,
+              detail: currentCtr > 0 ? "Revenue per 1,000 / CPM" : "Add current CTR",
+            },
+            {
+              key: "currentProfitPerThousand",
+              label: "Current profit per 1,000 impressions",
+              value: currentProfitPerThousand,
+              format: "currency",
+              currency: "USD",
+              detail: currentCtr > 0 ? "Contribution per 1,000 - CPM" : "Add current CTR",
+            },
+          ],
+          breakdown: [
+            {
+              key: "cpm",
             label: "CPM",
             value: values.cpm,
             format: "currency",
@@ -13659,25 +13936,36 @@ export const calculators: CalculatorDefinition[] = [
         min: 0.01,
         step: 0.01,
       },
-      {
-        key: "targetCac",
-        label: "Target CAC (optional)",
-        help: "Set 0 to disable target rate calculation.",
-        placeholder: "1500",
-        prefix: "$",
-        defaultValue: "1500",
-        min: 0,
-      },
-    ],
-    compute(values) {
-      const warnings: string[] = [];
-      const rate = values.leadToCustomerRatePercent / 100;
-      if (values.cpl <= 0) warnings.push("CPL must be greater than 0.");
-      if (rate <= 0) warnings.push("Lead-to-customer rate must be greater than 0%.");
+        {
+          key: "targetCac",
+          label: "Target CAC (optional)",
+          help: "Set 0 to disable target rate calculation.",
+          placeholder: "1500",
+          prefix: "$",
+          defaultValue: "1500",
+          min: 0,
+        },
+        {
+          key: "salesCostPerLead",
+          label: "Additional sales cost per lead (optional)",
+          help: "Use to estimate all-in CPL when sales costs are not included.",
+          placeholder: "0",
+          prefix: "$",
+          defaultValue: "0",
+          min: 0,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        const rate = values.leadToCustomerRatePercent / 100;
+        if (values.cpl <= 0) warnings.push("CPL must be greater than 0.");
+        if (rate <= 0) warnings.push("Lead-to-customer rate must be greater than 0%.");
 
-      const cac = rate > 0 ? values.cpl / rate : 0;
-      const requiredRate =
-        values.targetCac > 0 ? safeDivide(values.cpl, values.targetCac) : null;
+        const cac = rate > 0 ? values.cpl / rate : 0;
+        const allInCpl = values.cpl + Math.max(0, values.salesCostPerLead);
+        const allInCac = rate > 0 ? allInCpl / rate : 0;
+        const requiredRate =
+          values.targetCac > 0 ? safeDivide(values.cpl, values.targetCac) : null;
 
       return {
         headline: {
@@ -13696,27 +13984,50 @@ export const calculators: CalculatorDefinition[] = [
             format: "percent",
             maxFractionDigits: 2,
           },
-          {
-            key: "requiredRate",
-            label: "Required lead-to-customer rate for target CAC",
-            value: requiredRate ?? 0,
-            format: "percent",
-            maxFractionDigits: 2,
-            detail: requiredRate === null ? "Target CAC disabled" : "CPL ÷ target CAC",
-          },
-        ],
-        breakdown: [
-          {
-            key: "cpl",
-            label: "CPL",
-            value: values.cpl,
-            format: "currency",
-            currency: "USD",
-          },
-          {
-            key: "targetCac",
-            label: "Target CAC",
-            value: values.targetCac,
+            {
+              key: "requiredRate",
+              label: "Required lead-to-customer rate for target CAC",
+              value: requiredRate ?? 0,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: requiredRate === null ? "Target CAC disabled" : "CPL ÷ target CAC",
+            },
+            {
+              key: "allInCpl",
+              label: "All-in CPL (with sales cost)",
+              value: allInCpl,
+              format: "currency",
+              currency: "USD",
+              detail: values.salesCostPerLead > 0 ? "CPL + sales cost per lead" : "Add sales cost per lead",
+            },
+            {
+              key: "allInCac",
+              label: "All-in CAC (with sales cost)",
+              value: allInCac,
+              format: "currency",
+              currency: "USD",
+              detail: values.salesCostPerLead > 0 ? "All-in CPL ÷ lead-to-customer rate" : "Add sales cost per lead",
+            },
+          ],
+          breakdown: [
+            {
+              key: "cpl",
+              label: "CPL",
+              value: values.cpl,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "salesCostPerLead",
+              label: "Sales cost per lead",
+              value: values.salesCostPerLead,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "targetCac",
+              label: "Target CAC",
+              value: values.targetCac,
             format: "currency",
             currency: "USD",
           },
@@ -13803,21 +14114,32 @@ export const calculators: CalculatorDefinition[] = [
         min: 0,
         step: 0.1,
       },
-      {
-        key: "profitBufferPercent",
-        label: "Profit buffer",
-        placeholder: "20",
-        suffix: "%",
-        defaultValue: "20",
-        min: 0,
-        step: 0.1,
-      },
-    ],
-    compute(values) {
-      const warnings: string[] = [];
-      const ctr = values.ctrPercent / 100;
-      const margin = values.contributionMarginPercent / 100;
-      const buffer = values.profitBufferPercent / 100;
+        {
+          key: "profitBufferPercent",
+          label: "Profit buffer",
+          placeholder: "20",
+          suffix: "%",
+          defaultValue: "20",
+          min: 0,
+          step: 0.1,
+        },
+        {
+          key: "currentCvrPercent",
+          label: "Current CVR (optional)",
+          help: "Used to estimate current ROAS and profit per 1,000 impressions.",
+          placeholder: "2.0",
+          suffix: "%",
+          defaultValue: "2.0",
+          min: 0,
+          step: 0.1,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        const ctr = values.ctrPercent / 100;
+        const margin = values.contributionMarginPercent / 100;
+        const buffer = values.profitBufferPercent / 100;
+        const currentCvr = values.currentCvrPercent / 100;
 
       if (values.cpm <= 0) warnings.push("CPM must be greater than 0.");
       if (ctr <= 0) warnings.push("CTR must be greater than 0%.");
@@ -13825,15 +14147,21 @@ export const calculators: CalculatorDefinition[] = [
       if (margin <= 0) warnings.push("Contribution margin must be greater than 0%.");
 
       const denom = 1000 * ctr * values.aov * margin;
-      const breakEvenCvr = denom > 0 ? values.cpm / denom : 0;
-      const targetCvr =
-        denom > 0 ? values.cpm / (denom * Math.max(0.0001, 1 - buffer)) : 0;
+        const breakEvenCvr = denom > 0 ? values.cpm / denom : 0;
+        const targetCvr =
+          denom > 0 ? values.cpm / (denom * Math.max(0.0001, 1 - buffer)) : 0;
 
-      const impliedCpc = ctr > 0 ? values.cpm / (1000 * ctr) : 0;
+        const impliedCpc = ctr > 0 ? values.cpm / (1000 * ctr) : 0;
+        const currentClicksPerThousand = 1000 * ctr;
+        const currentConversionsPerThousand = currentClicksPerThousand * currentCvr;
+        const currentRevenuePerThousand = currentConversionsPerThousand * values.aov;
+        const currentContributionPerThousand = currentRevenuePerThousand * margin;
+        const currentProfitPerThousand = currentContributionPerThousand - values.cpm;
+        const currentRoas = values.cpm > 0 ? currentRevenuePerThousand / values.cpm : 0;
 
-      return {
-        headline: {
-          key: "targetCvr",
+        return {
+          headline: {
+            key: "targetCvr",
           label: "Target CVR",
           value: targetCvr,
           format: "percent",
@@ -13849,14 +14177,30 @@ export const calculators: CalculatorDefinition[] = [
             maxFractionDigits: 2,
             detail: "CVR where profit = 0 (variable economics)",
           },
-          {
-            key: "impliedCpc",
-            label: "Implied CPC from CPM and CTR",
-            value: impliedCpc,
-            format: "currency",
-            currency: "USD",
-          },
-        ],
+            {
+              key: "impliedCpc",
+              label: "Implied CPC from CPM and CTR",
+              value: impliedCpc,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "currentRoas",
+              label: "Current ROAS (from current CVR)",
+              value: currentRoas,
+              format: "multiple",
+              maxFractionDigits: 2,
+              detail: currentCvr > 0 ? "Revenue per 1,000 / CPM" : "Add current CVR",
+            },
+            {
+              key: "currentProfitPerThousand",
+              label: "Current profit per 1,000 impressions",
+              value: currentProfitPerThousand,
+              format: "currency",
+              currency: "USD",
+              detail: currentCvr > 0 ? "Contribution per 1,000 - CPM" : "Add current CVR",
+            },
+          ],
         breakdown: [
           {
             key: "cpm",
@@ -13949,31 +14293,55 @@ export const calculators: CalculatorDefinition[] = [
         defaultValue: "360",
         min: 0,
       },
-      {
-        key: "targetConversions",
-        label: "Target conversions (optional)",
-        placeholder: "500",
-        defaultValue: "500",
-        min: 0,
-      },
-    ],
-    compute(values) {
-      const warnings: string[] = [];
-      if (values.clicks <= 0) warnings.push("Clicks must be greater than 0.");
-      if (values.conversions < 0) warnings.push("Conversions must be 0 or greater.");
-      if (values.conversions > values.clicks)
-        warnings.push("Conversions exceed clicks (check inputs).");
+        {
+          key: "targetConversions",
+          label: "Target conversions (optional)",
+          placeholder: "500",
+          defaultValue: "500",
+          min: 0,
+        },
+        {
+          key: "spend",
+          label: "Ad spend (optional)",
+          help: "Used to estimate CPC and CPA from clicks and conversions.",
+          placeholder: "12000",
+          prefix: "$",
+          defaultValue: "0",
+          min: 0,
+        },
+        {
+          key: "revenue",
+          label: "Revenue (optional)",
+          help: "Used to estimate ROAS from spend.",
+          placeholder: "36000",
+          prefix: "$",
+          defaultValue: "0",
+          min: 0,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        if (values.clicks <= 0) warnings.push("Clicks must be greater than 0.");
+        if (values.conversions < 0) warnings.push("Conversions must be 0 or greater.");
+        if (values.conversions > values.clicks)
+          warnings.push("Conversions exceed clicks (check inputs).");
 
-      const cvr = safeDivide(values.conversions, values.clicks);
-      const clicksPerConversion =
-        values.conversions > 0 ? values.clicks / values.conversions : null;
-      const requiredClicksForTarget =
-        cvr && cvr > 0 ? values.targetConversions / cvr : null;
+        const cvr = safeDivide(values.conversions, values.clicks);
+        const clicksPerConversion =
+          values.conversions > 0 ? values.clicks / values.conversions : null;
+        const requiredClicksForTarget =
+          cvr && cvr > 0 ? values.targetConversions / cvr : null;
+        const cpc = values.spend > 0 ? safeDivide(values.spend, values.clicks) : null;
+        const cpa =
+          values.spend > 0 && values.conversions > 0
+            ? safeDivide(values.spend, values.conversions)
+            : null;
+        const roas = values.spend > 0 ? safeDivide(values.revenue, values.spend) : null;
 
-      return {
-        headline: {
-          key: "clickCvr",
-          label: "Click-through CVR",
+        return {
+          headline: {
+            key: "clickCvr",
+            label: "Click-through CVR",
           value: cvr ?? 0,
           format: "percent",
           maxFractionDigits: 2,
@@ -13988,34 +14356,72 @@ export const calculators: CalculatorDefinition[] = [
             maxFractionDigits: 1,
             detail: values.conversions > 0 ? "Clicks ÷ conversions" : "No conversions",
           },
-          {
-            key: "requiredClicks",
-            label: "Required clicks for target",
-            value: requiredClicksForTarget ?? 0,
-            format: "number",
-            maxFractionDigits: 0,
-            detail: cvr && cvr > 0 ? "Target conversions ÷ CVR" : "Enter valid clicks",
-          },
-        ],
-        breakdown: [
-          {
-            key: "clicks",
-            label: "Clicks",
+            {
+              key: "requiredClicks",
+              label: "Required clicks for target",
+              value: requiredClicksForTarget ?? 0,
+              format: "number",
+              maxFractionDigits: 0,
+              detail: cvr && cvr > 0 ? "Target conversions ÷ CVR" : "Enter valid clicks",
+            },
+            {
+              key: "cpc",
+              label: "CPC (from spend)",
+              value: cpc ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail: cpc === null ? "Add spend" : "Spend ÷ clicks",
+            },
+            {
+              key: "cpa",
+              label: "CPA (from spend)",
+              value: cpa ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail: cpa === null ? "Add spend and conversions" : "Spend ÷ conversions",
+            },
+            {
+              key: "roas",
+              label: "ROAS (from revenue)",
+              value: roas ?? 0,
+              format: "multiple",
+              maxFractionDigits: 2,
+              detail: roas === null ? "Add spend and revenue" : "Revenue ÷ spend",
+            },
+          ],
+          breakdown: [
+            {
+              key: "clicks",
+              label: "Clicks",
             value: values.clicks,
             format: "number",
             maxFractionDigits: 0,
           },
-          {
-            key: "conversions",
-            label: "Conversions",
-            value: values.conversions,
-            format: "number",
-            maxFractionDigits: 0,
-          },
-        ],
-        warnings,
-      };
-    },
+            {
+              key: "conversions",
+              label: "Conversions",
+              value: values.conversions,
+              format: "number",
+              maxFractionDigits: 0,
+            },
+            {
+              key: "spend",
+              label: "Spend",
+              value: values.spend,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "revenue",
+              label: "Revenue",
+              value: values.revenue,
+              format: "currency",
+              currency: "USD",
+            },
+          ],
+          warnings,
+        };
+      },
     formula: "Click-through CVR = conversions ÷ clicks",
     assumptions: [
       "Clicks and conversions are measured over the same window and attribution rules.",
