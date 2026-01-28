@@ -5297,18 +5297,26 @@ export const calculators: CalculatorDefinition[] = [
         prefix: "$",
         defaultValue: "3000",
       },
-      {
-        key: "churnedMrr",
-        label: "Churned MRR",
-        placeholder: "5000",
-        prefix: "$",
-        defaultValue: "5000",
-      },
-    ],
-    compute(values) {
-      const warnings: string[] = [];
-      if (values.newMrr < 0) warnings.push("New MRR must be 0 or greater.");
-      if (values.expansionMrr < 0) warnings.push("Expansion MRR must be 0 or greater.");
+        {
+          key: "churnedMrr",
+          label: "Churned MRR",
+          placeholder: "5000",
+          prefix: "$",
+          defaultValue: "5000",
+        },
+        {
+          key: "targetQuickRatio",
+          label: "Target quick ratio (optional)",
+          placeholder: "4",
+          defaultValue: "4",
+          min: 0,
+          step: 0.1,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        if (values.newMrr < 0) warnings.push("New MRR must be 0 or greater.");
+        if (values.expansionMrr < 0) warnings.push("Expansion MRR must be 0 or greater.");
       if (values.contractionMrr < 0) warnings.push("Contraction MRR must be 0 or greater.");
       if (values.churnedMrr < 0) warnings.push("Churned MRR must be 0 or greater.");
 
@@ -5441,15 +5449,28 @@ export const calculators: CalculatorDefinition[] = [
       if (values.contractionMrr < 0) warnings.push("Contraction MRR must be 0 or greater.");
       if (values.churnedMrr < 0) warnings.push("Churned MRR must be 0 or greater.");
 
-      const grossAdditions = values.newMrr + values.expansionMrr;
-      const grossLosses = values.contractionMrr + values.churnedMrr;
-      const netNewMrr = grossAdditions - grossLosses;
-      const endingMrr = values.startingMrr + netNewMrr;
-
-      const quickRatio = safeDivide(grossAdditions, grossLosses);
-      if (grossLosses <= 0) warnings.push("Losses (contraction + churn) must be greater than 0 to compute quick ratio.");
-
-      const growthRate = safeDivide(netNewMrr, values.startingMrr);
+        const grossAdditions = values.newMrr + values.expansionMrr;
+        const grossLosses = values.contractionMrr + values.churnedMrr;
+        const netNewMrr = grossAdditions - grossLosses;
+        const endingMrr = values.startingMrr + netNewMrr;
+        const nrr =
+          values.startingMrr > 0
+            ? (values.startingMrr +
+                values.expansionMrr -
+                values.contractionMrr -
+                values.churnedMrr) /
+              values.startingMrr
+            : null;
+        const grr =
+          values.startingMrr > 0
+            ? (values.startingMrr - values.contractionMrr - values.churnedMrr) /
+              values.startingMrr
+            : null;
+  
+        const quickRatio = safeDivide(grossAdditions, grossLosses);
+        if (grossLosses <= 0) warnings.push("Losses (contraction + churn) must be greater than 0 to compute quick ratio.");
+  
+        const growthRate = safeDivide(netNewMrr, values.startingMrr);
 
       return {
         headline: {
@@ -5477,15 +5498,31 @@ export const calculators: CalculatorDefinition[] = [
             maxFractionDigits: 2,
             detail: growthRate === null ? "Starting MRR must be > 0" : undefined,
           },
-          {
-            key: "quickRatio",
-            label: "Quick ratio",
-            value: quickRatio ?? 0,
-            format: "ratio",
-            maxFractionDigits: 2,
-            detail: quickRatio === null ? "Losses must be > 0" : "(New + Expansion) ÷ (Contraction + Churn)",
-          },
-        ],
+            {
+              key: "quickRatio",
+              label: "Quick ratio",
+              value: quickRatio ?? 0,
+              format: "ratio",
+              maxFractionDigits: 2,
+              detail: quickRatio === null ? "Losses must be > 0" : "(New + Expansion) ÷ (Contraction + Churn)",
+            },
+            {
+              key: "nrr",
+              label: "NRR for the period (starting base)",
+              value: nrr ?? 0,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: nrr === null ? "Starting MRR must be > 0" : "1 + expansion - contraction - churn",
+            },
+            {
+              key: "grr",
+              label: "GRR for the period (starting base)",
+              value: grr ?? 0,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: grr === null ? "Starting MRR must be > 0" : "1 - contraction - churn",
+            },
+          ],
         breakdown: [
           {
             key: "startingMrr",
@@ -5613,15 +5650,21 @@ export const calculators: CalculatorDefinition[] = [
       if (values.contractionMrr < 0) warnings.push("Contraction MRR must be 0 or greater.");
       if (values.churnedMrr < 0) warnings.push("Churned MRR must be 0 or greater.");
 
-      const positive = values.newMrr + values.expansionMrr;
-      const negative = values.contractionMrr + values.churnedMrr;
-      if (negative <= 0) warnings.push("Losses (contraction + churn) must be greater than 0.");
-
-      const ratio = safeDivide(positive, negative);
-      if (ratio === null) {
-        return {
-          headline: {
-            key: "quickRatio",
+        const positive = values.newMrr + values.expansionMrr;
+        const negative = values.contractionMrr + values.churnedMrr;
+        if (negative <= 0) warnings.push("Losses (contraction + churn) must be greater than 0.");
+  
+        const ratio = safeDivide(positive, negative);
+        if (values.targetQuickRatio < 0) warnings.push("Target quick ratio must be 0 or greater.");
+        const requiredPositive =
+          values.targetQuickRatio > 0 ? negative * values.targetQuickRatio : null;
+        const maxNegative =
+          values.targetQuickRatio > 0 ? positive / values.targetQuickRatio : null;
+        const netNewMrr = positive - negative;
+        if (ratio === null) {
+          return {
+            headline: {
+              key: "quickRatio",
             label: "Quick ratio",
             value: 0,
             format: "ratio",
@@ -5632,15 +5675,46 @@ export const calculators: CalculatorDefinition[] = [
       }
 
       return {
-        headline: {
-          key: "quickRatio",
-          label: "Quick ratio",
-          value: ratio,
-          format: "ratio",
-          maxFractionDigits: 2,
-          detail: "(New + Expansion) ÷ (Contraction + Churn)",
-        },
-        breakdown: [
+          headline: {
+            key: "quickRatio",
+            label: "Quick ratio",
+            value: ratio,
+            format: "ratio",
+            maxFractionDigits: 2,
+            detail: "(New + Expansion) ÷ (Contraction + Churn)",
+          },
+          secondary: [
+            {
+              key: "netNewMrr",
+              label: "Net new MRR (additions - losses)",
+              value: netNewMrr,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "requiredPositive",
+              label: "Required additions for target ratio",
+              value: requiredPositive ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail:
+                requiredPositive === null
+                  ? "Target ratio is 0"
+                  : "Losses x target ratio",
+            },
+            {
+              key: "maxNegative",
+              label: "Max losses at target ratio",
+              value: maxNegative ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail:
+                maxNegative === null
+                  ? "Target ratio is 0"
+                  : "Additions / target ratio",
+            },
+          ],
+          breakdown: [
           {
             key: "positive",
             label: "Positive MRR movements",
@@ -6015,10 +6089,25 @@ export const calculators: CalculatorDefinition[] = [
       if (values.contractionArr < 0) warnings.push("Contraction ARR must be 0 or greater.");
       if (values.churnedArr < 0) warnings.push("Churned ARR must be 0 or greater.");
 
-      const grossAdditions = values.newArr + values.expansionArr;
-      const grossLosses = values.contractionArr + values.churnedArr;
-      const netNewArr = grossAdditions - grossLosses;
-      const endingArr = values.startingArr + netNewArr;
+        const grossAdditions = values.newArr + values.expansionArr;
+        const grossLosses = values.contractionArr + values.churnedArr;
+        const netNewArr = grossAdditions - grossLosses;
+        const endingArr = values.startingArr + netNewArr;
+        const nrr =
+          values.startingArr > 0
+            ? (values.startingArr +
+                values.expansionArr -
+                values.contractionArr -
+                values.churnedArr) /
+              values.startingArr
+            : null;
+        const grr =
+          values.startingArr > 0
+            ? (values.startingArr - values.contractionArr - values.churnedArr) /
+              values.startingArr
+            : null;
+        const netExpansionArr =
+          values.expansionArr - values.contractionArr - values.churnedArr;
 
       const growthRate = safeDivide(netNewArr, values.startingArr);
       if (values.startingArr <= 0)
@@ -6053,15 +6142,39 @@ export const calculators: CalculatorDefinition[] = [
             maxFractionDigits: 2,
             detail: growthRate === null ? "Starting ARR must be > 0" : undefined,
           },
-          {
-            key: "ratio",
-            label: "ARR quick ratio (additions ÷ losses)",
-            value: quickRatio ?? 0,
-            format: "ratio",
-            maxFractionDigits: 2,
-            detail: quickRatio === null ? "Losses must be > 0" : "(New + Expansion) ÷ (Contraction + Churn)",
-          },
-        ],
+            {
+              key: "ratio",
+              label: "ARR quick ratio (additions ÷ losses)",
+              value: quickRatio ?? 0,
+              format: "ratio",
+              maxFractionDigits: 2,
+              detail: quickRatio === null ? "Losses must be > 0" : "(New + Expansion) ÷ (Contraction + Churn)",
+            },
+            {
+              key: "nrr",
+              label: "ARR NRR for the period",
+              value: nrr ?? 0,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: nrr === null ? "Starting ARR must be > 0" : "1 + expansion - contraction - churn",
+            },
+            {
+              key: "grr",
+              label: "ARR GRR for the period",
+              value: grr ?? 0,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: grr === null ? "Starting ARR must be > 0" : "1 - contraction - churn",
+            },
+            {
+              key: "netExpansionArr",
+              label: "Net expansion ARR",
+              value: netExpansionArr,
+              format: "currency",
+              currency: "USD",
+              detail: "Expansion - contraction - churn",
+            },
+          ],
         breakdown: [
           {
             key: "startingArr",
@@ -7978,19 +8091,21 @@ export const calculators: CalculatorDefinition[] = [
       if (values.churnRatePercent > 100 || values.contractionRatePercent > 100)
         warnings.push("Churn/contraction rates above 100% are not realistic.");
 
-      let mrr = Math.max(0, values.startingMrr);
-      let totalNew = 0;
-      let totalExpansion = 0;
-      let totalContraction = 0;
-      let totalChurn = 0;
+        let mrr = Math.max(0, values.startingMrr);
+        let totalNew = 0;
+        let totalExpansion = 0;
+        let totalContraction = 0;
+        let totalChurn = 0;
+        let sumMrr = 0;
 
       const baseMrr = mrr;
 
-      for (let month = 1; month <= months; month++) {
-        const expansion = mrr * expansionRate;
-        const contraction = mrr * contractionRate;
-        const churn = mrr * churnRate;
-        const next = mrr + values.newMrrPerMonth + expansion - contraction - churn;
+        for (let month = 1; month <= months; month++) {
+          sumMrr += mrr;
+          const expansion = mrr * expansionRate;
+          const contraction = mrr * contractionRate;
+          const churn = mrr * churnRate;
+          const next = mrr + values.newMrrPerMonth + expansion - contraction - churn;
 
         totalNew += values.newMrrPerMonth;
         totalExpansion += expansion;
@@ -8001,8 +8116,10 @@ export const calculators: CalculatorDefinition[] = [
         if (next < 0) warnings.push("Your assumptions drive MRR below $0; the forecast is floored at $0.");
       }
 
-      const netNewMrr = mrr - baseMrr;
-      const cmgr = baseMrr > 0 ? Math.pow(mrr / baseMrr, 1 / months) - 1 : 0;
+        const netNewMrr = mrr - baseMrr;
+        const averageMrr = sumMrr / months;
+        const cmgr = baseMrr > 0 ? Math.pow(mrr / baseMrr, 1 / months) - 1 : 0;
+        const totalNetNew = totalNew + totalExpansion - totalContraction - totalChurn;
 
       const oneMonthExistingMrr = baseMrr;
       const oneMonthNrr = safeDivide(
@@ -8060,15 +8177,59 @@ export const calculators: CalculatorDefinition[] = [
             maxFractionDigits: 2,
             detail: "1 + expansion - contraction - churn (monthly)",
           },
-          {
-            key: "impliedMonthlyGrr",
-            label: "Implied monthly GRR (existing MRR only)",
-            value: oneMonthGrr ?? 0,
-            format: "percent",
-            maxFractionDigits: 2,
-            detail: "1 - contraction - churn (monthly)",
-          },
-        ],
+            {
+              key: "impliedMonthlyGrr",
+              label: "Implied monthly GRR (existing MRR only)",
+              value: oneMonthGrr ?? 0,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: "1 - contraction - churn (monthly)",
+            },
+            {
+              key: "averageMrr",
+              label: "Average MRR over horizon",
+              value: averageMrr,
+              format: "currency",
+              currency: "USD",
+              detail: "Average of monthly starting MRR",
+            },
+            {
+              key: "totalNew",
+              label: "Total new MRR added",
+              value: totalNew,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "totalExpansion",
+              label: "Total expansion MRR",
+              value: totalExpansion,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "totalContraction",
+              label: "Total contraction MRR",
+              value: totalContraction,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "totalChurn",
+              label: "Total churned MRR",
+              value: totalChurn,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "totalNetNew",
+              label: "Total net new MRR (components)",
+              value: totalNetNew,
+              format: "currency",
+              currency: "USD",
+              detail: "New + expansion - contraction - churn",
+            },
+          ],
         breakdown: [
           {
             key: "startingMrr",
@@ -8712,22 +8873,26 @@ export const calculators: CalculatorDefinition[] = [
       const retention = 1 - churn;
       const monthlyDiscount = annualDiscountRate > 0 ? Math.pow(1 + annualDiscountRate, 1 / 12) - 1 : 0;
 
-      let undiscounted = 0;
-      let discounted = 0;
-      let month12GrossProfit = 0;
-
-      for (let t = 1; t <= months; t++) {
-        const expectedRevenue =
-          values.arpaMonthly * Math.pow(1 + expansion, t - 1) * Math.pow(retention, t - 1);
-        const gp = expectedRevenue * grossMargin;
-        undiscounted += gp;
-        const df = monthlyDiscount > 0 ? Math.pow(1 + monthlyDiscount, t) : 1;
-        discounted += gp / df;
-        if (t === 12) month12GrossProfit = gp;
-      }
-
-      const retentionAtHorizon = Math.pow(retention, months);
-      const approxLifetimeMonths = churn > 0 ? 1 / churn : null;
+        let undiscounted = 0;
+        let discounted = 0;
+        let month12GrossProfit = 0;
+        let retentionMonth12 = 0;
+  
+        for (let t = 1; t <= months; t++) {
+          const expectedRevenue =
+            values.arpaMonthly * Math.pow(1 + expansion, t - 1) * Math.pow(retention, t - 1);
+          const gp = expectedRevenue * grossMargin;
+          undiscounted += gp;
+          const df = monthlyDiscount > 0 ? Math.pow(1 + monthlyDiscount, t) : 1;
+          discounted += gp / df;
+          if (t === 12) month12GrossProfit = gp;
+          if (t === 12) retentionMonth12 = Math.pow(retention, t);
+        }
+  
+        const retentionAtHorizon = Math.pow(retention, months);
+        const approxLifetimeMonths = churn > 0 ? 1 / churn : null;
+        const averageGrossProfit = undiscounted / months;
+        const discountedRatio = undiscounted > 0 ? discounted / undiscounted : null;
 
       return {
         headline: {
@@ -8746,30 +8911,54 @@ export const calculators: CalculatorDefinition[] = [
             format: "currency",
             currency: "USD",
           },
-          {
-            key: "grossProfitMonth12",
-            label: "Expected gross profit in month 12",
-            value: month12GrossProfit,
-            format: "currency",
-            currency: "USD",
-            detail: "Expected value per original account in month 12",
-          },
-          {
-            key: "retentionAtHorizon",
-            label: `Logo retention after ${months} months`,
-            value: retentionAtHorizon,
-            format: "percent",
-            maxFractionDigits: 1,
-          },
-          {
-            key: "approxLifetime",
-            label: "Approx. lifetime from churn (months)",
-            value: approxLifetimeMonths ?? 0,
-            format: "months",
-            maxFractionDigits: 1,
-            detail: approxLifetimeMonths === null ? "Churn is 0%" : "1 ÷ monthly churn",
-          },
-        ],
+            {
+              key: "grossProfitMonth12",
+              label: "Expected gross profit in month 12",
+              value: month12GrossProfit,
+              format: "currency",
+              currency: "USD",
+              detail: "Expected value per original account in month 12",
+            },
+            {
+              key: "retentionMonth12",
+              label: "Logo retention after 12 months",
+              value: retentionMonth12,
+              format: "percent",
+              maxFractionDigits: 1,
+              detail: months < 12 ? "Horizon < 12 months" : "Constant churn assumption",
+            },
+            {
+              key: "retentionAtHorizon",
+              label: `Logo retention after ${months} months`,
+              value: retentionAtHorizon,
+              format: "percent",
+              maxFractionDigits: 1,
+            },
+            {
+              key: "approxLifetime",
+              label: "Approx. lifetime from churn (months)",
+              value: approxLifetimeMonths ?? 0,
+              format: "months",
+              maxFractionDigits: 1,
+              detail: approxLifetimeMonths === null ? "Churn is 0%" : "1 ÷ monthly churn",
+            },
+            {
+              key: "averageGrossProfit",
+              label: "Average gross profit per month",
+              value: averageGrossProfit,
+              format: "currency",
+              currency: "USD",
+              detail: `Average over ${months} months`,
+            },
+            {
+              key: "discountedRatio",
+              label: "Discounted / undiscounted LTV",
+              value: discountedRatio ?? 0,
+              format: "percent",
+              maxFractionDigits: 1,
+              detail: discountedRatio === null ? "Undiscounted LTV is 0" : "Discount impact",
+            },
+          ],
         breakdown: [
           {
             key: "arpaMonthly",
@@ -10080,21 +10269,29 @@ export const calculators: CalculatorDefinition[] = [
 
       const retainedAt = (m: number) => Math.pow(retention, m);
 
-      const r3 = retainedAt(3);
-      const r6 = retainedAt(6);
-      const r12 = retainedAt(12);
-      const r24 = retainedAt(24);
-
-      let expectedRevenue = 0;
-      let expectedGrossProfit = 0;
-      for (let m = 1; m <= months; m++) {
-        const expectedActive = retainedAt(m - 1);
-        const rev = expectedActive * values.arpaMonthly;
-        expectedRevenue += rev;
-        expectedGrossProfit += rev * margin;
-      }
-
-      const lifetimeMonths = churn > 0 ? 1 / churn : null;
+        const r3 = retainedAt(3);
+        const r6 = retainedAt(6);
+        const r12 = retainedAt(12);
+        const r24 = retainedAt(24);
+        const rHorizon = retainedAt(months);
+  
+        let expectedRevenue = 0;
+        let expectedGrossProfit = 0;
+        let expectedActiveMonths = 0;
+        for (let m = 1; m <= months; m++) {
+          const expectedActive = retainedAt(m - 1);
+          const rev = expectedActive * values.arpaMonthly;
+          expectedActiveMonths += expectedActive;
+          expectedRevenue += rev;
+          expectedGrossProfit += rev * margin;
+        }
+  
+        const lifetimeMonths = churn > 0 ? 1 / churn : null;
+        const halfLifeMonths =
+          retention > 0 && retention < 1
+            ? Math.log(0.5) / Math.log(retention)
+            : null;
+        const averageRetention = expectedActiveMonths / months;
 
       return {
         headline: {
@@ -10120,36 +10317,68 @@ export const calculators: CalculatorDefinition[] = [
             format: "percent",
             maxFractionDigits: 1,
           },
-          {
-            key: "retention24",
-            label: "Retention after 24 months",
-            value: r24,
-            format: "percent",
-            maxFractionDigits: 1,
-          },
-          {
-            key: "expectedRevenue",
-            label: `Expected revenue per original customer (${months} months)`,
-            value: expectedRevenue,
-            format: "currency",
-            currency: "USD",
-          },
-          {
-            key: "expectedGrossProfit",
-            label: `Expected gross profit per original customer (${months} months)`,
-            value: expectedGrossProfit,
-            format: "currency",
-            currency: "USD",
-          },
-          {
-            key: "lifetimeMonths",
-            label: "Approx. lifetime from churn (months)",
-            value: lifetimeMonths ?? 0,
-            format: "months",
-            maxFractionDigits: 1,
-            detail: lifetimeMonths === null ? "Churn is 0%" : "1 ÷ monthly churn (rough)",
-          },
-        ],
+            {
+              key: "retention24",
+              label: "Retention after 24 months",
+              value: r24,
+              format: "percent",
+              maxFractionDigits: 1,
+            },
+            {
+              key: "retentionHorizon",
+              label: `Retention after ${months} months`,
+              value: rHorizon,
+              format: "percent",
+              maxFractionDigits: 1,
+              detail: "Horizon retention",
+            },
+            {
+              key: "expectedRevenue",
+              label: `Expected revenue per original customer (${months} months)`,
+              value: expectedRevenue,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "expectedGrossProfit",
+              label: `Expected gross profit per original customer (${months} months)`,
+              value: expectedGrossProfit,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "expectedActiveMonths",
+              label: `Expected active months (per original customer)`,
+              value: expectedActiveMonths,
+              format: "months",
+              maxFractionDigits: 1,
+              detail: "Sum of monthly retention over horizon",
+            },
+            {
+              key: "averageRetention",
+              label: "Average retention over horizon",
+              value: averageRetention,
+              format: "percent",
+              maxFractionDigits: 1,
+              detail: "Average monthly retention",
+            },
+            {
+              key: "lifetimeMonths",
+              label: "Approx. lifetime from churn (months)",
+              value: lifetimeMonths ?? 0,
+              format: "months",
+              maxFractionDigits: 1,
+              detail: lifetimeMonths === null ? "Churn is 0%" : "1 ÷ monthly churn (rough)",
+            },
+            {
+              key: "halfLifeMonths",
+              label: "Retention half-life (months)",
+              value: halfLifeMonths ?? 0,
+              format: "months",
+              maxFractionDigits: 1,
+              detail: halfLifeMonths === null ? "Churn is 0%" : "Months until 50% retained",
+            },
+          ],
         breakdown: [
           {
             key: "monthlyChurn",
@@ -11315,21 +11544,32 @@ export const calculators: CalculatorDefinition[] = [
         );
       };
 
-      const r3 = retentionAt(3);
-      const r6 = retentionAt(6);
-      const r12 = retentionAt(12);
-      const r24 = retentionAt(24);
-
-      let expectedRevenue = 0;
-      let expectedGrossProfit = 0;
-      for (let m = 1; m <= horizon; m++) {
-        const expectedActive = retentionAt(m - 1);
-        const rev = expectedActive * values.arpaMonthly;
-        expectedRevenue += rev;
-        expectedGrossProfit += rev * margin;
-      }
-
-      const retentionAfterEarly = retentionAt(earlyMonths);
+        const r3 = retentionAt(3);
+        const r6 = retentionAt(6);
+        const r12 = retentionAt(12);
+        const r24 = retentionAt(24);
+        const rHorizon = retentionAt(horizon);
+  
+        let expectedRevenue = 0;
+        let expectedGrossProfit = 0;
+        let expectedActiveMonths = 0;
+        for (let m = 1; m <= horizon; m++) {
+          const expectedActive = retentionAt(m - 1);
+          const rev = expectedActive * values.arpaMonthly;
+          expectedActiveMonths += expectedActive;
+          expectedRevenue += rev;
+          expectedGrossProfit += rev * margin;
+        }
+  
+        const retentionAfterEarly = retentionAt(earlyMonths);
+        const averageRetention = expectedActiveMonths / horizon;
+        let halfLifeMonths: number | null = null;
+        for (let m = 1; m <= horizon; m++) {
+          if (retentionAt(m) <= 0.5) {
+            halfLifeMonths = m;
+            break;
+          }
+        }
 
       return {
         headline: {
@@ -11355,35 +11595,67 @@ export const calculators: CalculatorDefinition[] = [
             format: "percent",
             maxFractionDigits: 1,
           },
-          {
-            key: "retention24",
-            label: "Retention after 24 months",
-            value: r24,
-            format: "percent",
-            maxFractionDigits: 1,
-          },
-          {
-            key: "retentionAfterEarly",
-            label: `Retention after early phase (month ${earlyMonths})`,
-            value: retentionAfterEarly,
-            format: "percent",
-            maxFractionDigits: 1,
-          },
-          {
-            key: "expectedRevenue",
-            label: `Expected revenue per original customer (${horizon} months)`,
-            value: expectedRevenue,
-            format: "currency",
-            currency: "USD",
-          },
-          {
-            key: "expectedGrossProfit",
-            label: `Expected gross profit per original customer (${horizon} months)`,
-            value: expectedGrossProfit,
-            format: "currency",
-            currency: "USD",
-          },
-        ],
+            {
+              key: "retention24",
+              label: "Retention after 24 months",
+              value: r24,
+              format: "percent",
+              maxFractionDigits: 1,
+            },
+            {
+              key: "retentionHorizon",
+              label: `Retention after ${horizon} months`,
+              value: rHorizon,
+              format: "percent",
+              maxFractionDigits: 1,
+              detail: "Horizon retention",
+            },
+            {
+              key: "retentionAfterEarly",
+              label: `Retention after early phase (month ${earlyMonths})`,
+              value: retentionAfterEarly,
+              format: "percent",
+              maxFractionDigits: 1,
+            },
+            {
+              key: "expectedRevenue",
+              label: `Expected revenue per original customer (${horizon} months)`,
+              value: expectedRevenue,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "expectedGrossProfit",
+              label: `Expected gross profit per original customer (${horizon} months)`,
+              value: expectedGrossProfit,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "expectedActiveMonths",
+              label: "Expected active months (per original customer)",
+              value: expectedActiveMonths,
+              format: "months",
+              maxFractionDigits: 1,
+              detail: "Sum of monthly retention over horizon",
+            },
+            {
+              key: "averageRetention",
+              label: "Average retention over horizon",
+              value: averageRetention,
+              format: "percent",
+              maxFractionDigits: 1,
+              detail: "Average monthly retention",
+            },
+            {
+              key: "halfLifeMonths",
+              label: "Retention half-life (months)",
+              value: halfLifeMonths ?? 0,
+              format: "months",
+              maxFractionDigits: 1,
+              detail: halfLifeMonths === null ? "Not reached in horizon" : "Months until 50% retained",
+            },
+          ],
         breakdown: [
           {
             key: "churnEarly",
@@ -11551,8 +11823,12 @@ export const calculators: CalculatorDefinition[] = [
         }
       }
 
-      const nrrAt = checkpointNrr[months] ?? (starting > 0 ? nrrMrr / starting : 0);
-      const grrAt = checkpointGrr[months] ?? (starting > 0 ? grrMrr / starting : 0);
+        const nrrAt = checkpointNrr[months] ?? (starting > 0 ? nrrMrr / starting : 0);
+        const grrAt = checkpointGrr[months] ?? (starting > 0 ? grrMrr / starting : 0);
+        const averageNrr =
+          starting > 0 ? sumNrr / (starting * months) : null;
+        const averageGrr =
+          starting > 0 ? sumGrr / (starting * months) : null;
 
       return {
         headline: {
@@ -11610,14 +11886,46 @@ export const calculators: CalculatorDefinition[] = [
             currency: "USD",
             detail: "Sum of monthly cohort MRR (approx)",
           },
-          {
-            key: "sumGrr",
-            label: `Total revenue retained (GRR) over ${months} months`,
-            value: sumGrr,
-            format: "currency",
-            currency: "USD",
-          },
-        ],
+            {
+              key: "sumGrr",
+              label: `Total revenue retained (GRR) over ${months} months`,
+              value: sumGrr,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "averageNrr",
+              label: "Average NRR over horizon",
+              value: averageNrr ?? 0,
+              format: "percent",
+              maxFractionDigits: 1,
+              detail: averageNrr === null ? "Starting MRR is 0" : "Average monthly NRR",
+            },
+            {
+              key: "averageGrr",
+              label: "Average GRR over horizon",
+              value: averageGrr ?? 0,
+              format: "percent",
+              maxFractionDigits: 1,
+              detail: averageGrr === null ? "Starting MRR is 0" : "Average monthly GRR",
+            },
+            {
+              key: "nrrMultiplier",
+              label: "Monthly NRR multiplier",
+              value: nrrMultiplier,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: "1 + expansion - contraction - churn",
+            },
+            {
+              key: "grrMultiplier",
+              label: "Monthly GRR multiplier",
+              value: grrMultiplier,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: "1 - contraction - churn",
+            },
+          ],
         breakdown: [
           {
             key: "startingMrr",
@@ -13845,16 +14153,18 @@ export const calculators: CalculatorDefinition[] = [
         );
       };
 
-      let cumulativeGrossProfit = 0;
-      let paybackMonth: number | null = null;
-      let gp12 = 0;
-      let gp24 = 0;
+        let cumulativeGrossProfit = 0;
+        let paybackMonth: number | null = null;
+        let gp12 = 0;
+        let gp24 = 0;
+        let gpMonth1 = 0;
 
       for (let month = 1; month <= horizon; month++) {
-        const active = retentionAt(month - 1);
-        const arpa = values.arpaMonthly * Math.pow(1 + expansion, month - 1);
-        const grossProfit = active * arpa * margin;
-        cumulativeGrossProfit += grossProfit;
+          const active = retentionAt(month - 1);
+          const arpa = values.arpaMonthly * Math.pow(1 + expansion, month - 1);
+          const grossProfit = active * arpa * margin;
+          if (month === 1) gpMonth1 = grossProfit;
+          cumulativeGrossProfit += grossProfit;
 
         if (month === 12) gp12 = cumulativeGrossProfit;
         if (month === 24) gp24 = cumulativeGrossProfit;
@@ -13871,7 +14181,11 @@ export const calculators: CalculatorDefinition[] = [
         warnings.push("Payback not reached within the chosen horizon.");
       }
 
-      const ltvToCac = values.cac > 0 ? cumulativeGrossProfit / values.cac : 0;
+        const ltvToCac = values.cac > 0 ? cumulativeGrossProfit / values.cac : 0;
+        const ltvToCac12 = values.cac > 0 ? gp12 / values.cac : null;
+        const ltvToCac24 = values.cac > 0 ? gp24 / values.cac : null;
+        const paybackShare =
+          paybackMonth !== null ? paybackMonth / horizon : null;
 
       return {
         headline: {
@@ -13898,23 +14212,55 @@ export const calculators: CalculatorDefinition[] = [
             maxFractionDigits: 2,
             detail: "Cumulative gross profit ÷ CAC",
           },
-          {
-            key: "gp12",
-            label: "Cumulative gross profit (12 months)",
-            value: gp12,
-            format: "currency",
-            currency: "USD",
-            detail: horizon < 12 ? "Horizon < 12 months" : undefined,
-          },
-          {
-            key: "gp24",
-            label: "Cumulative gross profit (24 months)",
-            value: gp24,
-            format: "currency",
-            currency: "USD",
-            detail: horizon < 24 ? "Horizon < 24 months" : undefined,
-          },
-        ],
+            {
+              key: "gp12",
+              label: "Cumulative gross profit (12 months)",
+              value: gp12,
+              format: "currency",
+              currency: "USD",
+              detail: horizon < 12 ? "Horizon < 12 months" : undefined,
+            },
+            {
+              key: "gp24",
+              label: "Cumulative gross profit (24 months)",
+              value: gp24,
+              format: "currency",
+              currency: "USD",
+              detail: horizon < 24 ? "Horizon < 24 months" : undefined,
+            },
+            {
+              key: "gpMonth1",
+              label: "Gross profit in month 1",
+              value: gpMonth1,
+              format: "currency",
+              currency: "USD",
+              detail: "Per original customer",
+            },
+            {
+              key: "ltvToCac12",
+              label: "LTV:CAC at 12 months",
+              value: ltvToCac12 ?? 0,
+              format: "multiple",
+              maxFractionDigits: 2,
+              detail: ltvToCac12 === null ? "CAC is 0" : "Cumulative GP / CAC",
+            },
+            {
+              key: "ltvToCac24",
+              label: "LTV:CAC at 24 months",
+              value: ltvToCac24 ?? 0,
+              format: "multiple",
+              maxFractionDigits: 2,
+              detail: ltvToCac24 === null ? "CAC is 0" : "Cumulative GP / CAC",
+            },
+            {
+              key: "paybackShare",
+              label: "Payback as % of horizon",
+              value: paybackShare ?? 0,
+              format: "percent",
+              maxFractionDigits: 1,
+              detail: paybackShare === null ? "Payback not reached" : "Payback / horizon",
+            },
+          ],
         breakdown: [
           {
             key: "cac",
@@ -15208,33 +15554,50 @@ export const calculators: CalculatorDefinition[] = [
         min: 0,
         step: 0.1,
       },
-      {
-        key: "targetMonthlyGrrPercent",
-        label: "Target monthly GRR",
-        placeholder: "98",
-        suffix: "%",
-        defaultValue: "98",
-        min: 0,
-        step: 0.1,
-      },
-    ],
-    compute(values) {
-      const warnings: string[] = [];
-      const churn = values.monthlyChurnPercent / 100;
-      const contraction = values.monthlyContractionPercent / 100;
-      const targetNrr = values.targetMonthlyNrrPercent / 100;
-      const targetGrr = values.targetMonthlyGrrPercent / 100;
+        {
+          key: "targetMonthlyGrrPercent",
+          label: "Target monthly GRR",
+          placeholder: "98",
+          suffix: "%",
+          defaultValue: "98",
+          min: 0,
+          step: 0.1,
+        },
+        {
+          key: "currentMonthlyExpansionPercent",
+          label: "Current monthly expansion (optional)",
+          placeholder: "2",
+          suffix: "%",
+          defaultValue: "2",
+          min: 0,
+          step: 0.1,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        const churn = values.monthlyChurnPercent / 100;
+        const contraction = values.monthlyContractionPercent / 100;
+        const targetNrr = values.targetMonthlyNrrPercent / 100;
+        const targetGrr = values.targetMonthlyGrrPercent / 100;
+        const currentExpansion = values.currentMonthlyExpansionPercent / 100;
 
-      if (targetNrr <= 0) warnings.push("Target NRR must be greater than 0%.");
-      if (targetGrr <= 0) warnings.push("Target GRR must be greater than 0%.");
+        if (targetNrr <= 0) warnings.push("Target NRR must be greater than 0%.");
+        if (targetGrr <= 0) warnings.push("Target GRR must be greater than 0%.");
+        if (currentExpansion < 0 || currentExpansion >= 1)
+          warnings.push("Current expansion must be between 0% and 99.9%.");
 
-      const requiredExpansion = targetNrr - 1 + contraction + churn;
-      const maxChurnPlusContraction = 1 - targetGrr;
-      const currentChurnPlusContraction = churn + contraction;
-      const gapToGrr = currentChurnPlusContraction - maxChurnPlusContraction;
+        const requiredExpansion = targetNrr - 1 + contraction + churn;
+        const maxChurnPlusContraction = 1 - targetGrr;
+        const currentChurnPlusContraction = churn + contraction;
+        const gapToGrr = currentChurnPlusContraction - maxChurnPlusContraction;
+        const currentMonthlyNrr = 1 + currentExpansion - contraction - churn;
+        const currentMonthlyGrr = 1 - contraction - churn;
+        const gapToNrr = requiredExpansion - currentExpansion;
 
-      const annualizedNrr = Math.pow(targetNrr, 12) - 1;
-      const annualizedGrr = Math.pow(targetGrr, 12) - 1;
+        const annualizedNrr = Math.pow(targetNrr, 12) - 1;
+        const annualizedGrr = Math.pow(targetGrr, 12) - 1;
+        const annualizedCurrentNrr = Math.pow(currentMonthlyNrr, 12) - 1;
+        const annualizedCurrentGrr = Math.pow(currentMonthlyGrr, 12) - 1;
 
       if (requiredExpansion < 0) {
         warnings.push(
@@ -15270,29 +15633,65 @@ export const calculators: CalculatorDefinition[] = [
             format: "percent",
             maxFractionDigits: 2,
           },
-          {
-            key: "gapToGrr",
-            label: "Gap to GRR target (needs reduction)",
-            value: Math.max(0, gapToGrr),
-            format: "percent",
-            maxFractionDigits: 2,
-            detail: gapToGrr > 0 ? "Reduce churn and/or contraction" : "At or better than target",
-          },
-          {
-            key: "annualizedNrr",
-            label: "Implied annual NRR (from target monthly)",
-            value: annualizedNrr,
-            format: "percent",
-            maxFractionDigits: 0,
-          },
-          {
-            key: "annualizedGrr",
-            label: "Implied annual GRR (from target monthly)",
-            value: annualizedGrr,
-            format: "percent",
-            maxFractionDigits: 0,
-          },
-        ],
+            {
+              key: "gapToGrr",
+              label: "Gap to GRR target (needs reduction)",
+              value: Math.max(0, gapToGrr),
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: gapToGrr > 0 ? "Reduce churn and/or contraction" : "At or better than target",
+            },
+            {
+              key: "gapToNrr",
+              label: "Gap to NRR target (needs expansion)",
+              value: Math.max(0, gapToNrr),
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: gapToNrr > 0 ? "Increase expansion or reduce churn" : "At or above target",
+            },
+            {
+              key: "annualizedNrr",
+              label: "Implied annual NRR (from target monthly)",
+              value: annualizedNrr,
+              format: "percent",
+              maxFractionDigits: 0,
+            },
+            {
+              key: "annualizedGrr",
+              label: "Implied annual GRR (from target monthly)",
+              value: annualizedGrr,
+              format: "percent",
+              maxFractionDigits: 0,
+            },
+            {
+              key: "currentMonthlyNrr",
+              label: "Current monthly NRR (from inputs)",
+              value: currentMonthlyNrr,
+              format: "percent",
+              maxFractionDigits: 2,
+            },
+            {
+              key: "currentMonthlyGrr",
+              label: "Current monthly GRR (from inputs)",
+              value: currentMonthlyGrr,
+              format: "percent",
+              maxFractionDigits: 2,
+            },
+            {
+              key: "annualizedCurrentNrr",
+              label: "Implied annual NRR (current)",
+              value: annualizedCurrentNrr,
+              format: "percent",
+              maxFractionDigits: 0,
+            },
+            {
+              key: "annualizedCurrentGrr",
+              label: "Implied annual GRR (current)",
+              value: annualizedCurrentGrr,
+              format: "percent",
+              maxFractionDigits: 0,
+            },
+          ],
         breakdown: [
           {
             key: "churn",
