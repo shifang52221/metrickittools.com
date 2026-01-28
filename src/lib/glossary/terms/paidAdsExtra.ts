@@ -785,6 +785,170 @@ const seeds: Seed[] = [
     ],
     relatedGuideSlugs: ["attribution-incrementality-guide", "paid-ads-measurement-hub-guide"],
   },
+  {
+    slug: "creative-testing",
+    title: "Creative Testing",
+    description:
+      "Creative testing is the structured process of comparing ad concepts, hooks, and formats to find what drives clicks and conversions.",
+    updatedAt: "2026-01-28",
+    bullets: [
+      "Test one variable at a time to isolate the driver (hook, offer, format).",
+      "Use enough spend to reach stable CTR and conversion signals.",
+    ],
+    mistakes: [
+      "Calling a winner after a few clicks without conversion data.",
+      "Changing multiple variables at once and losing signal clarity.",
+    ],
+    relatedGuideSlugs: ["paid-ads-creative-landing-playbook-guide"],
+  },
+  {
+    slug: "ad-fatigue",
+    title: "Ad Fatigue",
+    description:
+      "Ad fatigue happens when an audience sees the same creative too often and performance declines.",
+    updatedAt: "2026-01-28",
+    bullets: [
+      "Watch frequency and CTR trends to spot fatigue early.",
+      "Rotate new hooks and offers before CPA worsens.",
+    ],
+    mistakes: [
+      "Letting frequency climb without refreshing creative.",
+      "Pausing too early without confirming that fatigue, not targeting, is the issue.",
+    ],
+    relatedGuideSlugs: ["frequency-creative-fatigue-guide"],
+  },
+  {
+    slug: "frequency-saturation",
+    title: "Frequency Saturation",
+    description:
+      "Frequency saturation is the point where additional impressions stop increasing conversions and start wasting spend.",
+    updatedAt: "2026-01-28",
+    formula: "Saturation signal = rising frequency + flat or declining conversion rate",
+    bullets: [
+      "Monitor frequency by segment; retargeting saturates faster than prospecting.",
+      "Use frequency caps or creative rotation to avoid waste.",
+    ],
+    mistakes: [
+      "Using one global cap across very different audience sizes.",
+      "Ignoring post-click conversion rate when judging saturation.",
+    ],
+    relatedGuideSlugs: ["frequency-creative-fatigue-guide", "paid-ads-measurement-hub-guide"],
+  },
+  {
+    slug: "incremental-conversion-rate",
+    title: "Incremental Conversion Rate",
+    description:
+      "Incremental conversion rate measures the share of conversions that would not have happened without ads.",
+    updatedAt: "2026-01-28",
+    formula: "Incremental conversion rate = incremental conversions / total conversions",
+    bullets: [
+      "Estimate with holdout or lift tests instead of attribution alone.",
+      "Use the rate to adjust reported ROAS to true incremental ROAS.",
+    ],
+    mistakes: [
+      "Assuming last-click conversions are all incremental.",
+      "Ignoring conversion lag when measuring incremental impact.",
+    ],
+    relatedGuideSlugs: ["attribution-incrementality-guide"],
+    relatedCalculatorSlugs: ["incrementality-lift-calculator"],
+  },
+  {
+    slug: "landing-page-speed",
+    title: "Landing Page Speed",
+    description:
+      "Landing page speed is how quickly a landing page becomes usable and visible after a click. It directly affects conversion rate.",
+    updatedAt: "2026-01-28",
+    bullets: [
+      "Measure on mobile first; most paid traffic is mobile.",
+      "Speed improvements compound with creative and offer wins.",
+    ],
+    mistakes: [
+      "Optimizing only time-to-first-byte while LCP remains slow.",
+      "Ignoring page weight from analytics tags and heavy images.",
+    ],
+    relatedGuideSlugs: ["paid-ads-creative-landing-playbook-guide"],
+  },
+  {
+    slug: "offer-structure",
+    title: "Offer Structure",
+    description:
+      "Offer structure is the bundle of price, discount, value framing, and risk reversal you present in ads and landing pages.",
+    updatedAt: "2026-01-28",
+    bullets: [
+      "Test price anchors, guarantees, and bonuses as separate variables.",
+      "Align the offer with the stage of awareness (cold vs warm traffic).",
+    ],
+    mistakes: [
+      "Changing the offer without updating creative and landing copy.",
+      "Using heavy discounts that raise churn or refund rates.",
+    ],
+    relatedGuideSlugs: ["paid-ads-creative-landing-playbook-guide", "paid-ads-funnel-guide"],
+  },
+  {
+    slug: "budget-reallocation",
+    title: "Budget Reallocation",
+    description:
+      "Budget reallocation shifts spend across campaigns or channels based on marginal performance and capacity.",
+    updatedAt: "2026-01-28",
+    bullets: [
+      "Use marginal ROAS, not blended ROAS, to guide shifts.",
+      "Move budget gradually to avoid learning phase resets.",
+    ],
+    mistakes: [
+      "Over-rotating weekly and destabilizing delivery.",
+      "Moving spend without validating tracking quality changes.",
+    ],
+    relatedGuideSlugs: ["paid-ads-measurement-hub-guide"],
+    relatedCalculatorSlugs: ["marginal-roas-calculator"],
+  },
+  {
+    slug: "account-structure",
+    title: "Account Structure",
+    description:
+      "Account structure is how you organize campaigns, ad sets, and audiences to balance control with algorithmic learning.",
+    updatedAt: "2026-01-28",
+    bullets: [
+      "Keep structure simple unless you have clear audience or offer differences.",
+      "Separate prospecting and retargeting to avoid budget leakage.",
+    ],
+    mistakes: [
+      "Fragmenting spend across too many small ad sets.",
+      "Mixing very different conversion goals in one campaign.",
+    ],
+    relatedGuideSlugs: ["paid-ads-measurement-hub-guide"],
+  },
+  {
+    slug: "utm-governance",
+    title: "UTM Governance",
+    description:
+      "UTM governance is the discipline of consistent naming, required fields, and QA for campaign tracking parameters.",
+    updatedAt: "2026-01-28",
+    bullets: [
+      "Use a naming convention and enforce it with templates.",
+      "Audit UTMs regularly to prevent broken attribution.",
+    ],
+    mistakes: [
+      "Letting campaign naming drift across teams or agencies.",
+      "Changing UTM definitions mid-quarter and breaking reporting.",
+    ],
+    relatedGuideSlugs: ["paid-ads-measurement-hub-guide"],
+  },
+  {
+    slug: "retention-remarketing",
+    title: "Retention Remarketing",
+    description:
+      "Retention remarketing targets existing customers to reduce churn, drive repeat usage, or expand accounts.",
+    updatedAt: "2026-01-28",
+    bullets: [
+      "Segment by lifecycle stage (new, active, at-risk) for relevance.",
+      "Measure incremental impact to avoid paying for organic repeats.",
+    ],
+    mistakes: [
+      "Using the same creative for new and existing customers.",
+      "Retargeting without frequency caps and annoying loyal users.",
+    ],
+    relatedGuideSlugs: ["retention-churn-hub-guide", "paid-ads-funnel-guide"],
+  },
 ];
 
 export const termsPaidAdsExtra: GlossaryTerm[] = seeds.map(make);
