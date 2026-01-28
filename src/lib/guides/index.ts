@@ -8411,8 +8411,11 @@ export const guides: Guide[] = [
     title: "Cohort analysis playbook: retention curves, LTV forecasting, and payback",
     description:
       "A practical cohort analysis workflow: build retention curves, forecast LTV, and translate retention quality into payback and growth decisions.",
+    seo: {
+      title: "Cohort analysis playbook: retention and payback",
+    },
     category: "saas-metrics",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: [
       "retention-curve-calculator",
       "cohort-ltv-forecast-calculator",
@@ -8487,8 +8490,11 @@ export const guides: Guide[] = [
     title: "Pipeline coverage and sales cycle math: set realistic targets (and avoid sandbagging)",
     description:
       "A practical guide to pipeline coverage: connect quota, win rate, sales cycle length, and CAC/payback constraints to set realistic growth targets.",
+    seo: {
+      title: "Pipeline coverage guide: sales cycle math",
+    },
     category: "saas-metrics",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: [
       "cac-calculator",
       "cac-payback-period-calculator",
@@ -8551,8 +8557,11 @@ export const guides: Guide[] = [
     title: "Cash conversion cycle: turn working capital into runway",
     description:
       "A practical guide to the cash conversion cycle (CCC): how AR/AP timing changes cash, how to reduce days outstanding, and why runway depends on working capital.",
+    seo: {
+      title: "Cash conversion cycle guide: working capital",
+    },
     category: "finance",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["cash-runway-calculator", "burn-multiple-calculator"],
     relatedGlossarySlugs: [
       "cash-conversion-cycle",
@@ -8612,8 +8621,11 @@ export const guides: Guide[] = [
     title: "NPV vs IRR: which metric to trust (and the traps)",
     description:
       "A practical guide to NPV vs IRR: why IRR can mislead, when NPV is superior, and how to compare projects with different scale and timing.",
+    seo: {
+      title: "NPV vs IRR guide: decision trade-offs",
+    },
     category: "finance",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: [
       "npv-calculator",
       "irr-calculator",

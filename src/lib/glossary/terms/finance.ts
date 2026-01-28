@@ -114,9 +114,10 @@ const seeds: Seed[] = [
   },
   {
     slug: "wacc",
-    title: "WACC (Weighted Average Cost of Capital)",
+    title: "WACC (Cost of Capital)",
     description:
       "WACC is a blended required return for capital providers (equity and debt). It is commonly used as a discount rate proxy in DCF models.",
+    updatedAt: "2026-01-28",
     formula: "WACC = (E/V)*Re + (D/V)*Rd*(1 - tax rate)",
     example:
       "If E/V = 70%, D/V = 30%, Re = 15%, Rd = 7%, and tax rate = 25%, WACC ~ 0.7*0.15 + 0.3*0.07*(1-0.25) = 12.1%.",
@@ -838,9 +839,10 @@ const seeds: Seed[] = [
   },
   {
     slug: "marr",
-    title: "MARR (Minimum Acceptable Rate of Return)",
+    title: "MARR (Minimum Acceptable Return)",
     description:
       "MARR is the minimum return threshold used to evaluate investments. It is often used as a hurdle rate in capital budgeting and NPV decisions.",
+    updatedAt: "2026-01-28",
     bullets: [
       "Treat MARR as your opportunity cost and risk threshold.",
       "Use the same MARR when comparing comparable-risk projects; adjust MARR when risk differs.",
@@ -971,9 +973,10 @@ const seeds: Seed[] = [
   },
   {
     slug: "safe",
-    title: "SAFE (Simple Agreement for Future Equity)",
+    title: "SAFE (Future Equity)",
     description:
       "A SAFE is an instrument that typically converts into equity at a future priced round. It often includes a valuation cap, a discount, or both to reward early investors.",
+    updatedAt: "2026-01-28",
     bullets: [
       "Conversion price is often the better (lower price) of cap vs discount (terms vary).",
       "Model conversion using fully diluted shares to avoid underestimating dilution.",
