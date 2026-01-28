@@ -9730,6 +9730,174 @@ export const calculators: CalculatorDefinition[] = [
     ],
   },
   {
+    slug: "profitability-index-calculator",
+    title: "Profitability Index Calculator",
+    description:
+      "Calculate profitability index (PI) from discounted cash flows and estimate the max investment for a target PI.",
+    category: "finance",
+    guideSlug: "investment-decision-guide",
+    relatedGlossarySlugs: ["profitability-index", "npv", "discount-rate", "marr"],
+    seo: {
+      intro: [
+        "Profitability index (PI) is value per dollar invested: PV of cash inflows divided by initial investment.",
+        "PI is helpful when capital is constrained because it lets you rank projects by value efficiency.",
+      ],
+      steps: [
+        "Enter the initial investment and annual cash flow.",
+        "Enter years and your required return (discount rate).",
+        "Review PV inflows, PI, and the implied NPV.",
+        "Optional: set a target PI to estimate max acceptable investment.",
+      ],
+      pitfalls: [
+        "Ignoring scale: a smaller project can have higher PI but lower total value.",
+        "Using a discount rate that does not reflect project risk.",
+        "Mixing real vs nominal cash flows and rates.",
+      ],
+    },
+    inputs: [
+      {
+        key: "initialInvestment",
+        label: "Initial investment (upfront)",
+        placeholder: "100000",
+        prefix: "$",
+        defaultValue: "100000",
+        min: 0,
+      },
+      {
+        key: "annualCashFlow",
+        label: "Annual cash flow",
+        placeholder: "30000",
+        prefix: "$",
+        defaultValue: "30000",
+        min: 0,
+      },
+      {
+        key: "years",
+        label: "Years",
+        placeholder: "10",
+        defaultValue: "10",
+        min: 1,
+        step: 1,
+      },
+      {
+        key: "discountRatePercent",
+        label: "Discount rate (MARR)",
+        placeholder: "12",
+        suffix: "%",
+        defaultValue: "12",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "targetPi",
+        label: "Target PI (optional)",
+        placeholder: "1.2",
+        defaultValue: "1.2",
+        min: 0,
+        step: 0.01,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const years = Math.max(1, Math.floor(values.years));
+      if (values.years !== years) warnings.push("Years was rounded down to a whole number.");
+      if (values.annualCashFlow <= 0) warnings.push("Annual cash flow must be greater than 0.");
+      if (values.initialInvestment <= 0)
+        warnings.push("Initial investment must be greater than 0 to compute PI.");
+
+      const r = values.discountRatePercent / 100;
+      const pvInflows = (() => {
+        let sum = 0;
+        for (let t = 1; t <= years; t++) {
+          sum += values.annualCashFlow / Math.pow(1 + r, t);
+        }
+        return sum;
+      })();
+      const pi =
+        values.initialInvestment > 0 ? pvInflows / values.initialInvestment : null;
+      const npv = pvInflows - values.initialInvestment;
+      const maxInvestment =
+        values.targetPi > 0 ? pvInflows / values.targetPi : null;
+
+      return {
+        headline: {
+          key: "profitabilityIndex",
+          label: "Profitability index (PI)",
+          value: pi ?? 0,
+          format: "multiple",
+          maxFractionDigits: 2,
+          detail: "PV inflows ÷ initial investment",
+        },
+        secondary: [
+          {
+            key: "pvInflows",
+            label: "PV of inflows",
+            value: pvInflows,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "npv",
+            label: "NPV (PV inflows - investment)",
+            value: npv,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "maxInvestment",
+            label: "Max investment at target PI",
+            value: maxInvestment ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: values.targetPi > 0 ? "PV inflows ÷ target PI" : "Target PI is 0",
+          },
+        ],
+        breakdown: [
+          {
+            key: "initialInvestment",
+            label: "Initial investment",
+            value: values.initialInvestment,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "annualCashFlow",
+            label: "Annual cash flow",
+            value: values.annualCashFlow,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "discountRate",
+            label: "Discount rate",
+            value: r,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "PI = PV(inflows) ÷ initial investment; NPV = PV(inflows) - investment",
+    assumptions: [
+      "Cash flows are annual and occur at the end of each year.",
+      "Uses a constant annual cash flow for simplicity.",
+      "Discount rate reflects required return for the project.",
+    ],
+    faqs: [
+      {
+        question: "Is PI better than NPV?",
+        answer:
+          "PI is a ratio, so it helps rank projects when capital is constrained. NPV is still the best measure of total value created.",
+      },
+      {
+        question: "What PI should I target?",
+        answer:
+          "PI > 1 means positive NPV. Higher targets (e.g., 1.1 to 1.3) add buffer for uncertainty and risk.",
+      },
+    ],
+  },
+  {
     slug: "wacc-calculator",
     title: "WACC Calculator",
     description:
