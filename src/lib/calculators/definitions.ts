@@ -9981,6 +9981,15 @@ export const calculators: CalculatorDefinition[] = [
         min: 0,
       },
       {
+        key: "targetMer",
+        label: "Target MER (optional)",
+        help: "Used to estimate max spend at your revenue level.",
+        placeholder: "3",
+        defaultValue: "3",
+        min: 0,
+        step: 0.01,
+      },
+      {
         key: "contributionMarginPercent",
         label: "Contribution margin (optional)",
         help: "Used to estimate profit and break-even/target MER.",
@@ -10007,6 +10016,9 @@ export const calculators: CalculatorDefinition[] = [
         warnings.push("Marketing spend must be greater than 0.");
 
       const mer = safeDivide(values.totalRevenue, values.totalMarketingSpend) ?? 0;
+      if (values.targetMer < 0) warnings.push("Target MER must be 0 or greater.");
+      const maxSpendAtTargetMer =
+        values.targetMer > 0 ? values.totalRevenue / values.targetMer : null;
 
       const margin = values.contributionMarginPercent / 100;
       const grossProfit = values.totalRevenue * margin;
@@ -10060,6 +10072,14 @@ export const calculators: CalculatorDefinition[] = [
             format: "multiple",
             maxFractionDigits: 2,
             detail: targetMer === null ? "Margin is 0%" : "1 ÷ (margin × (1 - buffer))",
+          },
+          {
+            key: "maxSpendAtTargetMer",
+            label: "Max spend at target MER",
+            value: maxSpendAtTargetMer ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: values.targetMer > 0 ? "Revenue ÷ target MER" : "Target MER is 0",
           },
         ],
         breakdown: [
