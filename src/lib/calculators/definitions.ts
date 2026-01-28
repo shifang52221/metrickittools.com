@@ -13677,6 +13677,130 @@ export const calculators: CalculatorDefinition[] = [
     ],
   },
   {
+    slug: "click-through-conversion-calculator",
+    title: "Click-through Conversion Rate Calculator",
+    description:
+      "Calculate click-through conversion rate (click-to-conversion CVR) and estimate required clicks for target conversions.",
+    category: "paid-ads",
+    guideSlug: "paid-ads-measurement-hub-guide",
+    relatedGlossarySlugs: ["click-through-conversion", "cvr", "ctr", "conversion-rate"],
+    seo: {
+      intro: [
+        "Click-through conversion rate (click CVR) measures conversions divided by clicks. It tells you how efficiently clicks turn into outcomes.",
+        "Use click-based CVR when your spend is click-driven (CPC) or when you want a clean post-click view that avoids session definition drift.",
+      ],
+      steps: [
+        "Enter total clicks and conversions for the same time window.",
+        "Review click CVR and the implied clicks per conversion.",
+        "Optionally enter a target conversions number to estimate required clicks.",
+      ],
+      pitfalls: [
+        "Mixing clicks from one attribution window with conversions from another.",
+        "Using session-based CVR when your denominator is clicks (unit mismatch).",
+        "Comparing blended CVR without segmenting by campaign or landing page.",
+      ],
+    },
+    inputs: [
+      {
+        key: "clicks",
+        label: "Clicks (period)",
+        placeholder: "12000",
+        defaultValue: "12000",
+        min: 0,
+      },
+      {
+        key: "conversions",
+        label: "Conversions (period)",
+        placeholder: "360",
+        defaultValue: "360",
+        min: 0,
+      },
+      {
+        key: "targetConversions",
+        label: "Target conversions (optional)",
+        placeholder: "500",
+        defaultValue: "500",
+        min: 0,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      if (values.clicks <= 0) warnings.push("Clicks must be greater than 0.");
+      if (values.conversions < 0) warnings.push("Conversions must be 0 or greater.");
+      if (values.conversions > values.clicks)
+        warnings.push("Conversions exceed clicks (check inputs).");
+
+      const cvr = safeDivide(values.conversions, values.clicks);
+      const clicksPerConversion =
+        values.conversions > 0 ? values.clicks / values.conversions : null;
+      const requiredClicksForTarget =
+        cvr && cvr > 0 ? values.targetConversions / cvr : null;
+
+      return {
+        headline: {
+          key: "clickCvr",
+          label: "Click-through CVR",
+          value: cvr ?? 0,
+          format: "percent",
+          maxFractionDigits: 2,
+          detail: "Conversions ÷ clicks",
+        },
+        secondary: [
+          {
+            key: "clicksPerConversion",
+            label: "Clicks per conversion",
+            value: clicksPerConversion ?? 0,
+            format: "number",
+            maxFractionDigits: 1,
+            detail: values.conversions > 0 ? "Clicks ÷ conversions" : "No conversions",
+          },
+          {
+            key: "requiredClicks",
+            label: "Required clicks for target",
+            value: requiredClicksForTarget ?? 0,
+            format: "number",
+            maxFractionDigits: 0,
+            detail: cvr && cvr > 0 ? "Target conversions ÷ CVR" : "Enter valid clicks",
+          },
+        ],
+        breakdown: [
+          {
+            key: "clicks",
+            label: "Clicks",
+            value: values.clicks,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+          {
+            key: "conversions",
+            label: "Conversions",
+            value: values.conversions,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula: "Click-through CVR = conversions ÷ clicks",
+    assumptions: [
+      "Clicks and conversions are measured over the same window and attribution rules.",
+      "Uses click-based CVR (not session-based).",
+    ],
+    faqs: [
+      {
+        question: "Is this the same as session CVR?",
+        answer:
+          "No. Session CVR uses sessions as the denominator. If your spend is click-based, click CVR keeps units consistent.",
+      },
+      {
+        question: "What if my conversions lag clicks?",
+        answer:
+          "Use a longer attribution window or wait for lag to settle before calculating CVR. Short windows often understate true conversion rate.",
+      },
+    ],
+  },
+  {
     slug: "retention-targets-planner-calculator",
     title: "Retention Targets Planner (NRR/GRR)",
     description:
