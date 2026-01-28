@@ -14647,6 +14647,7 @@ export const calculators: CalculatorDefinition[] = [
         "Enter number of reps and quota per rep for the period.",
         "Enter expected attainment % for ramped reps.",
         "Enter what % of the team is ramped and a productivity factor for ramping reps.",
+        "Optionally enter a target bookings number to estimate required reps.",
       ],
       pitfalls: [
         "Assuming all reps are fully ramped.",
@@ -14699,6 +14700,14 @@ export const calculators: CalculatorDefinition[] = [
         min: 0,
         step: 0.1,
       },
+      {
+        key: "targetBookings",
+        label: "Target bookings (optional)",
+        placeholder: "1200000",
+        prefix: "$",
+        defaultValue: "1200000",
+        min: 0,
+      },
     ],
     compute(values) {
       const warnings: string[] = [];
@@ -14714,9 +14723,17 @@ export const calculators: CalculatorDefinition[] = [
       if (ramped < 0 || ramped > 1) warnings.push("Ramped % must be between 0% and 100%.");
       if (rampingProd < 0 || rampingProd > 1)
         warnings.push("Ramping productivity must be between 0% and 100%.");
+      if (values.targetBookings < 0) warnings.push("Target bookings must be 0 or greater.");
 
       const effectiveReps = reps * (ramped + (1 - ramped) * rampingProd);
-      const capacity = effectiveReps * values.quotaPerRep * attainment;
+      const perRepCapacity = values.quotaPerRep * attainment;
+      const capacity = effectiveReps * perRepCapacity;
+      const denom =
+        values.quotaPerRep > 0 ? perRepCapacity * (ramped + (1 - ramped) * rampingProd) : 0;
+      const requiredReps =
+        values.targetBookings > 0 && denom > 0 ? values.targetBookings / denom : null;
+      const capacityGap =
+        values.targetBookings > 0 ? capacity - values.targetBookings : null;
 
       return {
         headline: {
@@ -14734,6 +14751,30 @@ export const calculators: CalculatorDefinition[] = [
             value: effectiveReps,
             format: "number",
             maxFractionDigits: 2,
+          },
+          {
+            key: "perRepCapacity",
+            label: "Capacity per rep (ramped)",
+            value: perRepCapacity,
+            format: "currency",
+            currency: "USD",
+            detail: "Quota per rep x attainment",
+          },
+          {
+            key: "requiredReps",
+            label: "Required reps for target",
+            value: requiredReps ?? 0,
+            format: "number",
+            maxFractionDigits: 2,
+            detail: values.targetBookings > 0 ? "Target / per-rep capacity" : "Add target",
+          },
+          {
+            key: "capacityGap",
+            label: "Capacity surplus / shortfall",
+            value: capacityGap ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: values.targetBookings > 0 ? "Capacity - target" : "Add target",
           },
         ],
         warnings,
