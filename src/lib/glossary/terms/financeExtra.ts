@@ -289,6 +289,186 @@ const seeds: Seed[] = [
     ],
     relatedGuideSlugs: ["unit-economics-hub-guide", "runway-burn-cash-guide"],
   },
+  {
+    slug: "capital-structure",
+    title: "Capital Structure",
+    description:
+      "Capital structure is the mix of debt and equity used to finance a business. It drives risk, flexibility, and the weighted cost of capital.",
+    updatedAt: "2026-01-28",
+    formula: "Debt ratio = debt / (debt + equity)",
+    example:
+      "If debt is $2M and equity is $3M, the debt ratio is 2 / 5 = 40%.",
+    bullets: [
+      "Match debt levels to cash flow stability and downside risk tolerance.",
+      "Revisit structure after large funding rounds or major capex plans.",
+    ],
+    mistakes: [
+      "Assuming a single target ratio fits every business stage.",
+      "Ignoring covenants and refinancing risk when adding leverage.",
+    ],
+    relatedGuideSlugs: ["wacc-guide", "fundraising-valuation-hub-guide"],
+  },
+  {
+    slug: "debt-to-equity",
+    title: "Debt to Equity (D/E)",
+    description:
+      "Debt to equity compares total debt to total equity to show how leveraged a balance sheet is.",
+    updatedAt: "2026-01-28",
+    formula: "Debt to equity = total debt / total equity",
+    example: "Total debt $2M and equity $4M gives D/E = 0.5.",
+    bullets: [
+      "Track trends over time rather than a single snapshot.",
+      "Compare to peers with similar growth and cash flow profiles.",
+    ],
+    mistakes: [
+      "Using book equity without noting large fair value adjustments.",
+      "Comparing companies with very different revenue visibility.",
+    ],
+    relatedGuideSlugs: ["fundraising-valuation-hub-guide"],
+  },
+  {
+    slug: "effective-tax-rate",
+    title: "Effective Tax Rate",
+    description:
+      "Effective tax rate is the actual tax expense divided by pre-tax income, reflecting credits and timing differences.",
+    updatedAt: "2026-01-28",
+    formula: "Effective tax rate = income tax expense / pre-tax income",
+    example: "Tax expense $210k on $1M pre-tax income equals 21%.",
+    bullets: [
+      "Use effective rate for forecasting when statutory rates are not reflective.",
+      "Explain major shifts with credits, NOL usage, or jurisdiction mix.",
+    ],
+    mistakes: [
+      "Assuming the effective rate stays constant across income levels.",
+      "Ignoring one-time items that distort the period rate.",
+    ],
+  },
+  {
+    slug: "tax-shield",
+    title: "Tax Shield",
+    description:
+      "A tax shield is the tax savings from deductible expenses such as interest or depreciation.",
+    updatedAt: "2026-01-28",
+    formula: "Tax shield = deductible expense * tax rate",
+    example: "Interest $100k and tax rate 25% produces a $25k shield.",
+    bullets: [
+      "Interest tax shields raise the value of debt in many valuation models.",
+      "The shield only matters if the company has taxable income.",
+    ],
+    mistakes: [
+      "Counting tax shields in periods with losses and no taxable income.",
+      "Using statutory rates when the effective rate is materially different.",
+    ],
+    relatedGuideSlugs: ["wacc-guide", "dcf-valuation-guide"],
+  },
+  {
+    slug: "discount-factor",
+    title: "Discount Factor",
+    description:
+      "A discount factor converts future cash flows into present value using a chosen discount rate and time period.",
+    updatedAt: "2026-01-28",
+    formula: "Discount factor = 1 / (1 + r)^t",
+    example: "At 10% over 3 years, the factor is 1 / 1.1^3 = 0.751.",
+    bullets: [
+      "Use a rate consistent with the risk of the cash flow stream.",
+      "Apply the same timing convention across all line items.",
+    ],
+    mistakes: [
+      "Mixing mid-year and end-year conventions without adjustment.",
+      "Using a nominal rate with real cash flows (or vice versa).",
+    ],
+    relatedGuideSlugs: ["dcf-valuation-guide"],
+  },
+  {
+    slug: "net-working-capital",
+    title: "Net Working Capital",
+    description:
+      "Net working capital is current assets minus current liabilities. It shows short-term funding tied to operations.",
+    updatedAt: "2026-01-28",
+    formula: "Net working capital = current assets - current liabilities",
+    example: "CA $900k and CL $650k gives NWC of $250k.",
+    bullets: [
+      "Rising NWC often means cash is tied up in receivables or inventory.",
+      "Use NWC changes to explain gaps between profit and cash.",
+    ],
+    mistakes: [
+      "Including cash in NWC when analyzing operating working capital.",
+      "Ignoring seasonality that can distort one-month snapshots.",
+    ],
+    relatedGuideSlugs: ["cash-conversion-cycle-guide"],
+  },
+  {
+    slug: "interest-expense",
+    title: "Interest Expense",
+    description:
+      "Interest expense is the cost of debt over a period. It includes cash interest and can include amortized fees.",
+    updatedAt: "2026-01-28",
+    formula: "Interest expense = average debt balance * interest rate",
+    example: "Average debt $1M at 8% implies $80k annual interest expense.",
+    bullets: [
+      "Separate cash interest from non-cash amortization for runway planning.",
+      "Model variable-rate debt with rate scenarios, not a single point.",
+    ],
+    mistakes: [
+      "Using ending balance instead of average balance for the period.",
+      "Ignoring refinancing risk when interest rates are rising.",
+    ],
+  },
+  {
+    slug: "cash-flow-forecast",
+    title: "Cash Flow Forecast",
+    description:
+      "A cash flow forecast projects cash in/out and ending cash balance over time to manage liquidity.",
+    updatedAt: "2026-01-28",
+    formula: "Ending cash = beginning cash + inflows - outflows",
+    example:
+      "Starting cash $2M plus $1.2M inflows minus $1.5M outflows ends at $1.7M.",
+    bullets: [
+      "Use weekly or monthly granularity depending on burn and volatility.",
+      "Align assumptions to pipeline, collections, and vendor payment terms.",
+    ],
+    mistakes: [
+      "Using revenue instead of cash collections for timing-sensitive plans.",
+      "Failing to update the forecast after large hiring or capex changes.",
+    ],
+    relatedGuideSlugs: ["runway-burn-cash-guide", "cash-runway-guide"],
+  },
+  {
+    slug: "operating-expense-ratio",
+    title: "Operating Expense Ratio",
+    description:
+      "Operating expense ratio measures operating expenses as a percentage of revenue.",
+    updatedAt: "2026-01-28",
+    formula: "Operating expense ratio = operating expenses / revenue",
+    example: "Opex $600k on $2M revenue yields a 30% ratio.",
+    bullets: [
+      "Track by function to see which teams scale with revenue.",
+      "Use trailing periods to smooth volatile months.",
+    ],
+    mistakes: [
+      "Comparing ratios without adjusting for revenue recognition timing.",
+      "Treating one-time expenses as recurring operating cost.",
+    ],
+  },
+  {
+    slug: "maintenance-capex",
+    title: "Maintenance CapEx",
+    description:
+      "Maintenance CapEx is spending required to keep current operations running without expanding capacity.",
+    updatedAt: "2026-01-28",
+    formula: "Maintenance CapEx = total CapEx - growth CapEx (estimate)",
+    example:
+      "If total CapEx is $500k and $200k is for new growth projects, maintenance CapEx is $300k.",
+    bullets: [
+      "Separate maintenance from growth to avoid overstating free cash flow.",
+      "Review asset lifecycles to estimate recurring replacement spend.",
+    ],
+    mistakes: [
+      "Treating all CapEx as growth and inflating cash flow quality.",
+      "Ignoring rising maintenance needs as systems age.",
+    ],
+    relatedGuideSlugs: ["investment-decision-guide"],
+  },
 ];
 
 export const termsFinanceExtra: GlossaryTerm[] = seeds.map(make);
