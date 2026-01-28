@@ -7288,7 +7288,7 @@ export const calculators: CalculatorDefinition[] = [
     seo: {
       intro: [
         "Billings, cash receipts, and recognized revenue can differ due to timing. Deferred revenue is the bridge: it increases when you bill/collect ahead of delivery and decreases as you recognize revenue.",
-        "This calculator models a simple deferred revenue rollforward: ending deferred = beginning deferred + billings − recognized revenue.",
+        "This calculator models a simple deferred revenue rollforward: ending deferred = beginning deferred + billings - recognized revenue.",
       ],
       steps: [
         "Enter beginning deferred revenue (start-of-period balance).",
@@ -7328,16 +7328,39 @@ export const calculators: CalculatorDefinition[] = [
         defaultValue: "350000",
         min: 0,
       },
+      {
+        key: "periodMonths",
+        label: "Period length (months)",
+        placeholder: "12",
+        defaultValue: "12",
+        min: 1,
+        step: 1,
+      },
     ],
     compute(values) {
       const warnings: string[] = [];
+      const months = Math.max(1, Math.floor(values.periodMonths));
+      if (values.periodMonths !== months)
+        warnings.push("Period months was rounded down to a whole number.");
+
       const endingDeferred = values.beginningDeferred + values.billings - values.recognizedRevenue;
       const change = endingDeferred - values.beginningDeferred;
+      const netBillings = values.billings - values.recognizedRevenue;
+      const avgMonthlyRecognized = months > 0 ? values.recognizedRevenue / months : null;
+      const deferredCoverageMonths =
+        avgMonthlyRecognized && avgMonthlyRecognized > 0
+          ? endingDeferred / avgMonthlyRecognized
+          : null;
+      const billingsToRevenue =
+        values.recognizedRevenue > 0 ? values.billings / values.recognizedRevenue : null;
 
       if (endingDeferred < 0) {
         warnings.push(
           "Ending deferred revenue is negative. Double-check definitions (billings vs cash, revenue timing) or inputs.",
         );
+      }
+      if (values.recognizedRevenue <= 0) {
+        warnings.push("Recognized revenue must be greater than 0 for coverage ratios.");
       }
 
       return {
@@ -7347,7 +7370,7 @@ export const calculators: CalculatorDefinition[] = [
           value: endingDeferred,
           format: "currency",
           currency: "USD",
-          detail: "Begin + billings − recognized",
+          detail: "Begin + billings - recognized",
         },
         secondary: [
           {
@@ -7356,7 +7379,34 @@ export const calculators: CalculatorDefinition[] = [
             value: change,
             format: "currency",
             currency: "USD",
-            detail: "Ending − beginning",
+            detail: "Ending - beginning",
+          },
+          {
+            key: "netBillings",
+            label: "Billings minus recognized",
+            value: netBillings,
+            format: "currency",
+            currency: "USD",
+            detail: "Billings - recognized revenue",
+          },
+          {
+            key: "billingsToRevenue",
+            label: "Billings to revenue ratio",
+            value: billingsToRevenue ?? 0,
+            format: "multiple",
+            maxFractionDigits: 2,
+            detail: billingsToRevenue === null ? "Recognized revenue is 0" : "Billings / recognized",
+          },
+          {
+            key: "deferredCoverageMonths",
+            label: "Deferred coverage (months)",
+            value: deferredCoverageMonths ?? 0,
+            format: "months",
+            maxFractionDigits: 1,
+            detail:
+              deferredCoverageMonths === null
+                ? "Add period months and recognized revenue"
+                : "Ending deferred / avg monthly recognized",
           },
         ],
         breakdown: [
@@ -7381,11 +7431,18 @@ export const calculators: CalculatorDefinition[] = [
             format: "currency",
             currency: "USD",
           },
+          {
+            key: "periodMonths",
+            label: "Period months",
+            value: months,
+            format: "number",
+            maxFractionDigits: 0,
+          },
         ],
         warnings,
       };
     },
-    formula: "Ending deferred = beginning deferred + billings − recognized revenue",
+    formula: "Ending deferred = beginning deferred + billings - recognized revenue",
     assumptions: [
       "Billings are invoices issued in the period (simplified).",
       "Recognized revenue reflects what was earned/delivered in the period.",
@@ -7400,7 +7457,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         question: "Why does deferred revenue matter for SaaS metrics?",
         answer:
-          "Because it explains timing differences between billings/cash and recognized revenue. It’s especially important when customers prepay annually or when billing terms change.",
+          "Because it explains timing differences between billings/cash and recognized revenue. It's especially important when customers prepay annually or when billing terms change.",
       },
     ],
     guide: [
@@ -9873,6 +9930,16 @@ export const calculators: CalculatorDefinition[] = [
       const profitAtVolume = unitsSold * contributionPerUnit - values.fixedCosts;
       const contributionMarginPercent =
         values.pricePerUnit > 0 ? contributionPerUnit / values.pricePerUnit : null;
+      const marginOfSafetyUnits =
+        breakEvenUnits !== null ? unitsSold - breakEvenUnits : null;
+      const marginOfSafetyPercent =
+        marginOfSafetyUnits !== null && unitsSold > 0
+          ? marginOfSafetyUnits / unitsSold
+          : null;
+
+      if (marginOfSafetyUnits !== null && marginOfSafetyUnits < 0) {
+        warnings.push("Expected units are below break-even (negative margin of safety).");
+      }
 
       return {
         headline: {
@@ -9881,7 +9948,10 @@ export const calculators: CalculatorDefinition[] = [
           value: breakEvenUnits ?? 0,
           format: "number",
           maxFractionDigits: 1,
-          detail: breakEvenUnits === null ? "No break-even (margin <= 0)" : "Fixed costs ÷ contribution per unit",
+          detail:
+            breakEvenUnits === null
+              ? "No break-even (margin <= 0)"
+              : "Fixed costs / contribution per unit",
         },
         secondary: [
           {
@@ -9891,6 +9961,28 @@ export const calculators: CalculatorDefinition[] = [
             format: "currency",
             currency: "USD",
             detail: "Units * contribution per unit - fixed costs",
+          },
+          {
+            key: "marginOfSafetyUnits",
+            label: "Margin of safety (units)",
+            value: marginOfSafetyUnits ?? 0,
+            format: "number",
+            maxFractionDigits: 1,
+            detail:
+              marginOfSafetyUnits === null
+                ? "Break-even undefined"
+                : "Expected units - break-even units",
+          },
+          {
+            key: "marginOfSafetyPercent",
+            label: "Margin of safety (%)",
+            value: marginOfSafetyPercent ?? 0,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail:
+              marginOfSafetyPercent === null
+                ? "Expected units is 0"
+                : "Margin of safety / expected units",
           },
           {
             key: "breakEvenRevenue",
@@ -9912,7 +10004,10 @@ export const calculators: CalculatorDefinition[] = [
             value: contributionMarginPercent ?? 0,
             format: "percent",
             maxFractionDigits: 1,
-            detail: contributionMarginPercent === null ? "Price is 0" : "(Price - variable cost) ÷ price",
+            detail:
+              contributionMarginPercent === null
+                ? "Price is 0"
+                : "(Price - variable cost) / price",
           },
         ],
         breakdown: [
@@ -11203,6 +11298,7 @@ export const calculators: CalculatorDefinition[] = [
 
       const r = values.discountRatePercent / 100;
       if (values.annualCashFlow <= 0) warnings.push("Annual cash flow must be greater than 0.");
+      if (values.initialInvestment <= 0) warnings.push("Initial investment must be greater than 0.");
 
       const npvAt = (rate: number) => {
         let sum = -values.initialInvestment;
@@ -11213,6 +11309,17 @@ export const calculators: CalculatorDefinition[] = [
       };
 
       const npv = npvAt(r);
+      const totalCashInflow = values.annualCashFlow * years;
+      const simplePaybackYears =
+        values.annualCashFlow > 0 ? values.initialInvestment / values.annualCashFlow : null;
+      const npvToInvestment =
+        values.initialInvestment > 0 ? npv / values.initialInvestment : null;
+      const annuityEquivalent =
+        years > 0
+          ? r > 0
+            ? npv * (r / (1 - Math.pow(1 + r, -years)))
+            : npv / years
+          : null;
 
       // IRR via bisection for standard cash flows (one sign change).
       let irr: number | null = null;
@@ -11278,14 +11385,27 @@ export const calculators: CalculatorDefinition[] = [
             value: irr ?? 0,
             format: "percent",
             maxFractionDigits: 2,
-            detail: irr === null ? "Not found / not unique" : "Rate where NPV = 0",
+            detail: irr === null ? "No single IRR (check cash flow pattern)" : "Approx",
           },
           {
-            key: "discountedPayback",
-            label: "Discounted payback period",
-            value: (discountedPaybackYears ?? 0) * 12,
-            format: "months",
-            maxFractionDigits: 1,
+            key: "discountedPaybackYears",
+            label: "Discounted payback (years)",
+            value: discountedPaybackYears ?? 0,
+            format: "number",
+            maxFractionDigits: 2,
+            detail:
+              discountedPaybackYears === null ? "Not reached in horizon" : "Discounted cash flows",
+          },
+          {
+            key: "simplePaybackYears",
+            label: "Simple payback (years)",
+            value: simplePaybackYears ?? 0,
+            format: "number",
+            maxFractionDigits: 2,
+            detail:
+              simplePaybackYears === null
+                ? "Annual cash flow is 0"
+                : "Investment / annual cash flow",
           },
           {
             key: "pi",
@@ -11293,7 +11413,28 @@ export const calculators: CalculatorDefinition[] = [
             value: pi ?? 0,
             format: "multiple",
             maxFractionDigits: 2,
-            detail: pi === null ? "Investment is 0" : "PV inflows ÷ investment",
+            detail: pi === null ? "Investment is 0" : "PV inflows / investment",
+          },
+          {
+            key: "npvToInvestment",
+            label: "NPV to investment",
+            value: npvToInvestment ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: npvToInvestment === null ? "Investment is 0" : "NPV / investment",
+          },
+          {
+            key: "annuityEquivalent",
+            label: "Equivalent annual value",
+            value: annuityEquivalent ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail:
+              annuityEquivalent === null
+                ? "Invalid years"
+                : r > 0
+                  ? "NPV converted to annual annuity"
+                  : "NPV / years",
           },
         ],
         breakdown: [
@@ -11311,12 +11452,32 @@ export const calculators: CalculatorDefinition[] = [
             format: "currency",
             currency: "USD",
           },
+          {
+            key: "totalCashInflow",
+            label: "Total cash inflow (undiscounted)",
+            value: totalCashInflow,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "discountRate",
+            label: "Discount rate",
+            value: r,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "years",
+            label: "Years",
+            value: years,
+            format: "number",
+            maxFractionDigits: 0,
+          },
         ],
         warnings,
       };
     },
-    formula:
-      "NPV = -I + Σ(CF_t/(1+r)^t); IRR solves NPV(r)=0; PI = PV(inflows)/I; Discounted payback is when cumulative PV ≥ I",
+    formula: "NPV = -I + sum(CF_t/(1+r)^t); IRR solves NPV(r)=0; PI = PV(inflows)/I; Discounted payback is when cumulative PV >= I",
     assumptions: [
       "Cash flows are annual and occur at the end of each year (except the upfront investment at t=0).",
       "Uses a constant annual cash flow for simplicity.",
@@ -11331,7 +11492,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         question: "What does profitability index mean?",
         answer:
-          "PI normalizes value by investment: PI > 1 means positive NPV. It’s useful when capital is constrained and you want value per dollar invested.",
+          "PI normalizes value by investment: PI > 1 means positive NPV. It's useful when capital is constrained and you want value per dollar invested.",
       },
     ],
   },
@@ -13108,12 +13269,12 @@ export const calculators: CalculatorDefinition[] = [
     seo: {
       intro: [
         "Pro rata rights let an existing investor participate in a new round to maintain ownership (subject to terms and allocation).",
-        "A simple model can estimate ownership dilution if you don’t invest and the investment needed to keep ownership constant.",
+        "A simple model can estimate ownership dilution if you do not invest and the investment needed to keep ownership constant.",
       ],
       steps: [
         "Enter your current ownership (before the new round).",
         "Enter pre-money valuation and new investment amount.",
-        "Review your ownership if you don’t participate and your estimated pro rata check size.",
+        "Review your ownership if you do not participate and your estimated pro rata check size.",
       ],
       pitfalls: [
         "Ignoring option pool increases and other dilutive instruments (SAFE/notes).",
@@ -13154,6 +13315,11 @@ export const calculators: CalculatorDefinition[] = [
       const postMoney = values.preMoney + values.investment;
       const proRataInvestment = ownership * values.investment;
       const ownershipNoParticipate = safeDivide(ownership * values.preMoney, postMoney);
+      const dilutionPercent =
+        ownershipNoParticipate !== null && ownership > 0
+          ? (ownership - ownershipNoParticipate) / ownership
+          : null;
+      const shareOfRound = values.investment > 0 ? proRataInvestment / values.investment : null;
 
       if (values.ownershipPercent < 0 || values.ownershipPercent > 100)
         warnings.push("Ownership must be between 0% and 100%.");
@@ -13169,16 +13335,32 @@ export const calculators: CalculatorDefinition[] = [
           value: proRataInvestment,
           format: "currency",
           currency: "USD",
-          detail: "Current % × new investment",
+          detail: "Current % x new investment",
         },
         secondary: [
           {
             key: "ownershipNoParticipate",
-            label: "Ownership if you don’t participate",
+            label: "Ownership if you do not participate",
             value: ownershipNoParticipate ?? 0,
             format: "percent",
             maxFractionDigits: 2,
-            detail: "Current % × (pre-money ÷ post-money)",
+            detail: "Current % x (pre-money / post-money)",
+          },
+          {
+            key: "dilutionPercent",
+            label: "Dilution if you do not participate",
+            value: dilutionPercent ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: dilutionPercent === null ? "Ownership is 0" : "Loss vs current ownership",
+          },
+          {
+            key: "shareOfRound",
+            label: "Pro rata share of round",
+            value: shareOfRound ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: shareOfRound === null ? "Round size is 0" : "Pro rata / round size",
           },
           {
             key: "postMoney",
@@ -13191,20 +13373,19 @@ export const calculators: CalculatorDefinition[] = [
         warnings,
       };
     },
-    formula:
-      "Pro rata check ≈ current ownership % × round size; ownership (no participate) ≈ current % × (pre-money ÷ post-money)",
+    formula: "Pro rata check = current ownership % x round size; ownership (no participate) = current % x (pre-money / post-money)",
     assumptions: [
       "Simplified model; ignores option pool changes, SAFEs/notes, and share-class terms.",
       "Assumes ownership is measured on a consistent fully diluted basis before and after the round.",
     ],
     faqs: [
       {
-        question: "Why is pro rata investment current % × round size?",
+        question: "Why is pro rata investment current % x round size?",
         answer:
           "If you own X% and want to keep X% after new shares are issued, you typically need to buy X% of the new issuance, which corresponds to about X% of the round size in a priced round.",
       },
       {
-        question: "Why does ownership drop if I don’t participate?",
+        question: "Why does ownership drop if I do not participate?",
         answer:
           "New shares are issued to new investors (and sometimes the option pool), so existing shareholders are diluted unless they buy some of the new shares.",
       },
@@ -13313,6 +13494,8 @@ export const calculators: CalculatorDefinition[] = [
       }
 
       const existingPost = 1 - investorPost - pt;
+      const existingPostNoTopUp = 1 - investorPost - p0;
+      const poolDilution = Math.max(0, existingPostNoTopUp - existingPost);
       if (existingPost < 0)
         warnings.push("Post-money existing holders % is negative (check pool target and round size).");
 
@@ -13332,7 +13515,7 @@ export const calculators: CalculatorDefinition[] = [
             value: investorPost,
             format: "percent",
             maxFractionDigits: 2,
-            detail: "Investment ÷ post-money",
+            detail: "Investment / post-money",
           },
           {
             key: "poolPost",
@@ -13340,6 +13523,21 @@ export const calculators: CalculatorDefinition[] = [
             value: pt,
             format: "percent",
             maxFractionDigits: 2,
+          },
+          {
+            key: "poolDilution",
+            label: "Dilution from pool top-up",
+            value: poolDilution,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: "Existing % loss vs no top-up",
+          },
+          {
+            key: "postMoney",
+            label: "Post-money valuation",
+            value: postMoney,
+            format: "currency",
+            currency: "USD",
           },
         ],
         breakdown: [
@@ -13351,16 +13549,23 @@ export const calculators: CalculatorDefinition[] = [
             maxFractionDigits: 4,
             detail: "Additional pool shares relative to pre-money total shares (normalized)",
           },
+          {
+            key: "existingPostNoTopUp",
+            label: "Existing holders (post-money, no top-up)",
+            value: Math.max(0, existingPostNoTopUp),
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: "What existing holders would own without a pool increase",
+          },
         ],
         warnings,
       };
     },
-    formula:
-      "Investor % ≈ investment ÷ post-money; option pool shuffle solves for extra pool shares to reach target pool % post-money (simplified share normalization).",
+    formula: "Investor % = investment / post-money; option pool shuffle solves for extra pool shares to reach target pool % post-money (simplified share normalization).",
     assumptions: [
       "Uses a simplified fully diluted share model normalized to 1 pre-money share base.",
       "Ignores SAFE/note conversions and any share-class / liquidation preference terms.",
-      "Assumes investor ownership approximation investment ÷ post-money.",
+      "Assumes investor ownership approximation investment / post-money.",
     ],
     faqs: [
       {
@@ -13371,7 +13576,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         question: "Is this a full cap table model?",
         answer:
-          "No. It’s a simplified model to estimate the direction and magnitude. For negotiation and legal accuracy, build a full cap table including SAFEs/notes and share classes.",
+          "No. It's a simplified model to estimate the direction and magnitude. For negotiation and legal accuracy, build a full cap table including SAFEs/notes and share classes.",
       },
     ],
   },
@@ -13488,11 +13693,7 @@ export const calculators: CalculatorDefinition[] = [
         conversionPrice = capPrice;
         method = "Valuation cap";
       }
-      if (
-        values.discountPercent > 0 &&
-        discountPrice > 0 &&
-        discountPrice < conversionPrice
-      ) {
+      if (values.discountPercent > 0 && discountPrice > 0 && discountPrice < conversionPrice) {
         conversionPrice = discountPrice;
         method = "Discount";
       }
@@ -13501,6 +13702,8 @@ export const calculators: CalculatorDefinition[] = [
       const investorShares = safeDivide(values.newMoney, roundPrice) ?? 0;
       const postShares = shares + safeShares + investorShares;
       const safeOwnership = safeDivide(safeShares, postShares) ?? 0;
+      const effectiveDiscount = roundPrice > 0 ? 1 - conversionPrice / roundPrice : null;
+      const impliedPreMoney = conversionPrice * shares;
 
       return {
         headline: {
@@ -13509,7 +13712,7 @@ export const calculators: CalculatorDefinition[] = [
           value: safeOwnership,
           format: "percent",
           maxFractionDigits: 2,
-          detail: "SAFE shares ÷ post-round shares (simplified)",
+          detail: "SAFE shares / post-round shares (simplified)",
         },
         secondary: [
           {
@@ -13527,6 +13730,14 @@ export const calculators: CalculatorDefinition[] = [
             format: "number",
             maxFractionDigits: 0,
           },
+          {
+            key: "effectiveDiscount",
+            label: "Effective discount vs round",
+            value: effectiveDiscount ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: effectiveDiscount === null ? "Round price is 0" : "1 - conversion / round",
+          },
         ],
         breakdown: [
           {
@@ -13535,6 +13746,30 @@ export const calculators: CalculatorDefinition[] = [
             value: roundPrice,
             format: "currency",
             currency: "USD",
+          },
+          {
+            key: "capPrice",
+            label: "Cap price per share",
+            value: capPrice ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: capPrice === null ? "No cap" : "Valuation cap / shares",
+          },
+          {
+            key: "discountPrice",
+            label: "Discount price per share",
+            value: discountPrice,
+            format: "currency",
+            currency: "USD",
+            detail: "Round price x (1 - discount)",
+          },
+          {
+            key: "impliedPreMoney",
+            label: "Implied pre-money at conversion price",
+            value: impliedPreMoney,
+            format: "currency",
+            currency: "USD",
+            detail: "Conversion price x shares",
           },
           {
             key: "postShares",
@@ -13547,8 +13782,7 @@ export const calculators: CalculatorDefinition[] = [
         warnings,
       };
     },
-    formula:
-      "Round price = pre-money ÷ shares; SAFE price = min(cap price, discounted round price, round price); SAFE shares = SAFE amount ÷ SAFE price",
+    formula: "Round price = pre-money / shares; SAFE price = min(cap price, discounted round price, round price); SAFE shares = SAFE amount / SAFE price",
     assumptions: [
       "Simplified priced-round model; ignores option pool changes, other SAFEs/notes, and legal nuances (post-money SAFE, MFN, etc.).",
       "Assumes existing shares input is fully diluted and matches the priced round pre-money valuation basis.",
@@ -13710,11 +13944,7 @@ export const calculators: CalculatorDefinition[] = [
         conversionPrice = capPrice;
         method = "Valuation cap";
       }
-      if (
-        values.discountPercent > 0 &&
-        discountPrice > 0 &&
-        discountPrice < conversionPrice
-      ) {
+      if (values.discountPercent > 0 && discountPrice > 0 && discountPrice < conversionPrice) {
         conversionPrice = discountPrice;
         method = "Discount";
       }
@@ -13723,6 +13953,9 @@ export const calculators: CalculatorDefinition[] = [
       const investorShares = safeDivide(values.newMoney, roundPrice) ?? 0;
       const postShares = shares + noteShares + investorShares;
       const noteOwnership = safeDivide(noteShares, postShares) ?? 0;
+      const effectiveDiscount = roundPrice > 0 ? 1 - conversionPrice / roundPrice : null;
+      const impliedPreMoney = conversionPrice * shares;
+      const interestPercent = values.principal > 0 ? interest / values.principal : null;
 
       return {
         headline: {
@@ -13731,7 +13964,7 @@ export const calculators: CalculatorDefinition[] = [
           value: noteOwnership,
           format: "percent",
           maxFractionDigits: 2,
-          detail: "Note shares ÷ post-round shares (simplified)",
+          detail: "Note shares / post-round shares (simplified)",
         },
         secondary: [
           {
@@ -13750,6 +13983,22 @@ export const calculators: CalculatorDefinition[] = [
             currency: "USD",
             detail: "Simple interest approximation",
           },
+          {
+            key: "interest",
+            label: "Interest accrued",
+            value: interest,
+            format: "currency",
+            currency: "USD",
+            detail: interestPercent === null ? "Principal is 0" : `${(interestPercent * 100).toFixed(2)}% of principal`,
+          },
+          {
+            key: "effectiveDiscount",
+            label: "Effective discount vs round",
+            value: effectiveDiscount ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: effectiveDiscount === null ? "Round price is 0" : "1 - conversion / round",
+          },
         ],
         breakdown: [
           {
@@ -13767,6 +14016,30 @@ export const calculators: CalculatorDefinition[] = [
             currency: "USD",
           },
           {
+            key: "capPrice",
+            label: "Cap price per share",
+            value: capPrice ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: capPrice === null ? "No cap" : "Valuation cap / shares",
+          },
+          {
+            key: "discountPrice",
+            label: "Discount price per share",
+            value: discountPrice,
+            format: "currency",
+            currency: "USD",
+            detail: "Round price x (1 - discount)",
+          },
+          {
+            key: "impliedPreMoney",
+            label: "Implied pre-money at conversion price",
+            value: impliedPreMoney,
+            format: "currency",
+            currency: "USD",
+            detail: "Conversion price x shares",
+          },
+          {
             key: "postShares",
             label: "Post-round shares (estimated)",
             value: postShares,
@@ -13777,8 +14050,7 @@ export const calculators: CalculatorDefinition[] = [
         warnings,
       };
     },
-    formula:
-      "Total note = principal + simple interest; conversion price = min(cap price, discounted round price, round price); note shares = total note ÷ conversion price",
+    formula: "Total note = principal + interest; conversion price = min(cap price, discounted round price, round price); note shares = total / conversion price",
     assumptions: [
       "Uses simple interest (actual note terms may compound or accrue differently).",
       "Simplified priced-round model; ignores option pool changes, other instruments, and legal nuances.",
@@ -13791,7 +14063,7 @@ export const calculators: CalculatorDefinition[] = [
           "Often yes, but terms vary. Some notes may pay interest in cash or have specific conversion rules. Confirm the note documents.",
       },
       {
-        question: "Is cap vs discount always ‘best of’?",
+        question: "Is cap vs discount always best of?",
         answer:
           "Many notes apply the better (lower conversion price) of cap or discount, but terms vary; confirm the conversion mechanics in your agreement.",
       },
@@ -14407,11 +14679,11 @@ export const calculators: CalculatorDefinition[] = [
     seo: {
       intro: [
         "Multiple-based valuation is a fast way to estimate enterprise value by applying a market multiple to a metric like ARR or revenue.",
-        "This calculator estimates enterprise value (metric × multiple) and then bridges to equity value using cash and debt.",
+        "This calculator estimates enterprise value (metric x multiple) and then bridges to equity value using cash and debt.",
       ],
       steps: [
         "Choose a metric value (ARR or annual revenue) and a multiple.",
-        "Compute enterprise value = metric × multiple.",
+        "Compute enterprise value = metric x multiple.",
         "Bridge to equity value using cash and debt (net debt).",
       ],
       pitfalls: [
@@ -14462,6 +14734,11 @@ export const calculators: CalculatorDefinition[] = [
       const enterpriseValue = values.metricValue * values.multiple;
       const netDebt = values.debt - values.cash;
       const equityValue = enterpriseValue - netDebt;
+      const equityToMetric = values.metricValue > 0 ? equityValue / values.metricValue : null;
+      const netDebtToEv = enterpriseValue > 0 ? netDebt / enterpriseValue : null;
+      const cashToDebt = values.debt > 0 ? values.cash / values.debt : null;
+
+      if (equityValue < 0) warnings.push("Equity value is negative (net debt exceeds EV).");
 
       return {
         headline: {
@@ -14470,7 +14747,7 @@ export const calculators: CalculatorDefinition[] = [
           value: enterpriseValue,
           format: "currency",
           currency: "USD",
-          detail: "Metric × multiple",
+          detail: "Metric x multiple",
         },
         secondary: [
           {
@@ -14479,7 +14756,7 @@ export const calculators: CalculatorDefinition[] = [
             value: equityValue,
             format: "currency",
             currency: "USD",
-            detail: "EV - net debt",
+            detail: "EV + cash - debt",
           },
           {
             key: "netDebt",
@@ -14488,6 +14765,30 @@ export const calculators: CalculatorDefinition[] = [
             format: "currency",
             currency: "USD",
             detail: "Debt - cash",
+          },
+          {
+            key: "equityToMetric",
+            label: "Equity value multiple",
+            value: equityToMetric ?? 0,
+            format: "multiple",
+            maxFractionDigits: 2,
+            detail: equityToMetric === null ? "Metric is 0" : "Equity value / metric",
+          },
+          {
+            key: "netDebtToEv",
+            label: "Net debt as % of EV",
+            value: netDebtToEv ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: netDebtToEv === null ? "EV is 0" : "Net debt / EV",
+          },
+          {
+            key: "cashToDebt",
+            label: "Cash to debt ratio",
+            value: cashToDebt ?? 0,
+            format: "ratio",
+            maxFractionDigits: 2,
+            detail: cashToDebt === null ? "Debt is 0" : "Cash / debt",
           },
         ],
         breakdown: [
@@ -14523,20 +14824,20 @@ export const calculators: CalculatorDefinition[] = [
         warnings,
       };
     },
-    formula: "EV = metric × multiple; Equity value = EV + cash - debt",
+    formula: "EV = metric x multiple; Equity value = EV + cash - debt",
     assumptions: [
       "Multiple is applied to a single metric definition (be consistent).",
-      "Uses a simplified EV→equity bridge (cash and debt only).",
+      "Uses a simplified EV-to-equity bridge (cash and debt only).",
       "Multiple selection should reflect growth, margin, and retention context.",
     ],
     faqs: [
       {
-        question: "ARR multiple vs revenue multiple: which should I use?",
+        question: "ARR multiple vs revenue multiple: which should I usex",
         answer:
           "For subscription businesses, ARR multiples are common because ARR captures recurring run-rate. Revenue multiples can be more appropriate when revenue is mostly recurring and recognized consistently. Always match the multiple to the metric definition used by comps.",
       },
       {
-        question: "Why does equity value differ from EV?",
+        question: "Why does equity value differ from EVx",
         answer:
           "Because EV represents the operating business value before financing. Equity value is what remains for shareholders after adjusting for net debt and other claims.",
       },
@@ -18478,6 +18779,16 @@ export const calculators: CalculatorDefinition[] = [
         step: 0.01,
       },
       {
+        key: "apyPercent",
+        label: "APY (optional)",
+        help: "Used to compute an implied APR from an effective annual rate.",
+        placeholder: "6.2",
+        suffix: "%",
+        defaultValue: "0",
+        min: 0,
+        step: 0.01,
+      },
+      {
         key: "compoundsPerYear",
         label: "Compounds per year",
         placeholder: "12",
@@ -18494,7 +18805,17 @@ export const calculators: CalculatorDefinition[] = [
 
       const apr = values.aprPercent / 100;
       const apy = Math.pow(1 + apr / n, n) - 1;
+      const apyInput = values.apyPercent / 100;
+      const aprFromApy =
+        values.apyPercent > 0 ? n * (Math.pow(1 + apyInput, 1 / n) - 1) : null;
       const periodic = apr / n;
+
+      if (values.aprPercent === 0 && values.apyPercent === 0) {
+        warnings.push("Enter APR or APY to convert between rates.");
+      }
+      if (values.aprPercent > 0 && values.apyPercent > 0) {
+        warnings.push("Both APR and APY are set. Outputs show conversions for both.");
+      }
 
       return {
         headline: {
@@ -18503,7 +18824,7 @@ export const calculators: CalculatorDefinition[] = [
           value: apy,
           format: "percent",
           maxFractionDigits: 3,
-          detail: "Includes compounding",
+          detail: "From APR input",
         },
         secondary: [
           {
@@ -18514,12 +18835,20 @@ export const calculators: CalculatorDefinition[] = [
             maxFractionDigits: 3,
           },
           {
+            key: "aprFromApy",
+            label: "APR (from APY input)",
+            value: aprFromApy ?? 0,
+            format: "percent",
+            maxFractionDigits: 3,
+            detail: aprFromApy === null ? "Add APY input" : "Nominal rate from APY",
+          },
+          {
             key: "periodic",
             label: "Periodic rate",
             value: periodic,
             format: "percent",
             maxFractionDigits: 3,
-            detail: `APR ÷ ${n}`,
+            detail: `APR / ${n}`,
           },
         ],
         warnings,
@@ -18554,7 +18883,7 @@ export const calculators: CalculatorDefinition[] = [
     relatedGlossarySlugs: ["inflation", "real-return", "interest-rate"],
     seo: {
       intro: [
-        "Nominal returns don’t account for inflation. Real return measures how much purchasing power you gain after inflation.",
+        "Nominal returns don't account for inflation. Real return measures how much purchasing power you gain after inflation.",
         "This calculator converts nominal return to real return and shows the inflation drag.",
       ],
       steps: [
@@ -18584,12 +18913,28 @@ export const calculators: CalculatorDefinition[] = [
         defaultValue: "3",
         step: 0.1,
       },
+      {
+        key: "targetRealPercent",
+        label: "Target real return (optional)",
+        placeholder: "5",
+        suffix: "%",
+        defaultValue: "0",
+        step: 0.1,
+      },
     ],
     compute(values) {
+      const warnings: string[] = [];
       const nominal = values.nominalReturnPercent / 100;
       const inflation = values.inflationPercent / 100;
       const real = (1 + nominal) / (1 + inflation) - 1;
       const drag = nominal - real;
+      const targetReal = values.targetRealPercent / 100;
+      const requiredNominal =
+        values.targetRealPercent > 0 ? (1 + targetReal) * (1 + inflation) - 1 : null;
+
+      if (1 + inflation <= 0) {
+        warnings.push("Inflation must be greater than -100% for real return math.");
+      }
 
       return {
         headline: {
@@ -18623,10 +18968,22 @@ export const calculators: CalculatorDefinition[] = [
             maxFractionDigits: 2,
             detail: "Nominal - real (approx)",
           },
+          {
+            key: "requiredNominal",
+            label: "Required nominal for target real",
+            value: requiredNominal ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail:
+              requiredNominal === null
+                ? "Add target real return"
+                : "Target real + inflation interaction",
+          },
         ],
+        warnings,
       };
     },
-    formula: "Real return = (1 + nominal) ÷ (1 + inflation) - 1",
+    formula: "Real return = (1 + nominal) / (1 + inflation) - 1",
     assumptions: [
       "Inflation rate is an approximation (e.g., CPI).",
       "Uses annual rates; use consistent units for inputs.",
