@@ -14885,6 +14885,9 @@ export const calculators: CalculatorDefinition[] = [
       const commissionRate = safeDivide(values.variablePay, values.quota);
       const baseSplit = safeDivide(values.basePay, ote);
       const variableSplit = safeDivide(values.variablePay, ote);
+      const monthlyOte = ote / 12;
+      const monthlyBase = values.basePay / 12;
+      const monthlyVariable = values.variablePay / 12;
       const payoutAt = (attainment: number) =>
         values.basePay + values.variablePay * attainment;
       const variableAt = (attainment: number) => values.variablePay * attainment;
@@ -14920,12 +14923,41 @@ export const calculators: CalculatorDefinition[] = [
             format: "percent",
             maxFractionDigits: 0,
           },
+          {
+            key: "monthlyOte",
+            label: "Monthly OTE",
+            value: monthlyOte,
+            format: "currency",
+            currency: "USD",
+            detail: "Annual OTE / 12",
+          },
+          {
+            key: "monthlyBase",
+            label: "Monthly base",
+            value: monthlyBase,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "monthlyVariable",
+            label: "Monthly variable (at 100%)",
+            value: monthlyVariable,
+            format: "currency",
+            currency: "USD",
+          },
         ],
         breakdown: [
           {
             key: "payout80",
             label: "Payout at 80% attainment",
             value: payoutAt(0.8),
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "payout75",
+            label: "Payout at 75% attainment",
+            value: payoutAt(0.75),
             format: "currency",
             currency: "USD",
           },
@@ -14940,6 +14972,13 @@ export const calculators: CalculatorDefinition[] = [
             key: "payout120",
             label: "Payout at 120% attainment",
             value: payoutAt(1.2),
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "payout125",
+            label: "Payout at 125% attainment",
+            value: payoutAt(1.25),
             format: "currency",
             currency: "USD",
           },
