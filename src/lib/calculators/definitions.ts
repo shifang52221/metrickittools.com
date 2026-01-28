@@ -8958,6 +8958,14 @@ export const calculators: CalculatorDefinition[] = [
         min: 0,
       },
       {
+        key: "netDebt",
+        label: "Net debt (optional)",
+        help: "Debt minus cash; used to estimate equity value.",
+        placeholder: "0",
+        prefix: "$",
+        defaultValue: "0",
+      },
+      {
         key: "forecastYears",
         label: "Forecast years",
         placeholder: "5",
@@ -9021,6 +9029,8 @@ export const calculators: CalculatorDefinition[] = [
       const pvTerminal = terminalValue / Math.pow(1 + r, years);
       const enterpriseValue = pvForecast + pvTerminal;
       const terminalShare = enterpriseValue > 0 ? pvTerminal / enterpriseValue : 0;
+      const equityValue = enterpriseValue - values.netDebt;
+      const terminalGrowthGap = r - tg;
 
       return {
         headline: {
@@ -9047,12 +9057,28 @@ export const calculators: CalculatorDefinition[] = [
             currency: "USD",
           },
           {
+            key: "equityValue",
+            label: "Equity value (EV - net debt)",
+            value: equityValue,
+            format: "currency",
+            currency: "USD",
+            detail: "Approximate equity value",
+          },
+          {
             key: "terminalShare",
             label: "Terminal value share",
             value: terminalShare,
             format: "percent",
             maxFractionDigits: 0,
             detail: "How much of EV comes from terminal",
+          },
+          {
+            key: "terminalGrowthGap",
+            label: "Discount minus terminal growth (r - g)",
+            value: terminalGrowthGap,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: "Keep positive; larger gap lowers terminal value",
           },
           {
             key: "fcfTerminal",
@@ -9804,6 +9830,8 @@ export const calculators: CalculatorDefinition[] = [
 
       const afterTaxDebt = kd * (1 - tax);
       const wacc = we * ke + wd * afterTaxDebt;
+      const spread = ke - afterTaxDebt;
+      const taxShield = kd * tax;
 
       return {
         headline: {
@@ -9822,6 +9850,22 @@ export const calculators: CalculatorDefinition[] = [
             format: "percent",
             maxFractionDigits: 2,
             detail: "Cost of debt × (1 - tax rate)",
+          },
+          {
+            key: "equityDebtSpread",
+            label: "Equity vs debt spread",
+            value: spread,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: "Cost of equity - after-tax debt",
+          },
+          {
+            key: "taxShield",
+            label: "Debt tax shield (rate)",
+            value: taxShield,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: "Cost of debt × tax rate",
           },
           {
             key: "equityWeight",
@@ -13028,6 +13072,7 @@ export const calculators: CalculatorDefinition[] = [
 
       const baseEv = evAt(rMid, tgMid);
       if (baseEv === null) warnings.push("Base inputs are invalid: terminal growth must be less than discount rate.");
+      const baseGap = rMid - tgMid;
 
       const grid: Array<{ key: string; label: string; value: number }> = [];
       const points: Array<[string, number, number]> = [
@@ -13076,6 +13121,16 @@ export const calculators: CalculatorDefinition[] = [
           format: "currency",
           currency: "USD",
         })),
+        breakdown: [
+          {
+            key: "baseGap",
+            label: "Base (r - g) gap",
+            value: baseGap,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: "Keep positive; smaller gap inflates terminal value",
+          },
+        ],
         warnings,
       };
     },
