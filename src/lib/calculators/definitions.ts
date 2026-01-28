@@ -13947,6 +13947,7 @@ export const calculators: CalculatorDefinition[] = [
       const attainment = safeDivide(values.bookedToDate, values.quota);
       const projectedBookings =
         daysElapsed > 0 ? (values.bookedToDate / daysElapsed) * daysInPeriod : 0;
+      const projectedAttainment = safeDivide(projectedBookings, values.quota);
       const onTrackToDate =
         daysInPeriod > 0 ? (values.quota * daysElapsed) / daysInPeriod : 0;
       const paceRatio =
@@ -13974,6 +13975,14 @@ export const calculators: CalculatorDefinition[] = [
             format: "currency",
             currency: "USD",
             detail: "Booked/day × total days",
+          },
+          {
+            key: "projectedAttainment",
+            label: "Projected attainment (at current pace)",
+            value: projectedAttainment ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: "Projected bookings ÷ quota",
           },
           {
             key: "remaining",
@@ -14228,6 +14237,15 @@ export const calculators: CalculatorDefinition[] = [
         defaultValue: "25000",
         min: 0.01,
       },
+      {
+        key: "activeReps",
+        label: "Active reps (optional)",
+        help: "Used to estimate pipeline per rep.",
+        placeholder: "5",
+        defaultValue: "5",
+        min: 0,
+        step: 1,
+      },
     ],
     compute(values) {
       const warnings: string[] = [];
@@ -14235,12 +14253,17 @@ export const calculators: CalculatorDefinition[] = [
       if (values.target <= 0) warnings.push("Target must be greater than 0.");
       if (winRate <= 0) warnings.push("Win rate must be greater than 0%.");
       if (values.avgDealSize <= 0) warnings.push("Average deal size must be greater than 0.");
+      if (values.activeReps < 0) warnings.push("Active reps must be 0 or greater.");
 
       const requiredWins = safeDivide(values.target, values.avgDealSize);
       const requiredOpps =
         requiredWins !== null && winRate > 0 ? requiredWins / winRate : null;
       const requiredPipeline = winRate > 0 ? values.target / winRate : 0;
       const impliedCoverage = safeDivide(requiredPipeline, values.target);
+      const reps = Math.floor(values.activeReps);
+      const pipelinePerRep =
+        reps > 0 ? safeDivide(requiredPipeline, reps) : null;
+      const oppsPerRep = reps > 0 ? safeDivide(requiredOpps ?? 0, reps) : null;
 
       return {
         headline: {
@@ -14275,6 +14298,22 @@ export const calculators: CalculatorDefinition[] = [
             format: "multiple",
             maxFractionDigits: 2,
             detail: "Required pipeline ÷ target",
+          },
+          {
+            key: "pipelinePerRep",
+            label: "Pipeline per rep",
+            value: pipelinePerRep ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: reps > 0 ? "Required pipeline ÷ reps" : "Add reps to estimate",
+          },
+          {
+            key: "oppsPerRep",
+            label: "Opportunities per rep",
+            value: oppsPerRep ?? 0,
+            format: "number",
+            maxFractionDigits: 1,
+            detail: reps > 0 ? "Required opps ÷ reps" : "Add reps to estimate",
           },
         ],
         warnings,
