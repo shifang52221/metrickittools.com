@@ -30,8 +30,8 @@ export function ConsentBanner() {
     <div className="fixed inset-x-0 bottom-0 z-50 border-t border-zinc-200 bg-white p-4 shadow-lg dark:border-zinc-800 dark:bg-black">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="text-sm text-zinc-700 dark:text-zinc-300">
-          We use cookies to serve ads and measure performance. You can accept or
-          decline non-essential cookies. See our{" "}
+          We use cookies and local storage to serve ads and measure performance.
+          You can accept or decline non-essential storage. See our{" "}
           <Link className="underline" href="/privacy">
             Privacy Policy
           </Link>

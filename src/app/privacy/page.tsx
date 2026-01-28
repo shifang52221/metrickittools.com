@@ -30,8 +30,8 @@ export default function PrivacyPage() {
       </p>
       <h2>Cookie choices</h2>
       <p>
-        If consent is enabled, you can manage your non-essential cookie choices.
-        You can reset or update your choice using the{" "}
+        If consent is enabled, you can manage your non-essential cookie and
+        local storage choices. You can reset or update your choice using the{" "}
         <strong>Privacy choices</strong> (or <strong>Cookie settings</strong>) link
         in the footer.
       </p>
