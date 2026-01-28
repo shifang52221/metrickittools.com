@@ -6335,8 +6335,11 @@ export const guides: Guide[] = [
     title: "Break-even CTR: required CTR at a given CPM (with buffer)",
     description:
       "A practical guide to break-even CTR: how to compute required CTR from CPM, CVR, AOV, and margin, and how to use it for creative targets.",
+    seo: {
+      title: "Break-even CTR guide: CPM, CVR, margin",
+    },
     category: "paid-ads",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["break-even-ctr-calculator", "break-even-cpm-calculator"],
     relatedGlossarySlugs: ["ctr", "cpm", "cvr", "aov", "contribution-margin", "break-even-cpm"],
     sections: [
@@ -6692,8 +6695,11 @@ export const guides: Guide[] = [
     title: "NRR/GRR targets: how to translate targets into expansion and churn goals",
     description:
       "A practical guide to retention targets: how NRR maps to required expansion and how GRR maps to maximum churn+contraction (with monthly vs annual units).",
+    seo: {
+      title: "Retention targets guide: NRR and GRR math",
+    },
     category: "saas-metrics",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["retention-targets-planner-calculator", "revenue-retention-curve-calculator"],
     relatedGlossarySlugs: [
       "nrr",
@@ -6840,8 +6846,11 @@ export const guides: Guide[] = [
     title: "Pricing guardrails: payback-based minimum price and max discount",
     description:
       "A practical guide to pricing guardrails: compute minimum ARPA (or max discount) from CAC, margin, and a target payback to avoid breaking unit economics.",
+    seo: {
+      title: "Pricing guardrails guide: payback-based pricing",
+    },
     category: "saas-metrics",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["pricing-packaging-guardrails-calculator", "price-increase-break-even-calculator"],
     relatedGlossarySlugs: ["cac-payback-period", "gross-margin", "arpa", "price-increase", "discount-rate"],
     sections: [
@@ -6904,8 +6913,11 @@ export const guides: Guide[] = [
     title: "Loan amortization: how monthly payments and total interest work",
     description:
       "A practical guide to loan amortization: monthly payment formula, why interest dominates early, and how term and rate affect total interest.",
+    seo: {
+      title: "Loan payment guide: amortization and interest",
+    },
     category: "finance",
-    updatedAt: "2026-01-27",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["loan-payment-calculator"],
     relatedGlossarySlugs: ["apr", "amortization", "principal", "interest-rate"],
     sections: [
@@ -6983,8 +6995,11 @@ export const guides: Guide[] = [
     title: "APR vs APY: how compounding changes the effective rate",
     description:
       "A practical guide to APR vs APY: what each means, how to convert between them, and common comparison mistakes.",
+    seo: {
+      title: "APR vs APY guide: compounding and comparison",
+    },
     category: "finance",
-    updatedAt: "2026-01-27",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["apr-to-apy-calculator"],
     relatedGlossarySlugs: ["apr", "apy", "compounding", "interest-rate"],
     sections: [
@@ -7062,8 +7077,11 @@ export const guides: Guide[] = [
     title: "Real vs nominal return: inflation-adjusted performance",
     description:
       "A practical guide to real return: how inflation changes purchasing power and why nominal returns can mislead over long horizons.",
+    seo: {
+      title: "Real vs nominal return guide: inflation impact",
+    },
     category: "finance",
-    updatedAt: "2026-01-27",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["real-return-calculator"],
     relatedGlossarySlugs: ["inflation", "real-return", "interest-rate"],
     sections: [
@@ -7145,8 +7163,11 @@ export const guides: Guide[] = [
     title: "Sales ops metrics hub: quota, pipeline, win rate, and capacity planning",
     description:
       "A practical hub for sales ops planning: quota attainment, pipeline coverage, required pipeline, sales capacity with ramp, and OTE math.",
+    seo: {
+      title: "Sales ops hub: quota, pipeline, capacity",
+    },
     category: "saas-metrics",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: [
       "quota-attainment-calculator",
       "pipeline-coverage-calculator",
@@ -7230,8 +7251,11 @@ export const guides: Guide[] = [
     title: "PLG metrics hub: activation, trial conversion, stickiness, and adoption",
     description:
       "A practical hub for product-led growth metrics: activation rate, trial-to-paid, DAU/MAU and WAU/MAU stickiness, feature adoption, and PQL-to-paid conversion.",
+    seo: {
+      title: "PLG metrics hub: activation, trial, stickiness",
+    },
     category: "saas-metrics",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: [
       "activation-rate-calculator",
       "trial-to-paid-calculator",
@@ -7308,8 +7332,11 @@ export const guides: Guide[] = [
     title: "Fundraising & valuation hub: pre/post-money, SAFEs, notes, and liquidation prefs",
     description:
       "A practical hub for startup fundraising and valuation basics: pre/post-money, pro rata, option pool shuffle, SAFE/note conversion, and liquidation preference outcomes.",
+    seo: {
+      title: "Fundraising & valuation hub: pre/post, SAFEs, notes",
+    },
     category: "finance",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: [
       "pre-money-post-money-calculator",
       "pro-rata-investment-calculator",
@@ -7387,8 +7414,11 @@ export const guides: Guide[] = [
     title: "Retention & churn hub: cohorts, GRR/NRR, and retention curves",
     description:
       "A practical hub for retention measurement: churn rate, GRR/NRR, cohort retention curves, and how to set retention targets without getting misled by noise.",
+    seo: {
+      title: "Retention & churn hub: GRR, NRR, cohorts",
+    },
     category: "saas-metrics",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: [
       "churn-rate-calculator",
       "retention-rate-calculator",
