@@ -5961,6 +5961,15 @@ export const calculators: CalculatorDefinition[] = [
         defaultValue: "100",
         min: 0,
       },
+      {
+        key: "targetArr",
+        label: "Target ARR (optional)",
+        help: "Used to estimate required contract value (TCV).",
+        placeholder: "200000",
+        prefix: "$",
+        defaultValue: "200000",
+        min: 0,
+      },
     ],
     compute(values) {
       const warnings: string[] = [];
@@ -5975,6 +5984,12 @@ export const calculators: CalculatorDefinition[] = [
       const arr = mrr * 12;
       const bookings = values.contractValue;
       const cashCollected = bookings * (values.prepaidPercent / 100);
+      const requiredRecurringForTarget =
+        values.targetArr > 0 ? values.targetArr / 12 * values.termMonths : null;
+      const requiredTcvForTarget =
+        requiredRecurringForTarget !== null
+          ? requiredRecurringForTarget + Math.max(0, values.oneTimeFees)
+          : null;
 
       return {
         headline: {
@@ -5999,6 +6014,14 @@ export const calculators: CalculatorDefinition[] = [
             value: cashCollected,
             format: "currency",
             currency: "USD",
+          },
+          {
+            key: "requiredTcv",
+            label: "Required TCV for target ARR",
+            value: requiredTcvForTarget ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: values.targetArr > 0 ? "Target ARR to contract value" : "Add target ARR",
           },
         ],
         breakdown: [
@@ -15499,6 +15522,7 @@ export const calculators: CalculatorDefinition[] = [
 
       const ratio = safeDivide(wau, mau);
       const weeksPerMonth = (ratio ?? 0) * 4.33;
+      const activeWeeks = Math.min(4.33, Math.max(0, weeksPerMonth));
       const target = values.targetPercent / 100;
       const requiredWau = values.targetPercent > 0 ? Math.ceil(mau * target) : null;
 
@@ -15519,6 +15543,14 @@ export const calculators: CalculatorDefinition[] = [
             format: "number",
             maxFractionDigits: 2,
             detail: "WAU/MAU * 4.33",
+          },
+          {
+            key: "activeWeeks",
+            label: "Active weeks per month (capped)",
+            value: activeWeeks,
+            format: "number",
+            maxFractionDigits: 2,
+            detail: "Capped at 4.33 weeks",
           },
           {
             key: "requiredWau",
