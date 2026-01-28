@@ -5913,14 +5913,14 @@ export const calculators: CalculatorDefinition[] = [
     guideSlug: "bookings-vs-arr-guide",
     seo: {
       intro: [
-        "Bookings measure contracted value signed in a period. ARR is a recurring run-rate snapshot (typically MRR × 12). Cash receipts can differ again depending on billing terms.",
-        "This calculator turns a contract into comparable metrics: bookings (signed value), recurring run-rate (ARR), and cash collected (if prepaid).",
+          "Bookings measure contracted value signed in a period. ARR is a recurring run-rate snapshot (typically MRR x 12). Cash receipts can differ again depending on billing terms.",
+          "This calculator turns a contract into comparable metrics: bookings (signed value), recurring run-rate (ARR), and cash collected (if prepaid).",
       ],
       steps: [
         "Enter the total contract value (TCV) and the term length (months).",
         "Enter any one-time fees/services included in the contract.",
-        "Compute recurring value = TCV − one-time.",
-        "Compute MRR = recurring ÷ term months, then ARR = MRR × 12.",
+          "Compute recurring value = TCV - one-time.",
+          "Compute MRR = recurring / term months, then ARR = MRR x 12.",
       ],
       pitfalls: [
         "Treating bookings as recurring run-rate (especially with annual prepay).",
@@ -5954,12 +5954,21 @@ export const calculators: CalculatorDefinition[] = [
       },
       {
         key: "prepaidPercent",
-        label: "Paid upfront (cash %) ",
+          label: "Paid upfront (cash %)",
         help: "100% for annual prepay; 0% if billed monthly (cash spread out).",
         placeholder: "100",
         suffix: "%",
         defaultValue: "100",
         min: 0,
+      },
+      {
+        key: "billingFrequencyMonths",
+        label: "Billing frequency (months)",
+        help: "1 = monthly, 3 = quarterly, 12 = annual.",
+        placeholder: "12",
+        defaultValue: "12",
+        min: 1,
+        step: 1,
       },
       {
         key: "targetArr",
@@ -5978,12 +5987,24 @@ export const calculators: CalculatorDefinition[] = [
       if (values.oneTimeFees < 0) warnings.push("One-time fees must be 0 or greater.");
       if (values.prepaidPercent < 0 || values.prepaidPercent > 100)
         warnings.push("Paid upfront (%) must be between 0 and 100.");
+      if (values.billingFrequencyMonths <= 0)
+        warnings.push("Billing frequency must be greater than 0 months.");
 
       const recurring = Math.max(0, values.contractValue - values.oneTimeFees);
       const mrr = safeDivide(recurring, values.termMonths) ?? 0;
       const arr = mrr * 12;
       const bookings = values.contractValue;
-      const cashCollected = bookings * (values.prepaidPercent / 100);
+      const upfrontCash = bookings * (values.prepaidPercent / 100);
+      const remainingCash = bookings - upfrontCash;
+      const billingFreq = Math.max(1, Math.floor(values.billingFrequencyMonths));
+      if (values.billingFrequencyMonths !== billingFreq)
+        warnings.push("Billing frequency was rounded down to a whole number.");
+      if (values.termMonths % billingFreq !== 0)
+        warnings.push("Term months is not divisible by billing frequency (cash schedule is approximate).");
+      const invoiceCount =
+        billingFreq > 0 ? values.termMonths / billingFreq : 0;
+      const cashPerInvoice =
+        invoiceCount > 0 ? remainingCash / invoiceCount : 0;
       const requiredRecurringForTarget =
         values.targetArr > 0 ? values.targetArr / 12 * values.termMonths : null;
       const requiredTcvForTarget =
@@ -5998,7 +6019,7 @@ export const calculators: CalculatorDefinition[] = [
           value: arr,
           format: "currency",
           currency: "USD",
-          detail: "Recurring ÷ term months × 12",
+            detail: "Recurring / term months x 12",
         },
         secondary: [
           {
@@ -6009,11 +6030,26 @@ export const calculators: CalculatorDefinition[] = [
             currency: "USD",
           },
           {
-            key: "cash",
-            label: "Cash collected (upfront)",
-            value: cashCollected,
+            key: "upfrontCash",
+            label: "Cash collected upfront",
+            value: upfrontCash,
             format: "currency",
             currency: "USD",
+          },
+          {
+            key: "remainingCash",
+            label: "Cash remaining to bill",
+            value: remainingCash,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "cashPerInvoice",
+            label: "Cash per invoice (remaining)",
+            value: cashPerInvoice,
+            format: "currency",
+            currency: "USD",
+            detail: invoiceCount > 0 ? "Remaining cash / invoices" : "No remaining invoices",
           },
           {
             key: "requiredTcv",
@@ -6046,12 +6082,19 @@ export const calculators: CalculatorDefinition[] = [
             format: "currency",
             currency: "USD",
           },
+          {
+            key: "invoiceCount",
+            label: "Invoices (remaining)",
+            value: invoiceCount,
+            format: "number",
+            maxFractionDigits: 1,
+          },
         ],
         warnings,
       };
     },
-    formula:
-      "Bookings = TCV; ARR = ((TCV − one-time) ÷ term months) × 12; Cash upfront = TCV × prepaid %",
+      formula:
+        "Bookings = TCV; ARR = ((TCV - one-time) / term months) x 12; Cash upfront = TCV x prepaid %",
     assumptions: [
       "ARR is a run-rate snapshot; it is not recognized revenue.",
       "Recurring portion excludes one-time fees and services.",
@@ -6061,7 +6104,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         question: "Is bookings the same as ARR?",
         answer:
-          "No. Bookings measure contracted value signed in a period. ARR measures recurring run-rate (MRR × 12). They answer different questions.",
+            "No. Bookings measure contracted value signed in a period. ARR measures recurring run-rate (MRR x 12). They answer different questions.",
       },
       {
         question: "Why can bookings be much higher than ARR?",
