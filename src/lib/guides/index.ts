@@ -7517,8 +7517,11 @@ export const guides: Guide[] = [
     title: "Unit economics hub: CAC, LTV, payback, and runway (a practical stack)",
     description:
       "A practical hub for unit economics: CAC, fully-loaded CAC, LTV, payback, margin impacts, burn multiple, and runway planning.",
+    seo: {
+      title: "Unit economics hub: CAC, LTV, payback, runway",
+    },
     category: "saas-metrics",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: [
       "unit-economics-dashboard-calculator",
       "unit-economics-calculator",
@@ -7625,8 +7628,11 @@ export const guides: Guide[] = [
     title: "Paid ads measurement hub: ROAS, MER, marginal ROAS, and incrementality",
     description:
       "A practical hub for paid ads measurement: connect ROAS to profit, use MER for top-down truth, watch marginal ROAS for scale, and validate incrementality with holdouts.",
+    seo: {
+      title: "Paid ads measurement hub: ROAS, MER, incrementality",
+    },
     category: "paid-ads",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: [
       "roas-calculator",
       "break-even-roas-calculator",
@@ -7728,8 +7734,11 @@ export const guides: Guide[] = [
     title: "Paid ads bidding & budgeting hub: max CPC, target CPA, and break-even targets",
     description:
       "A practical hub for bidding and budgeting: compute max CPC from CVR and margin, set target CPA using LTV, and use break-even CTR/CVR/CPM targets to guide creative and landing optimizations.",
+    seo: {
+      title: "Bidding & budgeting hub: max CPC, target CPA",
+    },
     category: "paid-ads",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: [
       "max-cpc-calculator",
       "target-cpa-ltv-calculator",
@@ -7812,8 +7821,11 @@ export const guides: Guide[] = [
     title: "Valuation modeling hub: WACC, DCF, multiples, and equity value",
     description:
       "A practical hub for valuation modeling: estimate a discount rate (WACC), run a simple DCF with sensitivity analysis, and translate enterprise value to equity value.",
+    seo: {
+      title: "Valuation modeling hub: WACC, DCF, multiples",
+    },
     category: "finance",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: [
       "wacc-calculator",
       "dcf-valuation-calculator",
@@ -7891,8 +7903,11 @@ export const guides: Guide[] = [
     title: "Capital budgeting hub: NPV, IRR, payback, and investment decisions",
     description:
       "A practical hub for capital budgeting: use NPV, IRR, discounted payback, and profitability index together (and avoid relying on a single metric).",
+    seo: {
+      title: "Capital budgeting hub: NPV, IRR, payback",
+    },
     category: "finance",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: [
       "investment-decision-calculator",
       "npv-calculator",
@@ -7972,8 +7987,11 @@ export const guides: Guide[] = [
     title: "Attribution vs incrementality: what to trust, when, and how to test",
     description:
       "A practical guide to attribution vs incrementality: common attribution models, window pitfalls, how MER/marginal ROAS fit in, and how to run holdout/geo tests.",
+    seo: {
+      title: "Attribution vs incrementality guide: what to trust",
+    },
     category: "paid-ads",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: [
       "incrementality-lift-calculator",
       "mer-calculator",
@@ -8073,8 +8091,11 @@ export const guides: Guide[] = [
     title: "Creative + landing page playbook: diagnose CTR/CVR, then set break-even targets",
     description:
       "A practical playbook for improving paid ads performance: use CTR/CVR diagnosis, set break-even CTR/CVR/CPM targets from your economics, and fix the biggest lever first.",
+    seo: {
+      title: "Creative + landing playbook: CTR, CVR targets",
+    },
     category: "paid-ads",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: [
       "paid-ads-funnel-calculator",
       "break-even-ctr-calculator",
@@ -8150,8 +8171,11 @@ export const guides: Guide[] = [
     title: "Runway and burn: gross vs net burn, working capital, and cash levers",
     description:
       "A practical guide to runway: compute net burn, understand why cash differs from profit, and how working capital and collections change runway.",
+    seo: {
+      title: "Runway and burn guide: gross vs net burn",
+    },
     category: "finance",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: [
       "cash-runway-calculator",
       "burn-multiple-calculator",
@@ -8217,8 +8241,11 @@ export const guides: Guide[] = [
     title: "UTM + GA4 attribution: practical tracking for paid ads (without lying to yourself)",
     description:
       "A practical guide to UTMs and GA4: consistent source/medium/campaign tagging, conversion deduplication, and common attribution traps.",
+    seo: {
+      title: "UTM + GA4 attribution guide: tracking standards",
+    },
     category: "paid-ads",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: [
       "roas-calculator",
       "roi-calculator",
@@ -8300,8 +8327,11 @@ export const guides: Guide[] = [
     title: "Frequency and creative fatigue: diagnose performance decay and fix it",
     description:
       "Learn how frequency, reach, and impressions interact with CTR/CVR, when to cap frequency, and how to refresh creatives without tanking learning.",
+    seo: {
+      title: "Creative fatigue guide: frequency and refresh",
+    },
     category: "paid-ads",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: [
       "paid-ads-funnel-calculator",
       "break-even-ctr-calculator",
