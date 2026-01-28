@@ -512,6 +512,182 @@ const seeds: Seed[] = [
     ],
     relatedGuideSlugs: ["retention-churn-hub-guide", "sales-ops-hub-guide"],
   },
+  {
+    slug: "sales-efficiency",
+    title: "Sales Efficiency",
+    description:
+      "Sales efficiency compares net new revenue to sales and marketing spend over a period. It shows how effectively spend converts into growth.",
+    updatedAt: "2026-01-28",
+    formula: "Sales efficiency = net new ARR (or MRR) / sales and marketing spend",
+    example: "If net new ARR is $1.2M and S&M spend is $1M, efficiency is 1.2x.",
+    bullets: [
+      "Use consistent windows (for example, quarter vs quarter) to avoid timing distortions.",
+      "Pair with payback period to see both speed and magnitude of returns.",
+    ],
+    mistakes: [
+      "Mixing booking metrics with recognized revenue in the numerator.",
+      "Ignoring expansion vs new logos when interpreting efficiency.",
+    ],
+    relatedGuideSlugs: ["sales-ops-hub-guide", "pipeline-coverage-sales-cycle-guide"],
+  },
+  {
+    slug: "logo-retention-rate",
+    title: "Logo Retention Rate",
+    description:
+      "Logo retention rate is the share of customers retained over a period, excluding expansion or contraction in revenue.",
+    updatedAt: "2026-01-28",
+    formula: "Logo retention = (starting customers - churned customers) / starting customers",
+    example: "Start with 200 customers, lose 15: logo retention is 185 / 200 = 92.5%.",
+    bullets: [
+      "Use alongside revenue retention to separate customer count vs revenue effects.",
+      "Segment by plan or cohort to find churn drivers.",
+    ],
+    mistakes: [
+      "Including new customers in the numerator (it should be based on starting customers).",
+      "Using logo retention to judge expansion-led businesses without context.",
+    ],
+    relatedGuideSlugs: ["retention-guide", "retention-churn-hub-guide"],
+  },
+  {
+    slug: "gross-adds",
+    title: "Gross Adds",
+    description:
+      "Gross adds is the number of new customers (or new MRR/ARR) added in a period before accounting for churn.",
+    updatedAt: "2026-01-28",
+    formula: "Gross adds = new customers acquired in the period",
+    example: "If you sign 120 new customers in a month, gross adds is 120.",
+    bullets: [
+      "Track gross adds with churn to understand net growth drivers.",
+      "Use a consistent definition for what counts as a new customer.",
+    ],
+    mistakes: [
+      "Counting reactivations as new adds without disclosing it.",
+      "Comparing gross adds across periods with different marketing intensity.",
+    ],
+    relatedGuideSlugs: ["sales-ops-hub-guide", "churn-guide"],
+  },
+  {
+    slug: "expansion-bookings",
+    title: "Expansion Bookings",
+    description:
+      "Expansion bookings are new contracted revenue from existing customers (upsells, seat expansion, upgrades) in a period.",
+    updatedAt: "2026-01-28",
+    formula: "Expansion bookings = bookings from existing customers",
+    example: "If 30 customers upgrade and add $150k ARR, expansion bookings are $150k.",
+    bullets: [
+      "Separate expansion from new bookings to see growth mix.",
+      "Use consistent contract terms so expansion is comparable over time.",
+    ],
+    mistakes: [
+      "Blending expansion with new logos and losing visibility into retention health.",
+      "Counting renewals as expansion when price or scope is unchanged.",
+    ],
+    relatedGuideSlugs: ["retention-churn-hub-guide", "sales-ops-hub-guide"],
+  },
+  {
+    slug: "sales-capacity",
+    title: "Sales Capacity",
+    description:
+      "Sales capacity is the amount of pipeline or revenue a sales team can realistically handle given headcount, ramp, and quota.",
+    updatedAt: "2026-01-28",
+    formula: "Sales capacity ~= active reps * quota * attainment rate",
+    example: "10 reps with $600k quota and 70% attainment implies $4.2M capacity.",
+    bullets: [
+      "Adjust for ramping reps; new reps contribute less initially.",
+      "Use capacity to set pipeline targets and hiring plans.",
+    ],
+    mistakes: [
+      "Assuming 100% quota attainment across all reps.",
+      "Ignoring time to productivity for new hires.",
+    ],
+    relatedGuideSlugs: ["sales-ops-hub-guide", "pipeline-coverage-sales-cycle-guide"],
+  },
+  {
+    slug: "ramp-time",
+    title: "Ramp Time",
+    description:
+      "Ramp time is the time it takes a new rep to reach full productivity or a target quota level.",
+    updatedAt: "2026-01-28",
+    formula: "Ramp time = months to reach target productivity",
+    example: "If reps hit 80% quota by month 6, ramp time is about 6 months.",
+    bullets: [
+      "Use ramp curves, not single averages, for hiring plans.",
+      "Shorter ramp time improves CAC payback and growth velocity.",
+    ],
+    mistakes: [
+      "Using peak performance as the ramp benchmark.",
+      "Ignoring enablement and lead flow constraints.",
+    ],
+    relatedGuideSlugs: ["sales-ops-hub-guide"],
+  },
+  {
+    slug: "sales-quota-coverage",
+    title: "Sales Quota Coverage",
+    description:
+      "Sales quota coverage compares pipeline to quota for a period to estimate whether enough pipeline exists to hit targets.",
+    updatedAt: "2026-01-28",
+    formula: "Quota coverage = pipeline / quota",
+    example: "If pipeline is $3M and quota is $1M, coverage is 3.0x.",
+    bullets: [
+      "Target coverage varies by win rate; lower win rates need higher coverage.",
+      "Measure coverage by segment because win rates differ.",
+    ],
+    mistakes: [
+      "Using unqualified pipeline to inflate coverage.",
+      "Comparing coverage across teams with different stage definitions.",
+    ],
+    relatedGuideSlugs: ["pipeline-coverage-sales-cycle-guide", "sales-ops-hub-guide"],
+  },
+  {
+    slug: "win-loss-analysis",
+    title: "Win-Loss Analysis",
+    description:
+      "Win-loss analysis reviews why deals were won or lost to improve messaging, qualification, and competitive strategy.",
+    updatedAt: "2026-01-28",
+    bullets: [
+      "Classify wins/losses by competitor, reason, and segment.",
+      "Close the loop with product and marketing teams using the findings.",
+    ],
+    mistakes: [
+      "Collecting anecdotes without a consistent taxonomy.",
+      "Skipping post-mortems on late-stage losses.",
+    ],
+    relatedGuideSlugs: ["sales-ops-hub-guide"],
+  },
+  {
+    slug: "lead-response-time",
+    title: "Lead Response Time",
+    description:
+      "Lead response time measures how long it takes to contact a new inbound lead after it is created.",
+    updatedAt: "2026-01-28",
+    formula: "Lead response time = time of first response - lead creation time",
+    example: "A lead created at 10:00 and first contacted at 10:30 has a 30-minute response time.",
+    bullets: [
+      "Faster response times usually increase conversion rates.",
+      "Track by channel; paid leads often decay faster than referrals.",
+    ],
+    mistakes: [
+      "Measuring only business hours when leads arrive 24/7.",
+      "Counting automated emails as true responses without qualification.",
+    ],
+    relatedGuideSlugs: ["sales-ops-hub-guide", "pipeline-coverage-sales-cycle-guide"],
+  },
+  {
+    slug: "pipeline-hygiene",
+    title: "Pipeline Hygiene",
+    description:
+      "Pipeline hygiene is the quality and accuracy of pipeline data, including stage updates, close dates, and qualification criteria.",
+    updatedAt: "2026-01-28",
+    bullets: [
+      "Clean pipeline improves forecast accuracy and capacity planning.",
+      "Enforce stage exit criteria and stale deal cleanup policies.",
+    ],
+    mistakes: [
+      "Letting deals sit without activity and inflating pipeline size.",
+      "Allowing inconsistent stage definitions across teams.",
+    ],
+    relatedGuideSlugs: ["sales-ops-hub-guide", "pipeline-coverage-sales-cycle-guide"],
+  },
 ];
 
 export const termsSaasExtra: GlossaryTerm[] = seeds.map(make);
