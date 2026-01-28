@@ -837,6 +837,188 @@ const seeds: Seed[] = [
     ],
     relatedGuideSlugs: ["cash-conversion-cycle-guide", "runway-burn-cash-guide"],
   },
+  {
+    slug: "net-interest-margin",
+    title: "Net Interest Margin",
+    description:
+      "Net interest margin measures the spread between interest income and interest expense relative to earning assets.",
+    updatedAt: "2026-01-28",
+    formula: "Net interest margin = (interest income - interest expense) / earning assets",
+    example:
+      "If interest income is $900k, expense is $500k, and earning assets are $20M, NIM is 2.0%.",
+    bullets: [
+      "Track NIM trend to spot pricing pressure or funding cost shifts.",
+      "Use consistent earning asset definitions across periods.",
+    ],
+    mistakes: [
+      "Mixing non-interest income into the numerator.",
+      "Ignoring seasonality or rate reset timing.",
+    ],
+    relatedGuideSlugs: ["loan-payment-guide", "runway-burn-cash-guide"],
+  },
+  {
+    slug: "operating-margin-rate",
+    title: "Operating Margin Rate",
+    description:
+      "Operating margin rate shows operating profit as a percent of revenue, reflecting core profitability before interest and taxes.",
+    updatedAt: "2026-01-28",
+    formula: "Operating margin rate = operating profit / revenue",
+    example: "Operating profit $800k on $4M revenue yields a 20% margin.",
+    bullets: [
+      "Compare margin by segment to see where profit is concentrated.",
+      "Use trailing periods to smooth noisy months.",
+    ],
+    mistakes: [
+      "Including one-time expenses without normalization.",
+      "Comparing margins across different revenue recognition policies.",
+    ],
+    relatedGuideSlugs: ["unit-economics-hub-guide"],
+  },
+  {
+    slug: "cash-burn-multiple",
+    title: "Cash Burn Multiple",
+    description:
+      "Cash burn multiple compares net burn to net new ARR to show how efficiently cash turns into growth.",
+    updatedAt: "2026-01-28",
+    formula: "Burn multiple = net burn / net new ARR",
+    example:
+      "If net burn is $1.5M and net new ARR is $1M, burn multiple is 1.5x.",
+    bullets: [
+      "Lower multiples mean more efficient growth for the same burn.",
+      "Track by quarter to reduce noise from timing.",
+    ],
+    mistakes: [
+      "Mixing monthly burn with annual ARR without normalizing.",
+      "Including one-time financing inflows in burn.",
+    ],
+    relatedGuideSlugs: ["runway-burn-cash-guide", "unit-economics-hub-guide"],
+  },
+  {
+    slug: "margin-of-safety",
+    title: "Margin of Safety",
+    description:
+      "Margin of safety is the buffer between estimated intrinsic value and purchase price, used to protect against uncertainty.",
+    updatedAt: "2026-01-28",
+    formula: "Margin of safety = (intrinsic value - price) / intrinsic value",
+    example:
+      "If intrinsic value is $100 and price is $70, margin of safety is 30%.",
+    bullets: [
+      "Use larger margins of safety when assumptions are uncertain.",
+      "Combine with sensitivity analysis to test downside risk.",
+    ],
+    mistakes: [
+      "Treating a single valuation point as precise truth.",
+      "Ignoring changes in discount rates or growth expectations.",
+    ],
+    relatedGuideSlugs: ["dcf-valuation-guide", "dcf-sensitivity-guide"],
+  },
+  {
+    slug: "capital-efficiency",
+    title: "Capital Efficiency",
+    description:
+      "Capital efficiency reflects how much output (revenue or ARR) you produce per dollar of capital invested or burned.",
+    updatedAt: "2026-01-28",
+    formula: "Capital efficiency = output metric / capital invested",
+    example:
+      "If $5M of capital produces $3M ARR, capital efficiency is 0.6x.",
+    bullets: [
+      "Define the output metric clearly (ARR, gross profit, or revenue).",
+      "Use consistent time windows when comparing efficiency.",
+    ],
+    mistakes: [
+      "Mixing equity raised with debt financing without context.",
+      "Comparing efficiency across stages without normalization.",
+    ],
+    relatedGuideSlugs: ["unit-economics-hub-guide", "fundraising-valuation-hub-guide"],
+  },
+  {
+    slug: "cash-flow-volatility",
+    title: "Cash Flow Volatility",
+    description:
+      "Cash flow volatility measures how much cash inflows and outflows swing over time, affecting liquidity risk.",
+    updatedAt: "2026-01-28",
+    formula: "Volatility = standard deviation of cash flow over time",
+    example:
+      "If monthly net cash flow varies between -$300k and +$200k, volatility is high.",
+    bullets: [
+      "Volatility increases the value of a larger cash buffer.",
+      "Use rolling windows to observe trend changes.",
+    ],
+    mistakes: [
+      "Ignoring seasonality when interpreting volatility.",
+      "Using revenue volatility as a proxy for cash volatility.",
+    ],
+    relatedGuideSlugs: ["cash-runway-guide", "runway-burn-cash-guide"],
+  },
+  {
+    slug: "cash-collection-forecast",
+    title: "Cash Collection Forecast",
+    description:
+      "A cash collection forecast estimates when receivables will turn into cash based on aging and payment terms.",
+    updatedAt: "2026-01-28",
+    formula: "Collections = AR aging buckets * expected collection rates",
+    example:
+      "If $500k AR is 0-30 days at 90% expected collection, forecast $450k.",
+    bullets: [
+      "Base rates on historical collections by segment.",
+      "Update forecasts after major pricing or contract term changes.",
+    ],
+    mistakes: [
+      "Assuming 100% collection on aged receivables.",
+      "Using invoice dates without considering dispute delays.",
+    ],
+    relatedGuideSlugs: ["cash-conversion-cycle-guide"],
+  },
+  {
+    slug: "capital-allocation",
+    title: "Capital Allocation",
+    description:
+      "Capital allocation is how a company decides to invest cash across growth, maintenance, debt paydown, or returns to owners.",
+    updatedAt: "2026-01-28",
+    bullets: [
+      "Prioritize projects with the highest risk-adjusted returns.",
+      "Balance growth investments with liquidity and covenant needs.",
+    ],
+    mistakes: [
+      "Chasing growth projects without measuring ROI.",
+      "Ignoring opportunity cost when holding excess cash.",
+    ],
+    relatedGuideSlugs: ["investment-decision-guide", "capital-budgeting-hub-guide"],
+  },
+  {
+    slug: "cost-of-capital-buffer",
+    title: "Cost of Capital Buffer",
+    description:
+      "Cost of capital buffer is the extra return you require above the base cost of capital to cover model risk and uncertainty.",
+    updatedAt: "2026-01-28",
+    formula: "Target return = cost of capital + buffer",
+    example: "If WACC is 10% and buffer is 3%, target return is 13%.",
+    bullets: [
+      "Use larger buffers for volatile cash flows or new markets.",
+      "Document buffer logic to keep decisions consistent.",
+    ],
+    mistakes: [
+      "Applying the same buffer to low-risk and high-risk projects.",
+      "Double-counting risk if the discount rate already includes it.",
+    ],
+    relatedGuideSlugs: ["wacc-guide", "investment-decision-guide"],
+  },
+  {
+    slug: "runway-extension-plan",
+    title: "Runway Extension Plan",
+    description:
+      "A runway extension plan lays out actions to lengthen cash runway, such as expense cuts, pricing changes, or financing.",
+    updatedAt: "2026-01-28",
+    bullets: [
+      "Rank actions by speed, impact, and reversibility.",
+      "Validate that runway gains are sustainable beyond one quarter.",
+    ],
+    mistakes: [
+      "Cutting growth initiatives without protecting core retention.",
+      "Assuming financing will close without a backup plan.",
+    ],
+    relatedGuideSlugs: ["cash-runway-guide", "runway-burn-cash-guide"],
+  },
 ];
 
 export const termsFinanceExtra: GlossaryTerm[] = seeds.map(make);
