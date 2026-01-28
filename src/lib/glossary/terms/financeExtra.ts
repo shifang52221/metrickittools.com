@@ -469,6 +469,189 @@ const seeds: Seed[] = [
     ],
     relatedGuideSlugs: ["investment-decision-guide"],
   },
+  {
+    slug: "working-capital-change",
+    title: "Change in Working Capital",
+    description:
+      "Change in working capital is the period-over-period movement in operating working capital (typically AR, inventory, AP). It explains cash shifts that do not show in profit.",
+    updatedAt: "2026-01-28",
+    formula: "Change in working capital = current period NWC - prior period NWC",
+    example:
+      "If NWC rises from $200k to $320k, change in working capital is +$120k, which uses cash.",
+    bullets: [
+      "Rising receivables or inventory usually consumes cash even if revenue is growing.",
+      "Improving payables terms can release cash without changing revenue.",
+    ],
+    mistakes: [
+      "Treating higher NWC as always good; it can signal collections issues.",
+      "Mixing operating items with cash or short-term debt in the calculation.",
+    ],
+    relatedGuideSlugs: ["cash-conversion-cycle-guide", "runway-burn-cash-guide"],
+  },
+  {
+    slug: "operating-cash-margin",
+    title: "Operating Cash Margin",
+    description:
+      "Operating cash margin measures operating cash flow as a share of revenue to show how efficiently revenue turns into cash.",
+    updatedAt: "2026-01-28",
+    formula: "Operating cash margin = operating cash flow / revenue",
+    example: "Operating cash flow $400k on $2M revenue equals 20%.",
+    bullets: [
+      "Use trailing periods to smooth volatility from collections timing.",
+      "Compare to operating margin to see how much accruals shift cash timing.",
+    ],
+    mistakes: [
+      "Using net income instead of operating cash flow.",
+      "Comparing margins across periods with different revenue recognition timing.",
+    ],
+    relatedGuideSlugs: ["runway-burn-cash-guide"],
+  },
+  {
+    slug: "cash-interest-coverage",
+    title: "Cash Interest Coverage",
+    description:
+      "Cash interest coverage measures how many times cash flow can cover cash interest expense.",
+    updatedAt: "2026-01-28",
+    formula: "Cash interest coverage = operating cash flow / cash interest expense",
+    example: "Operating cash flow $600k and cash interest $120k yields 5.0x.",
+    bullets: [
+      "Use cash interest, not total interest expense, for liquidity testing.",
+      "Stress test coverage using downside revenue scenarios.",
+    ],
+    mistakes: [
+      "Ignoring principal payments that also affect solvency.",
+      "Using EBITDA when working capital swings are large.",
+    ],
+    relatedGuideSlugs: ["loan-payment-guide", "runway-burn-cash-guide"],
+  },
+  {
+    slug: "debt-capacity",
+    title: "Debt Capacity",
+    description:
+      "Debt capacity is the amount of debt a business can support while maintaining acceptable coverage ratios and covenant buffers.",
+    updatedAt: "2026-01-28",
+    formula: "Debt capacity ~= sustainable cash flow / target coverage ratio",
+    example:
+      "If sustainable cash flow is $1M and target coverage is 2.5x, debt capacity is about $400k of annual debt service.",
+    bullets: [
+      "Use conservative cash flow and stress-tested coverage thresholds.",
+      "Recalculate capacity after major growth or margin shifts.",
+    ],
+    mistakes: [
+      "Using peak cash flow instead of normalized cash flow.",
+      "Ignoring covenant headroom and refinancing risk.",
+    ],
+    relatedGuideSlugs: ["loan-payment-guide", "runway-burn-cash-guide"],
+  },
+  {
+    slug: "capital-charge",
+    title: "Capital Charge",
+    description:
+      "Capital charge is the dollar cost of capital applied to invested capital. It is used in EVA and value-based performance analysis.",
+    updatedAt: "2026-01-28",
+    formula: "Capital charge = invested capital * cost of capital",
+    example: "Invested capital $5M with 10% cost of capital gives a $500k charge.",
+    bullets: [
+      "Use after-tax cost of capital to align with after-tax cash flows.",
+      "Compare operating profit to the charge to assess value creation.",
+    ],
+    mistakes: [
+      "Using book capital that excludes off-balance sheet investments.",
+      "Mixing pre-tax profits with after-tax cost of capital.",
+    ],
+    relatedGuideSlugs: ["wacc-guide", "dcf-valuation-guide"],
+  },
+  {
+    slug: "cash-sweep",
+    title: "Cash Sweep",
+    description:
+      "A cash sweep is a loan feature that uses excess cash to pay down debt automatically, accelerating amortization.",
+    updatedAt: "2026-01-28",
+    formula: "Cash sweep = excess cash * sweep percentage",
+    example:
+      "Excess cash $200k with a 50% sweep applies $100k to debt repayment.",
+    bullets: [
+      "Sweeps reduce interest expense but can constrain growth capital.",
+      "Model sweeps when forecasting cash and covenant compliance.",
+    ],
+    mistakes: [
+      "Ignoring minimum liquidity requirements in sweep assumptions.",
+      "Assuming sweep terms are optional when they are mandatory.",
+    ],
+    relatedGuideSlugs: ["loan-payment-guide"],
+  },
+  {
+    slug: "revolving-credit",
+    title: "Revolving Credit",
+    description:
+      "Revolving credit is a flexible debt facility that can be drawn, repaid, and redrawn up to a limit.",
+    updatedAt: "2026-01-28",
+    formula: "Available revolver = credit limit - current balance",
+    example: "A $2M revolver with $500k drawn leaves $1.5M available.",
+    bullets: [
+      "Track availability daily when liquidity is tight.",
+      "Revolvers often have covenants tied to cash flow or leverage.",
+    ],
+    mistakes: [
+      "Assuming full availability without checking covenant headroom.",
+      "Using revolvers for long-term funding instead of short-term needs.",
+    ],
+    relatedGuideSlugs: ["loan-payment-guide", "runway-burn-cash-guide"],
+  },
+  {
+    slug: "covenant-headroom",
+    title: "Covenant Headroom",
+    description:
+      "Covenant headroom is the buffer between actual financial metrics and covenant thresholds in a debt agreement.",
+    updatedAt: "2026-01-28",
+    formula: "Headroom = covenant threshold - actual metric",
+    example: "If leverage covenant is 4.0x and actual is 3.2x, headroom is 0.8x.",
+    bullets: [
+      "Track headroom monthly to avoid surprise defaults.",
+      "Model downside cases to ensure buffers remain positive.",
+    ],
+    mistakes: [
+      "Relying on trailing data when forward-looking forecasts are weaker.",
+      "Ignoring cure rights or waivers when assessing near-term risk.",
+    ],
+    relatedGuideSlugs: ["loan-payment-guide"],
+  },
+  {
+    slug: "ebit",
+    title: "EBIT (Earnings Before Interest and Taxes)",
+    description:
+      "EBIT is operating profit before interest and taxes. It is used to compare operating performance across different capital structures.",
+    updatedAt: "2026-01-28",
+    formula: "EBIT = revenue - operating expenses (excluding interest and taxes)",
+    example: "Revenue $5M and operating expenses $3.6M yields EBIT of $1.4M.",
+    bullets: [
+      "EBIT excludes financing choices, so it is useful for comparability.",
+      "Use EBIT with interest coverage ratios to test debt capacity.",
+    ],
+    mistakes: [
+      "Mixing one-time items into operating expenses without disclosure.",
+      "Comparing EBIT across companies with different revenue recognition.",
+    ],
+    relatedGuideSlugs: ["wacc-guide", "dcf-valuation-guide"],
+  },
+  {
+    slug: "ebt",
+    title: "EBT (Earnings Before Taxes)",
+    description:
+      "EBT is profit before income taxes, showing earnings after interest but before tax effects.",
+    updatedAt: "2026-01-28",
+    formula: "EBT = EBIT - interest expense",
+    example: "EBIT $1.4M minus interest $200k gives EBT of $1.2M.",
+    bullets: [
+      "Use EBT to compare pre-tax profitability across periods.",
+      "Pair with effective tax rate to estimate net income.",
+    ],
+    mistakes: [
+      "Using EBT when comparing companies with very different leverage.",
+      "Ignoring non-operating income that can distort core earnings.",
+    ],
+    relatedGuideSlugs: ["wacc-guide", "dcf-valuation-guide"],
+  },
 ];
 
 export const termsFinanceExtra: GlossaryTerm[] = seeds.map(make);
