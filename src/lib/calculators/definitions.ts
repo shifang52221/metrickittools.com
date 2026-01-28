@@ -3547,7 +3547,7 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "Revenue = users × ARPU; ΔRevenue = ΔUsers×ARPU_start + ΔARPU×Users_start + ΔUsers×ΔARPU",
+      "Revenue = users * ARPU; Delta revenue = Delta users * ARPU_start + Delta ARPU * users_start + Delta users * Delta ARPU",
     assumptions: [
       "Start/end periods use the same definition of revenue (gross vs net) and 'active user'.",
       "Decomposition is directional; it helps explain changes but does not prove causality.",
@@ -3584,7 +3584,7 @@ export const calculators: CalculatorDefinition[] = [
     seo: {
       intro: [
         "MRR (Monthly Recurring Revenue) is recurring revenue from active subscriptions, normalized to a monthly amount. It is a standard metric for tracking momentum in subscription businesses.",
-        "A clean MRR definition excludes one-time fees and services, and normalizes annual plans to a monthly equivalent (annual price ÷ 12).",
+        "A clean MRR definition excludes one-time fees and services, and normalizes annual plans to a monthly equivalent (annual price / 12).",
       ],
       steps: [
         "Count paying customers (or active subscriptions) for the period.",
@@ -3597,35 +3597,96 @@ export const calculators: CalculatorDefinition[] = [
         "Comparing MRR without breaking down new/expansion/contraction/churn components.",
       ],
     },
-    inputs: [
-      {
-        key: "customers",
-        label: "Paying customers",
-        placeholder: "250",
-        defaultValue: "250",
-      },
-      {
-        key: "arpaMonthly",
-        label: "ARPA per month",
-        placeholder: "200",
-        prefix: "$",
-        defaultValue: "200",
-      },
-    ],
-    compute(values) {
-      const mrr = values.customers * values.arpaMonthly;
-      return {
-        headline: {
-          key: "mrr",
-          label: "MRR",
-          value: mrr,
-          format: "currency",
-          currency: "USD",
-          detail: "Customers × ARPA",
+      inputs: [
+        {
+          key: "customers",
+          label: "Paying customers",
+          placeholder: "250",
+          defaultValue: "250",
         },
-      };
-    },
-    formula: "MRR = Paying Customers × ARPA (monthly)",
+        {
+          key: "arpaMonthly",
+          label: "ARPA per month",
+          placeholder: "200",
+          prefix: "$",
+          defaultValue: "200",
+        },
+        {
+          key: "targetMrr",
+          label: "Target MRR (optional)",
+          placeholder: "75000",
+          prefix: "$",
+          defaultValue: "0",
+          min: 0,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        if (values.customers < 0) warnings.push("Customers must be 0 or greater.");
+        if (values.arpaMonthly < 0) warnings.push("ARPA must be 0 or greater.");
+        const mrr = values.customers * values.arpaMonthly;
+        const arr = mrr * 12;
+        const requiredCustomers =
+          values.targetMrr > 0 && values.arpaMonthly > 0
+            ? values.targetMrr / values.arpaMonthly
+            : null;
+        return {
+          headline: {
+            key: "mrr",
+            label: "MRR",
+            value: mrr,
+            format: "currency",
+            currency: "USD",
+            detail: "Customers x ARPA",
+          },
+          secondary: [
+            {
+              key: "arr",
+              label: "ARR run-rate",
+              value: arr,
+              format: "currency",
+              currency: "USD",
+              detail: "MRR x 12",
+            },
+            {
+              key: "requiredCustomers",
+              label: "Required customers for target MRR",
+              value: requiredCustomers ?? 0,
+              format: "number",
+              maxFractionDigits: 1,
+              detail:
+                requiredCustomers === null
+                  ? "Add target MRR and ARPA"
+                  : "Target MRR / ARPA",
+            },
+          ],
+          breakdown: [
+            {
+              key: "customers",
+              label: "Customers",
+              value: values.customers,
+              format: "number",
+              maxFractionDigits: 0,
+            },
+            {
+              key: "arpaMonthly",
+              label: "ARPA per month",
+              value: values.arpaMonthly,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "targetMrr",
+              label: "Target MRR",
+              value: values.targetMrr,
+              format: "currency",
+              currency: "USD",
+            },
+          ],
+          warnings,
+        };
+      },
+      formula: "MRR = Paying Customers x ARPA (monthly)",
     assumptions: ["This is a simplified estimate; real MRR sums subscription amounts."],
     faqs: [
       {
@@ -3685,32 +3746,52 @@ export const calculators: CalculatorDefinition[] = [
         defaultValue: "240000",
         min: 0,
       },
-      {
-        key: "months",
-        label: "Months between points",
-        placeholder: "6",
-        defaultValue: "6",
-        min: 1,
-        step: 1,
-      },
-    ],
-    compute(values) {
-      const warnings: string[] = [];
-      const months = Math.max(1, Math.floor(values.months));
-      if (values.months !== months)
+        {
+          key: "months",
+          label: "Months between points",
+          placeholder: "6",
+          defaultValue: "6",
+          min: 1,
+          step: 1,
+        },
+        {
+          key: "targetPeriodGrowthPercent",
+          label: "Target period growth (optional)",
+          placeholder: "20",
+          suffix: "%",
+          defaultValue: "0",
+          min: 0,
+          step: 0.1,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        const months = Math.max(1, Math.floor(values.months));
+        if (values.months !== months)
         warnings.push("Months was rounded down to a whole number.");
 
       if (values.startMrr <= 0)
         warnings.push("Start MRR must be greater than 0 to compute growth rates.");
       if (values.endMrr < 0) warnings.push("End MRR must be 0 or greater.");
 
-      const netNewMrr = values.endMrr - values.startMrr;
-      const periodGrowth = safeDivide(netNewMrr, values.startMrr);
+        const netNewMrr = values.endMrr - values.startMrr;
+        const periodGrowth = safeDivide(netNewMrr, values.startMrr);
+        const growthMultiple =
+          values.startMrr > 0 ? values.endMrr / values.startMrr : null;
+        const avgNetNewPerMonth =
+          months > 0 ? netNewMrr / months : null;
+        const targetGrowth = values.targetPeriodGrowthPercent / 100;
+        const requiredEndMrr =
+          values.targetPeriodGrowthPercent > 0 && values.startMrr > 0
+            ? values.startMrr * (1 + targetGrowth)
+            : null;
+        const requiredNetNew =
+          requiredEndMrr !== null ? requiredEndMrr - values.startMrr : null;
 
-      const cmgr =
-        values.startMrr > 0
-          ? Math.pow(values.endMrr / values.startMrr, 1 / months) - 1
-          : null;
+        const cmgr =
+          values.startMrr > 0
+            ? Math.pow(values.endMrr / values.startMrr, 1 / months) - 1
+            : null;
 
       const annualized =
         values.startMrr > 0
@@ -3724,33 +3805,71 @@ export const calculators: CalculatorDefinition[] = [
           value: periodGrowth ?? 0,
           format: "percent",
           maxFractionDigits: 2,
-          detail: "ΔMRR ÷ start MRR",
+          detail: "Delta MRR / start MRR",
         },
         secondary: [
-          {
-            key: "netNewMrr",
-            label: "Net new MRR (ΔMRR)",
-            value: netNewMrr,
-            format: "currency",
-            currency: "USD",
-          },
-          {
-            key: "cmgr",
-            label: "CMGR (monthly compounded)",
-            value: cmgr ?? 0,
-            format: "percent",
-            maxFractionDigits: 2,
-            detail: cmgr === null ? "Requires start MRR > 0" : "Compounded monthly",
-          },
-          {
-            key: "annualized",
-            label: "Annualized growth (CAGR)",
-            value: annualized ?? 0,
-            format: "percent",
-            maxFractionDigits: 2,
-            detail: annualized === null ? "Requires start MRR > 0" : "Annualized from period",
-          },
-        ],
+            {
+              key: "netNewMrr",
+              label: "Net new MRR (delta)",
+              value: netNewMrr,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "avgNetNewPerMonth",
+              label: "Average net new MRR per month",
+              value: avgNetNewPerMonth ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail: avgNetNewPerMonth === null ? "Invalid months" : "Net new / months",
+            },
+            {
+              key: "growthMultiple",
+              label: "Growth multiple (end / start)",
+              value: growthMultiple ?? 0,
+              format: "multiple",
+              maxFractionDigits: 2,
+              detail: growthMultiple === null ? "Start MRR is 0" : "End / start",
+            },
+            {
+              key: "cmgr",
+              label: "CMGR (monthly compounded)",
+              value: cmgr ?? 0,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: cmgr === null ? "Requires start MRR > 0" : "Compounded monthly",
+            },
+            {
+              key: "annualized",
+              label: "Annualized growth (CAGR)",
+              value: annualized ?? 0,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: annualized === null ? "Requires start MRR > 0" : "Annualized from period",
+            },
+            {
+              key: "requiredEndMrr",
+              label: "Required end MRR for target growth",
+              value: requiredEndMrr ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail:
+                requiredEndMrr === null
+                  ? "Add target growth and start MRR"
+                  : "Start x (1 + target)",
+            },
+            {
+              key: "requiredNetNew",
+              label: "Required net new MRR for target",
+              value: requiredNetNew ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail:
+                requiredNetNew === null
+                  ? "Add target growth and start MRR"
+                  : "Required end - start",
+            },
+          ],
         breakdown: [
           {
             key: "startMrr",
@@ -3773,12 +3892,19 @@ export const calculators: CalculatorDefinition[] = [
             format: "number",
             maxFractionDigits: 0,
           },
+          {
+            key: "targetPeriodGrowthPercent",
+            label: "Target period growth",
+            value: targetGrowth,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
         ],
         warnings,
       };
     },
     formula:
-      "Period growth = (end MRR − start MRR) ÷ start MRR; CMGR = (end/start)^(1/months) − 1; CAGR = (end/start)^(12/months) − 1",
+      "Period growth = (end MRR - start MRR) / start MRR; CMGR = (end/start)^(1/months) - 1; CAGR = (end/start)^(12/months) - 1",
     assumptions: [
       "Start and end MRR use the same MRR definition (clean recurring run-rate).",
       "CMGR assumes smooth compounding; use it for comparison and planning, not as a guarantee.",
@@ -3839,18 +3965,27 @@ export const calculators: CalculatorDefinition[] = [
         defaultValue: "200000",
         min: 0,
       },
-      {
-        key: "churnedMrr",
-        label: "Churned MRR (lost)",
-        placeholder: "8000",
-        prefix: "$",
-        defaultValue: "8000",
-        min: 0,
-      },
-      {
-        key: "periodMonths",
-        label: "Period length (months)",
-        help: "Use 1 for monthly churn; 3 for quarterly, etc.",
+        {
+          key: "churnedMrr",
+          label: "Churned MRR (lost)",
+          placeholder: "8000",
+          prefix: "$",
+          defaultValue: "8000",
+          min: 0,
+        },
+        {
+          key: "contractionMrr",
+          label: "Contraction MRR (optional)",
+          help: "Used to compute gross revenue churn (churn + contraction).",
+          placeholder: "3000",
+          prefix: "$",
+          defaultValue: "0",
+          min: 0,
+        },
+        {
+          key: "periodMonths",
+          label: "Period length (months)",
+          help: "Use 1 for monthly churn; 3 for quarterly, etc.",
         placeholder: "1",
         defaultValue: "1",
         min: 1,
@@ -3863,58 +3998,103 @@ export const calculators: CalculatorDefinition[] = [
       if (values.periodMonths !== months)
         warnings.push("Period months was rounded down to a whole number.");
 
-      if (values.startingMrr <= 0)
-        warnings.push("Starting MRR must be greater than 0 to compute churn rate.");
-      if (values.churnedMrr < 0) warnings.push("Churned MRR must be 0 or greater.");
-      if (values.churnedMrr > values.startingMrr && values.startingMrr > 0)
-        warnings.push("Churned MRR is greater than starting MRR (check inputs).");
+        if (values.startingMrr <= 0)
+          warnings.push("Starting MRR must be greater than 0 to compute churn rate.");
+        if (values.churnedMrr < 0) warnings.push("Churned MRR must be 0 or greater.");
+        if (values.contractionMrr < 0) warnings.push("Contraction MRR must be 0 or greater.");
+        if (values.churnedMrr > values.startingMrr && values.startingMrr > 0)
+          warnings.push("Churned MRR is greater than starting MRR (check inputs).");
 
-      const periodChurn = safeDivide(values.churnedMrr, values.startingMrr);
+        const periodChurn = safeDivide(values.churnedMrr, values.startingMrr);
+        const grossLosses = values.churnedMrr + values.contractionMrr;
+        if (grossLosses > values.startingMrr && values.startingMrr > 0)
+          warnings.push(
+            "Total churn + contraction exceeds starting MRR (check inputs).",
+          );
+        const grossChurn = safeDivide(grossLosses, values.startingMrr);
+        const endingGrossMrr = Math.max(0, values.startingMrr - grossLosses);
 
-      const monthlyEquivalent =
-        periodChurn !== null && months > 0
-          ? 1 - Math.pow(1 - Math.min(1, Math.max(0, periodChurn)), 1 / months)
-          : null;
-
-      return {
-        headline: {
-          key: "periodChurn",
-          label: "MRR churn rate (period)",
+        const monthlyEquivalent =
+          periodChurn !== null && months > 0
+            ? 1 - Math.pow(1 - Math.min(1, Math.max(0, periodChurn)), 1 / months)
+            : null;
+        const monthlyEquivalentGross =
+          grossChurn !== null && months > 0
+            ? 1 - Math.pow(1 - Math.min(1, Math.max(0, grossChurn)), 1 / months)
+            : null;
+  
+        return {
+          headline: {
+            key: "periodChurn",
+            label: "MRR churn rate (period)",
           value: periodChurn ?? 0,
           format: "percent",
           maxFractionDigits: 2,
-          detail: "Churned MRR ÷ starting MRR",
+          detail: "Churned MRR / starting MRR",
         },
         secondary: [
-          {
-            key: "monthlyEquivalent",
-            label: "Monthly-equivalent MRR churn rate",
-            value: monthlyEquivalent ?? 0,
-            format: "percent",
-            maxFractionDigits: 2,
-            detail: monthlyEquivalent === null ? "Requires valid inputs" : `Converted from ${months} month period`,
-          },
-        ],
-        breakdown: [
-          {
-            key: "startingMrr",
-            label: "Starting MRR",
+            {
+              key: "monthlyEquivalent",
+              label: "Monthly-equivalent MRR churn rate",
+              value: monthlyEquivalent ?? 0,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: monthlyEquivalent === null ? "Requires valid inputs" : `Converted from ${months} month period`,
+            },
+            {
+              key: "grossChurn",
+              label: "Gross revenue churn (period)",
+              value: grossChurn ?? 0,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: grossChurn === null ? "Requires valid inputs" : "Churn + contraction / starting",
+            },
+            {
+              key: "monthlyEquivalentGross",
+              label: "Monthly-equivalent gross churn",
+              value: monthlyEquivalentGross ?? 0,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail:
+                monthlyEquivalentGross === null
+                  ? "Requires valid inputs"
+                  : `Converted from ${months} month period`,
+            },
+            {
+              key: "endingGrossMrr",
+              label: "Ending gross MRR (after losses)",
+              value: endingGrossMrr,
+              format: "currency",
+              currency: "USD",
+            },
+          ],
+          breakdown: [
+            {
+              key: "startingMrr",
+              label: "Starting MRR",
             value: values.startingMrr,
             format: "currency",
             currency: "USD",
           },
-          {
-            key: "churnedMrr",
-            label: "Churned MRR",
-            value: values.churnedMrr,
-            format: "currency",
-            currency: "USD",
-          },
-          {
-            key: "periodMonths",
-            label: "Period months",
-            value: months,
-            format: "number",
+            {
+              key: "churnedMrr",
+              label: "Churned MRR",
+              value: values.churnedMrr,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "contractionMrr",
+              label: "Contraction MRR",
+              value: values.contractionMrr,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "periodMonths",
+              label: "Period months",
+              value: months,
+              format: "number",
             maxFractionDigits: 0,
           },
         ],
@@ -3922,7 +4102,7 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "Period MRR churn = churned MRR ÷ starting MRR; Monthly-equivalent churn = 1 − (1 − period churn)^(1/period months)",
+      "Period MRR churn = churned MRR / starting MRR; Monthly-equivalent churn = 1 - (1 - period churn)^(1/period months)",
     assumptions: [
       "Uses starting MRR as the denominator (standard for churn rates).",
       "Monthly-equivalent conversion assumes churn compounds smoothly across the period (approximation).",
@@ -3945,7 +4125,7 @@ export const calculators: CalculatorDefinition[] = [
         bullets: [
           "Track churned MRR and contraction MRR separately, then also track GRR/NRR for the full retention picture.",
           "Segment by plan and customer size; blended churn can hide weak cohorts.",
-          "Pair churn with net new MRR and an MRR waterfall to see what’s driving growth.",
+            "Pair churn with net new MRR and an MRR waterfall to see what's driving growth.",
         ],
       },
     ],
@@ -3958,14 +4138,14 @@ export const calculators: CalculatorDefinition[] = [
     guideSlug: "arr-guide",
     seo: {
       intro: [
-        "ARR (Annual Recurring Revenue) is MRR annualized (MRR × 12). It is an annualized run-rate snapshot, not a promise of yearly revenue.",
+          "ARR (Annual Recurring Revenue) is MRR annualized (MRR x 12). It is an annualized run-rate snapshot, not a promise of yearly revenue.",
         "When people compare bookings vs ARR, remember: bookings measure contracted value, while ARR measures recurring run-rate. Cash receipts can differ again due to prepay timing.",
       ],
       steps: [
         "Estimate ARPA per month for your segment (monthly revenue per account).",
         "Count paying customers (or subscriptions).",
-        "Compute MRR = customers × ARPA.",
-        "Compute ARR = MRR × 12.",
+          "Compute MRR = customers x ARPA.",
+          "Compute ARR = MRR x 12.",
       ],
       pitfalls: [
         "Counting one-time fees or services revenue as recurring run-rate.",
@@ -3973,45 +4153,95 @@ export const calculators: CalculatorDefinition[] = [
         "Mixing bookings and cash receipts into ARR reporting.",
       ],
     },
-    inputs: [
-      {
-        key: "customers",
-        label: "Paying customers",
-        placeholder: "250",
-        defaultValue: "250",
-      },
-      {
-        key: "arpaMonthly",
-        label: "ARPA per month",
-        placeholder: "200",
-        prefix: "$",
-        defaultValue: "200",
-      },
-    ],
-    compute(values) {
-      const mrr = values.customers * values.arpaMonthly;
-      const arr = mrr * 12;
-      return {
-        headline: {
-          key: "arr",
-          label: "ARR",
-          value: arr,
-          format: "currency",
-          currency: "USD",
-          detail: "MRR × 12",
+      inputs: [
+        {
+          key: "customers",
+          label: "Paying customers",
+          placeholder: "250",
+          defaultValue: "250",
         },
-        secondary: [
-          {
-            key: "mrr",
-            label: "MRR",
-            value: mrr,
+        {
+          key: "arpaMonthly",
+          label: "ARPA per month",
+          placeholder: "200",
+          prefix: "$",
+          defaultValue: "200",
+        },
+        {
+          key: "targetArr",
+          label: "Target ARR (optional)",
+          placeholder: "3000000",
+          prefix: "$",
+          defaultValue: "0",
+          min: 0,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        if (values.customers < 0) warnings.push("Customers must be 0 or greater.");
+        if (values.arpaMonthly < 0) warnings.push("ARPA must be 0 or greater.");
+        const mrr = values.customers * values.arpaMonthly;
+        const arr = mrr * 12;
+        const requiredCustomers =
+          values.targetArr > 0 && values.arpaMonthly > 0
+            ? values.targetArr / 12 / values.arpaMonthly
+            : null;
+        return {
+          headline: {
+            key: "arr",
+            label: "ARR",
+            value: arr,
             format: "currency",
             currency: "USD",
+            detail: "MRR x 12",
           },
-        ],
-      };
-    },
-    formula: "ARR = MRR × 12",
+          secondary: [
+            {
+              key: "mrr",
+              label: "MRR",
+              value: mrr,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "requiredCustomers",
+              label: "Required customers for target ARR",
+              value: requiredCustomers ?? 0,
+              format: "number",
+              maxFractionDigits: 1,
+              detail:
+                requiredCustomers === null
+                  ? "Add target ARR and ARPA"
+                  : "Target ARR / (12 x ARPA)",
+            },
+          ],
+          breakdown: [
+            {
+              key: "customers",
+              label: "Customers",
+              value: values.customers,
+              format: "number",
+              maxFractionDigits: 0,
+            },
+            {
+              key: "arpaMonthly",
+              label: "ARPA per month",
+              value: values.arpaMonthly,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "targetArr",
+              label: "Target ARR",
+              value: values.targetArr,
+              format: "currency",
+              currency: "USD",
+            },
+          ],
+          warnings,
+        };
+      },
+      formula: "ARR = MRR x 12",
     assumptions: ["Assumes revenue stays stable for a year."],
     faqs: [
       {
@@ -4022,7 +4252,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         question: "Bookings vs ARR?",
         answer:
-          "ARR is recurring run-rate (MRR × 12). Bookings are contracted value and can include one-time and non-recurring items. Cash receipts can differ again due to prepay timing.",
+          "ARR is recurring run-rate (MRR x 12). Bookings are contracted value and can include one-time and non-recurring items. Cash receipts can differ again due to prepay timing.",
       },
     ],
     guide: [
@@ -4046,18 +4276,18 @@ export const calculators: CalculatorDefinition[] = [
     relatedGlossarySlugs: ["arr", "mrr"],
     seo: {
       intro: [
-        "ARR and MRR are the same run-rate at different time units. ARR is typically MRR × 12; MRR is ARR ÷ 12.",
+        "ARR and MRR are the same run-rate at different time units. ARR is typically MRR x 12; MRR is ARR / 12.",
         "This calculator converts between ARR and MRR and helps you sanity-check consistency when you have both numbers.",
       ],
       steps: [
-        "Enter MRR to compute ARR (MRR × 12).",
-        "Enter ARR to compute MRR (ARR ÷ 12).",
+          "Enter MRR to compute ARR (MRR x 12).",
+          "Enter ARR to compute MRR (ARR / 12).",
         "If you enter both, compare the implied numbers to spot definition drift.",
       ],
       pitfalls: [
         "Including one-time fees or services in recurring run-rate.",
         "Mixing recognized revenue (accounting) with run-rate metrics (MRR/ARR).",
-        "Using ARR as a promise of next-12-month revenue (it’s a snapshot).",
+        "Using ARR as a promise of next-12-month revenue (it's a snapshot).",
       ],
     },
     inputs: [
@@ -4101,7 +4331,7 @@ export const calculators: CalculatorDefinition[] = [
           value: arrFromMrr,
           format: "currency",
           currency: "USD",
-          detail: "MRR × 12",
+          detail: "MRR x 12",
         },
         secondary: [
           {
@@ -4110,23 +4340,31 @@ export const calculators: CalculatorDefinition[] = [
             value: mrrFromArr,
             format: "currency",
             currency: "USD",
-            detail: "ARR ÷ 12",
+            detail: "ARR / 12",
           },
           {
             key: "mismatch",
-            label: "ARR mismatch (ARR − MRR×12)",
+            label: "ARR mismatch (ARR - MRR x 12)",
             value: mismatch,
             format: "currency",
             currency: "USD",
+          },
+          {
+            key: "mismatchPct",
+            label: "Mismatch percent",
+            value: mismatchPct ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: mismatchPct === null ? "MRR is 0" : "Mismatch / ARR from MRR",
           },
         ],
         warnings,
       };
     },
-    formula: "ARR = MRR × 12; MRR = ARR ÷ 12",
+    formula: "ARR = MRR x 12; MRR = ARR / 12",
     assumptions: [
       "Assumes you are converting a recurring run-rate (not recognized revenue).",
-      "Assumes ARR is annualized from monthly run-rate (12×) rather than a contracted total.",
+      "Assumes ARR is annualized from monthly run-rate (12x) rather than a contracted total.",
     ],
     faqs: [
       {
@@ -4135,9 +4373,9 @@ export const calculators: CalculatorDefinition[] = [
           "Not always. ARR is a run-rate snapshot of recurring revenue. Annual revenue is what you recognize over a year and can include one-time items.",
       },
       {
-        question: "Should ARR always equal MRR × 12?",
+        question: "Should ARR always equal MRR x 12?",
         answer:
-          "If both are defined as recurring run-rate, yes. If they don’t match, it usually means definitions differ (one-time items, active base, annualization) or the numbers are from different dates.",
+          "If both are defined as recurring run-rate, yes. If they don't match, it usually means definitions differ (one-time items, active base, annualization) or the numbers are from different dates.",
       },
     ],
     guide: [
@@ -4191,25 +4429,45 @@ export const calculators: CalculatorDefinition[] = [
         defaultValue: "1800000",
         min: 0,
       },
-      {
-        key: "months",
-        label: "Months between points",
-        placeholder: "12",
-        defaultValue: "12",
-        min: 1,
-        step: 1,
-      },
-    ],
-    compute(values) {
-      const warnings: string[] = [];
-      const months = Math.max(1, Math.floor(values.months));
-      if (values.months !== months) warnings.push("Months was rounded down to a whole number.");
+        {
+          key: "months",
+          label: "Months between points",
+          placeholder: "12",
+          defaultValue: "12",
+          min: 1,
+          step: 1,
+        },
+        {
+          key: "targetPeriodGrowthPercent",
+          label: "Target period growth (optional)",
+          placeholder: "50",
+          suffix: "%",
+          defaultValue: "0",
+          min: 0,
+          step: 0.1,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        const months = Math.max(1, Math.floor(values.months));
+        if (values.months !== months) warnings.push("Months was rounded down to a whole number.");
 
       if (values.startArr <= 0) warnings.push("Start ARR must be greater than 0 to compute growth rates.");
       if (values.endArr < 0) warnings.push("End ARR must be 0 or greater.");
 
-      const netNewArr = values.endArr - values.startArr;
-      const periodGrowth = safeDivide(netNewArr, values.startArr);
+        const netNewArr = values.endArr - values.startArr;
+        const periodGrowth = safeDivide(netNewArr, values.startArr);
+        const growthMultiple =
+          values.startArr > 0 ? values.endArr / values.startArr : null;
+        const avgNetNewPerMonth =
+          months > 0 ? netNewArr / months : null;
+        const targetGrowth = values.targetPeriodGrowthPercent / 100;
+        const requiredEndArr =
+          values.targetPeriodGrowthPercent > 0 && values.startArr > 0
+            ? values.startArr * (1 + targetGrowth)
+            : null;
+        const requiredNetNew =
+          requiredEndArr !== null ? requiredEndArr - values.startArr : null;
 
       const cmgr =
         values.startArr > 0
@@ -4222,39 +4480,77 @@ export const calculators: CalculatorDefinition[] = [
           : null;
 
       return {
-        headline: {
-          key: "periodGrowth",
-          label: "ARR growth (period)",
-          value: periodGrowth ?? 0,
-          format: "percent",
-          maxFractionDigits: 2,
-          detail: "ΔARR ÷ start ARR",
-        },
-        secondary: [
-          {
-            key: "netNewArr",
-            label: "Net new ARR (ΔARR)",
-            value: netNewArr,
-            format: "currency",
-            currency: "USD",
-          },
-          {
-            key: "cmgr",
-            label: "CMGR (monthly compounded)",
-            value: cmgr ?? 0,
+          headline: {
+            key: "periodGrowth",
+            label: "ARR growth (period)",
+            value: periodGrowth ?? 0,
             format: "percent",
             maxFractionDigits: 2,
-            detail: cmgr === null ? "Requires start ARR > 0" : "Compounded monthly",
+            detail: "Delta ARR / start ARR",
           },
-          {
-            key: "annualized",
-            label: "Annualized growth (CAGR)",
-            value: annualized ?? 0,
-            format: "percent",
-            maxFractionDigits: 2,
-            detail: annualized === null ? "Requires start ARR > 0" : "Annualized from period",
-          },
-        ],
+          secondary: [
+            {
+              key: "netNewArr",
+              label: "Net new ARR (delta)",
+              value: netNewArr,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "avgNetNewPerMonth",
+              label: "Average net new ARR per month",
+              value: avgNetNewPerMonth ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail: avgNetNewPerMonth === null ? "Invalid months" : "Net new / months",
+            },
+            {
+              key: "growthMultiple",
+              label: "Growth multiple (end / start)",
+              value: growthMultiple ?? 0,
+              format: "multiple",
+              maxFractionDigits: 2,
+              detail: growthMultiple === null ? "Start ARR is 0" : "End / start",
+            },
+            {
+              key: "cmgr",
+              label: "CMGR (monthly compounded)",
+              value: cmgr ?? 0,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: cmgr === null ? "Requires start ARR > 0" : "Compounded monthly",
+            },
+            {
+              key: "annualized",
+              label: "Annualized growth (CAGR)",
+              value: annualized ?? 0,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: annualized === null ? "Requires start ARR > 0" : "Annualized from period",
+            },
+            {
+              key: "requiredEndArr",
+              label: "Required end ARR for target growth",
+              value: requiredEndArr ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail:
+                requiredEndArr === null
+                  ? "Add target growth and start ARR"
+                  : "Start x (1 + target)",
+            },
+            {
+              key: "requiredNetNew",
+              label: "Required net new ARR for target",
+              value: requiredNetNew ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail:
+                requiredNetNew === null
+                  ? "Add target growth and start ARR"
+                  : "Required end - start",
+            },
+          ],
         breakdown: [
           {
             key: "startArr",
@@ -4277,12 +4573,19 @@ export const calculators: CalculatorDefinition[] = [
             format: "number",
             maxFractionDigits: 0,
           },
+          {
+            key: "targetPeriodGrowthPercent",
+            label: "Target period growth",
+            value: targetGrowth,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
         ],
         warnings,
       };
     },
     formula:
-      "Period growth = (end ARR − start ARR) ÷ start ARR; CMGR = (end/start)^(1/months) − 1; CAGR = (end/start)^(12/months) − 1",
+      "Period growth = (end ARR - start ARR) / start ARR; CMGR = (end/start)^(1/months) - 1; CAGR = (end/start)^(12/months) - 1",
     assumptions: [
       "Start and end ARR use the same definition (clean recurring run-rate).",
       "CMGR assumes smooth compounding; use it for comparison and planning, not as a guarantee.",
@@ -4856,30 +5159,47 @@ export const calculators: CalculatorDefinition[] = [
         prefix: "$",
         defaultValue: "5000",
       },
-      {
-        key: "churnedMrr",
-        label: "Churned MRR",
-        placeholder: "8000",
-        prefix: "$",
-        defaultValue: "8000",
-      },
-    ],
-    compute(values) {
-      const warnings: string[] = [];
-      if (values.startingMrr <= 0)
-        warnings.push("Starting MRR must be greater than 0.");
-      if (values.contractionMrr < 0)
-        warnings.push("Contraction MRR must be 0 or greater.");
-      if (values.churnedMrr < 0) warnings.push("Churned MRR must be 0 or greater.");
+        {
+          key: "churnedMrr",
+          label: "Churned MRR",
+          placeholder: "8000",
+          prefix: "$",
+          defaultValue: "8000",
+        },
+        {
+          key: "periodMonths",
+          label: "Period length (months)",
+          help: "Use 1 for monthly GRR; 3 for quarterly, etc.",
+          placeholder: "1",
+          defaultValue: "1",
+          min: 1,
+          step: 1,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        const months = Math.max(1, Math.floor(values.periodMonths));
+        if (values.periodMonths !== months)
+          warnings.push("Period months was rounded down to a whole number.");
+        if (values.startingMrr <= 0)
+          warnings.push("Starting MRR must be greater than 0.");
+        if (values.contractionMrr < 0)
+          warnings.push("Contraction MRR must be 0 or greater.");
+        if (values.churnedMrr < 0) warnings.push("Churned MRR must be 0 or greater.");
 
-      const endingGrossMrr =
-        values.startingMrr - values.contractionMrr - values.churnedMrr;
-      const grr = safeDivide(endingGrossMrr, values.startingMrr);
-      if (grr === null) {
-        return {
-          headline: {
-            key: "grr",
-            label: "GRR",
+        const endingGrossMrr =
+          values.startingMrr - values.contractionMrr - values.churnedMrr;
+        const grr = safeDivide(endingGrossMrr, values.startingMrr);
+        const grossChurn = grr !== null ? 1 - grr : null;
+        const monthlyEquivalentGrr =
+          grr !== null && months > 0 ? Math.pow(grr, 1 / months) : null;
+        const monthlyEquivalentChurn =
+          monthlyEquivalentGrr !== null ? 1 - monthlyEquivalentGrr : null;
+        if (grr === null) {
+          return {
+            headline: {
+              key: "grr",
+              label: "GRR",
             value: 0,
             format: "percent",
             maxFractionDigits: 1,
@@ -4897,42 +5217,79 @@ export const calculators: CalculatorDefinition[] = [
           maxFractionDigits: 1,
           detail: "(Starting − Contraction − Churn) ÷ Starting",
         },
-        secondary: [
-          {
-            key: "endingGrossMrr",
-            label: "Ending gross MRR",
-            value: endingGrossMrr,
-            format: "currency",
-            currency: "USD",
-          },
-        ],
-        breakdown: [
-          {
-            key: "startingMrr",
-            label: "Starting MRR",
-            value: values.startingMrr,
-            format: "currency",
-            currency: "USD",
-          },
-          {
-            key: "contractionMrr",
-            label: "Contraction MRR",
-            value: values.contractionMrr,
-            format: "currency",
-            currency: "USD",
-          },
-          {
-            key: "churnedMrr",
-            label: "Churned MRR",
-            value: values.churnedMrr,
-            format: "currency",
-            currency: "USD",
-          },
-        ],
+          secondary: [
+            {
+              key: "endingGrossMrr",
+              label: "Ending gross MRR",
+              value: endingGrossMrr,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "grossChurn",
+              label: "Gross revenue churn (period)",
+              value: grossChurn ?? 0,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: grossChurn === null ? "Starting MRR is 0" : "1 - GRR",
+            },
+            {
+              key: "monthlyEquivalentGrr",
+              label: "Monthly-equivalent GRR",
+              value: monthlyEquivalentGrr ?? 0,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail:
+                monthlyEquivalentGrr === null
+                  ? "Starting MRR is 0"
+                  : `Converted from ${months} month period`,
+            },
+            {
+              key: "monthlyEquivalentChurn",
+              label: "Monthly-equivalent gross churn",
+              value: monthlyEquivalentChurn ?? 0,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail:
+                monthlyEquivalentChurn === null
+                  ? "Starting MRR is 0"
+                  : "1 - monthly-equivalent GRR",
+            },
+          ],
+          breakdown: [
+            {
+              key: "startingMrr",
+              label: "Starting MRR",
+              value: values.startingMrr,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "contractionMrr",
+              label: "Contraction MRR",
+              value: values.contractionMrr,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "churnedMrr",
+              label: "Churned MRR",
+              value: values.churnedMrr,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "periodMonths",
+              label: "Period months",
+              value: months,
+              format: "number",
+              maxFractionDigits: 0,
+            },
+          ],
         warnings,
       };
     },
-    formula: "GRR = (Starting MRR − Contraction − Churn) ÷ Starting MRR",
+      formula: "GRR = (Starting MRR - Contraction - Churn) / Starting MRR",
     assumptions: [
       "GRR excludes expansion by definition.",
       "All components use the same MRR definition and time window.",
@@ -5027,17 +5384,30 @@ export const calculators: CalculatorDefinition[] = [
         warnings.push("Contraction MRR must be 0 or greater.");
       if (values.churnedMrr < 0) warnings.push("Churned MRR must be 0 or greater.");
 
-      const nrr = safeDivide(
-        values.startingMrr +
+        const nrr = safeDivide(
+          values.startingMrr +
+            values.expansionMrr -
+            values.contractionMrr -
+            values.churnedMrr,
+          values.startingMrr,
+        );
+        const grr = safeDivide(
+          values.startingMrr - values.contractionMrr - values.churnedMrr,
+          values.startingMrr,
+        );
+        const endingNrrMrr =
+          values.startingMrr +
           values.expansionMrr -
           values.contractionMrr -
-          values.churnedMrr,
-        values.startingMrr,
-      );
-      const grr = safeDivide(
-        values.startingMrr - values.contractionMrr - values.churnedMrr,
-        values.startingMrr,
-      );
+          values.churnedMrr;
+        const endingGrrMrr =
+          values.startingMrr - values.contractionMrr - values.churnedMrr;
+        const expansionShare =
+          values.startingMrr > 0 ? values.expansionMrr / values.startingMrr : null;
+        const lossesShare =
+          values.startingMrr > 0
+            ? (values.contractionMrr + values.churnedMrr) / values.startingMrr
+            : null;
 
       if (nrr === null || grr === null) {
         return {
@@ -5063,29 +5433,59 @@ export const calculators: CalculatorDefinition[] = [
           maxFractionDigits: 2,
           detail: "(Start + expansion − contraction − churn) ÷ start",
         },
-        secondary: [
-          {
-            key: "grr",
-            label: "GRR",
-            value: grr,
-            format: "percent",
-            maxFractionDigits: 2,
-            detail: "(Start − contraction − churn) ÷ start",
-          },
-          {
-            key: "gap",
-            label: "NRR − GRR (expansion offset)",
-            value: gap,
-            format: "percent",
-            maxFractionDigits: 2,
-            detail: "How much expansion offsets losses",
-          },
-        ],
+          secondary: [
+            {
+              key: "grr",
+              label: "GRR",
+              value: grr,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: "(Start − contraction − churn) ÷ start",
+            },
+            {
+              key: "gap",
+              label: "NRR − GRR (expansion offset)",
+              value: gap,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: "How much expansion offsets losses",
+            },
+            {
+              key: "endingNrrMrr",
+              label: "Ending MRR (NRR)",
+              value: endingNrrMrr,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "endingGrrMrr",
+              label: "Ending MRR (GRR)",
+              value: endingGrrMrr,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "expansionShare",
+              label: "Expansion as % of starting MRR",
+              value: expansionShare ?? 0,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: expansionShare === null ? "Starting MRR is 0" : "Expansion / starting",
+            },
+            {
+              key: "lossesShare",
+              label: "Losses as % of starting MRR",
+              value: lossesShare ?? 0,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: lossesShare === null ? "Starting MRR is 0" : "Contraction + churn / starting",
+            },
+          ],
         warnings,
       };
     },
     formula:
-      "NRR = (start + expansion − contraction − churn) ÷ start; GRR = (start − contraction − churn) ÷ start",
+      "NRR = (start + expansion - contraction - churn) / start; GRR = (start - contraction - churn) / start",
     assumptions: [
       "All inputs represent the same cohort and time window.",
       "MRR movements reflect recurring run-rate changes (not billings/cash).",
@@ -5188,43 +5588,73 @@ export const calculators: CalculatorDefinition[] = [
       if (values.startingMrr > 0 && losses > values.startingMrr)
         warnings.push("Losses exceed starting MRR (check inputs).");
 
-      const periodChurn = safeDivide(losses, values.startingMrr);
-      const monthlyEquivalent =
-        periodChurn !== null && months > 0
-          ? 1 - Math.pow(1 - Math.min(1, Math.max(0, periodChurn)), 1 / months)
-          : null;
+        const periodChurn = safeDivide(losses, values.startingMrr);
+        const endingGrossMrr = values.startingMrr - losses;
+        const grr = safeDivide(endingGrossMrr, values.startingMrr);
+        const monthlyEquivalent =
+          periodChurn !== null && months > 0
+            ? 1 - Math.pow(1 - Math.min(1, Math.max(0, periodChurn)), 1 / months)
+            : null;
+        const monthlyEquivalentGrr =
+          grr !== null && months > 0 ? Math.pow(grr, 1 / months) : null;
 
-      return {
-        headline: {
-          key: "grossChurn",
-          label: "Gross revenue churn (period)",
-          value: periodChurn ?? 0,
-          format: "percent",
-          maxFractionDigits: 2,
-          detail: "(Contraction + churn) ÷ starting MRR",
-        },
-        secondary: [
-          {
-            key: "monthlyEquivalent",
-            label: "Monthly-equivalent gross revenue churn",
-            value: monthlyEquivalent ?? 0,
+        return {
+          headline: {
+            key: "grossChurn",
+            label: "Gross revenue churn (period)",
+            value: periodChurn ?? 0,
             format: "percent",
             maxFractionDigits: 2,
-            detail: monthlyEquivalent === null ? "Requires valid inputs" : `Converted from ${months} month period`,
+            detail: "(Contraction + churn) / starting MRR",
           },
-          {
-            key: "losses",
-            label: "Total losses (contraction + churn)",
-            value: losses,
-            format: "currency",
-            currency: "USD",
-          },
-        ],
-        warnings,
-      };
-    },
-    formula:
-      "Gross revenue churn = (contraction + churned MRR) ÷ starting MRR; Monthly-equivalent = 1 − (1 − period churn)^(1/period months)",
+          secondary: [
+            {
+              key: "monthlyEquivalent",
+              label: "Monthly-equivalent gross revenue churn",
+              value: monthlyEquivalent ?? 0,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: monthlyEquivalent === null ? "Requires valid inputs" : `Converted from ${months} month period`,
+            },
+            {
+              key: "monthlyEquivalentGrr",
+              label: "Monthly-equivalent GRR",
+              value: monthlyEquivalentGrr ?? 0,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail:
+                monthlyEquivalentGrr === null
+                  ? "Requires valid inputs"
+                  : `Converted from ${months} month period`,
+            },
+            {
+              key: "losses",
+              label: "Total losses (contraction + churn)",
+              value: losses,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "endingGrossMrr",
+              label: "Ending gross MRR",
+              value: endingGrossMrr,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "grr",
+              label: "GRR (period)",
+              value: grr ?? 0,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: grr === null ? "Starting MRR is 0" : "Ending gross / starting",
+            },
+          ],
+          warnings,
+        };
+      },
+      formula:
+        "Gross revenue churn = (contraction + churned MRR) / starting MRR; Monthly-equivalent = 1 - (1 - period churn)^(1/period months)",
     assumptions: [
       "Uses starting MRR as the denominator (standard for churn rates).",
       "Gross churn excludes expansion by definition.",
@@ -5234,7 +5664,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         question: "Is gross revenue churn the same as GRR?",
         answer:
-          "They are closely related. GRR is the remaining revenue after losses (ending gross ÷ starting). Gross revenue churn focuses on the losses ((contraction + churn) ÷ starting).",
+            "They are closely related. GRR is the remaining revenue after losses (ending gross / starting). Gross revenue churn focuses on the losses ((contraction + churn) / starting).",
       },
       {
         question: "Should I include expansion in gross churn?",
@@ -5297,32 +5727,59 @@ export const calculators: CalculatorDefinition[] = [
         prefix: "$",
         defaultValue: "3000",
       },
-        {
-          key: "churnedMrr",
-          label: "Churned MRR",
-          placeholder: "5000",
-          prefix: "$",
-          defaultValue: "5000",
-        },
-        {
-          key: "targetQuickRatio",
-          label: "Target quick ratio (optional)",
-          placeholder: "4",
-          defaultValue: "4",
-          min: 0,
-          step: 0.1,
-        },
-      ],
-      compute(values) {
-        const warnings: string[] = [];
-        if (values.newMrr < 0) warnings.push("New MRR must be 0 or greater.");
-        if (values.expansionMrr < 0) warnings.push("Expansion MRR must be 0 or greater.");
+      {
+        key: "churnedMrr",
+        label: "Churned MRR",
+        placeholder: "5000",
+        prefix: "$",
+        defaultValue: "5000",
+      },
+      {
+        key: "startingMrr",
+        label: "Starting MRR (optional)",
+        placeholder: "200000",
+        prefix: "$",
+        defaultValue: "0",
+        min: 0,
+      },
+      {
+        key: "periodMonths",
+        label: "Period length (months)",
+        placeholder: "1",
+        defaultValue: "1",
+        min: 1,
+        step: 1,
+      },
+      {
+        key: "targetNetNewMrr",
+        label: "Target net new MRR (optional)",
+        placeholder: "15000",
+        prefix: "$",
+        defaultValue: "0",
+        min: 0,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const months = Math.max(1, Math.floor(values.periodMonths));
+      if (values.periodMonths !== months)
+        warnings.push("Period months was rounded down to a whole number.");
+      if (values.newMrr < 0) warnings.push("New MRR must be 0 or greater.");
+      if (values.expansionMrr < 0) warnings.push("Expansion MRR must be 0 or greater.");
       if (values.contractionMrr < 0) warnings.push("Contraction MRR must be 0 or greater.");
       if (values.churnedMrr < 0) warnings.push("Churned MRR must be 0 or greater.");
 
       const grossAdditions = values.newMrr + values.expansionMrr;
       const grossLosses = values.contractionMrr + values.churnedMrr;
       const netNewMrr = grossAdditions - grossLosses;
+      const endingMrr = values.startingMrr > 0 ? values.startingMrr + netNewMrr : null;
+      const growthRate =
+        values.startingMrr > 0 ? netNewMrr / values.startingMrr : null;
+      const avgNetNewPerMonth = netNewMrr / months;
+      const requiredAdditions =
+        values.targetNetNewMrr > 0 ? values.targetNetNewMrr + grossLosses : null;
+      const requiredNetNewPerMonth =
+        values.targetNetNewMrr > 0 ? values.targetNetNewMrr / months : null;
 
       return {
         headline: {
@@ -5331,7 +5788,7 @@ export const calculators: CalculatorDefinition[] = [
           value: netNewMrr,
           format: "currency",
           currency: "USD",
-          detail: "New + Expansion − Contraction − Churn",
+          detail: "New + Expansion - Contraction - Churn",
         },
         secondary: [
           {
@@ -5348,11 +5805,80 @@ export const calculators: CalculatorDefinition[] = [
             format: "currency",
             currency: "USD",
           },
+          {
+            key: "endingMrr",
+            label: "Ending MRR (starting + net new)",
+            value: endingMrr ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: endingMrr === null ? "Add starting MRR" : "Starting + net new",
+          },
+          {
+            key: "growthRate",
+            label: "MRR growth rate (net new / starting)",
+            value: growthRate ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: growthRate === null ? "Add starting MRR" : "Net new / starting",
+          },
+          {
+            key: "avgNetNewPerMonth",
+            label: "Average net new MRR per month",
+            value: avgNetNewPerMonth,
+            format: "currency",
+            currency: "USD",
+            detail: "Net new / months",
+          },
+          {
+            key: "requiredAdditions",
+            label: "Required additions for target net new",
+            value: requiredAdditions ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail:
+              requiredAdditions === null
+                ? "Add target net new"
+                : "Target net new + losses",
+          },
+          {
+            key: "requiredNetNewPerMonth",
+            label: "Required net new per month",
+            value: requiredNetNewPerMonth ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail:
+              requiredNetNewPerMonth === null
+                ? "Add target net new"
+                : "Target net new / months",
+          },
+        ],
+        breakdown: [
+          {
+            key: "startingMrr",
+            label: "Starting MRR",
+            value: values.startingMrr,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "periodMonths",
+            label: "Period months",
+            value: months,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+          {
+            key: "targetNetNewMrr",
+            label: "Target net new MRR",
+            value: values.targetNetNewMrr,
+            format: "currency",
+            currency: "USD",
+          },
         ],
         warnings,
       };
     },
-    formula: "Net new MRR = New MRR + Expansion MRR − Contraction MRR − Churned MRR",
+    formula: "Net new MRR = new + expansion - contraction - churn",
     assumptions: [
       "All components are measured over the same time window.",
       "New MRR excludes expansions from existing customers.",
