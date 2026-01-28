@@ -5970,8 +5970,11 @@ export const guides: Guide[] = [
     title: "Unit economics dashboard: LTV, CAC, payback, and what to improve",
     description:
       "A practical guide to unit economics: how to compute gross profit LTV, CAC payback, and LTV:CAC (and what levers improve them).",
+    seo: {
+      title: "Unit economics dashboard guide: LTV, CAC, payback",
+    },
     category: "saas-metrics",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: [
       "unit-economics-dashboard-calculator",
       "ltv-calculator",
@@ -6054,8 +6057,11 @@ export const guides: Guide[] = [
     title: "Break-even CPM: how to price impressions from CTR, CVR, and margin",
     description:
       "A practical guide to break-even CPM: translate CTR, CVR, AOV, and contribution margin into a max CPM and a target CPM with buffer.",
+    seo: {
+      title: "Break-even CPM guide: CTR, CVR, margin",
+    },
     category: "paid-ads",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["break-even-cpm-calculator", "max-cpc-calculator"],
     relatedGlossarySlugs: ["cpm", "ctr", "cvr", "aov", "contribution-margin", "max-cpc"],
     sections: [
@@ -6115,8 +6121,11 @@ export const guides: Guide[] = [
     title: "Multiple valuation: how to use ARR/revenue multiples and avoid mix-ups",
     description:
       "A practical guide to multiple-based valuation: choosing a metric, applying EV multiples, and bridging to equity value via net debt.",
+    seo: {
+      title: "Multiple valuation guide: ARR and revenue multiples",
+    },
     category: "finance",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["multiple-valuation-calculator", "equity-value-calculator"],
     relatedGlossarySlugs: ["arr", "arr-valuation-multiple", "enterprise-value", "equity-value", "net-debt"],
     sections: [
@@ -6174,8 +6183,11 @@ export const guides: Guide[] = [
     title: "ARR valuation sensitivity: a simple multiple grid for scenarios",
     description:
       "Use a 3*3 grid to see how valuation changes when ARR and the market multiple move, and avoid false precision from a single multiple.",
+    seo: {
+      title: "ARR valuation sensitivity guide: 3x3 grid",
+    },
     category: "finance",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: [
       "arr-valuation-sensitivity-calculator",
       "multiple-valuation-calculator",
@@ -6234,8 +6246,11 @@ export const guides: Guide[] = [
     title: "Cohort payback curves: how to model payback with early churn",
     description:
       "A practical guide to cohort payback: why payback matters for survival, how early churn affects payback, and how to improve it.",
+    seo: {
+      title: "Cohort payback curve guide: early churn impact",
+    },
     category: "saas-metrics",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: [
       "cohort-payback-curve-calculator",
       "two-stage-retention-curve-calculator",
@@ -6381,8 +6396,11 @@ export const guides: Guide[] = [
     title: "DCF sensitivity: discount rate vs terminal growth (how to read it)",
     description:
       "A practical guide to DCF sensitivity analysis: why valuations swing, how to pick ranges, and how to avoid terminal value traps.",
+    seo: {
+      title: "DCF sensitivity guide: discount vs terminal",
+    },
     category: "finance",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["dcf-sensitivity-calculator", "dcf-valuation-calculator", "wacc-calculator"],
     relatedGlossarySlugs: ["dcf", "wacc", "discount-rate", "terminal-value", "sensitivity-analysis"],
     sections: [
@@ -6443,8 +6461,11 @@ export const guides: Guide[] = [
     title: "A/B test sample size: how to plan conversion experiments",
     description:
       "A practical guide to A/B test planning: baseline CVR, MDE, alpha, power, sample size, and common pitfalls like peeking.",
+    seo: {
+      title: "A/B test sample size guide: CVR, MDE, power",
+    },
     category: "paid-ads",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["ab-test-sample-size-calculator"],
     relatedGlossarySlugs: ["ab-test", "statistical-significance", "power", "mde", "cvr"],
     sections: [
@@ -6504,8 +6525,11 @@ export const guides: Guide[] = [
     title: "CPL to CAC: why lead gen metrics mislead (and how to fix it)",
     description:
       "A practical guide to converting CPL into CAC using lead-to-customer rates, and how to improve CAC by improving lead quality and close rate.",
+    seo: {
+      title: "CPL to CAC guide: lead quality to CAC",
+    },
     category: "paid-ads",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["cpl-to-cac-calculator", "blended-cac-calculator"],
     relatedGlossarySlugs: ["cpl", "cac", "cpa", "lead-to-customer-rate", "incrementality"],
     sections: [
@@ -6568,8 +6592,11 @@ export const guides: Guide[] = [
     title: "Break-even CVR: required conversion rate at a given CPM and CTR",
     description:
       "A practical guide to break-even CVR: compute required CVR from CPM, CTR, AOV, and margin, and how to use it for landing page targets.",
+    seo: {
+      title: "Break-even CVR guide: CPM, CTR, margin",
+    },
     category: "paid-ads",
-    updatedAt: "2026-01-27",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["break-even-cvr-calculator", "break-even-ctr-calculator", "break-even-cpm-calculator"],
     relatedGlossarySlugs: ["cvr", "cpm", "ctr", "aov", "contribution-margin", "break-even-cpm"],
     sections: [
@@ -6740,8 +6767,11 @@ export const guides: Guide[] = [
     title: "Gross margin improvements: how margin changes LTV, payback, and growth ability",
     description:
       "A practical guide to margin leverage: how improving gross margin increases gross profit LTV and speeds up CAC payback.",
+    seo: {
+      title: "Gross margin impact guide: LTV and payback",
+    },
     category: "saas-metrics",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-01-28",
     relatedCalculatorSlugs: ["gross-margin-impact-calculator", "unit-economics-dashboard-calculator"],
     relatedGlossarySlugs: ["gross-margin", "ltv", "payback-period", "cac", "arpa", "churn-rate"],
     sections: [
