@@ -688,6 +688,178 @@ const seeds: Seed[] = [
     ],
     relatedGuideSlugs: ["sales-ops-hub-guide", "pipeline-coverage-sales-cycle-guide"],
   },
+  {
+    slug: "sales-pipeline-coverage",
+    title: "Sales Pipeline Coverage",
+    description:
+      "Sales pipeline coverage compares pipeline value to quota or revenue targets to gauge whether enough pipeline exists to hit goals.",
+    updatedAt: "2026-01-28",
+    formula: "Pipeline coverage = qualified pipeline / quota",
+    example: "If pipeline is $4M and quota is $1M, coverage is 4.0x.",
+    bullets: [
+      "Coverage targets vary by win rate and sales cycle length.",
+      "Measure coverage by segment for accuracy.",
+    ],
+    mistakes: [
+      "Counting unqualified deals to inflate coverage.",
+      "Using stale close dates that hide slippage.",
+    ],
+    relatedGuideSlugs: ["pipeline-coverage-sales-cycle-guide", "sales-ops-hub-guide"],
+  },
+  {
+    slug: "sales-cycle-length",
+    title: "Sales Cycle Duration",
+    description:
+      "Sales cycle length is the average time from first touch to closed-won. It affects cash timing and pipeline planning.",
+    updatedAt: "2026-01-28",
+    formula: "Sales cycle length = average days from lead to close",
+    example: "If average time to close is 62 days, cycle length is 62 days.",
+    bullets: [
+      "Track by segment and deal size for more accurate planning.",
+      "Shortening the cycle improves cash flow and forecast reliability.",
+    ],
+    mistakes: [
+      "Mixing inbound and outbound cycles without segmentation.",
+      "Ignoring stalled deals that inflate averages.",
+    ],
+    relatedGuideSlugs: ["pipeline-coverage-sales-cycle-guide", "sales-ops-hub-guide"],
+  },
+  {
+    slug: "quota-carrying-reps",
+    title: "Quota-carrying Reps",
+    description:
+      "Quota-carrying reps are salespeople with assigned revenue targets. They are the core capacity unit for forecasting.",
+    updatedAt: "2026-01-28",
+    bullets: [
+      "Count only fully ramped reps when modeling near-term capacity.",
+      "Track attainment distribution, not just averages.",
+    ],
+    mistakes: [
+      "Including SDRs or non-quota roles in capacity models.",
+      "Assuming 100% attainment across all reps.",
+    ],
+    relatedGuideSlugs: ["sales-ops-hub-guide"],
+  },
+  {
+    slug: "pipeline-review",
+    title: "Pipeline Review",
+    description:
+      "A pipeline review is a structured inspection of active deals, stages, and close dates to improve forecast accuracy.",
+    updatedAt: "2026-01-28",
+    bullets: [
+      "Focus on stage exit criteria and next steps per deal.",
+      "Flag stalled deals and reset close dates quickly.",
+    ],
+    mistakes: [
+      "Turning reviews into status meetings instead of decision checkpoints.",
+      "Letting deals linger without clear next actions.",
+    ],
+    relatedGuideSlugs: ["sales-ops-hub-guide", "pipeline-coverage-sales-cycle-guide"],
+  },
+  {
+    slug: "deal-age",
+    title: "Deal Age",
+    description:
+      "Deal age is how long a deal has been in pipeline since creation. It helps identify stalls and slippage risk.",
+    updatedAt: "2026-01-28",
+    formula: "Deal age = today - opportunity created date",
+    example: "A deal created 45 days ago has a deal age of 45 days.",
+    bullets: [
+      "Compare deal age to average sales cycle by segment.",
+      "Use age thresholds to trigger cleanup or requalification.",
+    ],
+    mistakes: [
+      "Ignoring stage-level age, which can be more diagnostic.",
+      "Resetting close dates without resolving blockers.",
+    ],
+    relatedGuideSlugs: ["sales-ops-hub-guide", "pipeline-coverage-sales-cycle-guide"],
+  },
+  {
+    slug: "sales-stage-velocity",
+    title: "Sales Stage Velocity",
+    description:
+      "Sales stage velocity measures how quickly opportunities move through each pipeline stage.",
+    updatedAt: "2026-01-28",
+    formula: "Stage velocity = deals moving stages / time in stage",
+    example: "If 20 deals exit a stage in a week, velocity is 20 per week.",
+    bullets: [
+      "Low velocity usually signals stage friction or weak qualification.",
+      "Use velocity to prioritize enablement and process fixes.",
+    ],
+    mistakes: [
+      "Comparing velocity across stages with different definitions.",
+      "Ignoring seasonality that affects buyer behavior.",
+    ],
+    relatedGuideSlugs: ["sales-ops-hub-guide"],
+  },
+  {
+    slug: "account-expansion-rate",
+    title: "Account Expansion Rate",
+    description:
+      "Account expansion rate measures how many existing accounts expand (upgrade, add seats) over a period.",
+    updatedAt: "2026-01-28",
+    formula: "Expansion rate = expanding accounts / total active accounts",
+    example: "If 40 of 200 accounts expand, the rate is 20%.",
+    bullets: [
+      "Segment by plan or cohort to find expansion levers.",
+      "Pair with expansion revenue to measure depth and breadth.",
+    ],
+    mistakes: [
+      "Counting renewals without any increase as expansion.",
+      "Blending expansion with new logos in reporting.",
+    ],
+    relatedGuideSlugs: ["retention-churn-hub-guide", "sales-ops-hub-guide"],
+  },
+  {
+    slug: "customer-advocacy",
+    title: "Customer Advocacy",
+    description:
+      "Customer advocacy reflects how willing customers are to recommend, review, or co-market with you.",
+    updatedAt: "2026-01-28",
+    bullets: [
+      "Track advocacy signals like referrals, reviews, and case study participation.",
+      "Advocacy is a leading indicator for expansion and retention.",
+    ],
+    mistakes: [
+      "Using NPS alone without tracking actual advocacy actions.",
+      "Ignoring advocacy drop-offs after product changes.",
+    ],
+    relatedGuideSlugs: ["retention-churn-hub-guide"],
+  },
+  {
+    slug: "csm-to-account-ratio",
+    title: "CSM to Account Ratio",
+    description:
+      "CSM to account ratio measures how many customer accounts each customer success manager supports.",
+    updatedAt: "2026-01-28",
+    formula: "CSM to account ratio = number of accounts / number of CSMs",
+    example: "200 accounts supported by 5 CSMs yields a 40:1 ratio.",
+    bullets: [
+      "Set different ratios for high-touch vs tech-touch segments.",
+      "Watch churn and expansion as leading indicators of overload.",
+    ],
+    mistakes: [
+      "Using one ratio across very different customer tiers.",
+      "Ignoring time spent on onboarding and renewals.",
+    ],
+    relatedGuideSlugs: ["retention-churn-hub-guide"],
+  },
+  {
+    slug: "renewal-playbook",
+    title: "Renewal Playbook",
+    description:
+      "A renewal playbook is a repeatable process for driving on-time renewals and expansion, including health scoring and executive alignment.",
+    updatedAt: "2026-01-28",
+    bullets: [
+      "Start renewal motions early based on contract terms and usage health.",
+      "Use multi-threaded relationships to reduce single-point risk.",
+    ],
+    mistakes: [
+      "Waiting until 30 days before renewal to engage.",
+      "Treating renewals as a procurement event instead of a value review.",
+    ],
+    relatedGuideSlugs: ["retention-churn-hub-guide"],
+  },
 ];
 
 export const termsSaasExtra: GlossaryTerm[] = seeds.map(make);

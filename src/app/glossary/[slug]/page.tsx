@@ -6,6 +6,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { calculators, categories } from "@/lib/calculators";
 import { guides } from "@/lib/guides";
 import { getGlossaryTerm, glossaryTerms } from "@/lib/glossary";
+import { clampMetaDescription } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
 
 type PageProps = { params: Promise<{ slug: string }> };
@@ -14,13 +15,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const term = getGlossaryTerm(slug);
   if (!term) return {};
+  const metaDescription = clampMetaDescription(term.description);
   return {
     title: `${term.title} definition`,
-    description: term.description,
+    description: metaDescription,
     alternates: { canonical: `/glossary/${term.slug}` },
     openGraph: {
       title: `${term.title} definition`,
-      description: term.description,
+      description: metaDescription,
       url: `/glossary/${term.slug}`,
       type: "article",
     },

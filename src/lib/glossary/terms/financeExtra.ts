@@ -618,7 +618,7 @@ const seeds: Seed[] = [
   },
   {
     slug: "ebit",
-    title: "EBIT (Earnings Before Interest and Taxes)",
+    title: "EBIT (Operating Profit)",
     description:
       "EBIT is operating profit before interest and taxes. It is used to compare operating performance across different capital structures.",
     updatedAt: "2026-01-28",

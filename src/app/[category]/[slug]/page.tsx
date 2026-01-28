@@ -5,6 +5,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { calculators, categories, getCalculator } from "@/lib/calculators";
 import type { CalculatorCategorySlug } from "@/lib/calculators/types";
+import { clampMetaDescription } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
 
 type PageProps = { params: Promise<{ category: string; slug: string }> };
@@ -21,14 +22,15 @@ export async function generateMetadata({
   if (!calc) return {};
   if (!isCategorySlug(category)) return {};
   if (calc.category !== category) return {};
+  const metaDescription = clampMetaDescription(calc.description);
 
   return {
     title: calc.title,
-    description: calc.description,
+    description: metaDescription,
     alternates: { canonical: `/${calc.category}/${calc.slug}` },
     openGraph: {
       title: calc.title,
-      description: calc.description,
+      description: metaDescription,
       url: `/${calc.category}/${calc.slug}`,
       type: "article",
     },

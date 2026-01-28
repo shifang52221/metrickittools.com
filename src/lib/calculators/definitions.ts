@@ -10,17 +10,20 @@ export const categories: CalculatorCategory[] = [
   {
     slug: "saas-metrics",
     title: "SaaS Metrics",
-    description: "Core SaaS unit economics and retention metrics.",
+    description:
+      "SaaS unit economics and retention calculators for CAC, LTV, payback, churn, and growth quality.",
   },
   {
     slug: "paid-ads",
     title: "Paid Ads",
-    description: "Ad performance and profitability calculators.",
+    description:
+      "Paid ads performance calculators for ROAS, CPA, break-even targets, and budget decisions.",
   },
   {
     slug: "finance",
     title: "Finance",
-    description: "Simple financial planning calculators.",
+    description:
+      "Finance calculators for runway, burn, cash flow, and valuation planning.",
   },
 ];
 
@@ -2288,7 +2291,8 @@ export const calculators: CalculatorDefinition[] = [
   {
     slug: "churn-rate-calculator",
     title: "Churn Rate Calculator",
-    description: "Calculate customer churn rate for a period.",
+    description:
+      "Calculate customer churn rate for a period and compare retention across segments or cohorts.",
     category: "saas-metrics",
     guideSlug: "churn-guide",
     seo: {

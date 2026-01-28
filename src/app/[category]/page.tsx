@@ -7,6 +7,7 @@ import type { CalculatorCategorySlug } from "@/lib/calculators/types";
 import { guides } from "@/lib/guides";
 import { AdUnit } from "@/components/ads/AdUnit";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { clampMetaDescription } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
 import { getCategoryIntroBlocks } from "@/lib/content/categoryIntro";
 import { getAdSenseSlot } from "@/lib/adsense";
@@ -25,13 +26,14 @@ export async function generateMetadata({
   const cat = categories.find((c) => c.slug === category);
   const financeTitle = "Finance calculators for runway, burn, and planning";
   const title = category === "finance" ? financeTitle : cat?.title;
+  const metaDescription = clampMetaDescription(cat?.description);
   return {
     title: category === "finance" ? { absolute: financeTitle } : title,
-    description: cat?.description,
+    description: metaDescription,
     alternates: { canonical: `/${category}` },
     openGraph: {
       title,
-      description: cat?.description,
+      description: metaDescription,
       url: `/${category}`,
       type: "website",
     },

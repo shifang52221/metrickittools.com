@@ -13,12 +13,12 @@ export const metadata: Metadata = {
     absolute: "MetricKit: free SaaS metrics and paid ads calculators",
   },
   description:
-    "Free calculators for SaaS metrics, paid ads, and finance. Compute CAC, LTV, ROAS, payback, churn, and more with clear formulas, assumptions, and practical guidance.",
+    "Free calculators for SaaS metrics, paid ads, and finance. Compute CAC, LTV, ROAS, payback, and churn with clear formulas and assumptions.",
   alternates: { canonical: "/" },
   openGraph: {
     title: "MetricKit: free SaaS metrics and paid ads calculators",
     description:
-      "Free calculators for SaaS metrics, paid ads, and finance. Compute CAC, LTV, ROAS, payback, churn, and more with clear formulas, assumptions, and practical guidance.",
+      "Free calculators for SaaS metrics, paid ads, and finance. Compute CAC, LTV, ROAS, payback, and churn with clear formulas and assumptions.",
     url: "/",
     type: "website",
   },

@@ -7,6 +7,7 @@ import { AdUnit } from "@/components/ads/AdUnit";
 import { calculators } from "@/lib/calculators";
 import { getGuide, guides } from "@/lib/guides";
 import { glossaryTerms } from "@/lib/glossary";
+import { clampMetaDescription } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
 import { getAdSenseSlot } from "@/lib/adsense";
 
@@ -36,7 +37,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const guide = getGuide(slug);
   if (!guide) return {};
   const metaTitle = guide.seo?.title ?? guide.title;
-  const metaDescription = guide.seo?.description ?? guide.description;
+  const metaDescription = clampMetaDescription(
+    guide.seo?.description ?? guide.description,
+  );
   return {
     title: guide.seo?.title ? { absolute: metaTitle } : metaTitle,
     description: metaDescription,

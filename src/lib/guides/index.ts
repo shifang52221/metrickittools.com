@@ -6334,7 +6334,7 @@ export const guides: Guide[] = [
     slug: "break-even-ctr-guide",
     title: "Break-even CTR: required CTR at a given CPM (with buffer)",
     description:
-      "A practical guide to break-even CTR: how to compute required CTR from CPM, CVR, AOV, and margin, and how to use it for creative targets.",
+      "A practical guide to break-even CTR: set creative CTR targets from CPM, CVR, AOV, and margin, then use them to diagnose pre-click performance.",
     seo: {
       title: "Break-even CTR guide: CPM, CVR, margin",
     },
@@ -6343,28 +6343,42 @@ export const guides: Guide[] = [
     relatedCalculatorSlugs: ["break-even-ctr-calculator", "break-even-cpm-calculator"],
     relatedGlossarySlugs: ["ctr", "cpm", "cvr", "aov", "contribution-margin", "break-even-cpm"],
     sections: [
-      { type: "h2", text: "Why CTR targets matter" },
+      { type: "h2", text: "CTR is a pre-click constraint" },
       {
         type: "p",
-        text: "For impression-buying, CTR is a first-order lever. If your CTR is too low, you won't generate enough clicks and conversions per 1,000 impressions to cover CPM at your CVR and margin.",
+        text: "CTR governs how many clicks you earn per 1,000 impressions. If it is too low, you cannot generate enough conversions to cover CPM even with a solid CVR and margin.",
       },
-      { type: "h2", text: "Core math (quick reference)" },
+      { type: "h2", text: "CTR target formula (quick)" },
+      {
+        type: "p",
+        text: "Break-even CTR = CPM / (1000 * CVR * AOV * margin). Add a profit buffer if you want CTR targets that clear break-even.",
+      },
+      { type: "h2", text: "Creative levers that move CTR" },
       {
         type: "bullets",
         items: [
-          "Conversions/1000 = 1000*CTR*CVR.",
-          "Contribution/conversion ~ AOV*margin.",
-          "Break-even CPM = conversions/1000 * contribution/conversion.",
-          "Break-even CTR = CPM / (1000*CVR*AOV*margin).",
+          "Hook clarity in the first 1-3 seconds (or first line in search).",
+          "Visual contrast and scroll-stopping patterns for the placement.",
+          "Offer framing: what you get, for whom, and why now.",
+          "Audience match: relevance beats novelty when targeting is broad.",
         ],
       },
-      { type: "h2", text: "How to use it" },
+      { type: "h2", text: "Set realistic targets by placement" },
       {
         type: "bullets",
         items: [
-          "Use required CTR as a creative-quality target for a placement mix.",
-          "If required CTR is unrealistic, you need better CVR, higher AOV, better margin, or lower CPM.",
-          "Add a buffer; operating at break-even is fragile.",
+          "Use placement-level CTR baselines (feed vs stories vs search).",
+          "Start with P50/P75 historical CTR, not a blended average.",
+          "If CTR targets are wildly above past performance, fix inputs first.",
+        ],
+      },
+      { type: "h2", text: "Decision rule: fix CTR or fix CVR" },
+      {
+        type: "bullets",
+        items: [
+          "If CTR is below target but CVR is strong, focus on creative and targeting.",
+          "If CTR is strong but CVR is weak, focus on landing page and offer.",
+          "If both are weak, test a new offer before scaling spend.",
         ],
       },
     ],
@@ -6594,7 +6608,7 @@ export const guides: Guide[] = [
     slug: "break-even-cvr-guide",
     title: "Break-even CVR: required conversion rate at a given CPM and CTR",
     description:
-      "A practical guide to break-even CVR: compute required CVR from CPM, CTR, AOV, and margin, and how to use it for landing page targets.",
+      "A practical guide to break-even CVR: set landing page CVR targets from CPM, CTR, AOV, and margin, then prioritize post-click fixes.",
     seo: {
       title: "Break-even CVR guide: CPM, CTR, margin",
     },
@@ -6603,55 +6617,42 @@ export const guides: Guide[] = [
     relatedCalculatorSlugs: ["break-even-cvr-calculator", "break-even-ctr-calculator", "break-even-cpm-calculator"],
     relatedGlossarySlugs: ["cvr", "cpm", "ctr", "aov", "contribution-margin", "break-even-cpm"],
     sections: [
-      { type: "h2", text: "What break-even CVR tells you" },
+      { type: "h2", text: "CVR is a post-click constraint" },
       {
         type: "p",
-        text: "Break-even CVR tells you how strong your click-to-conversion rate must be to justify a given CPM and CTR given your AOV and margin. It's a fast way to sanity-check whether a placement mix can be profitable.",
+        text: "Break-even CVR tells you how strong your click-to-conversion rate must be to justify a given CPM and CTR given your AOV and margin. It is the post-click constraint on profitability.",
       },
       { type: "h2", text: "Core relationship" },
       {
         type: "p",
         text: "Break-even CVR = CPM / (1000 * CTR * AOV * margin).",
       },
-      { type: "h2", text: "Where the formula comes from (one minute derivation)" },
+      { type: "h2", text: "Post-click diagnosis checklist" },
       {
         type: "bullets",
         items: [
-          "Spend per 1,000 impressions = CPM.",
-          "Clicks per 1,000 = 1000 * CTR.",
-          "Conversions per 1,000 = 1000 * CTR * CVR.",
-          "Contribution per conversion ~= AOV * margin.",
-          "Break-even means contribution per 1,000 equals CPM; solve for CVR.",
+          "Message match: headline and first screen mirror the ad promise.",
+          "Friction: minimize fields, steps, and distractions before the CTA.",
+          "Speed: optimize LCP and interactivity for mobile first.",
+          "Trust: show reviews, guarantees, and pricing clarity early.",
         ],
       },
-      { type: "h2", text: "Sensitivity example (why improving any lever helps)" },
-      {
-        type: "table",
-        columns: ["Change", "Effect on required CVR", "Why"],
-        rows: [
-          ["Lower CPM", "Down", "Less cost per 1,000 impressions"],
-          ["Higher CTR", "Down", "More clicks for the same CPM"],
-          ["Higher AOV or margin", "Down", "More contribution per conversion"],
-          ["Add profit buffer", "Up", "You need CVR above break-even to profit"],
-        ],
-      },
-      { type: "h2", text: "How to use it" },
+      { type: "h2", text: "Offer and intent alignment" },
       {
         type: "bullets",
         items: [
-          "If required CVR is unrealistic, you need lower CPM, higher CTR, higher AOV, or higher margin.",
-          "Add a buffer; operating at break-even is fragile under noise and attribution error.",
-          "Validate with incrementality as spend scales.",
+          "Clarify who the offer is for and the primary outcome.",
+          "Use the same promise across ad, page, and form.",
+          "Add a risk-reversal element if trust is a blocker.",
         ],
       },
-      { type: "h2", text: "Landing page checklist (fast CVR improvements)" },
+      { type: "h2", text: "Measurement hygiene" },
       {
         type: "bullets",
         items: [
-          "Match intent: the headline and first screen should mirror the ad promise.",
-          "Reduce friction: fewer fields, fewer steps, clear primary CTA, fast load time.",
-          "Increase trust: reviews, guarantees, security/payment info, clear pricing.",
-          "Improve offer clarity: who it is for, outcomes, and what happens after purchase/lead.",
+          "Define CVR on the same unit as CTR (clicks vs sessions).",
+          "Separate mobile and desktop performance before changing the page.",
+          "Use holdouts or incrementality checks if retargeting is heavy.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
