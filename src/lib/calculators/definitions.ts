@@ -1,4 +1,4 @@
-import type { CalculatorCategory, CalculatorDefinition } from "./types";
+import type { CalculatorCategory, CalculatorDefinition, ResultValue } from "./types";
 
 function safeDivide(numerator: number, denominator: number): number | null {
   if (!Number.isFinite(numerator) || !Number.isFinite(denominator)) return null;
@@ -1219,23 +1219,49 @@ export const calculators: CalculatorDefinition[] = [
         prefix: "$",
         defaultValue: "20000",
       },
-      {
-        key: "newCustomers",
-        label: "New customers acquired",
-        placeholder: "40",
-        defaultValue: "40",
-      },
-    ],
-    compute(values) {
-      const warnings: string[] = [];
-      const cac = safeDivide(values.spend, values.newCustomers);
-      if (values.newCustomers <= 0)
-        warnings.push("New customers must be greater than 0.");
-      if (cac === null) {
-        return {
-          headline: {
-            key: "cac",
-            label: "CAC",
+        {
+          key: "newCustomers",
+          label: "New customers acquired",
+          placeholder: "40",
+          defaultValue: "40",
+        },
+        {
+          key: "arpaMonthly",
+          label: "ARPA per month (optional)",
+          placeholder: "200",
+          prefix: "$",
+          defaultValue: "200",
+          min: 0,
+        },
+        {
+          key: "grossMarginPercent",
+          label: "Gross margin (optional)",
+          placeholder: "80",
+          suffix: "%",
+          defaultValue: "80",
+          min: 0,
+          step: 0.1,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        const cac = safeDivide(values.spend, values.newCustomers);
+        if (values.newCustomers <= 0)
+          warnings.push("New customers must be greater than 0.");
+        const grossMargin = values.grossMarginPercent / 100;
+        const grossProfitPerMonth =
+          values.arpaMonthly > 0 && grossMargin > 0
+            ? values.arpaMonthly * grossMargin
+            : null;
+        const paybackMonths =
+          grossProfitPerMonth && grossProfitPerMonth > 0
+            ? values.spend / values.newCustomers / grossProfitPerMonth
+            : null;
+        if (cac === null) {
+          return {
+            headline: {
+              key: "cac",
+              label: "CAC",
             value: 0,
             format: "currency",
             currency: "USD",
@@ -1244,33 +1270,71 @@ export const calculators: CalculatorDefinition[] = [
         };
       }
       return {
-        headline: {
-          key: "cac",
-          label: "CAC",
-          value: cac,
-          format: "currency",
-          currency: "USD",
-          detail: "Spend ÷ New customers",
-        },
-        breakdown: [
-          {
-            key: "spend",
-            label: "Spend",
-            value: values.spend,
+          headline: {
+            key: "cac",
+            label: "CAC",
+            value: cac,
+            format: "currency",
+            currency: "USD",
+            detail: "Spend ÷ New customers",
+          },
+          secondary: [
+            {
+              key: "grossProfitPerMonth",
+              label: "Gross profit per account / month",
+              value: grossProfitPerMonth ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail:
+                grossProfitPerMonth === null
+                  ? "Add ARPA and gross margin"
+                  : "ARPA x gross margin",
+            },
+            {
+              key: "paybackMonths",
+              label: "Payback months (from ARPA/margin)",
+              value: paybackMonths ?? 0,
+              format: "months",
+              maxFractionDigits: 1,
+              detail:
+                paybackMonths === null
+                  ? "Add ARPA and gross margin"
+                  : "CAC / gross profit per month",
+            },
+          ],
+          breakdown: [
+            {
+              key: "spend",
+              label: "Spend",
+              value: values.spend,
             format: "currency",
             currency: "USD",
           },
-          {
-            key: "newCustomers",
-            label: "New customers",
-            value: values.newCustomers,
-            format: "number",
-            maxFractionDigits: 0,
-          },
-        ],
-        warnings,
-      };
-    },
+            {
+              key: "newCustomers",
+              label: "New customers",
+              value: values.newCustomers,
+              format: "number",
+              maxFractionDigits: 0,
+            },
+            {
+              key: "arpaMonthly",
+              label: "ARPA per month",
+              value: values.arpaMonthly,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "grossMarginPercent",
+              label: "Gross margin",
+              value: grossMargin,
+              format: "percent",
+              maxFractionDigits: 1,
+            },
+          ],
+          warnings,
+        };
+      },
     formula: "CAC = Sales & Marketing Spend ÷ New Customers",
     assumptions: [
       "Spend and new customers are measured over the same time window.",
@@ -1386,34 +1450,62 @@ export const calculators: CalculatorDefinition[] = [
         defaultValue: "8000",
         min: 0,
       },
-      {
-        key: "newCustomers",
-        label: "New paying customers acquired",
-        placeholder: "120",
-        defaultValue: "120",
-        min: 0,
-        step: 1,
-      },
-    ],
-    compute(values) {
-      const warnings: string[] = [];
-      const customers = Math.floor(values.newCustomers);
-      if (values.newCustomers !== customers)
+        {
+          key: "newCustomers",
+          label: "New paying customers acquired",
+          placeholder: "120",
+          defaultValue: "120",
+          min: 0,
+          step: 1,
+        },
+        {
+          key: "arpaMonthly",
+          label: "ARPA per month (optional)",
+          placeholder: "500",
+          prefix: "$",
+          defaultValue: "500",
+          min: 0,
+        },
+        {
+          key: "grossMarginPercent",
+          label: "Gross margin (optional)",
+          placeholder: "80",
+          suffix: "%",
+          defaultValue: "80",
+          min: 0,
+          step: 0.1,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        const customers = Math.floor(values.newCustomers);
+        if (values.newCustomers !== customers)
         warnings.push("New customers was rounded down to a whole number.");
       if (customers <= 0)
         warnings.push("New customers must be greater than 0 to compute CAC.");
 
-      const total =
-        values.paidSpend + values.salaries + values.tools + values.otherCosts;
-      if (total < 0)
-        warnings.push("Total acquisition costs must be 0 or greater.");
+        const total =
+          values.paidSpend + values.salaries + values.tools + values.otherCosts;
+        if (total < 0)
+          warnings.push("Total acquisition costs must be 0 or greater.");
 
-      const cac = customers > 0 ? safeDivide(total, customers) : null;
-      if (cac === null) {
-        return {
-          headline: {
-            key: "cac",
-            label: "Fully-loaded CAC",
+        const cac = customers > 0 ? safeDivide(total, customers) : null;
+        const paidShare = total > 0 ? values.paidSpend / total : 0;
+        const nonPaidShare = total > 0 ? 1 - paidShare : 0;
+        const grossMargin = values.grossMarginPercent / 100;
+        const grossProfitPerMonth =
+          values.arpaMonthly > 0 && grossMargin > 0
+            ? values.arpaMonthly * grossMargin
+            : null;
+        const paybackMonths =
+          grossProfitPerMonth && grossProfitPerMonth > 0 && cac
+            ? cac / grossProfitPerMonth
+            : null;
+        if (cac === null) {
+          return {
+            headline: {
+              key: "cac",
+              label: "Fully-loaded CAC",
             value: 0,
             format: "currency",
             currency: "USD",
@@ -1431,19 +1523,46 @@ export const calculators: CalculatorDefinition[] = [
           currency: "USD",
           detail: "Total acquisition costs ÷ new customers",
         },
-        secondary: [
-          {
-            key: "total",
-            label: "Total acquisition costs",
-            value: total,
-            format: "currency",
-            currency: "USD",
-          },
-        ],
-        breakdown: [
-          {
-            key: "paidSpend",
-            label: "Paid spend",
+          secondary: [
+            {
+              key: "total",
+              label: "Total acquisition costs",
+              value: total,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "paidShare",
+              label: "Paid spend share of total",
+              value: paidShare,
+              format: "percent",
+              maxFractionDigits: 1,
+              detail: total > 0 ? "Paid spend / total costs" : "Total costs are 0",
+            },
+            {
+              key: "nonPaidShare",
+              label: "Non-paid share of total",
+              value: nonPaidShare,
+              format: "percent",
+              maxFractionDigits: 1,
+              detail: total > 0 ? "Salaries + tools + other" : "Total costs are 0",
+            },
+            {
+              key: "paybackMonths",
+              label: "Payback months (from ARPA/margin)",
+              value: paybackMonths ?? 0,
+              format: "months",
+              maxFractionDigits: 1,
+              detail:
+                paybackMonths === null
+                  ? "Add ARPA and gross margin"
+                  : "CAC / gross profit per month",
+            },
+          ],
+          breakdown: [
+            {
+              key: "paidSpend",
+              label: "Paid spend",
             value: values.paidSpend,
             format: "currency",
             currency: "USD",
@@ -1469,17 +1588,31 @@ export const calculators: CalculatorDefinition[] = [
             format: "currency",
             currency: "USD",
           },
-          {
-            key: "newCustomers",
-            label: "New customers",
-            value: customers,
-            format: "number",
-            maxFractionDigits: 0,
-          },
-        ],
-        warnings,
-      };
-    },
+            {
+              key: "newCustomers",
+              label: "New customers",
+              value: customers,
+              format: "number",
+              maxFractionDigits: 0,
+            },
+            {
+              key: "arpaMonthly",
+              label: "ARPA per month",
+              value: values.arpaMonthly,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "grossMarginPercent",
+              label: "Gross margin",
+              value: grossMargin,
+              format: "percent",
+              maxFractionDigits: 1,
+            },
+          ],
+          warnings,
+        };
+      },
     formula:
       "Fully-loaded CAC = (paid spend + salaries + tools + other) ÷ new customers",
     assumptions: [
@@ -1559,23 +1692,41 @@ export const calculators: CalculatorDefinition[] = [
         suffix: "%",
         defaultValue: "3",
       },
-      {
-        key: "annualDiscountRatePercent",
-        label: "Annual discount rate (optional)",
-        help: "Used to compute discounted LTV. Set 0 to disable.",
-        placeholder: "10",
-        suffix: "%",
-        defaultValue: "0",
-        min: 0,
-        step: 0.1,
-      },
-    ],
-    compute(values) {
-      const warnings: string[] = [];
-      const grossMargin = values.grossMarginPercent / 100;
-      const churn = values.churnPercent / 100;
-      if (grossMargin <= 0) warnings.push("Gross margin must be greater than 0.");
-      if (churn <= 0) warnings.push("Churn must be greater than 0.");
+        {
+          key: "annualDiscountRatePercent",
+          label: "Annual discount rate (optional)",
+          help: "Used to compute discounted LTV. Set 0 to disable.",
+          placeholder: "10",
+          suffix: "%",
+          defaultValue: "0",
+          min: 0,
+          step: 0.1,
+        },
+        {
+          key: "cac",
+          label: "CAC (optional)",
+          help: "Used to compute LTV:CAC.",
+          placeholder: "500",
+          prefix: "$",
+          defaultValue: "0",
+          min: 0,
+        },
+        {
+          key: "targetLtvToCac",
+          label: "Target LTV:CAC (optional)",
+          help: "Used to estimate max CAC at your LTV.",
+          placeholder: "3",
+          defaultValue: "3",
+          min: 0,
+          step: 0.1,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        const grossMargin = values.grossMarginPercent / 100;
+        const churn = values.churnPercent / 100;
+        if (grossMargin <= 0) warnings.push("Gross margin must be greater than 0.");
+        if (churn <= 0) warnings.push("Churn must be greater than 0.");
 
       const ltv = safeDivide(values.arpaMonthly * grossMargin, churn);
       if (ltv === null) {
@@ -1591,19 +1742,23 @@ export const calculators: CalculatorDefinition[] = [
         };
       }
 
-      const annualDiscount = values.annualDiscountRatePercent / 100;
-      const monthlyDiscount =
-        annualDiscount > 0 ? Math.pow(1 + annualDiscount, 1 / 12) - 1 : 0;
-      const discountedLifetimeMonths =
-        safeDivide(1 + monthlyDiscount, churn + monthlyDiscount) ?? 0;
-      const discountedLtv =
-        values.arpaMonthly * grossMargin * discountedLifetimeMonths;
+        const annualDiscount = values.annualDiscountRatePercent / 100;
+        const monthlyDiscount =
+          annualDiscount > 0 ? Math.pow(1 + annualDiscount, 1 / 12) - 1 : 0;
+        const discountedLifetimeMonths =
+          safeDivide(1 + monthlyDiscount, churn + monthlyDiscount) ?? 0;
+        const discountedLtv =
+          values.arpaMonthly * grossMargin * discountedLifetimeMonths;
+        const ltvToCac =
+          values.cac > 0 ? safeDivide(ltv, values.cac) : null;
+        const maxCacAtTarget =
+          values.targetLtvToCac > 0 ? ltv / values.targetLtvToCac : null;
 
-      return {
-        headline: {
-          key: "ltv",
-          label: "LTV",
-          value: ltv,
+        return {
+          headline: {
+            key: "ltv",
+            label: "LTV",
+            value: ltv,
           format: "currency",
           currency: "USD",
           detail: "(ARPA * gross margin) / churn",
@@ -1643,18 +1798,37 @@ export const calculators: CalculatorDefinition[] = [
             maxFractionDigits: 1,
             detail: "Shorter than 1/churn when discount rate > 0",
           },
-          {
-            key: "monthlyDiscountRate",
-            label: "Monthly discount rate",
-            value: monthlyDiscount,
-            format: "percent",
-            maxFractionDigits: 2,
-            detail: annualDiscount > 0 ? "Derived from annual rate" : "0%",
-          },
-        ],
-        warnings,
-      };
-    },
+            {
+              key: "monthlyDiscountRate",
+              label: "Monthly discount rate",
+              value: monthlyDiscount,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: annualDiscount > 0 ? "Derived from annual rate" : "0%",
+            },
+            {
+              key: "ltvToCac",
+              label: "LTV:CAC",
+              value: ltvToCac ?? 0,
+              format: "ratio",
+              maxFractionDigits: 2,
+              detail: ltvToCac === null ? "Add CAC" : "LTV / CAC",
+            },
+            {
+              key: "maxCacAtTarget",
+              label: "Max CAC at target ratio",
+              value: maxCacAtTarget ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail:
+                values.targetLtvToCac > 0
+                  ? "LTV / target ratio"
+                  : "Target ratio is 0",
+            },
+          ],
+          warnings,
+        };
+      },
     formula: "LTV = (ARPA * Gross Margin) / Churn Rate",
     assumptions: [
       "Churn is steady over time (a simplifying assumption).",
@@ -1689,19 +1863,19 @@ export const calculators: CalculatorDefinition[] = [
   {
     slug: "ltv-sensitivity-calculator",
     title: "LTV Sensitivity Calculator",
-    description:
-      "See how gross profit LTV changes as churn and gross margin vary (simple 3×3 sensitivity).",
+      description:
+        "See how gross profit LTV changes as churn and gross margin vary (simple 3x3 sensitivity).",
     category: "saas-metrics",
     guideSlug: "ltv-sensitivity-guide",
     relatedGlossarySlugs: ["ltv", "arpa", "gross-margin", "churn-rate", "sensitivity-analysis"],
     seo: {
       intro: [
         "Quick LTV models are simple but sensitive. Small changes in churn or gross margin can dramatically change LTV because churn sits in the denominator.",
-        "This calculator generates a 3×3 LTV grid by varying churn and gross margin around your base assumptions.",
+          "This calculator generates a 3x3 LTV grid by varying churn and gross margin around your base assumptions.",
       ],
       steps: [
         "Enter ARPA (monthly), gross margin, and monthly churn as base inputs.",
-        "Choose step sizes for margin and churn (± around the base).",
+          "Choose step sizes for margin and churn (+/- around the base).",
         "Review the LTV grid and identify which lever matters most for your model.",
       ],
       pitfalls: [
@@ -1731,7 +1905,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         key: "marginStepPercent",
         label: "Margin step",
-        help: "Uses ± step around margin base to create a 3×3 grid.",
+          help: "Uses +/- step around margin base to create a 3x3 grid.",
         placeholder: "5",
         suffix: "%",
         defaultValue: "5",
@@ -1750,7 +1924,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         key: "churnStepPercent",
         label: "Churn step",
-        help: "Uses ± step around churn base to create a 3×3 grid.",
+          help: "Uses +/- step around churn base to create a 3x3 grid.",
         placeholder: "1",
         suffix: "%",
         defaultValue: "1",
@@ -1811,36 +1985,71 @@ export const calculators: CalculatorDefinition[] = [
         });
       }
 
-      if (grid.length < 5) {
-        warnings.push(
-          "Many grid points are invalid because churn is too close to 0%. Increase churn or adjust steps.",
-        );
-      }
+        if (grid.length < 5) {
+          warnings.push(
+            "Many grid points are invalid because churn is too close to 0%. Increase churn or adjust steps.",
+          );
+        }
+        const valuesOnly = grid.map((g) => g.value);
+        const bestLtv = valuesOnly.length > 0 ? Math.max(...valuesOnly) : null;
+        const worstLtv = valuesOnly.length > 0 ? Math.min(...valuesOnly) : null;
+        const ltvRange =
+          bestLtv !== null && worstLtv !== null ? bestLtv - worstLtv : null;
 
-      return {
-        headline: {
-          key: "ltvBase",
-          label: "Gross profit LTV (base case)",
-          value: baseLtv ?? (grid[0]?.value ?? 0),
-          format: "currency",
-          currency: "USD",
-          detail: `Base: ${values.grossMarginPercent.toFixed(1)}% / ${values.monthlyChurnPercent.toFixed(1)}% churn`,
-        },
-        secondary: grid.map((g) => ({
-          key: g.key,
-          label: g.label,
-          value: g.value,
-          format: "currency",
-          currency: "USD",
-        })),
-        warnings,
-      };
-    },
-    formula:
-      "Gross profit LTV ≈ (ARPA × gross margin) ÷ churn; Sensitivity varies gross margin and churn around a base case",
+        const secondary: ResultValue[] = [
+          {
+            key: "bestLtv",
+            label: "Best-case LTV (grid max)",
+            value: bestLtv ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: bestLtv === null ? "No valid grid values" : "Highest LTV in grid",
+          },
+          {
+            key: "worstLtv",
+            label: "Worst-case LTV (grid min)",
+            value: worstLtv ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: worstLtv === null ? "No valid grid values" : "Lowest LTV in grid",
+          },
+          {
+            key: "ltvRange",
+            label: "LTV range (max - min)",
+            value: ltvRange ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: ltvRange === null ? "No valid grid values" : "Sensitivity spread",
+          },
+          ...grid.map(
+            (g): ResultValue => ({
+              key: g.key,
+              label: g.label,
+              value: g.value,
+              format: "currency",
+              currency: "USD",
+            }),
+          ),
+        ];
+
+        return {
+          headline: {
+            key: "ltvBase",
+            label: "Gross profit LTV (base case)",
+            value: baseLtv ?? (grid[0]?.value ?? 0),
+            format: "currency",
+            currency: "USD",
+            detail: `Base: ${values.grossMarginPercent.toFixed(1)}% / ${values.monthlyChurnPercent.toFixed(1)}% churn`,
+          },
+          secondary,
+          warnings,
+        };
+      },
+      formula:
+        "Gross profit LTV ~= (ARPA x gross margin) / churn; Sensitivity varies gross margin and churn around a base case",
     assumptions: [
       "Uses a constant-churn shortcut model (planning).",
-      "LTV is modeled as gross profit (ARPA × gross margin) to align with CAC and payback.",
+        "LTV is modeled as gross profit (ARPA x gross margin) to align with CAC and payback.",
       "Only shows a small grid; use cohort curves for precision.",
     ],
     faqs: [
@@ -1920,17 +2129,25 @@ export const calculators: CalculatorDefinition[] = [
         suffix: "%",
         defaultValue: "80",
       },
-      {
-        key: "churnPercent",
-        label: "Monthly churn",
-        placeholder: "3",
-        suffix: "%",
-        defaultValue: "3",
-      },
-    ],
-    compute(values) {
-      const warnings: string[] = [];
-      if (values.cac <= 0) warnings.push("CAC must be greater than 0.");
+        {
+          key: "churnPercent",
+          label: "Monthly churn",
+          placeholder: "3",
+          suffix: "%",
+          defaultValue: "3",
+        },
+        {
+          key: "targetRatio",
+          label: "Target LTV:CAC (optional)",
+          placeholder: "3",
+          defaultValue: "3",
+          min: 0,
+          step: 0.1,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        if (values.cac <= 0) warnings.push("CAC must be greater than 0.");
 
       const grossMargin = values.grossMarginPercent / 100;
       const churn = values.churnPercent / 100;
@@ -1938,15 +2155,17 @@ export const calculators: CalculatorDefinition[] = [
       if (grossMargin <= 0) warnings.push("Gross margin must be greater than 0%.");
       if (churn <= 0) warnings.push("Churn must be greater than 0%.");
 
-      const grossProfitPerMonth = values.arpaMonthly * Math.max(grossMargin, 0);
-      const ltv = safeDivide(grossProfitPerMonth, churn) ?? 0;
-      const ratio = safeDivide(ltv, values.cac);
-      const paybackMonths = safeDivide(values.cac, grossProfitPerMonth);
+        const grossProfitPerMonth = values.arpaMonthly * Math.max(grossMargin, 0);
+        const ltv = safeDivide(grossProfitPerMonth, churn) ?? 0;
+        const ratio = safeDivide(ltv, values.cac);
+        const paybackMonths = safeDivide(values.cac, grossProfitPerMonth);
+        const maxCacAtTarget =
+          values.targetRatio > 0 ? ltv / values.targetRatio : null;
 
-      if (ratio === null || paybackMonths === null) {
-        return {
-          headline: {
-            key: "ratio",
+        if (ratio === null || paybackMonths === null) {
+          return {
+            headline: {
+              key: "ratio",
             label: "LTV:CAC",
             value: 0,
             format: "ratio",
@@ -1982,14 +2201,25 @@ export const calculators: CalculatorDefinition[] = [
             maxFractionDigits: 1,
             detail: "CAC / (ARPA * gross margin)",
           },
-          {
-            key: "grossProfitPerMonth",
-            label: "Gross profit / month",
-            value: grossProfitPerMonth,
-            format: "currency",
-            currency: "USD",
-          },
-        ],
+            {
+              key: "grossProfitPerMonth",
+              label: "Gross profit / month",
+              value: grossProfitPerMonth,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "maxCacAtTarget",
+              label: "Max CAC at target ratio",
+              value: maxCacAtTarget ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail:
+                maxCacAtTarget === null
+                  ? "Target ratio is 0"
+                  : "LTV / target ratio",
+            },
+          ],
         breakdown: [
           {
             key: "cac",
@@ -2101,21 +2331,31 @@ export const calculators: CalculatorDefinition[] = [
         suffix: "%",
         defaultValue: "80",
       },
-      {
-        key: "annualDiscountRatePercent",
-        label: "Annual discount rate (optional)",
-        help: "Used to compute discounted payback. Set 0 to disable.",
-        placeholder: "10",
-        suffix: "%",
-        defaultValue: "0",
-        min: 0,
-        step: 0.1,
-      },
-    ],
-    compute(values) {
-      const warnings: string[] = [];
-      const grossMargin = values.grossMarginPercent / 100;
-      const grossProfitPerMonth = values.arpaMonthly * grossMargin;
+        {
+          key: "annualDiscountRatePercent",
+          label: "Annual discount rate (optional)",
+          help: "Used to compute discounted payback. Set 0 to disable.",
+          placeholder: "10",
+          suffix: "%",
+          defaultValue: "0",
+          min: 0,
+          step: 0.1,
+        },
+        {
+          key: "monthlyChurnPercent",
+          label: "Monthly churn (optional)",
+          help: "Used to compare payback vs expected lifetime (1 / churn).",
+          placeholder: "3",
+          suffix: "%",
+          defaultValue: "3",
+          min: 0,
+          step: 0.1,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        const grossMargin = values.grossMarginPercent / 100;
+        const grossProfitPerMonth = values.arpaMonthly * grossMargin;
       if (values.cac <= 0) warnings.push("CAC must be greater than 0.");
       if (grossProfitPerMonth <= 0)
         warnings.push("Gross profit per month must be greater than 0.");
@@ -2134,15 +2374,24 @@ export const calculators: CalculatorDefinition[] = [
         };
       }
 
-      const annualDiscount = values.annualDiscountRatePercent / 100;
-      const monthlyDiscount =
-        annualDiscount > 0 ? Math.pow(1 + annualDiscount, 1 / 12) - 1 : 0;
+        const annualDiscount = values.annualDiscountRatePercent / 100;
+        const monthlyDiscount =
+          annualDiscount > 0 ? Math.pow(1 + annualDiscount, 1 / 12) - 1 : 0;
+        const churn = values.monthlyChurnPercent / 100;
+        const expectedLifetimeMonths = churn > 0 ? 1 / churn : null;
+        const paybackToLifetime =
+          expectedLifetimeMonths && expectedLifetimeMonths > 0
+            ? months / expectedLifetimeMonths
+            : null;
+        if (paybackToLifetime !== null && paybackToLifetime > 1) {
+          warnings.push("Payback exceeds expected lifetime (check churn or ARPA).");
+        }
 
-      let discountedPaybackMonths: number | null = null;
-      if (monthlyDiscount > 0) {
-        const ratio = safeDivide(values.cac * monthlyDiscount, grossProfitPerMonth);
-        if (ratio === null || ratio >= 1) {
-          warnings.push(
+        let discountedPaybackMonths: number | null = null;
+        if (monthlyDiscount > 0) {
+          const ratio = safeDivide(values.cac * monthlyDiscount, grossProfitPerMonth);
+          if (ratio === null || ratio >= 1) {
+            warnings.push(
             "Discounted payback is not reachable with this discount rate (present value of future gross profit is capped).",
           );
         } else {
@@ -2168,12 +2417,12 @@ export const calculators: CalculatorDefinition[] = [
             format: "currency",
             currency: "USD",
           },
-          {
-            key: "discountedPayback",
-            label: "Discounted payback (months)",
-            value: discountedPaybackMonths ?? 0,
-            format: "months",
-            maxFractionDigits: 1,
+            {
+              key: "discountedPayback",
+              label: "Discounted payback (months)",
+              value: discountedPaybackMonths ?? 0,
+              format: "months",
+              maxFractionDigits: 1,
             detail:
               monthlyDiscount > 0
                 ? discountedPaybackMonths === null
@@ -2181,18 +2430,37 @@ export const calculators: CalculatorDefinition[] = [
                   : "Uses discounted cash flow of monthly gross profit"
                 : "Set annual discount rate to compute discounted payback",
           },
-          {
-            key: "monthlyDiscountRate",
-            label: "Monthly discount rate",
-            value: monthlyDiscount,
-            format: "percent",
-            maxFractionDigits: 2,
-            detail: annualDiscount > 0 ? "Derived from annual rate" : "0%",
-          },
-        ],
-        warnings,
-      };
-    },
+            {
+              key: "monthlyDiscountRate",
+              label: "Monthly discount rate",
+              value: monthlyDiscount,
+              format: "percent",
+              maxFractionDigits: 2,
+              detail: annualDiscount > 0 ? "Derived from annual rate" : "0%",
+            },
+            {
+              key: "expectedLifetimeMonths",
+              label: "Expected lifetime (months)",
+              value: expectedLifetimeMonths ?? 0,
+              format: "months",
+              maxFractionDigits: 1,
+              detail: churn > 0 ? "1 / churn rate" : "Add monthly churn",
+            },
+            {
+              key: "paybackToLifetime",
+              label: "Payback as % of lifetime",
+              value: paybackToLifetime ?? 0,
+              format: "percent",
+              maxFractionDigits: 1,
+              detail:
+                paybackToLifetime === null
+                  ? "Add monthly churn"
+                  : "Payback months / lifetime",
+            },
+          ],
+          warnings,
+        };
+      },
     formula: "Payback (months) = CAC / (ARPA * Gross Margin)",
     assumptions: [
       "ARPA and gross margin remain stable over the payback period.",
@@ -2232,8 +2500,8 @@ export const calculators: CalculatorDefinition[] = [
   {
     slug: "cac-payback-sensitivity-calculator",
     title: "CAC Payback Sensitivity Calculator",
-    description:
-      "See how CAC payback months change as ARPA and gross margin vary (simple 3×3 sensitivity).",
+      description:
+        "See how CAC payback months change as ARPA and gross margin vary (simple 3x3 sensitivity).",
     category: "saas-metrics",
     guideSlug: "cac-payback-sensitivity-guide",
     relatedGlossarySlugs: [
@@ -2246,11 +2514,11 @@ export const calculators: CalculatorDefinition[] = [
     seo: {
       intro: [
         "CAC payback is a simple formula, but your inputs move in the real world (pricing, mix, and margin). Sensitivity analysis helps you see how fragile (or robust) payback is.",
-        "This calculator generates a 3×3 payback grid by varying ARPA and gross margin around your base assumptions.",
+          "This calculator generates a 3x3 payback grid by varying ARPA and gross margin around your base assumptions.",
       ],
       steps: [
         "Enter your base CAC, ARPA per month, and gross margin.",
-        "Choose step sizes for ARPA and margin (e.g., ±10% ARPA, ±5% margin).",
+          "Choose step sizes for ARPA and margin (e.g., +/-10% ARPA, +/-5% margin).",
         "Review the payback grid and identify which lever improves payback fastest for your model.",
       ],
       pitfalls: [
@@ -2288,7 +2556,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         key: "arpaStepPercent",
         label: "ARPA step",
-        help: "Uses ± step around ARPA base to create a 3×3 grid.",
+          help: "Uses +/- step around ARPA base to create a 3x3 grid.",
         placeholder: "10",
         suffix: "%",
         defaultValue: "10",
@@ -2298,7 +2566,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         key: "grossMarginStepPercent",
         label: "Gross margin step",
-        help: "Uses ± step around margin base to create a 3×3 grid.",
+          help: "Uses +/- step around margin base to create a 3x3 grid.",
         placeholder: "5",
         suffix: "%",
         defaultValue: "5",
@@ -2366,31 +2634,70 @@ export const calculators: CalculatorDefinition[] = [
         );
       }
 
-      const headlinePayback = basePayback ?? (grid[0]?.value ?? 0);
+        const headlinePayback = basePayback ?? (grid[0]?.value ?? 0);
+        const valuesOnly = grid.map((g) => g.value);
+        const bestPayback =
+          valuesOnly.length > 0 ? Math.min(...valuesOnly) : null;
+        const worstPayback =
+          valuesOnly.length > 0 ? Math.max(...valuesOnly) : null;
+        const paybackRange =
+          bestPayback !== null && worstPayback !== null
+            ? worstPayback - bestPayback
+            : null;
 
-      return {
-        headline: {
-          key: "paybackBase",
-          label: "CAC payback (base case)",
-          value: headlinePayback,
-          format: "months",
-          maxFractionDigits: 1,
-          detail: `Base: $${values.arpaMonthly.toFixed(0)} / ${values.grossMarginPercent.toFixed(1)}%`,
-        },
-        secondary: grid.map((g) => ({
-          key: g.key,
-          label: g.label,
-          value: g.value,
-          format: "months",
-          maxFractionDigits: 1,
-        })),
-        warnings,
-      };
-    },
+        const secondary: ResultValue[] = [
+          {
+            key: "bestPayback",
+            label: "Best-case payback (grid min)",
+            value: bestPayback ?? 0,
+            format: "months",
+            maxFractionDigits: 1,
+            detail: bestPayback === null ? "No valid grid values" : "Lowest payback in grid",
+          },
+          {
+            key: "worstPayback",
+            label: "Worst-case payback (grid max)",
+            value: worstPayback ?? 0,
+            format: "months",
+            maxFractionDigits: 1,
+            detail: worstPayback === null ? "No valid grid values" : "Highest payback in grid",
+          },
+          {
+            key: "paybackRange",
+            label: "Payback range (max - min)",
+            value: paybackRange ?? 0,
+            format: "months",
+            maxFractionDigits: 1,
+            detail: paybackRange === null ? "No valid grid values" : "Sensitivity spread",
+          },
+          ...grid.map(
+            (g): ResultValue => ({
+              key: g.key,
+              label: g.label,
+              value: g.value,
+              format: "months",
+              maxFractionDigits: 1,
+            }),
+          ),
+        ];
+
+        return {
+          headline: {
+            key: "paybackBase",
+            label: "CAC payback (base case)",
+            value: headlinePayback,
+            format: "months",
+            maxFractionDigits: 1,
+            detail: `Base: $${values.arpaMonthly.toFixed(0)} / ${values.grossMarginPercent.toFixed(1)}%`,
+          },
+          secondary,
+          warnings,
+        };
+      },
     formula:
-      "Payback (months) = CAC ÷ (ARPA × gross margin); Sensitivity varies ARPA and gross margin around a base case",
+      "Payback (months) = CAC / (ARPA x gross margin); Sensitivity varies ARPA and gross margin around a base case",
     assumptions: [
-      "Uses gross profit payback: ARPA × gross margin approximates monthly gross profit per account.",
+      "Uses gross profit payback: ARPA x gross margin approximates monthly gross profit per account.",
       "Assumes ARPA and gross margin are stable during the payback period (planning shortcut).",
       "Only shows a small grid; use broader scenarios for full planning.",
     ],
@@ -2403,7 +2710,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         question: "What ARPA and margin ranges should I test?",
         answer:
-          "Test ranges that reflect pricing/mix uncertainty. A common starting point is ±10–20% ARPA and ±5–10% margin, then widen if your business is volatile.",
+          "Test ranges that reflect pricing/mix uncertainty. A common starting point is +/-10-20% ARPA and +/-5-10% margin, then widen if your business is volatile.",
       },
       {
         question: "Is this the same as cohort payback curves?",
@@ -5521,54 +5828,91 @@ export const calculators: CalculatorDefinition[] = [
         defaultValue: "60000",
         min: 0,
       },
-      {
-        key: "churnedArr",
-        label: "Churned ARR",
-        placeholder: "100000",
-        prefix: "$",
-        defaultValue: "100000",
-        min: 0,
-      },
-    ],
-    compute(values) {
-      const warnings: string[] = [];
-      if (values.newArr < 0) warnings.push("New ARR must be 0 or greater.");
-      if (values.expansionArr < 0) warnings.push("Expansion ARR must be 0 or greater.");
-      if (values.contractionArr < 0) warnings.push("Contraction ARR must be 0 or greater.");
-      if (values.churnedArr < 0) warnings.push("Churned ARR must be 0 or greater.");
-
-      const grossAdditions = values.newArr + values.expansionArr;
-      const grossLosses = values.contractionArr + values.churnedArr;
-      const netNewArr = grossAdditions - grossLosses;
-
-      return {
-        headline: {
-          key: "netNewArr",
-          label: "Net new ARR",
-          value: netNewArr,
-          format: "currency",
-          currency: "USD",
-          detail: "New + Expansion − Contraction − Churn",
+        {
+          key: "churnedArr",
+          label: "Churned ARR",
+          placeholder: "100000",
+          prefix: "$",
+          defaultValue: "100000",
+          min: 0,
         },
-        secondary: [
-          {
-            key: "grossAdditions",
-            label: "Gross additions",
-            value: grossAdditions,
+        {
+          key: "startingArr",
+          label: "Starting ARR (optional)",
+          help: "Used to compute net new ARR growth rate.",
+          placeholder: "2000000",
+          prefix: "$",
+          defaultValue: "0",
+          min: 0,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        if (values.newArr < 0) warnings.push("New ARR must be 0 or greater.");
+        if (values.expansionArr < 0) warnings.push("Expansion ARR must be 0 or greater.");
+        if (values.contractionArr < 0) warnings.push("Contraction ARR must be 0 or greater.");
+        if (values.churnedArr < 0) warnings.push("Churned ARR must be 0 or greater.");
+
+        const grossAdditions = values.newArr + values.expansionArr;
+        const grossLosses = values.contractionArr + values.churnedArr;
+        const netNewArr = grossAdditions - grossLosses;
+        const netNewArrGrowth =
+          values.startingArr > 0 ? netNewArr / values.startingArr : null;
+        const netExpansionArr =
+          values.expansionArr - values.contractionArr - values.churnedArr;
+        const netExpansionRate =
+          values.startingArr > 0 ? netExpansionArr / values.startingArr : null;
+  
+        return {
+          headline: {
+            key: "netNewArr",
+            label: "Net new ARR",
+            value: netNewArr,
             format: "currency",
             currency: "USD",
+            detail: "New + Expansion − Contraction − Churn",
           },
-          {
-            key: "grossLosses",
-            label: "Gross losses",
-            value: grossLosses,
-            format: "currency",
-            currency: "USD",
-          },
-        ],
-        warnings,
-      };
-    },
+          secondary: [
+            {
+              key: "grossAdditions",
+              label: "Gross additions",
+              value: grossAdditions,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "grossLosses",
+              label: "Gross losses",
+              value: grossLosses,
+              format: "currency",
+              currency: "USD",
+            },
+            {
+              key: "netNewArrGrowth",
+              label: "Net new ARR growth rate",
+              value: netNewArrGrowth ?? 0,
+              format: "percent",
+              maxFractionDigits: 1,
+              detail:
+                netNewArrGrowth === null
+                  ? "Add starting ARR"
+                  : "Net new ARR / starting ARR",
+            },
+            {
+              key: "netExpansionRate",
+              label: "Net expansion rate (period)",
+              value: netExpansionRate ?? 0,
+              format: "percent",
+              maxFractionDigits: 1,
+              detail:
+                netExpansionRate === null
+                  ? "Add starting ARR"
+                  : "Expansion - contraction - churn / starting ARR",
+            },
+          ],
+          warnings,
+        };
+      },
     formula: "Net new ARR = new ARR + expansion ARR − contraction ARR − churned ARR",
     assumptions: [
       "All movements are measured for the same period using a consistent ARR definition.",
@@ -5817,26 +6161,39 @@ export const calculators: CalculatorDefinition[] = [
         prefix: "$",
         defaultValue: "300000",
       },
-      {
-        key: "netNewArr",
-        label: "Net new ARR (same period)",
-        placeholder: "200000",
-        prefix: "$",
-        defaultValue: "200000",
-      },
-    ],
-    compute(values) {
-      const warnings: string[] = [];
-      if (values.netBurn < 0) warnings.push("Net burn must be 0 or greater.");
-      if (values.netNewArr <= 0)
-        warnings.push("Net new ARR must be greater than 0.");
-
-      const multiple = safeDivide(values.netBurn, values.netNewArr);
-      if (multiple === null) {
-        return {
-          headline: {
-            key: "burnMultiple",
-            label: "Burn multiple",
+        {
+          key: "netNewArr",
+          label: "Net new ARR (same period)",
+          placeholder: "200000",
+          prefix: "$",
+          defaultValue: "200000",
+        },
+        {
+          key: "targetMultiple",
+          label: "Target burn multiple (optional)",
+          help: "Used to estimate required net new ARR or max burn.",
+          placeholder: "1.5",
+          defaultValue: "1.5",
+          min: 0,
+          step: 0.1,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        if (values.netBurn < 0) warnings.push("Net burn must be 0 or greater.");
+        if (values.netNewArr <= 0)
+          warnings.push("Net new ARR must be greater than 0.");
+  
+        const multiple = safeDivide(values.netBurn, values.netNewArr);
+        const requiredNetNewArr =
+          values.targetMultiple > 0 ? values.netBurn / values.targetMultiple : null;
+        const maxBurnAtTarget =
+          values.targetMultiple > 0 ? values.netNewArr * values.targetMultiple : null;
+        if (multiple === null) {
+          return {
+            headline: {
+              key: "burnMultiple",
+              label: "Burn multiple",
             value: 0,
             format: "multiple",
             maxFractionDigits: 2,
@@ -5846,17 +6203,41 @@ export const calculators: CalculatorDefinition[] = [
       }
 
       return {
-        headline: {
-          key: "burnMultiple",
-          label: "Burn multiple",
-          value: multiple,
-          format: "multiple",
-          maxFractionDigits: 2,
-          detail: "Net burn ÷ Net new ARR",
-        },
-        warnings,
-      };
-    },
+          headline: {
+            key: "burnMultiple",
+            label: "Burn multiple",
+            value: multiple,
+            format: "multiple",
+            maxFractionDigits: 2,
+            detail: "Net burn ÷ Net new ARR",
+          },
+          secondary: [
+            {
+              key: "requiredNetNewArr",
+              label: "Required net new ARR for target",
+              value: requiredNetNewArr ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail:
+                requiredNetNewArr === null
+                  ? "Target multiple is 0"
+                  : "Net burn / target multiple",
+            },
+            {
+              key: "maxBurnAtTarget",
+              label: "Max burn at target multiple",
+              value: maxBurnAtTarget ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail:
+                maxBurnAtTarget === null
+                  ? "Target multiple is 0"
+                  : "Net new ARR x target multiple",
+            },
+          ],
+          warnings,
+        };
+      },
     formula: "Burn multiple = Net burn ÷ Net new ARR",
     assumptions: [
       "Use the same time window for burn and net new ARR (often quarterly).",
@@ -6431,33 +6812,50 @@ export const calculators: CalculatorDefinition[] = [
         prefix: "$",
         defaultValue: "400000",
       },
-      {
-        key: "periodsPerYear",
-        label: "Periods per year",
-        help: "4 for quarterly, 12 for monthly (used to annualize net new ARR).",
-        placeholder: "4",
-        defaultValue: "4",
-        min: 1,
-        step: 1,
-      },
-    ],
-    compute(values) {
-      const warnings: string[] = [];
-      if (values.salesMarketingSpend <= 0)
-        warnings.push("Sales & marketing spend must be greater than 0.");
+        {
+          key: "periodsPerYear",
+          label: "Periods per year",
+          help: "4 for quarterly, 12 for monthly (used to annualize net new ARR).",
+          placeholder: "4",
+          defaultValue: "4",
+          min: 1,
+          step: 1,
+        },
+        {
+          key: "targetMagicNumber",
+          label: "Target magic number (optional)",
+          help: "Used to estimate required net new ARR or max spend.",
+          placeholder: "1",
+          defaultValue: "1",
+          min: 0,
+          step: 0.1,
+        },
+      ],
+      compute(values) {
+        const warnings: string[] = [];
+        if (values.salesMarketingSpend <= 0)
+          warnings.push("Sales & marketing spend must be greater than 0.");
 
       const periodsPerYear = Math.max(1, Math.floor(values.periodsPerYear));
       if (values.periodsPerYear !== periodsPerYear) {
         warnings.push("Periods per year was rounded down to a whole number.");
       }
 
-      const annualizedNetNewArr = values.netNewArr * periodsPerYear;
-      const magic = safeDivide(annualizedNetNewArr, values.salesMarketingSpend);
-      if (magic === null) {
-        return {
-          headline: {
-            key: "magic",
-            label: "Magic Number",
+        const annualizedNetNewArr = values.netNewArr * periodsPerYear;
+        const magic = safeDivide(annualizedNetNewArr, values.salesMarketingSpend);
+        const requiredNetNewArrForTarget =
+          values.targetMagicNumber > 0
+            ? (values.salesMarketingSpend * values.targetMagicNumber) / periodsPerYear
+            : null;
+        const maxSpendAtTarget =
+          values.targetMagicNumber > 0
+            ? annualizedNetNewArr / values.targetMagicNumber
+            : null;
+        if (magic === null) {
+          return {
+            headline: {
+              key: "magic",
+              label: "Magic Number",
             value: 0,
             format: "multiple",
             maxFractionDigits: 2,
@@ -6483,15 +6881,37 @@ export const calculators: CalculatorDefinition[] = [
             currency: "USD",
             detail: `${periodsPerYear} periods/year`,
           },
-          {
-            key: "netNewArrPerDollar",
-            label: "Net new ARR per $1 spend (unannualized)",
-            value: safeDivide(values.netNewArr, values.salesMarketingSpend) ?? 0,
-            format: "multiple",
-            maxFractionDigits: 3,
-            detail: "Net new ARR / prior spend",
-          },
-        ],
+            {
+              key: "netNewArrPerDollar",
+              label: "Net new ARR per $1 spend (unannualized)",
+              value: safeDivide(values.netNewArr, values.salesMarketingSpend) ?? 0,
+              format: "multiple",
+              maxFractionDigits: 3,
+              detail: "Net new ARR / prior spend",
+            },
+            {
+              key: "requiredNetNewArrForTarget",
+              label: "Required net new ARR for target",
+              value: requiredNetNewArrForTarget ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail:
+                requiredNetNewArrForTarget === null
+                  ? "Target magic number is 0"
+                  : "Target magic x spend / periods",
+            },
+            {
+              key: "maxSpendAtTarget",
+              label: "Max spend at target magic",
+              value: maxSpendAtTarget ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail:
+                maxSpendAtTarget === null
+                  ? "Target magic number is 0"
+                  : "Annualized net new ARR / target magic",
+            },
+          ],
         breakdown: [
           {
             key: "netNewArr",
