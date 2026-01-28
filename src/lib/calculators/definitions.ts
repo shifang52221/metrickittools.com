@@ -2654,16 +2654,46 @@ export const calculators: CalculatorDefinition[] = [
         defaultValue: "50000",
       },
       {
+        key: "periodMonths",
+        label: "Period length (months)",
+        help: "1 for monthly, 12 for annual.",
+        placeholder: "1",
+        defaultValue: "1",
+        min: 0.1,
+        step: 0.1,
+      },
+      {
         key: "avgUsers",
         label: "Average active users (period)",
         placeholder: "2000",
         defaultValue: "2000",
       },
+      {
+        key: "grossMarginPercent",
+        label: "Gross margin (optional)",
+        help: "Used to estimate gross profit per user.",
+        placeholder: "80",
+        suffix: "%",
+        defaultValue: "80",
+        min: 0,
+        step: 0.1,
+      },
     ],
     compute(values) {
       const warnings: string[] = [];
       if (values.avgUsers <= 0) warnings.push("Average users must be greater than 0.");
+      if (values.periodMonths <= 0) warnings.push("Period length must be greater than 0.");
+      if (values.grossMarginPercent < 0 || values.grossMarginPercent > 100) {
+        warnings.push("Gross margin must be between 0% and 100%.");
+      }
       const arpu = safeDivide(values.revenue, values.avgUsers);
+      const annualizedArpu =
+        arpu !== null && values.periodMonths > 0
+          ? (arpu / values.periodMonths) * 12
+          : null;
+      const grossMargin = values.grossMarginPercent / 100;
+      const grossProfitPerUser =
+        arpu !== null && grossMargin > 0 ? arpu * grossMargin : null;
       if (arpu === null) {
         return {
           headline: {
@@ -2685,11 +2715,32 @@ export const calculators: CalculatorDefinition[] = [
           currency: "USD",
           detail: "Revenue ÷ Avg. users",
         },
+        secondary: [
+          {
+            key: "annualizedArpu",
+            label: "Annualized ARPU",
+            value: annualizedArpu ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: "ARPU ÷ period months × 12",
+          },
+          {
+            key: "grossProfitPerUser",
+            label: "Gross profit per user",
+            value: grossProfitPerUser ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: "ARPU × gross margin",
+          },
+        ],
         warnings,
       };
     },
     formula: "ARPU = Revenue ÷ Average Active Users",
-    assumptions: ["Revenue and users are measured over the same period."],
+    assumptions: [
+      "Revenue, users, and period length use the same time window.",
+      "Annualized ARPU scales linearly by period length.",
+    ],
     faqs: [
       {
         question: "ARPU vs ARPA?",
@@ -2756,19 +2807,49 @@ export const calculators: CalculatorDefinition[] = [
         min: 0,
       },
       {
+        key: "periodMonths",
+        label: "Period length (months)",
+        help: "1 for monthly, 12 for annual.",
+        placeholder: "1",
+        defaultValue: "1",
+        min: 0.1,
+        step: 0.1,
+      },
+      {
         key: "avgAccounts",
         label: "Average paying accounts (period)",
         placeholder: "60",
         defaultValue: "60",
         min: 0,
       },
+      {
+        key: "grossMarginPercent",
+        label: "Gross margin (optional)",
+        help: "Used to estimate gross profit per account.",
+        placeholder: "80",
+        suffix: "%",
+        defaultValue: "80",
+        min: 0,
+        step: 0.1,
+      },
     ],
     compute(values) {
       const warnings: string[] = [];
       if (values.avgAccounts <= 0)
         warnings.push("Average accounts must be greater than 0.");
+      if (values.periodMonths <= 0) warnings.push("Period length must be greater than 0.");
+      if (values.grossMarginPercent < 0 || values.grossMarginPercent > 100) {
+        warnings.push("Gross margin must be between 0% and 100%.");
+      }
 
       const arpa = safeDivide(values.revenue, values.avgAccounts);
+      const annualizedArpa =
+        arpa !== null && values.periodMonths > 0
+          ? (arpa / values.periodMonths) * 12
+          : null;
+      const grossMargin = values.grossMarginPercent / 100;
+      const grossProfitPerAccount =
+        arpa !== null && grossMargin > 0 ? arpa * grossMargin : null;
       if (arpa === null) {
         return {
           headline: {
@@ -2791,11 +2872,32 @@ export const calculators: CalculatorDefinition[] = [
           currency: "USD",
           detail: "Revenue ÷ Avg. accounts",
         },
+        secondary: [
+          {
+            key: "annualizedArpa",
+            label: "Annualized ARPA",
+            value: annualizedArpa ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: "ARPA ÷ period months × 12",
+          },
+          {
+            key: "grossProfitPerAccount",
+            label: "Gross profit per account",
+            value: grossProfitPerAccount ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: "ARPA × gross margin",
+          },
+        ],
         warnings,
       };
     },
     formula: "ARPA = Revenue ÷ Average Paying Accounts",
-    assumptions: ["Revenue and accounts are measured over the same period."],
+    assumptions: [
+      "Revenue, accounts, and period length use the same time window.",
+      "Annualized ARPA scales linearly by period length.",
+    ],
     faqs: [
       {
         question: "ARPA vs ARPU?",
