@@ -13770,6 +13770,10 @@ export const calculators: CalculatorDefinition[] = [
       const attainment = safeDivide(values.bookedToDate, values.quota);
       const projectedBookings =
         daysElapsed > 0 ? (values.bookedToDate / daysElapsed) * daysInPeriod : 0;
+      const onTrackToDate =
+        daysInPeriod > 0 ? (values.quota * daysElapsed) / daysInPeriod : 0;
+      const paceRatio =
+        onTrackToDate > 0 ? values.bookedToDate / onTrackToDate : null;
 
       const remainingDays = Math.max(0, daysInPeriod - daysElapsed);
       const remainingToQuota = Math.max(0, values.quota - values.bookedToDate);
@@ -13800,6 +13804,22 @@ export const calculators: CalculatorDefinition[] = [
             value: remainingToQuota,
             format: "currency",
             currency: "USD",
+          },
+          {
+            key: "onTrack",
+            label: "On-track bookings by today",
+            value: onTrackToDate,
+            format: "currency",
+            currency: "USD",
+            detail: "Quota × (days elapsed ÷ total days)",
+          },
+          {
+            key: "paceRatio",
+            label: "Pace vs on-track",
+            value: paceRatio ?? 0,
+            format: "multiple",
+            maxFractionDigits: 2,
+            detail: "Booked to date ÷ on-track",
           },
           {
             key: "requiredPerDay",
@@ -13904,6 +13924,9 @@ export const calculators: CalculatorDefinition[] = [
       const coverage = safeDivide(values.pipelineAmount, values.quota);
       const expectedBookings = values.pipelineAmount * winRate;
       const expectedAttainment = safeDivide(expectedBookings, values.quota);
+      const requiredPipeline = winRate > 0 ? values.quota / winRate : null;
+      const pipelineGap =
+        requiredPipeline === null ? null : values.pipelineAmount - requiredPipeline;
 
       return {
         headline: {
@@ -13929,6 +13952,22 @@ export const calculators: CalculatorDefinition[] = [
             value: expectedAttainment ?? 0,
             format: "percent",
             maxFractionDigits: 2,
+          },
+          {
+            key: "requiredPipeline",
+            label: "Pipeline required to hit quota",
+            value: requiredPipeline ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: "Quota ÷ win rate",
+          },
+          {
+            key: "pipelineGap",
+            label: "Pipeline surplus / shortfall",
+            value: pipelineGap ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: "Current pipeline - required",
           },
         ],
         breakdown: [
@@ -14228,6 +14267,7 @@ export const calculators: CalculatorDefinition[] = [
         "Enter base and variable compensation for the period (usually annual).",
         "Enter quota for the same period.",
         "Review OTE, commission rate, and base/variable split.",
+        "Use the payout scenarios to see how earnings move at 80%, 100%, and 120% attainment.",
       ],
       pitfalls: [
         "Mixing annual OTE with quarterly quota (unit mismatch).",
@@ -14266,11 +14306,16 @@ export const calculators: CalculatorDefinition[] = [
       if (values.quota <= 0) warnings.push("Quota must be greater than 0.");
       if (values.basePay < 0) warnings.push("Base pay must be 0 or greater.");
       if (values.variablePay < 0) warnings.push("Variable pay must be 0 or greater.");
+      if (values.variablePay === 0)
+        warnings.push("Variable pay is 0; commission rate and incentives will be 0.");
 
       const ote = values.basePay + values.variablePay;
       const commissionRate = safeDivide(values.variablePay, values.quota);
       const baseSplit = safeDivide(values.basePay, ote);
       const variableSplit = safeDivide(values.variablePay, ote);
+      const payoutAt = (attainment: number) =>
+        values.basePay + values.variablePay * attainment;
+      const variableAt = (attainment: number) => values.variablePay * attainment;
 
       return {
         headline: {
@@ -14302,6 +14347,36 @@ export const calculators: CalculatorDefinition[] = [
             value: variableSplit ?? 0,
             format: "percent",
             maxFractionDigits: 0,
+          },
+        ],
+        breakdown: [
+          {
+            key: "payout80",
+            label: "Payout at 80% attainment",
+            value: payoutAt(0.8),
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "payout100",
+            label: "Payout at 100% attainment",
+            value: payoutAt(1),
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "payout120",
+            label: "Payout at 120% attainment",
+            value: payoutAt(1.2),
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "variable100",
+            label: "Variable payout at 100%",
+            value: variableAt(1),
+            format: "currency",
+            currency: "USD",
           },
         ],
         warnings,
