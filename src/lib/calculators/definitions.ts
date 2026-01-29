@@ -874,10 +874,9 @@ export const calculators: CalculatorDefinition[] = [
       const cpc = safeDivide(spendPer1000, clicksPer1000);
       const cpa = cpc !== null ? safeDivide(cpc, cvr) : null;
       const roas = safeDivide(revenuePer1000, spendPer1000);
-      const breakevenRoas =
-        contributionMargin > 0 ? 1 / contributionMargin : 0;
-      const breakevenCpa =
-        contributionMargin > 0 ? values.aov * contributionMargin : 0;
+      const breakEvenRoas = contributionMargin > 0 ? 1 / contributionMargin : 0;
+      const breakEvenCpa = contributionMargin > 0 ? values.aov * contributionMargin : 0;
+      const profitPerOrder = values.aov * Math.max(contributionMargin, 0);
 
       return {
         headline: {
@@ -886,7 +885,7 @@ export const calculators: CalculatorDefinition[] = [
           value: profitPer1000,
           format: "currency",
           currency: "USD",
-          detail: "Contribution per 1,000 − CPM",
+          detail: "Contribution per 1,000 - CPM",
         },
         secondary: [
           {
@@ -895,7 +894,7 @@ export const calculators: CalculatorDefinition[] = [
             value: cpa ?? 0,
             format: "currency",
             currency: "USD",
-            detail: "CPC ÷ CVR",
+            detail: "CPC / CVR",
           },
           {
             key: "roas",
@@ -903,15 +902,31 @@ export const calculators: CalculatorDefinition[] = [
             value: roas ?? 0,
             format: "multiple",
             maxFractionDigits: 2,
-            detail: "Revenue ÷ Spend",
+            detail: "Revenue / spend",
           },
           {
-            key: "breakevenRoas",
+            key: "breakEvenRoas",
             label: "Break-even ROAS",
-            value: breakevenRoas,
+            value: breakEvenRoas,
             format: "multiple",
             maxFractionDigits: 2,
-            detail: "1 ÷ contribution margin",
+            detail: "1 / contribution margin",
+          },
+          {
+            key: "breakEvenCpa",
+            label: "Break-even CPA",
+            value: breakEvenCpa,
+            format: "currency",
+            currency: "USD",
+            detail: "AOV x contribution margin",
+          },
+          {
+            key: "profitPerOrder",
+            label: "Profit per order (gross profit)",
+            value: profitPerOrder,
+            format: "currency",
+            currency: "USD",
+            detail: "AOV x contribution margin",
           },
         ],
         breakdown: [
@@ -921,15 +936,7 @@ export const calculators: CalculatorDefinition[] = [
             value: cpc ?? 0,
             format: "currency",
             currency: "USD",
-            detail: "CPM ÷ (CTR × 1000)",
-          },
-          {
-            key: "breakevenCpa",
-            label: "Break-even CPA",
-            value: breakevenCpa,
-            format: "currency",
-            currency: "USD",
-            detail: "AOV × contribution margin",
+            detail: "CPM / (CTR x 1000)",
           },
           {
             key: "clicksPer1000",
@@ -966,15 +973,22 @@ export const calculators: CalculatorDefinition[] = [
             format: "currency",
             currency: "USD",
           },
+          {
+            key: "spendPer1000",
+            label: "Spend per 1,000 impressions (CPM)",
+            value: spendPer1000,
+            format: "currency",
+            currency: "USD",
+          },
         ],
         warnings,
       };
     },
     formula:
-      "Clicks/1000 = 1000×CTR; CPC = CPM ÷ (1000×CTR); CPA = CPC ÷ CVR; ROAS = revenue ÷ spend; Profit/1000 = (revenue×contribution margin) − CPM",
+      "Clicks/1000 = 1000 x CTR; CPC = CPM / (1000 x CTR); CPA = CPC / CVR; ROAS = revenue / spend; Profit/1000 = (revenue x contribution margin) - CPM",
     assumptions: [
       "CTR and CVR are expressed as decimals for calculations (percent inputs are converted).",
-      "Contribution margin = gross margin − fees − shipping − returns (simplified).",
+      "Contribution margin = gross margin - fees - shipping - returns (simplified).",
       "Per-1,000-impressions view assumes attribution is consistent and conversions are attributable to ads.",
     ],
     faqs: [
@@ -3456,7 +3470,7 @@ export const calculators: CalculatorDefinition[] = [
           value: revenueChange,
           format: "currency",
           currency: "USD",
-          detail: "End revenue − start revenue",
+          detail: "End revenue ? start revenue",
         },
         secondary: [
           {
@@ -5215,7 +5229,7 @@ export const calculators: CalculatorDefinition[] = [
           value: grr,
           format: "percent",
           maxFractionDigits: 1,
-          detail: "(Starting − Contraction − Churn) ÷ Starting",
+          detail: "(Starting ? Contraction ? Churn) ÷ Starting",
         },
           secondary: [
             {
@@ -5431,7 +5445,7 @@ export const calculators: CalculatorDefinition[] = [
           value: nrr,
           format: "percent",
           maxFractionDigits: 2,
-          detail: "(Start + expansion − contraction − churn) ÷ start",
+          detail: "(Start + expansion ? contraction ? churn) ÷ start",
         },
           secondary: [
             {
@@ -5440,11 +5454,11 @@ export const calculators: CalculatorDefinition[] = [
               value: grr,
               format: "percent",
               maxFractionDigits: 2,
-              detail: "(Start − contraction − churn) ÷ start",
+              detail: "(Start ? contraction ? churn) ÷ start",
             },
             {
               key: "gap",
-              label: "NRR − GRR (expansion offset)",
+              label: "NRR ? GRR (expansion offset)",
               value: gap,
               format: "percent",
               maxFractionDigits: 2,
@@ -5905,7 +5919,7 @@ export const calculators: CalculatorDefinition[] = [
     slug: "mrr-waterfall-calculator",
     title: "MRR Waterfall Calculator",
     description:
-      "Build an MRR waterfall: starting MRR + new + expansion − contraction − churn = ending MRR.",
+      "Build an MRR waterfall: starting MRR + new + expansion ? contraction ? churn = ending MRR.",
     category: "saas-metrics",
     guideSlug: "mrr-waterfall-guide",
     relatedGlossarySlugs: ["mrr", "net-new-mrr", "quick-ratio"],
@@ -6014,7 +6028,7 @@ export const calculators: CalculatorDefinition[] = [
             value: netNewMrr,
             format: "currency",
             currency: "USD",
-            detail: "New + Expansion − Contraction − Churn",
+            detail: "New + Expansion ? Contraction ? Churn",
           },
           {
             key: "growthRate",
@@ -6090,7 +6104,7 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "Ending MRR = starting MRR + new + expansion − contraction − churn; Net new MRR = new + expansion − contraction − churn",
+      "Ending MRR = starting MRR + new + expansion ? contraction ? churn; Net new MRR = new + expansion ? contraction ? churn",
     assumptions: [
       "All inputs represent the same period and use the same MRR definition.",
       "This is a reporting bridge; it does not model cohorts or timing within the period.",
@@ -6470,7 +6484,7 @@ export const calculators: CalculatorDefinition[] = [
             value: netNewArr,
             format: "currency",
             currency: "USD",
-            detail: "New + Expansion − Contraction − Churn",
+            detail: "New + Expansion ? Contraction ? Churn",
           },
           secondary: [
             {
@@ -6513,7 +6527,7 @@ export const calculators: CalculatorDefinition[] = [
           warnings,
         };
       },
-    formula: "Net new ARR = new ARR + expansion ARR − contraction ARR − churned ARR",
+    formula: "Net new ARR = new ARR + expansion ARR ? contraction ARR ? churned ARR",
     assumptions: [
       "All movements are measured for the same period using a consistent ARR definition.",
       "ARR is treated as recurring run-rate (not recognized revenue).",
@@ -6545,7 +6559,7 @@ export const calculators: CalculatorDefinition[] = [
     slug: "arr-waterfall-calculator",
     title: "ARR Waterfall Calculator",
     description:
-      "Build an ARR waterfall: starting ARR + new + expansion − contraction − churn = ending ARR.",
+      "Build an ARR waterfall: starting ARR + new + expansion ? contraction ? churn = ending ARR.",
     category: "saas-metrics",
     guideSlug: "arr-waterfall-guide",
     relatedGlossarySlugs: ["arr", "net-new-arr", "arr-waterfall"],
@@ -6658,7 +6672,7 @@ export const calculators: CalculatorDefinition[] = [
             value: netNewArr,
             format: "currency",
             currency: "USD",
-            detail: "New + Expansion − Contraction − Churn",
+            detail: "New + Expansion ? Contraction ? Churn",
           },
           {
             key: "growthRate",
@@ -6742,7 +6756,7 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "Ending ARR = starting ARR + new + expansion − contraction − churn; Net new ARR = new + expansion − contraction − churn",
+      "Ending ARR = starting ARR + new + expansion ? contraction ? churn; Net new ARR = new + expansion ? contraction ? churn",
     assumptions: [
       "All inputs represent the same period and use the same ARR definition (clean recurring run-rate).",
       "This is a reporting bridge; it does not model intra-period timing or cohort curves.",
@@ -9719,13 +9733,17 @@ export const calculators: CalculatorDefinition[] = [
       const expectedWithoutAds = exposedUsers * holdoutCvr;
       const incrementalConversions = exposedConversions - expectedWithoutAds;
 
-      const incrementalRevenue = incrementalConversions * values.aov;
       const margin = values.contributionMarginPercent / 100;
+      const incrementalRevenue = incrementalConversions * values.aov;
       const incrementalGrossProfit = incrementalRevenue * margin;
       const incrementalProfitAfterSpend = incrementalGrossProfit - values.adSpend;
 
       const incrementalRoas = safeDivide(incrementalRevenue, values.adSpend);
-      const uplift = holdoutCvr > 0 ? incrementalConversions / expectedWithoutAds : null;
+      const incrementalCpa =
+        incrementalConversions > 0 ? safeDivide(values.adSpend, incrementalConversions) : null;
+      const incrementalProfitPerOrder =
+        incrementalConversions > 0 ? incrementalGrossProfit / incrementalConversions : null;
+      const liftPercent = holdoutCvr > 0 ? (exposedCvr - holdoutCvr) / holdoutCvr : null;
 
       if (incrementalConversions < 0) {
         warnings.push(
@@ -9751,7 +9769,7 @@ export const calculators: CalculatorDefinition[] = [
             label: "Incremental conversions",
             value: incrementalConversions,
             format: "number",
-            maxFractionDigits: 0,
+            maxFractionDigits: 1,
             detail: "Exposed conversions - expected conversions without ads",
           },
           {
@@ -9767,29 +9785,23 @@ export const calculators: CalculatorDefinition[] = [
             value: incrementalRoas ?? 0,
             format: "multiple",
             maxFractionDigits: 2,
-            detail: "Incremental revenue ÷ ad spend",
+            detail: "Incremental revenue / ad spend",
           },
           {
-            key: "exposedCvr",
-            label: "Exposed CVR",
-            value: exposedCvr,
-            format: "percent",
-            maxFractionDigits: 2,
+            key: "incrementalCpa",
+            label: "Incremental CPA",
+            value: incrementalCpa ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: incrementalCpa === null ? "Incremental conversions <= 0" : "Ad spend / incremental conversions",
           },
           {
-            key: "holdoutCvr",
-            label: "Holdout CVR",
-            value: holdoutCvr,
-            format: "percent",
-            maxFractionDigits: 2,
-          },
-          {
-            key: "uplift",
-            label: "Uplift vs holdout",
-            value: uplift ?? 0,
+            key: "liftPercent",
+            label: "Lift vs holdout",
+            value: liftPercent ?? 0,
             format: "percent",
             maxFractionDigits: 1,
-            detail: uplift === null ? "Holdout CVR is 0%" : "(Exposed - holdout) ÷ holdout",
+            detail: liftPercent === null ? "Holdout CVR is 0%" : "(Exposed - holdout) / holdout",
           },
         ],
         breakdown: [
@@ -9799,6 +9811,21 @@ export const calculators: CalculatorDefinition[] = [
             value: expectedWithoutAds,
             format: "number",
             maxFractionDigits: 1,
+          },
+          {
+            key: "incrementalGrossProfit",
+            label: "Incremental gross profit",
+            value: incrementalGrossProfit,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "profitPerOrder",
+            label: "Incremental gross profit per order",
+            value: incrementalProfitPerOrder ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: incrementalProfitPerOrder === null ? "Incremental conversions <= 0" : "Gross profit / incremental conversions",
           },
           {
             key: "adSpend",
@@ -15756,7 +15783,7 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "n ≈ ((z_(1-α/2)√(2p̄(1-p̄)) + z_(power)√(p1(1-p1)+p2(1-p2)))²) / (p2-p1)²",
+      "n ≈ ((z_(1-α/2)√(2p?(1-p?)) + z_(power)√(p1(1-p1)+p2(1-p2)))2) / (p2-p1)2",
     assumptions: [
       "Two-sided z-test approximation for proportions.",
       "Independent samples and stable baseline rate.",
@@ -17619,6 +17646,10 @@ export const calculators: CalculatorDefinition[] = [
       const target = values.targetActivationPercent / 100;
       const requiredActivated =
         values.targetActivationPercent > 0 ? Math.ceil(signups * target) : null;
+      const activationGap =
+        requiredActivated !== null ? requiredActivated - activated : null;
+      const gapPercent =
+        values.targetActivationPercent > 0 && rate !== null ? target - rate : null;
 
       return {
         headline: {
@@ -17627,7 +17658,7 @@ export const calculators: CalculatorDefinition[] = [
           value: rate ?? 0,
           format: "percent",
           maxFractionDigits: 2,
-          detail: "Activated ÷ signups",
+          detail: "Activated / signups",
         },
         secondary: [
           {
@@ -17637,13 +17668,37 @@ export const calculators: CalculatorDefinition[] = [
             format: "number",
             maxFractionDigits: 0,
             detail:
-              requiredActivated === null ? "Target disabled" : `${values.targetActivationPercent}% × signups`,
+              requiredActivated === null
+                ? "Target disabled"
+                : values.targetActivationPercent + "% x signups",
+          },
+          {
+            key: "activationGap",
+            label: "Activation gap (users)",
+            value: activationGap ?? 0,
+            format: "number",
+            maxFractionDigits: 0,
+            detail:
+              activationGap === null
+                ? "Target disabled"
+                : "Required activated - current activated",
+          },
+          {
+            key: "gapPercent",
+            label: "Activation gap (percentage points)",
+            value: gapPercent ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail:
+              gapPercent === null
+                ? "Target disabled"
+                : "Target activation - current activation",
           },
         ],
         warnings,
       };
     },
-    formula: "Activation rate = activated users ÷ signups",
+    formula: "Activation rate = activated users / signups",
     assumptions: [
       "Activation is defined by a single event/threshold (custom per product).",
       "Inputs reflect the same cohort and time window.",
@@ -17723,8 +17778,9 @@ export const calculators: CalculatorDefinition[] = [
 
       const rate = trials > 0 ? paid / trials : null;
       const target = values.targetPercent / 100;
-      const requiredPaid =
-        values.targetPercent > 0 ? Math.ceil(trials * target) : null;
+      const requiredPaid = values.targetPercent > 0 ? Math.ceil(trials * target) : null;
+      const gapPaid = requiredPaid !== null ? requiredPaid - paid : null;
+      const gapPercent = values.targetPercent > 0 && rate !== null ? target - rate : null;
 
       return {
         headline: {
@@ -17733,7 +17789,7 @@ export const calculators: CalculatorDefinition[] = [
           value: rate ?? 0,
           format: "percent",
           maxFractionDigits: 2,
-          detail: "Paid ÷ trials",
+          detail: "Paid / trials",
         },
         secondary: [
           {
@@ -17742,13 +17798,29 @@ export const calculators: CalculatorDefinition[] = [
             value: requiredPaid ?? 0,
             format: "number",
             maxFractionDigits: 0,
-            detail: requiredPaid === null ? "Target disabled" : `${values.targetPercent}% × trials`,
+            detail: requiredPaid === null ? "Target disabled" : values.targetPercent + "% x trials",
+          },
+          {
+            key: "gapPaid",
+            label: "Paid conversion gap (users)",
+            value: gapPaid ?? 0,
+            format: "number",
+            maxFractionDigits: 0,
+            detail: gapPaid === null ? "Target disabled" : "Required paid - current paid",
+          },
+          {
+            key: "gapPercent",
+            label: "Conversion gap (percentage points)",
+            value: gapPercent ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: gapPercent === null ? "Target disabled" : "Target rate - current rate",
           },
         ],
         warnings,
       };
     },
-    formula: "Trial-to-paid = paid conversions ÷ trials started",
+    formula: "Trial-to-paid = paid conversions / trials started",
     assumptions: [
       "Uses a single conversion window; use cohorts for long sales cycles.",
       "Trials and paid conversions reflect the same cohort definition.",
@@ -17829,6 +17901,8 @@ export const calculators: CalculatorDefinition[] = [
       const activeDaysPerMonth = (ratio ?? 0) * 30;
       const target = values.targetPercent / 100;
       const requiredDau = values.targetPercent > 0 ? Math.ceil(mau * target) : null;
+      const gapDau = requiredDau !== null ? requiredDau - dau : null;
+      const gapPercent = values.targetPercent > 0 && ratio !== null ? target - ratio : null;
 
       return {
         headline: {
@@ -17837,7 +17911,7 @@ export const calculators: CalculatorDefinition[] = [
           value: ratio ?? 0,
           format: "percent",
           maxFractionDigits: 2,
-          detail: "DAU ÷ MAU",
+          detail: "DAU / MAU",
         },
         secondary: [
           {
@@ -17846,7 +17920,7 @@ export const calculators: CalculatorDefinition[] = [
             value: activeDaysPerMonth,
             format: "number",
             maxFractionDigits: 1,
-            detail: "DAU/MAU × 30",
+            detail: "DAU/MAU x 30",
           },
           {
             key: "requiredDau",
@@ -17854,13 +17928,29 @@ export const calculators: CalculatorDefinition[] = [
             value: requiredDau ?? 0,
             format: "number",
             maxFractionDigits: 0,
-            detail: requiredDau === null ? "Target disabled" : `${values.targetPercent}% × MAU`,
+            detail: requiredDau === null ? "Target disabled" : values.targetPercent + "% x MAU",
+          },
+          {
+            key: "dauGap",
+            label: "DAU gap (users)",
+            value: gapDau ?? 0,
+            format: "number",
+            maxFractionDigits: 0,
+            detail: gapDau === null ? "Target disabled" : "Required DAU - current DAU",
+          },
+          {
+            key: "dauGapPercent",
+            label: "DAU gap (percentage points)",
+            value: gapPercent ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: gapPercent === null ? "Target disabled" : "Target stickiness - current stickiness",
           },
         ],
         warnings,
       };
     },
-    formula: "DAU/MAU = DAU ÷ MAU",
+    formula: "DAU/MAU = DAU / MAU",
     assumptions: [
       "DAU and MAU use the same 'active' definition and time period.",
       "Implied active days per month uses a 30-day approximation.",
@@ -18075,6 +18165,8 @@ export const calculators: CalculatorDefinition[] = [
       const adoption = safeDivide(used, active);
       const target = values.targetPercent / 100;
       const requiredUsers = values.targetPercent > 0 ? Math.ceil(active * target) : null;
+      const gapUsers = requiredUsers !== null ? requiredUsers - used : null;
+      const gapPercent = values.targetPercent > 0 && adoption !== null ? target - adoption : null;
 
       return {
         headline: {
@@ -18083,7 +18175,7 @@ export const calculators: CalculatorDefinition[] = [
           value: adoption ?? 0,
           format: "percent",
           maxFractionDigits: 2,
-          detail: "Users who used ÷ active users",
+          detail: "Users who used / active users",
         },
         secondary: [
           {
@@ -18092,13 +18184,29 @@ export const calculators: CalculatorDefinition[] = [
             value: requiredUsers ?? 0,
             format: "number",
             maxFractionDigits: 0,
-            detail: requiredUsers === null ? "Target disabled" : `${values.targetPercent}% × active users`,
+            detail: requiredUsers === null ? "Target disabled" : values.targetPercent + "% x active users",
+          },
+          {
+            key: "adoptionGap",
+            label: "Adoption gap (users)",
+            value: gapUsers ?? 0,
+            format: "number",
+            maxFractionDigits: 0,
+            detail: gapUsers === null ? "Target disabled" : "Required users - current users",
+          },
+          {
+            key: "adoptionGapPercent",
+            label: "Adoption gap (percentage points)",
+            value: gapPercent ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: gapPercent === null ? "Target disabled" : "Target adoption - current adoption",
           },
         ],
         warnings,
       };
     },
-    formula: "Feature adoption rate = users who used feature ÷ active users",
+    formula: "Feature adoption rate = users who used feature / active users",
     assumptions: [
       "Active users and feature users are measured over the same window and same identity (user/account).",
       "Feature usage threshold is meaningful (define it clearly).",
@@ -18177,6 +18285,8 @@ export const calculators: CalculatorDefinition[] = [
 
       const rate = pqls > 0 ? paid / pqls : null;
       const requiredRate = values.targetPaid > 0 ? safeDivide(values.targetPaid, pqls) : null;
+      const paidGap = values.targetPaid > 0 ? values.targetPaid - paid : null;
+      const gapPercent = requiredRate !== null && rate !== null ? requiredRate - rate : null;
 
       return {
         headline: {
@@ -18185,7 +18295,7 @@ export const calculators: CalculatorDefinition[] = [
           value: rate ?? 0,
           format: "percent",
           maxFractionDigits: 2,
-          detail: "Paid ÷ PQLs",
+          detail: "Paid / PQLs",
         },
         secondary: [
           {
@@ -18194,13 +18304,29 @@ export const calculators: CalculatorDefinition[] = [
             value: requiredRate ?? 0,
             format: "percent",
             maxFractionDigits: 2,
-            detail: requiredRate === null ? "Target disabled" : "Target paid ÷ PQLs",
+            detail: requiredRate === null ? "Target disabled" : "Target paid / PQLs",
+          },
+          {
+            key: "paidGap",
+            label: "Paid customer gap (users)",
+            value: paidGap ?? 0,
+            format: "number",
+            maxFractionDigits: 0,
+            detail: paidGap === null ? "Target disabled" : "Target paid - current paid",
+          },
+          {
+            key: "rateGap",
+            label: "Conversion gap (percentage points)",
+            value: gapPercent ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: gapPercent === null ? "Target disabled" : "Target rate - current rate",
           },
         ],
         warnings,
       };
     },
-    formula: "PQL-to-paid = paid customers from PQLs ÷ PQLs",
+    formula: "PQL-to-paid = paid customers from PQLs / PQLs",
     assumptions: [
       "PQL definition is stable and predictive (not vanity).",
       "Paid customers are attributed back to the originating PQL cohort consistently.",
@@ -18538,7 +18664,7 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "Payback = CAC ÷ (ARPA×margin) ⇒ min ARPA = (CAC ÷ payback) ÷ margin; max discount = 1 - minARPA/currentARPA",
+      "Payback = CAC ÷ (ARPA×margin) ? min ARPA = (CAC ÷ payback) ÷ margin; max discount = 1 - minARPA/currentARPA",
     assumptions: [
       "Payback is computed on gross profit (ARPA × gross margin).",
       "Ignores churn changes from pricing; validate with cohort data.",
