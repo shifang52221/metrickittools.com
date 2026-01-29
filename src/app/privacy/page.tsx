@@ -21,6 +21,16 @@ export default function PrivacyPage() {
         default we do not require accounts and we do not ask you to submit
         sensitive personal information.
       </p>
+      <h2>Information we may collect</h2>
+      <ul>
+        <li>Basic usage data (pages visited, time on page).</li>
+        <li>Device and browser information (for compatibility and analytics).</li>
+        <li>Approximate location derived from IP (country/region level).</li>
+      </ul>
+      <p>
+        We do not intend to collect sensitive personal data through the site.
+        If you choose to email us, you control what information you share.
+      </p>
       <h2>Advertising</h2>
       <p>
         We may display ads served by Google AdSense. Google and its partners may
@@ -28,12 +38,27 @@ export default function PrivacyPage() {
         You can learn more about how Google uses information from sites at
         Google&apos;s policies.
       </p>
+      <p>
+        If you prefer non-personalized ads, you can adjust ad settings in your
+        Google account or use browser-level controls to limit ad personalization.
+      </p>
       <h2>Cookie choices</h2>
       <p>
         If consent is enabled, you can manage your non-essential cookie and
         local storage choices. You can reset or update your choice using the{" "}
         <strong>Privacy choices</strong> (or <strong>Cookie settings</strong>) link
         in the footer.
+      </p>
+      <h2>Data retention</h2>
+      <p>
+        We retain data only as long as needed for site operations, analytics,
+        and legal compliance. Retention periods may vary by data type.
+      </p>
+      <h2>Security</h2>
+      <p>
+        We use reasonable technical and organizational measures to protect data.
+        No method of transmission or storage is 100% secure, so we cannot
+        guarantee absolute security.
       </p>
       <h2>EEA/UK notice</h2>
       <p>
@@ -50,6 +75,27 @@ export default function PrivacyPage() {
       <p>
         We may use privacy-friendly analytics to understand aggregate usage (for
         example: page views). If enabled, we aim to minimize data collection.
+      </p>
+      <p>
+        Analytics data helps us prioritize content improvements, identify broken
+        pages, and improve performance. We do not sell personal data.
+      </p>
+      <h2>Your rights</h2>
+      <p>
+        Depending on your location, you may have rights to access, correct, or
+        delete your personal data, or to opt out of certain processing. Contact
+        us if you want to make a request.
+      </p>
+      <h2>International transfers</h2>
+      <p>
+        If data is transferred across borders, we take steps to ensure an
+        appropriate level of protection consistent with applicable law.
+      </p>
+      <h2>Changes to this policy</h2>
+      <p>
+        We may update this policy to reflect product changes or legal
+        requirements. The &quot;Last updated&quot; date indicates the latest
+        revision.
       </p>
       <h2>Contact</h2>
       <p>

@@ -1092,6 +1092,11 @@ export const guides: Guide[] = [
           "Pick one definition and keep it consistent across reports.",
         ],
       },
+      { type: "h2", text: "Customer vs revenue retention" },
+      {
+        type: "p",
+        text: "Customer retention counts logos. Revenue retention counts dollars. A business can have flat customer retention but growing revenue retention if expansion is strong. Use both when you want a full picture of health.",
+      },
       { type: "h2", text: "Measure by cohort" },
       {
         type: "bullets",
@@ -1099,6 +1104,26 @@ export const guides: Guide[] = [
           "Cohorts show where the retention curve drops (activation and early lifecycle).",
           "Segment cohorts by plan, industry, and acquisition channel.",
           "Track leading indicators like usage, time-to-value, and support contacts.",
+        ],
+      },
+      { type: "h2", text: "Leading indicators to watch" },
+      {
+        type: "bullets",
+        items: [
+          "Time to first value: shorter onboarding often lifts early retention.",
+          "Activation completion rate by cohort and channel.",
+          "Feature adoption of core workflows (not one-off clicks).",
+          "Support tickets, errors, or downtime that correlate with churn.",
+        ],
+      },
+      { type: "h2", text: "Retention improvement checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Define retention using a consistent cohort window and denominator.",
+          "Separate new vs existing customer behavior (early churn is different).",
+          "Confirm that activation events predict week-4 or month-3 retention.",
+          "Fix churn drivers before scaling acquisition.",
         ],
       },
     ],
@@ -2255,6 +2280,15 @@ export const guides: Guide[] = [
         type: "p",
         text: "An MRR waterfall is a reconciliation. It explains how you moved from starting MRR to ending MRR by breaking the change into new, expansion, contraction, and churned MRR.",
       },
+      { type: "h2", text: "Why it matters" },
+      {
+        type: "bullets",
+        items: [
+          "It turns a single MRR number into explainable drivers.",
+          "It helps teams find whether growth is coming from new logos or expansion.",
+          "It surfaces churn early so you can act before growth stalls.",
+        ],
+      },
       { type: "h2", text: "Core formula" },
       {
         type: "p",
@@ -2267,6 +2301,24 @@ export const guides: Guide[] = [
           "Use it monthly so growth is explainable, not just a single MRR number.",
           "Track churned and contraction MRR trends to catch leaky growth early.",
           "Segment by plan/channel/customer size when blended numbers hide churn pockets.",
+        ],
+      },
+      { type: "h2", text: "Optional components to include" },
+      {
+        type: "bullets",
+        items: [
+          "Reactivations: customers who churned and returned (track separately).",
+          "Price changes: separate true expansion from price uplift.",
+          "FX impact: isolate currency effects if you report in a base currency.",
+        ],
+      },
+      { type: "h2", text: "Reconciliation checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Starting MRR + net movements equals ending MRR for the same period.",
+          "Movements are labeled consistently (no double counting).",
+          "Annual prepay is normalized to MRR instead of invoices.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -2315,6 +2367,11 @@ export const guides: Guide[] = [
         type: "p",
         text: "Quick ratio = (new MRR + expansion MRR) / (contraction MRR + churned MRR)",
       },
+      { type: "h2", text: "Example interpretation" },
+      {
+        type: "p",
+        text: "If new + expansion is $200k and contraction + churn is $100k, the quick ratio is 2.0. That means growth is twice the losses for the period.",
+      },
       { type: "h2", text: "How to calculate it" },
       {
         type: "bullets",
@@ -2331,6 +2388,33 @@ export const guides: Guide[] = [
           "Higher quick ratio means positive growth outweighs losses.",
           "A falling quick ratio often signals increasing churn or contraction.",
           "Segment-level quick ratio is more actionable than a blended number.",
+        ],
+      },
+      { type: "h2", text: "What is a good quick ratio?" },
+      {
+        type: "bullets",
+        items: [
+          "There is no universal target, but higher is better for growth quality.",
+          "Early-stage teams often tolerate lower ratios while building product-market fit.",
+          "At scale, quick ratio should improve if churn is controlled and expansion is real.",
+        ],
+      },
+      { type: "h2", text: "How to improve quick ratio" },
+      {
+        type: "bullets",
+        items: [
+          "Reduce churn and contraction with onboarding and customer success work.",
+          "Increase expansion by improving core value and packaging upsell paths.",
+          "Fix lead quality issues that create weak cohorts with high churn.",
+        ],
+      },
+      { type: "h2", text: "Use with other metrics" },
+      {
+        type: "bullets",
+        items: [
+          "Pair quick ratio with net burn or burn multiple for efficiency context.",
+          "Check NRR or GRR to separate expansion from churn dynamics.",
+          "Track pipeline health so growth does not rely on unsustainable sales push.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -2378,6 +2462,39 @@ export const guides: Guide[] = [
           "EBITDA margin: common in SaaS reporting but can differ from cash.",
           "Free cash flow margin: ties to cash efficiency but can be volatile.",
           "Pick one and keep it consistent over time.",
+        ],
+      },
+      { type: "h2", text: "When Rule of 40 is useful" },
+      {
+        type: "bullets",
+        items: [
+          "As a high-level balance check between growth and profitability.",
+          "For peer comparisons when accounting rules are similar.",
+          "To spot when growth is too costly or profits are too low.",
+        ],
+      },
+      { type: "h2", text: "Stage context" },
+      {
+        type: "p",
+        text: "Early-stage companies often prioritize growth and may run below 40 while building product-market fit. Later-stage companies are expected to improve margins as growth stabilizes. Use trend and stage context, not a single snapshot.",
+      },
+      { type: "h2", text: "How to improve your score" },
+      {
+        type: "bullets",
+        items: [
+          "Improve gross margin by reducing variable costs.",
+          "Reduce churn and contraction to lift revenue growth quality.",
+          "Shift spend from low ROI acquisition to higher LTV segments.",
+          "Tighten operating expenses without cutting core product value.",
+        ],
+      },
+      { type: "h2", text: "Rule of 40 checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Use the same growth definition each period (ARR, MRR, or revenue).",
+          "Use the same margin definition each period (operating, EBITDA, or FCF).",
+          "Explain what is driving the score, not just the number itself.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -2534,6 +2651,29 @@ export const guides: Guide[] = [
           "Compute net burn for the period (cash outflows minus inflows).",
           "Compute net new ARR for the same period (change in ARR after churn and expansions).",
           "Divide net burn by net new ARR to get burn multiple.",
+        ],
+      },
+      { type: "h2", text: "How to interpret burn multiple" },
+      {
+        type: "bullets",
+        items: [
+          "Lower burn multiple indicates more efficient growth.",
+          "Very low numbers can still hide churn if net new ARR is inflated by timing.",
+          "Compare to prior periods and segments, not just a single snapshot.",
+        ],
+      },
+      { type: "h2", text: "Relationship to Rule of 40" },
+      {
+        type: "p",
+        text: "Burn multiple focuses on cash efficiency, while Rule of 40 balances growth and profitability. A company can score well on Rule of 40 but still have a weak burn multiple if cash burn is high.",
+      },
+      { type: "h2", text: "How to improve burn multiple" },
+      {
+        type: "bullets",
+        items: [
+          "Reduce churn to protect net new ARR.",
+          "Improve payback by focusing spend on higher LTV cohorts.",
+          "Align sales efficiency with product-market fit before scaling.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -4617,6 +4757,11 @@ export const guides: Guide[] = [
       },
       { type: "h2", text: "Formula" },
       { type: "p", text: "Feature adoption rate = users who used feature / active users" },
+      { type: "h2", text: "Adoption vs activation" },
+      {
+        type: "p",
+        text: "Activation is the first meaningful value moment. Adoption is repeated usage of a specific feature over time. A feature can be activated once but still have low adoption if it does not become part of the workflow.",
+      },
       { type: "h2", text: "How to measure adoption well" },
       {
         type: "bullets",
@@ -4624,6 +4769,25 @@ export const guides: Guide[] = [
           "Define a meaningful usage threshold (not a one-off click).",
           "Use active users as the denominator (not total signups).",
           "Segment by persona and cohort to connect adoption to retention outcomes.",
+        ],
+      },
+      { type: "h2", text: "Set an adoption target" },
+      {
+        type: "bullets",
+        items: [
+          "Pick a cohort window that reflects your typical time-to-value.",
+          "Compare adoption across segments to find realistic targets.",
+          "Use a target tied to retention lift, not just usage volume.",
+        ],
+      },
+      { type: "h2", text: "Adoption improvement playbook" },
+      {
+        type: "bullets",
+        items: [
+          "Surface the feature in onboarding and default templates.",
+          "Reduce friction: fewer steps, clearer labels, better empty states.",
+          "Add contextual prompts or nudges based on user intent.",
+          "Follow up with in-product education for stalled cohorts.",
         ],
       },
       { type: "h2", text: "Common mistakes" },

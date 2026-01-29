@@ -297,6 +297,17 @@ const seeds: Seed[] = [
     title: "Compounding",
     description:
       "Compounding is earning interest on interest. More frequent compounding increases the effective annual rate (APY) for a given APR.",
+    formula: "APY = (1 + APR / n)^n - 1",
+    bullets: [
+      "Compounding frequency (daily, monthly, quarterly) changes the effective return.",
+      "APR is the nominal rate; APY reflects compounding effects.",
+      "Small rate differences can compound into large gaps over long horizons.",
+    ],
+    mistakes: [
+      "Comparing APR to APY without converting to the same basis.",
+      "Assuming compounding frequency does not matter for short horizons.",
+      "Ignoring fees that reduce effective yield.",
+    ],
     relatedGuideSlugs: ["apr-vs-apy-guide"],
     relatedCalculatorSlugs: ["apr-to-apy-calculator"],
   },
