@@ -641,7 +641,7 @@ const seeds: Seed[] = [
     slug: "ga4",
     title: "GA4 (Google Analytics 4)",
     description:
-      "GA4 is Google's analytics platform for web and app measurement. In paid ads workflows, GA4 is often used for consistent cross-channel reporting (but it can undercount due to privacy and cross-device gaps).",
+      "GA4 is Google's analytics platform for web and app measurement. In paid ads workflows, GA4 supports cross-channel reporting but can undercount due to privacy and cross-device gaps.",
     bullets: [
       "Use GA4 for consistent channel trends; use platforms for optimization, and reconcile with MER and incrementality tests.",
       "Validate that conversion events fire once (dedupe pixel + server events if you use both).",
@@ -692,7 +692,7 @@ const seeds: Seed[] = [
     slug: "frequency-cap",
     title: "Frequency Cap",
     description:
-      "A frequency cap limits how often a person can see your ad in a time window (per day/week). It's used to reduce fatigue and wasted impressions in saturated audiences.",
+      "A frequency cap limits how often someone can see your ad in a time window (per day/week) to reduce fatigue and wasted impressions in saturated audiences.",
     bullets: [
       "Use caps when frequency rises and CTR/CVR decay, especially in small audiences.",
       "Combine caps with audience expansion and creative refresh to avoid simply throttling delivery.",
