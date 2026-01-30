@@ -2433,6 +2433,7 @@ export const calculators: CalculatorDefinition[] = [
       intro: [
         "CAC payback period tells you how many months it takes to earn back CAC from monthly gross profit. It is one of the fastest ways to assess cash efficiency for subscription businesses.",
         "When people search \"months to recover CAC\", they usually mean this payback period: CAC divided by gross profit per month.",
+        "Payback is a cash-efficiency lens, not a profitability guarantee. Pair it with churn and margin assumptions.",
       ],
       steps: [
         "Choose a segment (channel/plan/geo) and a time window (usually monthly).",
@@ -2440,6 +2441,7 @@ export const calculators: CalculatorDefinition[] = [
         "Choose gross margin for the same revenue base (product gross margin is common).",
         "Compute gross profit per month: ARPA * gross margin.",
         "Divide CAC by gross profit per month to get payback months.",
+        "Optionally compare payback to expected lifetime (1 / churn) to sanity-check viability.",
       ],
       benchmarks: [
         "Many B2B SaaS teams target around 6-18 months depending on stage and burn.",
@@ -2450,6 +2452,7 @@ export const calculators: CalculatorDefinition[] = [
         "Using revenue instead of gross profit (payback should reflect contribution).",
         "Ignoring churn: long payback + high churn can be unprofitable.",
         "Comparing payback across segments without consistent ARPA and margin definitions.",
+        "Treating cash collected upfront as payback without matching gross margin timing.",
       ],
     },
     inputs: [
@@ -2484,21 +2487,30 @@ export const calculators: CalculatorDefinition[] = [
           min: 0,
           step: 0.1,
         },
-        {
-          key: "monthlyChurnPercent",
-          label: "Monthly churn (optional)",
-          help: "Used to compare payback vs expected lifetime (1 / churn).",
-          placeholder: "3",
-          suffix: "%",
-          defaultValue: "3",
-          min: 0,
-          step: 0.1,
-        },
-      ],
-      compute(values) {
-        const warnings: string[] = [];
-        const grossMargin = values.grossMarginPercent / 100;
-        const grossProfitPerMonth = values.arpaMonthly * grossMargin;
+      {
+        key: "monthlyChurnPercent",
+        label: "Monthly churn (optional)",
+        help: "Used to compare payback vs expected lifetime (1 / churn).",
+        placeholder: "3",
+        suffix: "%",
+        defaultValue: "3",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "targetPaybackMonths",
+        label: "Target payback (months, optional)",
+        help: "Set 0 to disable target CAC and ARPA guidance.",
+        placeholder: "12",
+        defaultValue: "12",
+        min: 0,
+        step: 1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const grossMargin = values.grossMarginPercent / 100;
+      const grossProfitPerMonth = values.arpaMonthly * grossMargin;
       if (values.cac <= 0) warnings.push("CAC must be greater than 0.");
       if (grossProfitPerMonth <= 0)
         warnings.push("Gross profit per month must be greater than 0.");
@@ -2517,18 +2529,30 @@ export const calculators: CalculatorDefinition[] = [
         };
       }
 
-        const annualDiscount = values.annualDiscountRatePercent / 100;
-        const monthlyDiscount =
-          annualDiscount > 0 ? Math.pow(1 + annualDiscount, 1 / 12) - 1 : 0;
-        const churn = values.monthlyChurnPercent / 100;
-        const expectedLifetimeMonths = churn > 0 ? 1 / churn : null;
-        const paybackToLifetime =
-          expectedLifetimeMonths && expectedLifetimeMonths > 0
-            ? months / expectedLifetimeMonths
-            : null;
-        if (paybackToLifetime !== null && paybackToLifetime > 1) {
-          warnings.push("Payback exceeds expected lifetime (check churn or ARPA).");
-        }
+      const paybackYears = months / 12;
+      const grossProfitPerYear = grossProfitPerMonth * 12;
+      const annualDiscount = values.annualDiscountRatePercent / 100;
+      const monthlyDiscount =
+        annualDiscount > 0 ? Math.pow(1 + annualDiscount, 1 / 12) - 1 : 0;
+      const churn = values.monthlyChurnPercent / 100;
+      const expectedLifetimeMonths = churn > 0 ? 1 / churn : null;
+      const paybackToLifetime =
+        expectedLifetimeMonths && expectedLifetimeMonths > 0
+          ? months / expectedLifetimeMonths
+          : null;
+      if (paybackToLifetime !== null && paybackToLifetime > 1) {
+        warnings.push("Payback exceeds expected lifetime (check churn or ARPA).");
+      }
+      const targetPayback = Math.max(0, Math.floor(values.targetPaybackMonths));
+      if (values.targetPaybackMonths !== targetPayback) {
+        warnings.push("Target payback was rounded down to a whole number.");
+      }
+      const maxCacForTargetPayback =
+        targetPayback > 0 ? grossProfitPerMonth * targetPayback : null;
+      const requiredArpaForTargetPayback =
+        targetPayback > 0 && grossMargin > 0
+          ? (values.cac / targetPayback) / grossMargin
+          : null;
 
         let discountedPaybackMonths: number | null = null;
         if (monthlyDiscount > 0) {
@@ -2560,12 +2584,28 @@ export const calculators: CalculatorDefinition[] = [
             format: "currency",
             currency: "USD",
           },
-            {
-              key: "discountedPayback",
-              label: "Discounted payback (months)",
-              value: discountedPaybackMonths ?? 0,
-              format: "months",
-              maxFractionDigits: 1,
+          {
+            key: "grossProfitPerYear",
+            label: "Gross profit / year",
+            value: grossProfitPerYear,
+            format: "currency",
+            currency: "USD",
+            detail: "Gross profit / month x 12",
+          },
+          {
+            key: "paybackYears",
+            label: "Payback (years)",
+            value: paybackYears,
+            format: "number",
+            maxFractionDigits: 2,
+            detail: "Payback months / 12",
+          },
+          {
+            key: "discountedPayback",
+            label: "Discounted payback (months)",
+            value: discountedPaybackMonths ?? 0,
+            format: "months",
+            maxFractionDigits: 1,
             detail:
               monthlyDiscount > 0
                 ? discountedPaybackMonths === null
@@ -2581,19 +2621,41 @@ export const calculators: CalculatorDefinition[] = [
               maxFractionDigits: 2,
               detail: annualDiscount > 0 ? "Derived from annual rate" : "0%",
             },
-            {
-              key: "expectedLifetimeMonths",
-              label: "Expected lifetime (months)",
-              value: expectedLifetimeMonths ?? 0,
-              format: "months",
-              maxFractionDigits: 1,
-              detail: churn > 0 ? "1 / churn rate" : "Add monthly churn",
-            },
-            {
-              key: "paybackToLifetime",
-              label: "Payback as % of lifetime",
-              value: paybackToLifetime ?? 0,
-              format: "percent",
+          {
+            key: "expectedLifetimeMonths",
+            label: "Expected lifetime (months)",
+            value: expectedLifetimeMonths ?? 0,
+            format: "months",
+            maxFractionDigits: 1,
+            detail: churn > 0 ? "1 / churn rate" : "Add monthly churn",
+          },
+          {
+            key: "maxCacForTargetPayback",
+            label: `Max CAC for ${targetPayback} month payback`,
+            value: maxCacForTargetPayback ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail:
+              maxCacForTargetPayback === null
+                ? "Set target payback > 0"
+                : "Gross profit / month x target months",
+          },
+          {
+            key: "requiredArpaForTargetPayback",
+            label: "Min ARPA for target payback",
+            value: requiredArpaForTargetPayback ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail:
+              requiredArpaForTargetPayback === null
+                ? "Set target payback and margin"
+                : "CAC / target months / margin",
+          },
+          {
+            key: "paybackToLifetime",
+            label: "Payback as % of lifetime",
+            value: paybackToLifetime ?? 0,
+            format: "percent",
               maxFractionDigits: 1,
               detail:
                 paybackToLifetime === null
@@ -3216,17 +3278,20 @@ export const calculators: CalculatorDefinition[] = [
       intro: [
         "ARPU (Average Revenue Per User) measures how much revenue you generate per user in a period. It is commonly used to track monetization changes from pricing, packaging, and user mix.",
         "To calculate ARPU correctly, make sure your revenue and user count are measured over the same period and that you define what an \"active user\" means for your product.",
+        "Use ARPU to compare monetization across segments (plan, geo, channel), not just a blended average.",
       ],
       steps: [
         "Pick a time window (month/quarter) and define \"active user\".",
         "Sum revenue for that same window (be consistent: gross vs net of refunds).",
         "Compute average active users for the window (e.g., average DAU, or (start + end) / 2).",
         "Divide revenue by average active users to get ARPU.",
+        "Optional: annualize ARPU to compare across different window lengths.",
       ],
       pitfalls: [
         "Using total signups as the denominator instead of active users.",
         "Mixing active users and accounts (ARPU vs ARPA mismatch).",
         "Comparing ARPU across periods without segmenting by plan or geo when pricing changes.",
+        "Changing revenue recognition (gross vs net) without updating historical comparisons.",
       ],
     },
     inputs: [
@@ -3271,6 +3336,10 @@ export const calculators: CalculatorDefinition[] = [
         warnings.push("Gross margin must be between 0% and 100%.");
       }
       const arpu = safeDivide(values.revenue, values.avgUsers);
+      const monthlyArpu =
+        arpu !== null && values.periodMonths > 0
+          ? arpu / values.periodMonths
+          : null;
       const annualizedArpu =
         arpu !== null && values.periodMonths > 0
           ? (arpu / values.periodMonths) * 12
@@ -3278,6 +3347,12 @@ export const calculators: CalculatorDefinition[] = [
       const grossMargin = values.grossMarginPercent / 100;
       const grossProfitPerUser =
         arpu !== null && grossMargin > 0 ? arpu * grossMargin : null;
+      const grossProfitPerUserMonthly =
+        monthlyArpu !== null && grossMargin > 0 ? monthlyArpu * grossMargin : null;
+      const grossProfitPerUserAnnual =
+        monthlyArpu !== null && grossMargin > 0
+          ? monthlyArpu * 12 * grossMargin
+          : null;
       if (arpu === null) {
         return {
           headline: {
@@ -3301,6 +3376,14 @@ export const calculators: CalculatorDefinition[] = [
         },
         secondary: [
           {
+            key: "monthlyArpu",
+            label: "Monthly ARPU",
+            value: monthlyArpu ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: monthlyArpu === null ? "Add period months" : "ARPU / period months",
+          },
+          {
             key: "annualizedArpu",
             label: "Annualized ARPU",
             value: annualizedArpu ?? 0,
@@ -3315,6 +3398,58 @@ export const calculators: CalculatorDefinition[] = [
             format: "currency",
             currency: "USD",
             detail: "ARPU x gross margin",
+          },
+          {
+            key: "grossProfitPerUserMonthly",
+            label: "Gross profit per user / month",
+            value: grossProfitPerUserMonthly ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail:
+              grossProfitPerUserMonthly === null
+                ? "Add period months and margin"
+                : "Monthly ARPU x gross margin",
+          },
+          {
+            key: "grossProfitPerUserAnnual",
+            label: "Gross profit per user / year",
+            value: grossProfitPerUserAnnual ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail:
+              grossProfitPerUserAnnual === null
+                ? "Add period months and margin"
+                : "Monthly ARPU x 12 x gross margin",
+          },
+        ],
+        breakdown: [
+          {
+            key: "revenue",
+            label: "Revenue",
+            value: values.revenue,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "avgUsers",
+            label: "Average active users",
+            value: values.avgUsers,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+          {
+            key: "periodMonths",
+            label: "Period months",
+            value: values.periodMonths,
+            format: "months",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "grossMargin",
+            label: "Gross margin",
+            value: grossMargin,
+            format: "percent",
+            maxFractionDigits: 1,
           },
         ],
         warnings,
@@ -3368,17 +3503,20 @@ export const calculators: CalculatorDefinition[] = [
       intro: [
         "ARPA (Average Revenue Per Account) is revenue / average paying accounts for a period. It often matches B2B SaaS pricing better than ARPU because you sell to companies, not individual users.",
         "To compare ARPA over time, keep the definition of 'paying account' and the revenue base consistent (gross vs net of refunds/credits).",
+        "ARPA is most useful when paired with churn or payback to understand unit economics.",
       ],
       steps: [
         "Pick a time window (month/quarter) and define what counts as a paying account.",
         "Sum revenue for that same window (choose a consistent revenue base).",
         "Compute the average number of paying accounts for the window.",
         "Divide revenue by average paying accounts to get ARPA.",
+        "Optional: annualize ARPA to compare across period lengths.",
       ],
       pitfalls: [
         "Mixing accounts and users (ARPA vs ARPU mismatch).",
         "Including free/trial accounts in the denominator without labeling.",
         "Comparing ARPA across periods with big pricing/mix changes without segmentation.",
+        "Using booked revenue instead of recurring revenue for SaaS run-rate comparisons.",
       ],
     },
     inputs: [
@@ -3427,6 +3565,10 @@ export const calculators: CalculatorDefinition[] = [
       }
 
       const arpa = safeDivide(values.revenue, values.avgAccounts);
+      const monthlyArpa =
+        arpa !== null && values.periodMonths > 0
+          ? arpa / values.periodMonths
+          : null;
       const annualizedArpa =
         arpa !== null && values.periodMonths > 0
           ? (arpa / values.periodMonths) * 12
@@ -3434,6 +3576,12 @@ export const calculators: CalculatorDefinition[] = [
       const grossMargin = values.grossMarginPercent / 100;
       const grossProfitPerAccount =
         arpa !== null && grossMargin > 0 ? arpa * grossMargin : null;
+      const grossProfitPerAccountMonthly =
+        monthlyArpa !== null && grossMargin > 0 ? monthlyArpa * grossMargin : null;
+      const grossProfitPerAccountAnnual =
+        monthlyArpa !== null && grossMargin > 0
+          ? monthlyArpa * 12 * grossMargin
+          : null;
       if (arpa === null) {
         return {
           headline: {
@@ -3458,6 +3606,14 @@ export const calculators: CalculatorDefinition[] = [
         },
         secondary: [
           {
+            key: "monthlyArpa",
+            label: "Monthly ARPA",
+            value: monthlyArpa ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: monthlyArpa === null ? "Add period months" : "ARPA / period months",
+          },
+          {
             key: "annualizedArpa",
             label: "Annualized ARPA",
             value: annualizedArpa ?? 0,
@@ -3472,6 +3628,58 @@ export const calculators: CalculatorDefinition[] = [
             format: "currency",
             currency: "USD",
             detail: "ARPA x gross margin",
+          },
+          {
+            key: "grossProfitPerAccountMonthly",
+            label: "Gross profit per account / month",
+            value: grossProfitPerAccountMonthly ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail:
+              grossProfitPerAccountMonthly === null
+                ? "Add period months and margin"
+                : "Monthly ARPA x gross margin",
+          },
+          {
+            key: "grossProfitPerAccountAnnual",
+            label: "Gross profit per account / year",
+            value: grossProfitPerAccountAnnual ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail:
+              grossProfitPerAccountAnnual === null
+                ? "Add period months and margin"
+                : "Monthly ARPA x 12 x gross margin",
+          },
+        ],
+        breakdown: [
+          {
+            key: "revenue",
+            label: "Revenue",
+            value: values.revenue,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "avgAccounts",
+            label: "Average paying accounts",
+            value: values.avgAccounts,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+          {
+            key: "periodMonths",
+            label: "Period months",
+            value: values.periodMonths,
+            format: "months",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "grossMargin",
+            label: "Gross margin",
+            value: grossMargin,
+            format: "percent",
+            maxFractionDigits: 1,
           },
         ],
         warnings,
@@ -7270,17 +7478,20 @@ export const calculators: CalculatorDefinition[] = [
       intro: [
           "Bookings measure contracted value signed in a period. ARR is a recurring run-rate snapshot (typically MRR x 12). Cash receipts can differ again depending on billing terms.",
           "This calculator turns a contract into comparable metrics: bookings (signed value), recurring run-rate (ARR), and cash collected (if prepaid).",
+          "Use bookings for sales performance, ARR for recurring scale, and cash for runway planning.",
       ],
       steps: [
         "Enter the total contract value (TCV) and the term length (months).",
         "Enter any one-time fees/services included in the contract.",
           "Compute recurring value = TCV - one-time.",
           "Compute MRR = recurring / term months, then ARR = MRR x 12.",
+          "Compare cash collected upfront vs remaining billed cash to understand timing.",
       ],
       pitfalls: [
         "Treating bookings as recurring run-rate (especially with annual prepay).",
         "Including one-time services in ARR.",
         "Comparing bookings to ARR without normalizing term length.",
+        "Mixing bookings and recognized revenue (timing differs).",
       ],
     },
     inputs: [
@@ -7366,6 +7577,10 @@ export const calculators: CalculatorDefinition[] = [
         requiredRecurringForTarget !== null
           ? requiredRecurringForTarget + Math.max(0, values.oneTimeFees)
           : null;
+      const recurringShare = bookings > 0 ? recurring / bookings : null;
+      const oneTimeShare = bookings > 0 ? values.oneTimeFees / bookings : null;
+      const arrToBookings = bookings > 0 ? arr / bookings : null;
+      const upfrontCashShare = bookings > 0 ? upfrontCash / bookings : null;
 
       return {
         headline: {
@@ -7385,11 +7600,35 @@ export const calculators: CalculatorDefinition[] = [
             currency: "USD",
           },
           {
+            key: "recurringShare",
+            label: "Recurring share of bookings",
+            value: recurringShare ?? 0,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail: recurringShare === null ? "Bookings is 0" : "Recurring / bookings",
+          },
+          {
+            key: "oneTimeShare",
+            label: "One-time share of bookings",
+            value: oneTimeShare ?? 0,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail: oneTimeShare === null ? "Bookings is 0" : "One-time / bookings",
+          },
+          {
             key: "upfrontCash",
             label: "Cash collected upfront",
             value: upfrontCash,
             format: "currency",
             currency: "USD",
+          },
+          {
+            key: "upfrontCashShare",
+            label: "Upfront cash share",
+            value: upfrontCashShare ?? 0,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail: upfrontCashShare === null ? "Bookings is 0" : "Upfront cash / bookings",
           },
           {
             key: "remainingCash",
@@ -7413,6 +7652,14 @@ export const calculators: CalculatorDefinition[] = [
             format: "currency",
             currency: "USD",
             detail: values.targetArr > 0 ? "Target ARR to contract value" : "Add target ARR",
+          },
+          {
+            key: "arrToBookings",
+            label: "ARR / bookings",
+            value: arrToBookings ?? 0,
+            format: "multiple",
+            maxFractionDigits: 2,
+            detail: arrToBookings === null ? "Bookings is 0" : "Run-rate vs signed value",
           },
         ],
         breakdown: [

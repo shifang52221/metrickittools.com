@@ -72,8 +72,29 @@ const seeds: Seed[] = [
       "Segment ARPA by plan, industry, and channel to understand monetization.",
       "Pair ARPA with CAC payback and LTV for unit economics.",
     ],
-    relatedGuideSlugs: ["arpu-guide", "cac-payback-guide"],
-    relatedCalculatorSlugs: ["arpu-calculator", "cac-payback-period-calculator"],
+    mistakes: [
+      "Including free or trial accounts in the denominator without labeling.",
+      "Mixing gross revenue with net revenue across periods.",
+      "Comparing ARPA across segments without controlling for pricing or mix shifts.",
+    ],
+    faqs: [
+      {
+        question: "ARPA vs ARPU-",
+        answer:
+          "ARPA is per paying account; ARPU is per active user. In B2B SaaS, ARPA usually matches how you price and report.",
+      },
+      {
+        question: "Should ARPA use revenue or gross profit-",
+        answer:
+          "ARPA is usually revenue-based. For unit economics decisions, also compute gross profit per account using gross margin.",
+      },
+    ],
+    relatedGuideSlugs: ["arpa-guide", "arpu-guide", "cac-payback-guide"],
+    relatedCalculatorSlugs: [
+      "arpa-calculator",
+      "arpu-calculator",
+      "cac-payback-period-calculator",
+    ],
   },
   {
     slug: "cac-payback-period",
@@ -85,11 +106,25 @@ const seeds: Seed[] = [
       "Shorter payback reduces cash risk and improves your ability to scale acquisition.",
       "Use gross profit (margin) rather than revenue to avoid overstating payback speed.",
       "Track payback by channel and plan; blended payback can hide weak cohorts.",
+      "Compare payback to expected lifetime (1 / churn) to avoid negative unit economics.",
     ],
     mistakes: [
       "Using revenue payback while CAC includes fully-loaded spend (mismatch).",
       "Mixing monthly ARPA with annual churn or annual CAC (time window mismatch).",
       "Ignoring early churn and assuming steady-state behavior from day 1.",
+      "Treating prepaid cash receipts as payback without margin timing.",
+    ],
+    faqs: [
+      {
+        question: "What is a good CAC payback period-",
+        answer:
+          "It depends on stage and cash constraints. Many B2B SaaS teams target 6-18 months, but shorter is usually safer when channels are volatile.",
+      },
+      {
+        question: "Is payback the same as break-even-",
+        answer:
+          "No. Payback focuses on recovering acquisition cost from gross profit. Break-even considers fixed costs and the overall business P&L.",
+      },
     ],
     relatedGuideSlugs: ["cac-payback-guide", "cohort-payback-curve-guide"],
     relatedCalculatorSlugs: [
@@ -112,7 +147,8 @@ const seeds: Seed[] = [
       "Comparing bookings to ARR without excluding one-time services and setup fees.",
       "Ignoring term length and billing timing when comparing periods.",
     ],
-    relatedGuideSlugs: ["arr-guide"],
+    relatedGuideSlugs: ["arr-guide", "bookings-vs-arr-guide"],
+    relatedCalculatorSlugs: ["bookings-vs-arr-calculator"],
   },
   {
     slug: "acv",

@@ -163,6 +163,33 @@ export const termsCore: GlossaryTerm[] = [
       },
       { type: "h2", text: "Formula" },
       { type: "p", text: "ARPU = revenue / average active users" },
+      { type: "h2", text: "How to calculate" },
+      {
+        type: "bullets",
+        items: [
+          "Pick a time window (month/quarter) and define \"active user\".",
+          "Use revenue and users from the same window (gross vs net consistently).",
+          "Compute average active users (for example (start + end) / 2).",
+        ],
+      },
+      { type: "h2", text: "ARPU vs ARPA" },
+      {
+        type: "bullets",
+        items: [
+          "ARPU is per active user; ARPA is per paying account.",
+          "B2B SaaS often uses ARPA because pricing is per company.",
+          "Label the denominator clearly to avoid confusion.",
+        ],
+      },
+      { type: "h2", text: "Data QA checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Keep the same revenue definition each period (gross vs net).",
+          "Use the same active user definition over time.",
+          "Segment ARPU when pricing changes or mix shifts.",
+        ],
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",

@@ -803,6 +803,15 @@ export const guides: Guide[] = [
         type: "p",
         text: "Payback (months) = CAC / (ARPA * gross margin).",
       },
+      { type: "h2", text: "Payback vs LTV" },
+      {
+        type: "bullets",
+        items: [
+          "Payback is about cash timing; LTV is about total value created.",
+          "A high LTV with very long payback can still be risky for cash flow.",
+          "Use payback to set growth guardrails; use LTV to size long-term value.",
+        ],
+      },
       { type: "h2", text: "How to calculate CAC payback" },
       {
         type: "bullets",
@@ -830,6 +839,15 @@ export const guides: Guide[] = [
           "Mixing gross margin definitions (product margin vs fully-loaded margin).",
           "Ignoring churn: long payback + high churn can be unprofitable.",
           "Treating annual prepay cash receipts as immediate payback without adjusting margin timing.",
+        ],
+      },
+      { type: "h2", text: "Data QA checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Confirm CAC includes the same costs across periods and channels.",
+          "Use the same time window for CAC and ARPA (monthly vs annual).",
+          "Exclude one-time services from ARPA if you are measuring SaaS run-rate.",
         ],
       },
       { type: "h2", text: "Ways to improve payback" },
@@ -1267,6 +1285,15 @@ export const guides: Guide[] = [
           "By geography to reflect different pricing and payment behaviors.",
         ],
       },
+      { type: "h2", text: "Data QA checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Use the same revenue definition each period (gross vs net).",
+          "Define \"active user\" once and reuse it across reports.",
+          "If you include free users, label the metric and track ARPA separately.",
+        ],
+      },
       { type: "h2", text: "What is a good ARPU-" },
       {
         type: "bullets",
@@ -1395,6 +1422,24 @@ export const guides: Guide[] = [
           "Monthly gross profit ~ ARPA * gross margin.",
           "Payback (months) ~ CAC / (ARPA * gross margin).",
           "LTV (gross profit) ~ (ARPA * gross margin) / churn (shortcut model).",
+        ],
+      },
+      { type: "h2", text: "Data QA checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Use average paying accounts, not total signups.",
+          "Keep revenue definition consistent (gross vs net, refunds/credits).",
+          "Segment by plan and company size if pricing differs.",
+        ],
+      },
+      { type: "h2", text: "ARPA benchmarks (directional)" },
+      {
+        type: "bullets",
+        items: [
+          "There is no universal ARPA benchmark; compare within your segment.",
+          "ARPA should cover CAC payback in a reasonable window for your stage.",
+          "Use ARPA trends to detect pricing and mix shifts early.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -3188,6 +3233,16 @@ export const guides: Guide[] = [
           "Bookings (simplified) ~ total contract value signed in the period.",
           "MRR equivalent = recurring portion / contract term months.",
           "ARR = MRR * 12.",
+        ],
+      },
+      { type: "h2", text: "Bookings vs billings vs revenue" },
+      {
+        type: "bullets",
+        items: [
+          "Bookings are what you sell (contracted value).",
+          "Billings are what you invoice (timing can lag or lead bookings).",
+          "Recognized revenue is what you earn under accounting rules.",
+          "Cash is what you collect; it can spike with prepay.",
         ],
       },
       { type: "h2", text: "Worked example (annual prepay + one-time fees)" },
