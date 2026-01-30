@@ -17559,6 +17559,7 @@ export const calculators: CalculatorDefinition[] = [
         "Enter the team target and total reps for the period.",
         "Add expected attainment and ramp mix to compute effective reps.",
         "Optionally add current quota per rep and win rate to compare capacity and pipeline needs.",
+        "Review conservative/base/optimistic quota per rep scenarios.",
       ],
       pitfalls: [
         "Mixing time units (annual targets with quarterly inputs).",
@@ -17662,12 +17663,10 @@ export const calculators: CalculatorDefinition[] = [
         warnings.push("Slippage buffer should be between 0% and 200%.");
 
       const effectiveReps = reps * (ramped + (1 - ramped) * rampingProd);
-      const targetPerRepAt100 =
-        effectiveReps > 0 ? values.teamTarget / effectiveReps : 0;
-      const targetPerRepAtExpected =
-        effectiveReps > 0 && attainment > 0
-          ? values.teamTarget / (effectiveReps * attainment)
-          : 0;
+      const targetPerRepAt100 = effectiveReps > 0 ? values.teamTarget / effectiveReps : 0;
+      const quotaFromAttainment = (att: number) =>
+        effectiveReps > 0 && att > 0 ? values.teamTarget / (effectiveReps * att) : 0;
+      const targetPerRepAtExpected = quotaFromAttainment(attainment);
       const targetPerRepFlat = reps > 0 ? values.teamTarget / reps : 0;
       const capacityAtCurrentQuota =
         values.currentQuotaPerRep > 0
@@ -17686,6 +17685,10 @@ export const calculators: CalculatorDefinition[] = [
 
       const rampedReps = reps * ramped;
       const rampingReps = reps - rampedReps;
+      const conservativeAttainment = Math.max(0.05, attainment - 0.1);
+      const optimisticAttainment = Math.min(2, attainment + 0.1);
+      const quotaConservative = quotaFromAttainment(conservativeAttainment);
+      const quotaOptimistic = quotaFromAttainment(optimisticAttainment);
 
       return {
         headline: {
@@ -17789,6 +17792,30 @@ export const calculators: CalculatorDefinition[] = [
             value: ramped,
             format: "percent",
             maxFractionDigits: 2,
+          },
+          {
+            key: "quotaConservative",
+            label: "Quota per rep (conservative)",
+            value: quotaConservative,
+            format: "currency",
+            currency: "USD",
+            detail: "Attainment -10 pts",
+          },
+          {
+            key: "quotaBase",
+            label: "Quota per rep (base)",
+            value: targetPerRepAtExpected,
+            format: "currency",
+            currency: "USD",
+            detail: "Expected attainment",
+          },
+          {
+            key: "quotaOptimistic",
+            label: "Quota per rep (optimistic)",
+            value: quotaOptimistic,
+            format: "currency",
+            currency: "USD",
+            detail: "Attainment +10 pts",
           },
         ],
         warnings,

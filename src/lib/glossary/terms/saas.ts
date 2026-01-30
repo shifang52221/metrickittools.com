@@ -1335,6 +1335,7 @@ const seeds: Seed[] = [
       "Adjust for ramp, seasonality, and territory differences.",
       "Validate that pipeline coverage and win rate support the quota.",
       "Review quota fairness by segment and role to prevent churn.",
+      "Stress-test quota with conservative and optimistic attainment scenarios.",
     ],
     mistakes: [
       "Setting quota without a capacity model.",

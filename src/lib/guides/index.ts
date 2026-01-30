@@ -5024,6 +5024,15 @@ export const guides: Guide[] = [
           "Set stretch targets but avoid churn-inducing plans.",
         ],
       },
+      { type: "h2", text: "Scenario stress test" },
+      {
+        type: "bullets",
+        items: [
+          "Model conservative/base/optimistic attainment to see quota sensitivity.",
+          "Recompute pipeline required at each scenario to test feasibility.",
+          "Use the scenario range to set guardrails for hiring or target changes.",
+        ],
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
