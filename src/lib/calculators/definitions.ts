@@ -2951,6 +2951,7 @@ export const calculators: CalculatorDefinition[] = [
         "Enter customers at the start of the period and customers lost during the period.",
         "Compute churn = lost / start and retention = 1 - churn.",
         "Optionally annualize churn by specifying periods per year (12 for monthly, 4 for quarterly).",
+        "Optionally add forecast periods to estimate how many customers remain.",
       ],
       benchmarks: [
         "Small changes in churn compound over time; pair churn with LTV and payback.",
@@ -2985,15 +2986,31 @@ export const calculators: CalculatorDefinition[] = [
         min: 1,
         step: 1,
       },
+      {
+        key: "forecastPeriods",
+        label: "Forecast periods (optional)",
+        help: "Used to estimate retained customers after N periods.",
+        placeholder: "12",
+        defaultValue: "12",
+        min: 1,
+        step: 1,
+      },
     ],
     compute(values) {
       const warnings: string[] = [];
       if (values.startingCustomers <= 0)
         warnings.push("Customers at start must be greater than 0.");
+      if (values.lostCustomers < 0) warnings.push("Customers lost must be 0 or greater.");
+      if (values.lostCustomers > values.startingCustomers)
+        warnings.push("Customers lost cannot exceed customers at start.");
 
       const periodsPerYear = Math.max(1, Math.floor(values.periodsPerYear));
       if (values.periodsPerYear !== periodsPerYear) {
         warnings.push("Periods per year was rounded down to a whole number.");
+      }
+      const forecastPeriods = Math.max(1, Math.floor(values.forecastPeriods));
+      if (values.forecastPeriods !== forecastPeriods) {
+        warnings.push("Forecast periods was rounded down to a whole number.");
       }
 
       const churn = safeDivide(values.lostCustomers, values.startingCustomers);
@@ -3014,6 +3031,13 @@ export const calculators: CalculatorDefinition[] = [
       const annualRetention = Math.pow(retention, periodsPerYear);
       const annualChurn = 1 - annualRetention;
       const retainedCustomers = values.startingCustomers - values.lostCustomers;
+      const expectedRetention =
+        retention > 0 ? Math.pow(retention, forecastPeriods) : 0;
+      const expectedRemaining =
+        values.startingCustomers * expectedRetention;
+      const lifetimePeriods = churn > 0 ? 1 / churn : null;
+      const halfLifePeriods =
+        retention > 0 && retention < 1 ? Math.log(0.5) / Math.log(retention) : null;
       return {
         headline: {
           key: "churn",
@@ -3047,6 +3071,37 @@ export const calculators: CalculatorDefinition[] = [
             maxFractionDigits: 2,
             detail: `${periodsPerYear} periods/year`,
           },
+          {
+            key: "expectedRemaining",
+            label: "Expected customers remaining",
+            value: expectedRemaining,
+            format: "number",
+            maxFractionDigits: 0,
+            detail: `${forecastPeriods} periods @ same churn`,
+          },
+          {
+            key: "expectedRetention",
+            label: "Expected retention after forecast",
+            value: expectedRetention,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "lifetimePeriods",
+            label: "Estimated customer lifetime (periods)",
+            value: lifetimePeriods ?? 0,
+            format: "number",
+            maxFractionDigits: 1,
+            detail: "1 / churn",
+          },
+          {
+            key: "halfLifePeriods",
+            label: "Half-life (periods)",
+            value: halfLifePeriods ?? 0,
+            format: "number",
+            maxFractionDigits: 1,
+            detail: "Time to 50% retention",
+          },
         ],
         breakdown: [
           {
@@ -3060,6 +3115,13 @@ export const calculators: CalculatorDefinition[] = [
             key: "lostCustomers",
             label: "Customers lost",
             value: values.lostCustomers,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+          {
+            key: "forecastPeriods",
+            label: "Forecast periods",
+            value: forecastPeriods,
             format: "number",
             maxFractionDigits: 0,
           },
@@ -3103,6 +3165,7 @@ export const calculators: CalculatorDefinition[] = [
         "Enter customers at start and customers at end of the period.",
         "Enter new customers added during the period.",
         "Compute retention = (end - new) / start and optionally annualize via periods per year.",
+        "Optionally add forecast periods to estimate remaining customers over time.",
       ],
       benchmarks: [
         "Retention above 100% is unusual for customer retention; it typically indicates an input mismatch.",
@@ -3143,15 +3206,30 @@ export const calculators: CalculatorDefinition[] = [
         min: 1,
         step: 1,
       },
+      {
+        key: "forecastPeriods",
+        label: "Forecast periods (optional)",
+        help: "Used to estimate retained customers after N periods.",
+        placeholder: "12",
+        defaultValue: "12",
+        min: 1,
+        step: 1,
+      },
     ],
     compute(values) {
       const warnings: string[] = [];
       if (values.startingCustomers <= 0)
         warnings.push("Customers at start must be greater than 0.");
+      if (values.endingCustomers < 0) warnings.push("Customers at end must be 0 or greater.");
+      if (values.newCustomers < 0) warnings.push("New customers must be 0 or greater.");
 
       const periodsPerYear = Math.max(1, Math.floor(values.periodsPerYear));
       if (values.periodsPerYear !== periodsPerYear) {
         warnings.push("Periods per year was rounded down to a whole number.");
+      }
+      const forecastPeriods = Math.max(1, Math.floor(values.forecastPeriods));
+      if (values.forecastPeriods !== forecastPeriods) {
+        warnings.push("Forecast periods was rounded down to a whole number.");
       }
 
       const retained = values.endingCustomers - values.newCustomers;
@@ -3179,6 +3257,13 @@ export const calculators: CalculatorDefinition[] = [
       const churn = 1 - retention;
       const annualRetention = Math.pow(Math.max(0, retention), periodsPerYear);
       const annualChurn = 1 - annualRetention;
+      const expectedRetention =
+        retention > 0 ? Math.pow(retention, forecastPeriods) : 0;
+      const expectedRemaining =
+        values.startingCustomers * expectedRetention;
+      const lifetimePeriods = churn > 0 ? 1 / churn : null;
+      const halfLifePeriods =
+        retention > 0 && retention < 1 ? Math.log(0.5) / Math.log(retention) : null;
       return {
         headline: {
           key: "retention",
@@ -3219,6 +3304,37 @@ export const calculators: CalculatorDefinition[] = [
             format: "percent",
             maxFractionDigits: 2,
           },
+          {
+            key: "expectedRemaining",
+            label: "Expected customers remaining",
+            value: expectedRemaining,
+            format: "number",
+            maxFractionDigits: 0,
+            detail: `${forecastPeriods} periods @ same retention`,
+          },
+          {
+            key: "expectedRetention",
+            label: "Expected retention after forecast",
+            value: expectedRetention,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "lifetimePeriods",
+            label: "Estimated customer lifetime (periods)",
+            value: lifetimePeriods ?? 0,
+            format: "number",
+            maxFractionDigits: 1,
+            detail: "1 / churn",
+          },
+          {
+            key: "halfLifePeriods",
+            label: "Half-life (periods)",
+            value: halfLifePeriods ?? 0,
+            format: "number",
+            maxFractionDigits: 1,
+            detail: "Time to 50% retention",
+          },
         ],
         breakdown: [
           {
@@ -3239,6 +3355,13 @@ export const calculators: CalculatorDefinition[] = [
             key: "newCustomers",
             label: "New customers",
             value: values.newCustomers,
+            format: "number",
+            maxFractionDigits: 0,
+          },
+          {
+            key: "forecastPeriods",
+            label: "Forecast periods",
+            value: forecastPeriods,
             format: "number",
             maxFractionDigits: 0,
           },
@@ -3286,6 +3409,7 @@ export const calculators: CalculatorDefinition[] = [
         "Compute average active users for the window (e.g., average DAU, or (start + end) / 2).",
         "Divide revenue by average active users to get ARPU.",
         "Optional: annualize ARPU to compare across different window lengths.",
+        "Optional: add a target ARPU to see required revenue.",
       ],
       pitfalls: [
         "Using total signups as the denominator instead of active users.",
@@ -3327,6 +3451,15 @@ export const calculators: CalculatorDefinition[] = [
         min: 0,
         step: 0.1,
       },
+      {
+        key: "targetArpu",
+        label: "Target ARPU (optional)",
+        help: "Use the same period as revenue.",
+        placeholder: "30",
+        prefix: "$",
+        defaultValue: "0",
+        min: 0,
+      },
     ],
     compute(values) {
       const warnings: string[] = [];
@@ -3335,6 +3468,7 @@ export const calculators: CalculatorDefinition[] = [
       if (values.grossMarginPercent < 0 || values.grossMarginPercent > 100) {
         warnings.push("Gross margin must be between 0% and 100%.");
       }
+      if (values.targetArpu < 0) warnings.push("Target ARPU must be 0 or greater.");
       const arpu = safeDivide(values.revenue, values.avgUsers);
       const monthlyArpu =
         arpu !== null && values.periodMonths > 0
@@ -3353,6 +3487,10 @@ export const calculators: CalculatorDefinition[] = [
         monthlyArpu !== null && grossMargin > 0
           ? monthlyArpu * 12 * grossMargin
           : null;
+      const requiredRevenueForTarget =
+        values.targetArpu > 0 ? values.targetArpu * values.avgUsers : null;
+      const gapToTarget =
+        requiredRevenueForTarget !== null ? requiredRevenueForTarget - values.revenue : null;
       if (arpu === null) {
         return {
           headline: {
@@ -3421,6 +3559,22 @@ export const calculators: CalculatorDefinition[] = [
                 ? "Add period months and margin"
                 : "Monthly ARPU x 12 x gross margin",
           },
+          {
+            key: "requiredRevenueForTarget",
+            label: "Revenue needed for target ARPU",
+            value: requiredRevenueForTarget ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: values.targetArpu > 0 ? "Target ARPU x avg users" : "Add target ARPU",
+          },
+          {
+            key: "gapToTarget",
+            label: "Revenue gap to target",
+            value: gapToTarget ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: values.targetArpu > 0 ? "Required - current revenue" : "Add target ARPU",
+          },
         ],
         breakdown: [
           {
@@ -3450,6 +3604,13 @@ export const calculators: CalculatorDefinition[] = [
             value: grossMargin,
             format: "percent",
             maxFractionDigits: 1,
+          },
+          {
+            key: "targetArpu",
+            label: "Target ARPU",
+            value: values.targetArpu,
+            format: "currency",
+            currency: "USD",
           },
         ],
         warnings,
@@ -3511,6 +3672,7 @@ export const calculators: CalculatorDefinition[] = [
         "Compute the average number of paying accounts for the window.",
         "Divide revenue by average paying accounts to get ARPA.",
         "Optional: annualize ARPA to compare across period lengths.",
+        "Optional: add a target ARPA to see required revenue.",
       ],
       pitfalls: [
         "Mixing accounts and users (ARPA vs ARPU mismatch).",
@@ -3554,6 +3716,15 @@ export const calculators: CalculatorDefinition[] = [
         min: 0,
         step: 0.1,
       },
+      {
+        key: "targetArpa",
+        label: "Target ARPA (optional)",
+        help: "Use the same period as revenue.",
+        placeholder: "2000",
+        prefix: "$",
+        defaultValue: "0",
+        min: 0,
+      },
     ],
     compute(values) {
       const warnings: string[] = [];
@@ -3563,6 +3734,7 @@ export const calculators: CalculatorDefinition[] = [
       if (values.grossMarginPercent < 0 || values.grossMarginPercent > 100) {
         warnings.push("Gross margin must be between 0% and 100%.");
       }
+      if (values.targetArpa < 0) warnings.push("Target ARPA must be 0 or greater.");
 
       const arpa = safeDivide(values.revenue, values.avgAccounts);
       const monthlyArpa =
@@ -3582,6 +3754,10 @@ export const calculators: CalculatorDefinition[] = [
         monthlyArpa !== null && grossMargin > 0
           ? monthlyArpa * 12 * grossMargin
           : null;
+      const requiredRevenueForTarget =
+        values.targetArpa > 0 ? values.targetArpa * values.avgAccounts : null;
+      const gapToTarget =
+        requiredRevenueForTarget !== null ? requiredRevenueForTarget - values.revenue : null;
       if (arpa === null) {
         return {
           headline: {
@@ -3651,6 +3827,22 @@ export const calculators: CalculatorDefinition[] = [
                 ? "Add period months and margin"
                 : "Monthly ARPA x 12 x gross margin",
           },
+          {
+            key: "requiredRevenueForTarget",
+            label: "Revenue needed for target ARPA",
+            value: requiredRevenueForTarget ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: values.targetArpa > 0 ? "Target ARPA x avg accounts" : "Add target ARPA",
+          },
+          {
+            key: "gapToTarget",
+            label: "Revenue gap to target",
+            value: gapToTarget ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: values.targetArpa > 0 ? "Required - current revenue" : "Add target ARPA",
+          },
         ],
         breakdown: [
           {
@@ -3680,6 +3872,13 @@ export const calculators: CalculatorDefinition[] = [
             value: grossMargin,
             format: "percent",
             maxFractionDigits: 1,
+          },
+          {
+            key: "targetArpa",
+            label: "Target ARPA",
+            value: values.targetArpa,
+            format: "currency",
+            currency: "USD",
           },
         ],
         warnings,
@@ -3941,6 +4140,7 @@ export const calculators: CalculatorDefinition[] = [
         "Count paying customers (or active subscriptions) for the period.",
         "Estimate ARPA per month (average revenue per account per month).",
         "Multiply customers by ARPA to estimate MRR.",
+        "Optionally add targets to back-solve required customers or ARPA.",
       ],
       pitfalls: [
         "Including one-time fees or services revenue in MRR.",
@@ -3963,6 +4163,13 @@ export const calculators: CalculatorDefinition[] = [
           defaultValue: "200",
         },
         {
+          key: "targetCustomers",
+          label: "Target customers (optional)",
+          placeholder: "400",
+          defaultValue: "0",
+          min: 0,
+        },
+        {
           key: "targetMrr",
           label: "Target MRR (optional)",
           placeholder: "75000",
@@ -3975,12 +4182,24 @@ export const calculators: CalculatorDefinition[] = [
         const warnings: string[] = [];
         if (values.customers < 0) warnings.push("Customers must be 0 or greater.");
         if (values.arpaMonthly < 0) warnings.push("ARPA must be 0 or greater.");
+        if (values.targetCustomers < 0)
+          warnings.push("Target customers must be 0 or greater.");
         const mrr = values.customers * values.arpaMonthly;
         const arr = mrr * 12;
         const requiredCustomers =
           values.targetMrr > 0 && values.arpaMonthly > 0
             ? values.targetMrr / values.arpaMonthly
             : null;
+        const requiredArpa =
+          values.targetMrr > 0 && values.targetCustomers > 0
+            ? values.targetMrr / values.targetCustomers
+            : null;
+        const arpaLow = values.arpaMonthly * 0.9;
+        const arpaHigh = values.arpaMonthly * 1.1;
+        const requiredCustomersLowArpa =
+          values.targetMrr > 0 && arpaLow > 0 ? values.targetMrr / arpaLow : null;
+        const requiredCustomersHighArpa =
+          values.targetMrr > 0 && arpaHigh > 0 ? values.targetMrr / arpaHigh : null;
         return {
           headline: {
             key: "mrr",
@@ -4010,6 +4229,31 @@ export const calculators: CalculatorDefinition[] = [
                   ? "Add target MRR and ARPA"
                   : "Target MRR / ARPA",
             },
+            {
+              key: "requiredArpa",
+              label: "Required ARPA for target MRR",
+              value: requiredArpa ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail:
+                requiredArpa === null ? "Add target MRR and target customers" : "Target MRR / target customers",
+            },
+            {
+              key: "requiredCustomersLowArpa",
+              label: "Required customers (ARPA -10%)",
+              value: requiredCustomersLowArpa ?? 0,
+              format: "number",
+              maxFractionDigits: 1,
+              detail: values.targetMrr > 0 ? "Target MRR / (ARPA -10%)" : "Add target MRR",
+            },
+            {
+              key: "requiredCustomersHighArpa",
+              label: "Required customers (ARPA +10%)",
+              value: requiredCustomersHighArpa ?? 0,
+              format: "number",
+              maxFractionDigits: 1,
+              detail: values.targetMrr > 0 ? "Target MRR / (ARPA +10%)" : "Add target MRR",
+            },
           ],
           breakdown: [
             {
@@ -4025,6 +4269,13 @@ export const calculators: CalculatorDefinition[] = [
               value: values.arpaMonthly,
               format: "currency",
               currency: "USD",
+            },
+            {
+              key: "targetCustomers",
+              label: "Target customers",
+              value: values.targetCustomers,
+              format: "number",
+              maxFractionDigits: 0,
             },
             {
               key: "targetMrr",
@@ -4495,8 +4746,9 @@ export const calculators: CalculatorDefinition[] = [
       steps: [
         "Estimate ARPA per month for your segment (monthly revenue per account).",
         "Count paying customers (or subscriptions).",
-          "Compute MRR = customers x ARPA.",
-          "Compute ARR = MRR x 12.",
+        "Compute MRR = customers x ARPA.",
+        "Compute ARR = MRR x 12.",
+        "Optional: add targets to back-solve required customers or ARPA.",
       ],
       pitfalls: [
         "Counting one-time fees or services revenue as recurring run-rate.",
@@ -4519,6 +4771,13 @@ export const calculators: CalculatorDefinition[] = [
           defaultValue: "200",
         },
         {
+          key: "targetCustomers",
+          label: "Target customers (optional)",
+          placeholder: "400",
+          defaultValue: "0",
+          min: 0,
+        },
+        {
           key: "targetArr",
           label: "Target ARR (optional)",
           placeholder: "3000000",
@@ -4531,12 +4790,24 @@ export const calculators: CalculatorDefinition[] = [
         const warnings: string[] = [];
         if (values.customers < 0) warnings.push("Customers must be 0 or greater.");
         if (values.arpaMonthly < 0) warnings.push("ARPA must be 0 or greater.");
+        if (values.targetCustomers < 0)
+          warnings.push("Target customers must be 0 or greater.");
         const mrr = values.customers * values.arpaMonthly;
         const arr = mrr * 12;
         const requiredCustomers =
           values.targetArr > 0 && values.arpaMonthly > 0
             ? values.targetArr / 12 / values.arpaMonthly
             : null;
+        const requiredArpa =
+          values.targetArr > 0 && values.targetCustomers > 0
+            ? values.targetArr / 12 / values.targetCustomers
+            : null;
+        const arpaLow = values.arpaMonthly * 0.9;
+        const arpaHigh = values.arpaMonthly * 1.1;
+        const requiredCustomersLowArpa =
+          values.targetArr > 0 && arpaLow > 0 ? values.targetArr / 12 / arpaLow : null;
+        const requiredCustomersHighArpa =
+          values.targetArr > 0 && arpaHigh > 0 ? values.targetArr / 12 / arpaHigh : null;
         return {
           headline: {
             key: "arr",
@@ -4565,6 +4836,33 @@ export const calculators: CalculatorDefinition[] = [
                   ? "Add target ARR and ARPA"
                   : "Target ARR / (12 x ARPA)",
             },
+            {
+              key: "requiredArpa",
+              label: "Required ARPA for target ARR",
+              value: requiredArpa ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail:
+                requiredArpa === null
+                  ? "Add target ARR and target customers"
+                  : "Target ARR / (12 x target customers)",
+            },
+            {
+              key: "requiredCustomersLowArpa",
+              label: "Required customers (ARPA -10%)",
+              value: requiredCustomersLowArpa ?? 0,
+              format: "number",
+              maxFractionDigits: 1,
+              detail: values.targetArr > 0 ? "Target ARR / (12 x ARPA -10%)" : "Add target ARR",
+            },
+            {
+              key: "requiredCustomersHighArpa",
+              label: "Required customers (ARPA +10%)",
+              value: requiredCustomersHighArpa ?? 0,
+              format: "number",
+              maxFractionDigits: 1,
+              detail: values.targetArr > 0 ? "Target ARR / (12 x ARPA +10%)" : "Add target ARR",
+            },
           ],
           breakdown: [
             {
@@ -4580,6 +4878,13 @@ export const calculators: CalculatorDefinition[] = [
               value: values.arpaMonthly,
               format: "currency",
               currency: "USD",
+            },
+            {
+              key: "targetCustomers",
+              label: "Target customers",
+              value: values.targetCustomers,
+              format: "number",
+              maxFractionDigits: 0,
             },
             {
               key: "targetArr",
@@ -5305,6 +5610,7 @@ export const calculators: CalculatorDefinition[] = [
         "Measure starting MRR for that cohort at the beginning of the window.",
         "Add expansion MRR and subtract contraction and churned MRR.",
         "Compute NRR = ending MRR / starting MRR.",
+        "Optional: add a target NRR to back-solve required expansion.",
       ],
       pitfalls: [
         "Mixing new customer revenue into NRR (NRR is existing cohort only).",
@@ -5345,6 +5651,15 @@ export const calculators: CalculatorDefinition[] = [
         prefix: "$",
         defaultValue: "8000",
       },
+      {
+        key: "targetNrrPercent",
+        label: "Target NRR (optional)",
+        placeholder: "110",
+        suffix: "%",
+        defaultValue: "0",
+        min: 0,
+        step: 0.1,
+      },
     ],
     compute(values) {
       const warnings: string[] = [];
@@ -5371,6 +5686,16 @@ export const calculators: CalculatorDefinition[] = [
       const contractionRate = safeDivide(values.contractionMrr, values.startingMrr);
       const churnRate = safeDivide(values.churnedMrr, values.startingMrr);
       const netChangePercent = safeDivide(netChange, values.startingMrr);
+      const targetNrr = values.targetNrrPercent / 100;
+      const requiredExpansionMrr =
+        values.targetNrrPercent > 0
+          ? values.startingMrr * targetNrr +
+            values.contractionMrr +
+            values.churnedMrr -
+            values.startingMrr
+          : null;
+      const expansionGap =
+        requiredExpansionMrr !== null ? requiredExpansionMrr - values.expansionMrr : null;
 
       const nrr = safeDivide(endingMrr, values.startingMrr);
       if (endingMrr < 0) warnings.push("Ending MRR is negative; check inputs.");
@@ -5468,6 +5793,28 @@ export const calculators: CalculatorDefinition[] = [
             maxFractionDigits: 2,
             detail: "Same metric in multiple form",
           },
+          {
+            key: "requiredExpansionMrr",
+            label: "Expansion needed for target NRR",
+            value: requiredExpansionMrr ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail:
+              requiredExpansionMrr === null
+                ? "Add target NRR"
+                : "Target NRR x start + contraction + churn - start",
+          },
+          {
+            key: "expansionGap",
+            label: "Expansion gap to target",
+            value: expansionGap ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail:
+              expansionGap === null
+                ? "Add target NRR"
+                : "Required expansion - current expansion",
+          },
         ],
         breakdown: [
           {
@@ -5497,6 +5844,13 @@ export const calculators: CalculatorDefinition[] = [
             value: values.churnedMrr,
             format: "currency",
             currency: "USD",
+          },
+          {
+            key: "targetNrrPercent",
+            label: "Target NRR",
+            value: targetNrr,
+            format: "percent",
+            maxFractionDigits: 1,
           },
         ],
         warnings,
@@ -5547,6 +5901,7 @@ export const calculators: CalculatorDefinition[] = [
         "Measure starting MRR for the cohort.",
         "Subtract contraction and churned MRR to get ending gross MRR.",
         "Compute GRR = ending gross MRR / starting MRR.",
+        "Optional: add a target GRR to see allowable churn + contraction.",
       ],
       pitfalls: [
         "Including expansion (GRR intentionally excludes it).",
@@ -5575,16 +5930,25 @@ export const calculators: CalculatorDefinition[] = [
           prefix: "$",
           defaultValue: "8000",
         },
-        {
-          key: "periodMonths",
-          label: "Period length (months)",
-          help: "Use 1 for monthly GRR; 3 for quarterly, etc.",
-          placeholder: "1",
-          defaultValue: "1",
-          min: 1,
-          step: 1,
-        },
-      ],
+      {
+        key: "periodMonths",
+        label: "Period length (months)",
+        help: "Use 1 for monthly GRR; 3 for quarterly, etc.",
+        placeholder: "1",
+        defaultValue: "1",
+        min: 1,
+        step: 1,
+      },
+      {
+        key: "targetGrrPercent",
+        label: "Target GRR (optional)",
+        placeholder: "95",
+        suffix: "%",
+        defaultValue: "0",
+        min: 0,
+        step: 0.1,
+      },
+    ],
       compute(values) {
         const warnings: string[] = [];
         const months = Math.max(1, Math.floor(values.periodMonths));
@@ -5604,6 +5968,12 @@ export const calculators: CalculatorDefinition[] = [
           grr !== null && months > 0 ? Math.pow(grr, 1 / months) : null;
         const monthlyEquivalentChurn =
           monthlyEquivalentGrr !== null ? 1 - monthlyEquivalentGrr : null;
+        const targetGrr = values.targetGrrPercent / 100;
+        const requiredGrossLoss =
+          values.targetGrrPercent > 0 ? values.startingMrr * (1 - targetGrr) : null;
+        const currentGrossLoss = values.contractionMrr + values.churnedMrr;
+        const lossReductionNeeded =
+          requiredGrossLoss !== null ? currentGrossLoss - requiredGrossLoss : null;
         if (grr === null) {
           return {
             headline: {
@@ -5664,6 +6034,28 @@ export const calculators: CalculatorDefinition[] = [
                   ? "Starting MRR is 0"
                   : "1 - monthly-equivalent GRR",
             },
+            {
+              key: "requiredGrossLoss",
+              label: "Max churn + contraction for target",
+              value: requiredGrossLoss ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail:
+                requiredGrossLoss === null
+                  ? "Add target GRR"
+                  : "Starting MRR x (1 - target GRR)",
+            },
+            {
+              key: "lossReductionNeeded",
+              label: "Reduction needed to hit target",
+              value: lossReductionNeeded ?? 0,
+              format: "currency",
+              currency: "USD",
+              detail:
+                lossReductionNeeded === null
+                  ? "Add target GRR"
+                  : "Current losses - allowed losses",
+            },
           ],
           breakdown: [
             {
@@ -5693,6 +6085,13 @@ export const calculators: CalculatorDefinition[] = [
               value: months,
               format: "number",
               maxFractionDigits: 0,
+            },
+            {
+              key: "targetGrrPercent",
+              label: "Target GRR",
+              value: targetGrr,
+              format: "percent",
+              maxFractionDigits: 1,
             },
           ],
         warnings,
@@ -6542,6 +6941,7 @@ export const calculators: CalculatorDefinition[] = [
         "Measure new and expansion MRR for the period.",
         "Measure contraction and churned MRR for the same period.",
         "Compute quick ratio = (new + expansion) / (contraction + churn).",
+        "Optional: add a target quick ratio to back-solve additions or max losses.",
       ],
       pitfalls: [
         "Using mismatched windows or definitions for movements.",
@@ -6576,6 +6976,14 @@ export const calculators: CalculatorDefinition[] = [
         placeholder: "5000",
         prefix: "$",
         defaultValue: "5000",
+      },
+      {
+        key: "targetQuickRatio",
+        label: "Target quick ratio (optional)",
+        placeholder: "4",
+        defaultValue: "0",
+        min: 0,
+        step: 0.1,
       },
     ],
     compute(values) {
@@ -6664,6 +7072,13 @@ export const calculators: CalculatorDefinition[] = [
             format: "currency",
             currency: "USD",
           },
+          {
+            key: "targetQuickRatio",
+            label: "Target quick ratio",
+            value: values.targetQuickRatio,
+            format: "ratio",
+            maxFractionDigits: 2,
+          },
         ],
         warnings,
       };
@@ -6707,6 +7122,7 @@ export const calculators: CalculatorDefinition[] = [
         "Choose a growth rate definition (e.g., YoY revenue growth).",
         "Choose a margin definition (operating, EBITDA, or free cash flow margin).",
         "Compute Rule of 40 score = growth (%) + margin (%).",
+        "Optional: add a target score to see required growth or margin.",
       ],
       pitfalls: [
         "Mixing margin types across periods (EBITDA one quarter, FCF the next).",
@@ -6729,9 +7145,21 @@ export const calculators: CalculatorDefinition[] = [
         suffix: "%",
         defaultValue: "10",
       },
+      {
+        key: "targetRuleOf40Percent",
+        label: "Target Rule of 40 (optional)",
+        placeholder: "40",
+        suffix: "%",
+        defaultValue: "40",
+        min: 0,
+        step: 0.1,
+      },
     ],
     compute(values) {
       const score = (values.growthPercent + values.marginPercent) / 100;
+      const targetScore = values.targetRuleOf40Percent / 100;
+      const requiredGrowth = targetScore - values.marginPercent / 100;
+      const requiredMargin = targetScore - values.growthPercent / 100;
       return {
         headline: {
           key: "ruleOf40",
@@ -6741,6 +7169,24 @@ export const calculators: CalculatorDefinition[] = [
           maxFractionDigits: 1,
           detail: "Growth (%) + Margin (%)",
         },
+        secondary: [
+          {
+            key: "requiredGrowth",
+            label: "Growth needed to hit target",
+            value: requiredGrowth,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail: requiredGrowth > 0 ? "Target - margin" : "Already at/above target",
+          },
+          {
+            key: "requiredMargin",
+            label: "Margin needed to hit target",
+            value: requiredMargin,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail: requiredMargin > 0 ? "Target - growth" : "Already at/above target",
+          },
+        ],
         breakdown: [
           {
             key: "growthPercent",
@@ -6753,6 +7199,13 @@ export const calculators: CalculatorDefinition[] = [
             key: "marginPercent",
             label: "Margin",
             value: values.marginPercent / 100,
+            format: "percent",
+            maxFractionDigits: 1,
+          },
+          {
+            key: "targetRuleOf40Percent",
+            label: "Target Rule of 40",
+            value: targetScore,
             format: "percent",
             maxFractionDigits: 1,
           },
