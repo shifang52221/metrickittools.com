@@ -4962,6 +4962,7 @@ export const guides: Guide[] = [
       "sales-capacity-calculator",
       "pipeline-required-calculator",
       "quota-attainment-calculator",
+      "sales-quota-calculator",
     ],
     relatedGlossarySlugs: [
       "quota-setting",
@@ -5047,6 +5048,17 @@ export const guides: Guide[] = [
       },
     ],
     examples: [
+      {
+        label: "Example: $2M target, 10 reps, 85% attainment, 70% ramped, 40% ramping",
+        calculatorSlug: "sales-quota-calculator",
+        params: {
+          teamTarget: "2000000",
+          reps: "10",
+          expectedAttainmentPercent: "85",
+          rampedPercent: "70",
+          rampingProductivityPercent: "40",
+        },
+      },
       {
         label: "Example: 10 reps, $150k quota/rep, 85% attainment, 70% ramped, 40% ramping productivity",
         calculatorSlug: "sales-capacity-calculator",

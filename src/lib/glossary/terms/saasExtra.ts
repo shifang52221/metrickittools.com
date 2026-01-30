@@ -1089,6 +1089,7 @@ const seeds: Seed[] = [
       "sales-capacity-calculator",
       "quota-attainment-calculator",
       "pipeline-coverage-calculator",
+      "sales-quota-calculator",
     ],
   },
   {

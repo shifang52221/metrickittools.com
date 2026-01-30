@@ -17536,6 +17536,285 @@ export const calculators: CalculatorDefinition[] = [
     ],
   },
   {
+    slug: "sales-quota-calculator",
+    title: "Sales Quota Calculator (Team to Rep)",
+    description:
+      "Estimate quota per rep from a team target using expected attainment, ramp mix, and optional pipeline coverage checks.",
+    category: "saas-metrics",
+    guideSlug: "sales-quota-setting-guide",
+    relatedGlossarySlugs: [
+      "quota-setting",
+      "quota",
+      "sales-capacity",
+      "sales-ramp",
+      "pipeline-coverage",
+      "win-rate",
+    ],
+    seo: {
+      intro: [
+        "Quota setting starts with a team target, but reality depends on headcount, ramp, and expected attainment. This calculator converts a team target into an implied quota per rep.",
+        "It also connects targets to pipeline needs using win rate so you can stress-test feasibility before locking quotas.",
+      ],
+      steps: [
+        "Enter the team target and total reps for the period.",
+        "Add expected attainment and ramp mix to compute effective reps.",
+        "Optionally add current quota per rep and win rate to compare capacity and pipeline needs.",
+      ],
+      pitfalls: [
+        "Mixing time units (annual targets with quarterly inputs).",
+        "Treating all reps as fully ramped when hiring is mid-period.",
+        "Setting quota without verifying pipeline coverage and win rate.",
+      ],
+    },
+    inputs: [
+      {
+        key: "teamTarget",
+        label: "Team target (period)",
+        placeholder: "2000000",
+        prefix: "$",
+        defaultValue: "2000000",
+        min: 0.01,
+      },
+      {
+        key: "reps",
+        label: "Total reps",
+        placeholder: "10",
+        defaultValue: "10",
+        min: 0,
+        step: 1,
+      },
+      {
+        key: "expectedAttainmentPercent",
+        label: "Expected attainment (ramped reps)",
+        placeholder: "85",
+        suffix: "%",
+        defaultValue: "85",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "rampedPercent",
+        label: "% of team fully ramped",
+        placeholder: "70",
+        suffix: "%",
+        defaultValue: "70",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "rampingProductivityPercent",
+        label: "Ramping reps productivity",
+        help: "Productivity of ramping reps relative to ramped reps.",
+        placeholder: "40",
+        suffix: "%",
+        defaultValue: "40",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "currentQuotaPerRep",
+        label: "Current quota per rep (optional)",
+        help: "Use to compare expected capacity vs target.",
+        placeholder: "200000",
+        prefix: "$",
+        defaultValue: "200000",
+        min: 0,
+      },
+      {
+        key: "winRatePercent",
+        label: "Win rate (optional)",
+        placeholder: "25",
+        suffix: "%",
+        defaultValue: "25",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "slippagePercent",
+        label: "Slippage buffer (optional)",
+        placeholder: "15",
+        suffix: "%",
+        defaultValue: "15",
+        min: 0,
+        step: 0.1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const reps = Math.floor(values.reps);
+      const attainment = values.expectedAttainmentPercent / 100;
+      const ramped = values.rampedPercent / 100;
+      const rampingProd = values.rampingProductivityPercent / 100;
+      const winRate = values.winRatePercent / 100;
+      const slippage = values.slippagePercent / 100;
+
+      if (values.teamTarget <= 0) warnings.push("Team target must be greater than 0.");
+      if (reps < 0) warnings.push("Total reps must be 0 or greater.");
+      if (attainment < 0 || attainment > 2)
+        warnings.push("Expected attainment should be between 0% and 200%.");
+      if (ramped < 0 || ramped > 1) warnings.push("Ramped % must be between 0% and 100%.");
+      if (rampingProd < 0 || rampingProd > 1)
+        warnings.push("Ramping productivity must be between 0% and 100%.");
+      if (values.currentQuotaPerRep < 0)
+        warnings.push("Current quota per rep must be 0 or greater.");
+      if (winRate < 0 || winRate > 1) warnings.push("Win rate must be between 0% and 100%.");
+      if (slippage < 0 || slippage > 2)
+        warnings.push("Slippage buffer should be between 0% and 200%.");
+
+      const effectiveReps = reps * (ramped + (1 - ramped) * rampingProd);
+      const targetPerRepAt100 =
+        effectiveReps > 0 ? values.teamTarget / effectiveReps : 0;
+      const targetPerRepAtExpected =
+        effectiveReps > 0 && attainment > 0
+          ? values.teamTarget / (effectiveReps * attainment)
+          : 0;
+      const targetPerRepFlat = reps > 0 ? values.teamTarget / reps : 0;
+      const capacityAtCurrentQuota =
+        values.currentQuotaPerRep > 0
+          ? values.currentQuotaPerRep * effectiveReps * attainment
+          : null;
+      const capacityGap =
+        capacityAtCurrentQuota === null ? null : capacityAtCurrentQuota - values.teamTarget;
+
+      const requiredPipeline = winRate > 0 ? values.teamTarget / winRate : null;
+      const bufferedPipeline =
+        requiredPipeline === null ? null : requiredPipeline * (1 + slippage);
+      const pipelinePerRep =
+        requiredPipeline !== null && effectiveReps > 0 ? requiredPipeline / effectiveReps : null;
+      const bufferedPipelinePerRep =
+        bufferedPipeline !== null && effectiveReps > 0 ? bufferedPipeline / effectiveReps : null;
+
+      const rampedReps = reps * ramped;
+      const rampingReps = reps - rampedReps;
+
+      return {
+        headline: {
+          key: "quotaPerRep",
+          label: "Quota per rep (implied)",
+          value: targetPerRepAtExpected,
+          format: "currency",
+          currency: "USD",
+          detail: "Team target / (effective reps x expected attainment)",
+        },
+        secondary: [
+          {
+            key: "quotaPerRepAt100",
+            label: "Quota per rep (at 100% attainment)",
+            value: targetPerRepAt100,
+            format: "currency",
+            currency: "USD",
+            detail: "Team target / effective reps",
+          },
+          {
+            key: "targetPerRepFlat",
+            label: "Target per rep (simple split)",
+            value: targetPerRepFlat,
+            format: "currency",
+            currency: "USD",
+            detail: "Team target / total reps",
+          },
+          {
+            key: "effectiveReps",
+            label: "Effective reps (ramp-adjusted)",
+            value: effectiveReps,
+            format: "number",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "capacityAtCurrentQuota",
+            label: "Capacity at current quota",
+            value: capacityAtCurrentQuota ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: values.currentQuotaPerRep > 0 ? "Current quota x effective reps x attainment" : "Add current quota",
+          },
+          {
+            key: "capacityGap",
+            label: "Capacity surplus / shortfall",
+            value: capacityGap ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: values.currentQuotaPerRep > 0 ? "Capacity - team target" : "Add current quota",
+          },
+          {
+            key: "requiredPipeline",
+            label: "Pipeline required (from win rate)",
+            value: requiredPipeline ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: winRate > 0 ? "Target / win rate" : "Add win rate",
+          },
+          {
+            key: "pipelinePerRep",
+            label: "Pipeline per rep",
+            value: pipelinePerRep ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: winRate > 0 ? "Required pipeline / effective reps" : "Add win rate",
+          },
+          {
+            key: "bufferedPipelinePerRep",
+            label: "Pipeline per rep (with buffer)",
+            value: bufferedPipelinePerRep ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: winRate > 0 ? "Pipeline per rep x (1 + buffer)" : "Add win rate",
+          },
+        ],
+        breakdown: [
+          {
+            key: "rampedReps",
+            label: "Ramped reps",
+            value: rampedReps,
+            format: "number",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "rampingReps",
+            label: "Ramping reps",
+            value: rampingReps,
+            format: "number",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "attainment",
+            label: "Expected attainment",
+            value: attainment,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "rampedPercent",
+            label: "Ramped %",
+            value: ramped,
+            format: "percent",
+            maxFractionDigits: 2,
+          },
+        ],
+        warnings,
+      };
+    },
+    formula:
+      "Quota per rep = team target / (effective reps x expected attainment); effective reps = ramped% + ramping% x ramp productivity",
+    assumptions: [
+      "Assumes a single expected attainment for ramped reps (segment for accuracy).",
+      "Ramp productivity is expressed relative to ramped rep productivity.",
+      "Win rate is applied as an average for pipeline planning.",
+    ],
+    faqs: [
+      {
+        question: "Should I use effective reps or total reps-",
+        answer:
+          "Use effective reps. New hires contribute less than fully ramped reps, so using total reps overstates capacity and understates quota per rep.",
+      },
+      {
+        question: "Why does quota per rep rise when attainment drops-",
+        answer:
+          "If expected attainment is lower, each rep needs a higher quota target to reach the same team goal. That is often a signal to adjust headcount or pipeline instead.",
+      },
+    ],
+  },
+  {
     slug: "pipeline-coverage-calculator",
     title: "Pipeline Coverage Calculator",
     description:
