@@ -4737,6 +4737,15 @@ export const guides: Guide[] = [
           "Track coverage weekly and flag drops early (before late-stage scramble).",
         ],
       },
+      { type: "h2", text: "Scenario stress test" },
+      {
+        type: "bullets",
+        items: [
+          "Test win rate up and down by 5 points to see pipeline sensitivity.",
+          "Apply a slippage buffer to quantify push-out risk.",
+          "Use the scenario range to set realistic pipeline creation goals.",
+        ],
+      },
       { type: "h2", text: "Pipeline quality filters" },
       {
         type: "bullets",
@@ -4827,6 +4836,15 @@ export const guides: Guide[] = [
           "Check that expected close dates fit the target period.",
           "Remove pipeline that is stalled or missing next steps.",
           "Confirm that required pipeline per rep is realistic for capacity.",
+        ],
+      },
+      { type: "h2", text: "Scenario stress test" },
+      {
+        type: "bullets",
+        items: [
+          "Run win rate down 5 points to see how pipeline needs expand.",
+          "Test ACV up and down 10% to see how required wins change.",
+          "Use the scenario range to plan top-of-funnel requirements.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -4931,6 +4949,15 @@ export const guides: Guide[] = [
           "Using a single attainment number across segments or ACV bands (variance is real).",
           "Ignoring seasonality and close-rate changes near quarter-end.",
           "Using capacity math without validating activity and lead volume.",
+        ],
+      },
+      { type: "h2", text: "Scenario stress test" },
+      {
+        type: "bullets",
+        items: [
+          "Model attainment +/- 10 points to see capacity sensitivity.",
+          "Use the range to decide if hiring or pipeline is the real constraint.",
+          "Check if capacity swings still align with the team target.",
         ],
       },
     ],

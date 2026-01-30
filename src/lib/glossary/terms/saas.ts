@@ -1260,6 +1260,7 @@ const seeds: Seed[] = [
       "A rough rule: coverage ~ 1 / win rate (then add buffer for slippage).",
       "Segment by deal size and stage because win rates differ.",
       "Track coverage weekly to catch shortfalls early.",
+      "Stress-test pipeline needs with win rate scenarios (+/- 5 points).",
     ],
     mistakes: [
       "Counting unqualified early-stage deals as real pipeline (inflates coverage).",

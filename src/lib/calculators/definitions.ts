@@ -17858,7 +17858,7 @@ export const calculators: CalculatorDefinition[] = [
         "Enter quota for the period and current pipeline amount.",
         "Enter estimated win rate for the same stage definition.",
         "Optionally add a slippage buffer to see coverage targets with push-outs.",
-        "Review coverage ratio and expected bookings / expected attainment.",
+        "Review coverage ratio, expected bookings, and scenario-based pipeline needs.",
       ],
       pitfalls: [
         "Using pipeline that includes unqualified deals (inflates coverage).",
@@ -17928,6 +17928,12 @@ export const calculators: CalculatorDefinition[] = [
       const bufferedGap =
         bufferedRequiredPipeline === null ? null : values.pipelineAmount - bufferedRequiredPipeline;
       const targetCoverage = winRate > 0 ? 1 / winRate : null;
+      const winRateLow = Math.max(0.01, winRate - 0.05);
+      const winRateHigh = Math.min(0.99, winRate + 0.05);
+      const requiredPipelineLowWin = values.quota / winRateLow;
+      const requiredPipelineHighWin = values.quota / winRateHigh;
+      const bufferedLowWin = requiredPipelineLowWin * (1 + slippage);
+      const bufferedHighWin = requiredPipelineHighWin * (1 + slippage);
 
       return {
         headline: {
@@ -17986,6 +17992,22 @@ export const calculators: CalculatorDefinition[] = [
             currency: "USD",
             detail: "Current pipeline - buffered required",
           },
+          {
+            key: "requiredPipelineLowWin",
+            label: "Required pipeline (low win rate)",
+            value: requiredPipelineLowWin,
+            format: "currency",
+            currency: "USD",
+            detail: "Win rate -5 pts",
+          },
+          {
+            key: "requiredPipelineHighWin",
+            label: "Required pipeline (high win rate)",
+            value: requiredPipelineHighWin,
+            format: "currency",
+            currency: "USD",
+            detail: "Win rate +5 pts",
+          },
         ],
         breakdown: [
           {
@@ -18008,6 +18030,22 @@ export const calculators: CalculatorDefinition[] = [
             value: bufferedCoverage ?? 0,
             format: "multiple",
             maxFractionDigits: 2,
+          },
+          {
+            key: "bufferedLowWin",
+            label: "Buffered pipeline (low win rate)",
+            value: bufferedLowWin,
+            format: "currency",
+            currency: "USD",
+            detail: "Required pipeline x (1 + buffer)",
+          },
+          {
+            key: "bufferedHighWin",
+            label: "Buffered pipeline (high win rate)",
+            value: bufferedHighWin,
+            format: "currency",
+            currency: "USD",
+            detail: "Required pipeline x (1 + buffer)",
           },
         ],
         warnings,
@@ -18049,7 +18087,7 @@ export const calculators: CalculatorDefinition[] = [
         "Enter your quota/target for the period.",
         "Enter win rate and average deal size (ACV/ARR/bookings).",
         "Optionally add a slippage buffer and active reps for per-rep targets.",
-        "Review required pipeline $, required opportunities, and wins.",
+        "Review required pipeline $, required opportunities, and scenario ranges.",
       ],
       pitfalls: [
         "Using average deal size without segmenting (SMB vs enterprise).",
@@ -18121,6 +18159,14 @@ export const calculators: CalculatorDefinition[] = [
       const bufferedPipeline = requiredPipeline * (1 + slippage);
       const bufferedOpps =
         requiredOpps === null ? null : requiredOpps * (1 + slippage);
+      const winRateLow = Math.max(0.01, winRate - 0.05);
+      const winRateHigh = Math.min(0.99, winRate + 0.05);
+      const requiredPipelineLowWin = values.target / winRateLow;
+      const requiredPipelineHighWin = values.target / winRateHigh;
+      const avgDealLow = values.avgDealSize * 0.9;
+      const avgDealHigh = values.avgDealSize * 1.1;
+      const requiredWinsLowDeal = safeDivide(values.target, avgDealHigh);
+      const requiredWinsHighDeal = safeDivide(values.target, avgDealLow);
       const impliedCoverage = safeDivide(requiredPipeline, values.target);
       const reps = Math.floor(values.activeReps);
       const pipelinePerRep =
@@ -18193,6 +18239,40 @@ export const calculators: CalculatorDefinition[] = [
             maxFractionDigits: 0,
             detail: "Required opps x (1 + slippage)",
           },
+          {
+            key: "pipelineLowWin",
+            label: "Pipeline required (low win rate)",
+            value: requiredPipelineLowWin,
+            format: "currency",
+            currency: "USD",
+            detail: "Win rate -5 pts",
+          },
+          {
+            key: "pipelineHighWin",
+            label: "Pipeline required (high win rate)",
+            value: requiredPipelineHighWin,
+            format: "currency",
+            currency: "USD",
+            detail: "Win rate +5 pts",
+          },
+        ],
+        breakdown: [
+          {
+            key: "winsLowDeal",
+            label: "Required wins (deal size +10%)",
+            value: requiredWinsLowDeal ?? 0,
+            format: "number",
+            maxFractionDigits: 0,
+            detail: "Higher ACV reduces wins",
+          },
+          {
+            key: "winsHighDeal",
+            label: "Required wins (deal size -10%)",
+            value: requiredWinsHighDeal ?? 0,
+            format: "number",
+            maxFractionDigits: 0,
+            detail: "Lower ACV increases wins",
+          },
         ],
         warnings,
       };
@@ -18234,6 +18314,7 @@ export const calculators: CalculatorDefinition[] = [
         "Enter expected attainment % for ramped reps.",
         "Enter what % of the team is ramped and a productivity factor for ramping reps.",
         "Optionally enter a target bookings number to estimate required reps.",
+        "Review capacity scenarios for lower and higher attainment.",
       ],
       pitfalls: [
         "Assuming all reps are fully ramped.",
@@ -18318,6 +18399,12 @@ export const calculators: CalculatorDefinition[] = [
       const rampedCapacity = rampedReps * perRepCapacity;
       const rampingCapacity = rampingReps * perRepCapacity * rampingProd;
       const capacity = rampedCapacity + rampingCapacity;
+      const attainmentLow = Math.max(0, attainment - 0.1);
+      const attainmentHigh = Math.min(2, attainment + 0.1);
+      const capacityLowAttainment =
+        reps * (ramped + (1 - ramped) * rampingProd) * values.quotaPerRep * attainmentLow;
+      const capacityHighAttainment =
+        reps * (ramped + (1 - ramped) * rampingProd) * values.quotaPerRep * attainmentHigh;
       const denom =
         values.quotaPerRep > 0 ? perRepCapacity * (ramped + (1 - ramped) * rampingProd) : 0;
       const requiredReps =
@@ -18395,6 +18482,22 @@ export const calculators: CalculatorDefinition[] = [
             value: rampingCapacity,
             format: "currency",
             currency: "USD",
+          },
+          {
+            key: "capacityLowAttainment",
+            label: "Capacity (low attainment)",
+            value: capacityLowAttainment,
+            format: "currency",
+            currency: "USD",
+            detail: "Attainment -10 pts",
+          },
+          {
+            key: "capacityHighAttainment",
+            label: "Capacity (high attainment)",
+            value: capacityHighAttainment,
+            format: "currency",
+            currency: "USD",
+            detail: "Attainment +10 pts",
           },
         ],
         warnings,
