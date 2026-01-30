@@ -1323,6 +1323,44 @@ const seeds: Seed[] = [
     ],
   },
   {
+    slug: "quota-setting",
+    title: "Quota Setting",
+    description:
+      "Quota setting is the process of assigning revenue targets by rep, team, or segment based on capacity, pipeline, and business goals.",
+    formula: "Quota per rep ~ target bookings / effective reps",
+    example:
+      "If the team target is $2M and you have 10 effective reps, quota per rep is about $200k for the period.",
+    bullets: [
+      "Combine top-down goals with bottom-up capacity to avoid impossible targets.",
+      "Adjust for ramp, seasonality, and territory differences.",
+      "Validate that pipeline coverage and win rate support the quota.",
+      "Review quota fairness by segment and role to prevent churn.",
+    ],
+    mistakes: [
+      "Setting quota without a capacity model.",
+      "Ignoring ramp time for new hires.",
+      "Assuming identical conversion rates across segments.",
+    ],
+    faqs: [
+      {
+        question: "Should quota be the same for all reps-",
+        answer:
+          "Not always. Territories, segments, and ramp status create different realities. Use a core model, then adjust for known differences.",
+      },
+      {
+        question: "How often should quota be updated-",
+        answer:
+          "Review quarterly or when segments shift materially. Avoid constant changes that make attainment comparisons meaningless.",
+      },
+    ],
+    relatedGuideSlugs: ["sales-quota-setting-guide", "sales-capacity-guide"],
+    relatedCalculatorSlugs: [
+      "sales-capacity-calculator",
+      "pipeline-required-calculator",
+      "quota-attainment-calculator",
+    ],
+  },
+  {
     slug: "quota-attainment",
     title: "Quota Attainment",
     description:

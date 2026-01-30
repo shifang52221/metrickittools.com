@@ -1050,19 +1050,46 @@ const seeds: Seed[] = [
     slug: "sales-capacity",
     title: "Sales Capacity",
     description:
-      "Sales capacity is the amount of pipeline or revenue a sales team can realistically handle given headcount, ramp, and quota.",
-    updatedAt: "2026-01-28",
-    formula: "Sales capacity ~= active reps * quota * attainment rate",
-    example: "10 reps with $600k quota and 70% attainment implies $4.2M capacity.",
+      "Sales capacity is the bookings output a sales team can produce in a period given headcount, quota per rep, expected attainment, and ramp.",
+    updatedAt: "2026-01-30",
+    formula:
+      "Capacity ~ reps * quota per rep * attainment * ramp factor (ramped + ramping productivity)",
+    example:
+      "10 reps * $150k quota * 85% attainment * 0.82 ramp factor ~= $1.045M capacity.",
     bullets: [
-      "Adjust for ramping reps; new reps contribute less initially.",
-      "Use capacity to set pipeline targets and hiring plans.",
+      "Separate ramped and ramping reps to avoid over-forecasting.",
+      "Pair capacity with pipeline coverage; capacity without pipeline is theoretical.",
+      "Track capacity by segment because attainment and ACV vary.",
+      "Use monthly ramp curves to capture mid-period hiring impacts.",
     ],
     mistakes: [
-      "Assuming 100% quota attainment across all reps.",
-      "Ignoring time to productivity for new hires.",
+      "Treating all reps as fully ramped.",
+      "Assuming attainment is stable across segments.",
+      "Ignoring seasonality and sales cycle timing.",
     ],
-    relatedGuideSlugs: ["sales-ops-hub-guide", "pipeline-coverage-sales-cycle-guide"],
+    faqs: [
+      {
+        question: "What is an effective rep-",
+        answer:
+          "An effective rep is ramp-adjusted headcount (for example, a ramping rep at 40% productivity counts as 0.4 reps).",
+      },
+      {
+        question: "How does capacity relate to quota-",
+        answer:
+          "Quota is the target; capacity is the expected output based on headcount and productivity. Gaps show whether the target is realistic.",
+      },
+    ],
+    relatedGuideSlugs: [
+      "sales-capacity-guide",
+      "sales-quota-setting-guide",
+      "sales-ops-hub-guide",
+      "pipeline-coverage-sales-cycle-guide",
+    ],
+    relatedCalculatorSlugs: [
+      "sales-capacity-calculator",
+      "quota-attainment-calculator",
+      "pipeline-coverage-calculator",
+    ],
   },
   {
     slug: "ramp-time",

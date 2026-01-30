@@ -4867,7 +4867,7 @@ export const guides: Guide[] = [
     category: "saas-metrics",
     updatedAt: "2026-01-30",
     relatedCalculatorSlugs: ["sales-capacity-calculator", "quota-attainment-calculator"],
-    relatedGlossarySlugs: ["sales-ramp", "quota", "quota-attainment", "pipeline"],
+    relatedGlossarySlugs: ["sales-capacity", "sales-ramp", "quota", "quota-attainment", "pipeline"],
     sections: [
       { type: "h2", text: "Capacity is headcount * productivity" },
       {
@@ -4932,6 +4932,118 @@ export const guides: Guide[] = [
           "Ignoring seasonality and close-rate changes near quarter-end.",
           "Using capacity math without validating activity and lead volume.",
         ],
+      },
+    ],
+    examples: [
+      {
+        label: "Example: 10 reps, $150k quota/rep, 85% attainment, 70% ramped, 40% ramping productivity",
+        calculatorSlug: "sales-capacity-calculator",
+        params: {
+          reps: "10",
+          quotaPerRep: "150000",
+          attainmentPercent: "85",
+          rampedPercent: "70",
+          rampingProductivityPercent: "40",
+        },
+      },
+    ],
+  },
+  {
+    slug: "sales-quota-setting-guide",
+    title: "Sales quota setting: a practical framework (capacity, pipeline, and ramp)",
+    description:
+      "Learn how to set sales quota using capacity math, pipeline coverage, and ramp assumptions so targets are ambitious but achievable.",
+    seo: {
+      title: "Sales quota setting guide: capacity, pipeline, ramp",
+    },
+    category: "saas-metrics",
+    updatedAt: "2026-01-30",
+    relatedCalculatorSlugs: [
+      "sales-capacity-calculator",
+      "pipeline-required-calculator",
+      "quota-attainment-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "quota-setting",
+      "sales-capacity",
+      "quota",
+      "quota-attainment",
+      "pipeline-coverage",
+      "win-rate",
+      "sales-ramp",
+    ],
+    sections: [
+      { type: "h2", text: "What quota setting is (and why it matters)" },
+      {
+        type: "p",
+        text: "Quota setting is the process of assigning revenue targets to reps or teams. Strong quotas align growth goals with capacity, pipeline reality, and comp plans.",
+      },
+      { type: "h2", text: "Top-down vs bottom-up (use both)" },
+      {
+        type: "bullets",
+        items: [
+          "Top-down: start from company bookings goals and allocate by segment.",
+          "Bottom-up: compute capacity from headcount, quota, attainment, and ramp.",
+          "Reconcile the two and adjust hiring, pipeline targets, or quotas.",
+        ],
+      },
+      { type: "h2", text: "Capacity-based quota math" },
+      {
+        type: "bullets",
+        items: [
+          "Effective reps = ramped reps + ramping reps * ramp productivity.",
+          "Capacity = effective reps * quota per rep * expected attainment.",
+          "If capacity < target, fix headcount, attainment, or target.",
+        ],
+      },
+      { type: "h2", text: "Pipeline reality check" },
+      {
+        type: "bullets",
+        items: [
+          "Required pipeline ~ target / win rate (add slippage buffer).",
+          "Validate pipeline coverage by segment (ACV and stage differ).",
+          "If coverage is low, quota without pipeline is a plan to miss.",
+        ],
+      },
+      { type: "h2", text: "Ramp and seasonality adjustments" },
+      {
+        type: "bullets",
+        items: [
+          "Model ramp by month, not just a single average.",
+          "Apply seasonality factors to avoid front-loading targets.",
+          "Adjust quotas for territory changes and rep tenure.",
+        ],
+      },
+      { type: "h2", text: "Quota fairness checks" },
+      {
+        type: "bullets",
+        items: [
+          "Compare quota to historical attainment by segment.",
+          "Use consistent definitions of bookings, ARR, and ACV.",
+          "Set stretch targets but avoid churn-inducing plans.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Setting quota without a capacity model or pipeline coverage.",
+          "Using a single quota across wildly different territories.",
+          "Ignoring ramp time for new hires.",
+          "Changing quota mid-period without clear rationale.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "How do I know if quota is realistic-",
+        answer:
+          "Compare expected capacity and pipeline coverage to the target. If either falls short, adjust headcount, pipeline, or the quota itself.",
+      },
+      {
+        question: "Should quota be the same for inbound and outbound reps-",
+        answer:
+          "Usually not. Conversion rates, cycle length, and ACV often differ, so quotas should reflect those differences.",
       },
     ],
     examples: [
