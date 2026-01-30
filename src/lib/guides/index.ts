@@ -47,12 +47,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "What's the difference between ROAS and ROI?",
+        question: "What's the difference between ROAS and ROI-",
         answer:
           "ROAS is revenue divided by ad spend. ROI is profit relative to total cost. ROAS can look great while ROI is negative if margins or costs are poor.",
       },
       {
-        question: "Can ROAS be used for subscription businesses?",
+        question: "Can ROAS be used for subscription businesses-",
         answer:
           "Yes, but it's often better to pair ROAS with CAC, payback period, and LTV since revenue may recur over time and churn matters.",
       },
@@ -146,7 +146,7 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Is break-even ROAS the same as target ROAS?",
+        question: "Is break-even ROAS the same as target ROAS-",
         answer:
           "No. Break-even ROAS only covers variable economics. Target ROAS should be higher to cover fixed costs and desired profit.",
       },
@@ -207,6 +207,33 @@ export const guides: Guide[] = [
           "When profitability, not just revenue, is the decision metric.",
         ],
       },
+      { type: "h2", text: "How to compute ROI correctly" },
+      {
+        type: "bullets",
+        items: [
+          "Use profit in the numerator, not revenue (revenue can hide margin).",
+          "Include all incremental costs: ad spend, fees, labor, tools, and returns.",
+          "Keep the time window consistent for both revenue and costs.",
+        ],
+      },
+      { type: "h2", text: "ROI vs payback" },
+      {
+        type: "bullets",
+        items: [
+          "ROI shows magnitude of return; payback shows speed of recovery.",
+          "High ROI with slow payback can still strain cash flow.",
+          "Use both when budgets are constrained.",
+        ],
+      },
+      { type: "h2", text: "ROI QA checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Ensure attribution window matches the revenue window.",
+          "Remove one-time costs from recurring ROI comparisons.",
+          "Separate gross margin changes from channel performance shifts.",
+        ],
+      },
       { type: "h2", text: "Attribution pitfalls" },
       {
         type: "bullets",
@@ -219,7 +246,7 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Should I always prefer ROAS over ROI?",
+        question: "Should I always prefer ROAS over ROI-",
         answer:
           "No. ROAS is fast for channel optimization, but ROI is better for comparing initiatives when you can attribute costs reliably.",
       },
@@ -280,12 +307,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Why does my break-even ROAS look too high?",
+        question: "Why does my break-even ROAS look too high-",
         answer:
           "It usually means contribution margin is low after fees/shipping/returns. Double-check gross margin and whether you are double-counting costs.",
       },
       {
-        question: "Should I use break-even ROAS for subscription businesses?",
+        question: "Should I use break-even ROAS for subscription businesses-",
         answer:
           "For subscriptions, break-even ROAS on first purchase can be misleading. Consider CAC, payback period, and LTV instead, or model break-even on contribution profit over time.",
       },
@@ -357,12 +384,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Should I use a single target ROAS for all channels?",
+        question: "Should I use a single target ROAS for all channels-",
         answer:
           "Not necessarily. Channels differ in volatility and intent. Many teams use different targets by channel while keeping the same definition of contribution margin.",
       },
       {
-        question: "What if my target ROAS is extremely high?",
+        question: "What if my target ROAS is extremely high-",
         answer:
           "Your contribution margin may be low after fees/shipping/returns, or your fixed/profit allocations may be too high for current economics. Re-check assumptions first.",
       },
@@ -473,22 +500,22 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Should CAC include salaries?",
+        question: "Should CAC include salaries-",
         answer:
           "For planning and true unit economics, many teams use fully-loaded CAC (including salaries/tools). For channel optimization, paid-only CAC can be useful if you keep the definition consistent.",
       },
       {
-        question: "How do you calculate customer acquisition cost?",
+        question: "How do you calculate customer acquisition cost-",
         answer:
           "Pick a time window, sum acquisition spend for that window, count new paying customers acquired, and divide spend by customers. Make sure the spend window matches the customer count window.",
       },
       {
-        question: "What is the customer acquisition cost formula?",
+        question: "What is the customer acquisition cost formula-",
         answer:
           "Customer acquisition cost (CAC) = acquisition spend / new customers acquired. The key is defining what you include in spend (paid-only vs fully-loaded) and what counts as a new customer.",
       },
       {
-        question: "Should I use lead CAC or customer CAC?",
+        question: "Should I use lead CAC or customer CAC-",
         answer:
           "Use customer CAC for unit economics. Lead CAC can help diagnose funnel performance but isn't directly comparable to LTV.",
       },
@@ -572,12 +599,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Should fully-loaded CAC replace paid CAC?",
+        question: "Should fully-loaded CAC replace paid CAC-",
         answer:
           "No. Use paid CAC for channel optimization and tactical decisions. Use fully-loaded CAC for planning and unit economics because it includes the costs required to acquire customers.",
       },
       {
-        question: "Do I need to allocate salaries to acquisition?",
+        question: "Do I need to allocate salaries to acquisition-",
         answer:
           "If you want a planning-grade CAC, yes. The key is consistency: use a simple allocation rule and keep it stable over time.",
       },
@@ -651,12 +678,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Is LTV the same as revenue per customer?",
+        question: "Is LTV the same as revenue per customer-",
         answer:
           "Not necessarily. LTV is ideally based on gross profit over time, not just revenue, and depends on retention/churn.",
       },
       {
-        question: "What churn should I use?",
+        question: "What churn should I use-",
         answer:
           "Use customer churn for a simple model, but consider revenue churn (NRR/GRR) if expansion and downgrades matter for your business.",
       },
@@ -721,6 +748,15 @@ export const guides: Guide[] = [
           "Use payback alongside LTV so you don't accept high LTV with dangerously long payback.",
         ],
       },
+      { type: "h2", text: "Scenario grid tips" },
+      {
+        type: "bullets",
+        items: [
+          "Start with base, downside, and upside scenarios before adding granularity.",
+          "Use realistic steps (for example 1-2 points in churn) instead of tiny deltas.",
+          "Label each scenario with actions you would take if it occurs.",
+        ],
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -733,7 +769,7 @@ export const guides: Guide[] = [
     ],
     examples: [
       {
-        label: "Sensitivity example (ARPA $200; margin 80%; churn 3%; ±5% margin; ±1% churn)",
+        label: "Sensitivity example (ARPA $200; margin 80%; churn 3%; +/-5% margin; +/-1% churn)",
         calculatorSlug: "ltv-sensitivity-calculator",
         params: {
           arpaMonthly: "200",
@@ -809,12 +845,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "What's a good CAC payback period?",
+        question: "What's a good CAC payback period-",
         answer:
           "It varies by business model and growth stage, but many SaaS businesses aim for roughly 6-18 months. Shorter is usually safer for cash efficiency.",
       },
       {
-        question: "Is CAC payback the same as break-even?",
+        question: "Is CAC payback the same as break-even-",
         answer:
           "Related, but different. Payback asks how long it takes to recover acquisition cost from gross profit. Break-even considers fixed costs and overall business expenses.",
       },
@@ -864,7 +900,7 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "Start with ranges that reflect your uncertainty: e.g., ±10-20% ARPA and ±5-10% gross margin.",
+          "Start with ranges that reflect your uncertainty: e.g., +/-10-20% ARPA and +/-5-10% gross margin.",
           "If you have segmented data, do sensitivity per segment (plan/channel) instead of using blended averages.",
           "Widen ranges when channels are volatile or pricing is changing; narrow them once economics stabilize.",
         ],
@@ -890,19 +926,19 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Is this the same as cohort payback curves?",
+        question: "Is this the same as cohort payback curves-",
         answer:
           "No. Sensitivity analysis varies assumptions (ARPA/margin) around a steady-state model. Cohort payback curves model payback over time with early churn and changing revenue/margin.",
       },
       {
-        question: "What should I change first to improve payback?",
+        question: "What should I change first to improve payback-",
         answer:
           "Start with the lever that moves payback the most in sensitivity: ARPA (pricing/mix) or gross margin (COGS/variable cost). Then validate the change with cohort retention so you don't trade payback for churn.",
       },
     ],
     examples: [
       {
-        label: "Sensitivity example (CAC $6k; ARPA $800; margin 80%; ±10% ARPA; ±5% margin)",
+        label: "Sensitivity example (CAC $6k; ARPA $800; margin 80%; +/-10% ARPA; +/-5% margin)",
         calculatorSlug: "cac-payback-sensitivity-calculator",
         params: {
           cac: "6000",
@@ -978,7 +1014,7 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Which churn should I track?",
+        question: "Which churn should I track-",
         answer:
           "Track both customer churn and revenue churn (NRR/GRR). Customer churn reflects retention; revenue churn reflects business health when expansion exists.",
       },
@@ -1036,6 +1072,24 @@ export const guides: Guide[] = [
           "GRR focuses on remaining revenue after losses (ending gross / starting).",
           "NRR adds expansion, so NRR can look healthy even when gross churn is high.",
           "Track gross churn + GRR/NRR together to avoid being misled by expansion.",
+        ],
+      },
+      { type: "h2", text: "Gross revenue churn QA checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Use starting MRR as the denominator for the period.",
+          "Separate downgrades (contraction) from cancellations (churn).",
+          "Match the churn window to your billing cadence (monthly vs annual).",
+        ],
+      },
+      { type: "h2", text: "Benchmarks and context" },
+      {
+        type: "bullets",
+        items: [
+          "High-growth companies often accept higher gross churn early, but it should trend down.",
+          "Enterprise contracts may show lumpy churn at renewal cycles.",
+          "Segment by plan and cohort before comparing to peer benchmarks.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -1126,6 +1180,42 @@ export const guides: Guide[] = [
           "Fix churn drivers before scaling acquisition.",
         ],
       },
+      { type: "h2", text: "Retention by lifecycle stage" },
+      {
+        type: "bullets",
+        items: [
+          "New users: focus on time-to-value and onboarding clarity.",
+          "Activated users: reinforce the core habit and primary workflow.",
+          "Long-tenure users: reduce friction and deepen adoption to protect expansion.",
+        ],
+      },
+      { type: "h2", text: "Retention benchmarks (directional)" },
+      {
+        type: "bullets",
+        items: [
+          "Early retention is the most sensitive; small onboarding changes can shift week-1 curves.",
+          "Expansion-heavy businesses can show strong revenue retention even with flat logo retention.",
+          "Use your own historical median as a baseline before comparing to peers.",
+        ],
+      },
+      { type: "h2", text: "Data QA checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Confirm cohort start date rules (signup, first value, or payment).",
+          "Exclude churned users who later re-activate from the same cohort unless your definition says otherwise.",
+          "Keep the same time window for retention and churn when reporting.",
+        ],
+      },
+      { type: "h2", text: "How to report retention" },
+      {
+        type: "bullets",
+        items: [
+          "Show cohort retention curves, not just a single average.",
+          "Report retention alongside activation and adoption drivers.",
+          "Use a consistent cohort definition across the team.",
+        ],
+      },
     ],
   },
   {
@@ -1177,7 +1267,7 @@ export const guides: Guide[] = [
           "By geography to reflect different pricing and payment behaviors.",
         ],
       },
-      { type: "h2", text: "What is a good ARPU?" },
+      { type: "h2", text: "What is a good ARPU-" },
       {
         type: "bullets",
         items: [
@@ -1216,27 +1306,27 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "What is the ARPU formula?",
+        question: "What is the ARPU formula-",
         answer:
           "ARPU (average revenue per user) = revenue / average active users for the same period. The key is defining 'active user' consistently.",
       },
       {
-        question: "What is a good ARPU?",
+        question: "What is a good ARPU-",
         answer:
           "It depends on your business model. A 'good' ARPU is one that supports healthy unit economics: reasonable CAC payback, strong gross margin, and retention that makes LTV exceed CAC by a comfortable margin.",
       },
       {
-        question: "ARPU vs ARPA: which should I use?",
+        question: "ARPU vs ARPA: which should I use-",
         answer:
           "ARPU is per user. ARPA is per account. If you sell to companies with multiple seats, ARPA often matches how you price and report. If you sell per-seat, ARPU can be more natural.",
       },
       {
-        question: "How does ARPU relate to LTV?",
+        question: "How does ARPU relate to LTV-",
         answer:
           "ARPU/ARPA is the per-period revenue, while LTV considers the whole customer lifetime. LTV models usually combine ARPA, gross margin, and retention/churn to estimate total value over time.",
       },
       {
-        question: "Should ARPU use revenue or gross profit?",
+        question: "Should ARPU use revenue or gross profit-",
         answer:
           "ARPU is usually revenue-based. For unit economics decisions, also compute gross profit per user (revenue * gross margin) to reflect profitability.",
       },
@@ -1352,7 +1442,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "Decomposition formula" },
       {
         type: "p",
-        text: "ΔRevenue = ΔUsers*ARPU_start + ΔARPU*Users_start + ΔUsers*ΔARPU.",
+        text: "Delta Revenue = Delta Users*ARPU_start + Delta ARPU*Users_start + Delta Users*Delta ARPU.",
       },
       { type: "h2", text: "How to use it in practice" },
       {
@@ -1375,12 +1465,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Why is there an interaction term?",
+        question: "Why is there an interaction term-",
         answer:
           "Because users and ARPU can change simultaneously. The interaction term captures the portion of growth created by both changing at the same time.",
       },
       {
-        question: "Should I use ARPU or ARPA?",
+        question: "Should I use ARPU or ARPA-",
         answer:
           "Use ARPU when your denominator is users/seats. Use ARPA when you bill per company account/customer. Pick the metric that matches how you price and report.",
       },
@@ -1469,17 +1559,17 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Does MRR include one-time fees?",
+        question: "Does MRR include one-time fees-",
         answer:
           "Typically no. MRR is meant to reflect recurring run-rate only. Track one-time fees separately so you don't distort growth trends.",
       },
       {
-        question: "What is net new MRR?",
+        question: "What is net new MRR-",
         answer:
           "Net new MRR is the net change in MRR for a period: new + expansion - contraction - churn. It explains whether growth is driven by acquisition or retention/expansion.",
       },
       {
-        question: "Is MRR the same as revenue?",
+        question: "Is MRR the same as revenue-",
         answer:
           "No. MRR is a run-rate snapshot. Revenue is recognized over time and can include non-recurring items.",
       },
@@ -1556,15 +1646,25 @@ export const guides: Guide[] = [
           "Always pair run-rate with retention (NRR/GRR) so growth is durable, not leaky.",
         ],
       },
+      { type: "h2", text: "QA checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Confirm ARR and MRR are taken on the same snapshot date.",
+          "Exclude one-time fees and usage spikes from both metrics.",
+          "Reconcile ARR to MRR by customer or plan to find definition drift.",
+          "Document the recurring revenue definition in dashboards.",
+        ],
+      },
     ],
     faqs: [
       {
-        question: "Is ARR the same as annual revenue?",
+        question: "Is ARR the same as annual revenue-",
         answer:
           "Not always. ARR is a recurring run-rate snapshot. Annual revenue is recognized over a year and can include one-time items.",
       },
       {
-        question: "Should ARR always equal MRR * 12?",
+        question: "Should ARR always equal MRR * 12-",
         answer:
           "If both are defined as recurring run-rate and measured at the same point in time, yes. If they don't match, check definitions and timestamps.",
       },
@@ -1611,6 +1711,24 @@ export const guides: Guide[] = [
           "Use an MRR waterfall to explain what drove growth (new vs expansion vs churn).",
           "Segment by plan and customer size to avoid blended averages hiding churn pockets.",
           "Pair growth with retention metrics (NRR/GRR) and payback for quality.",
+        ],
+      },
+      { type: "h2", text: "Benchmarks and context" },
+      {
+        type: "bullets",
+        items: [
+          "High growth early can be volatile; compare to trailing 3-month averages.",
+          "Use CMGR for mid-term planning and annualized growth for long-range targets.",
+          "Treat one-off enterprise deals as separate events, not recurring momentum.",
+        ],
+      },
+      { type: "h2", text: "Data QA checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Confirm MRR snapshot dates are aligned across months.",
+          "Exclude non-recurring revenue and usage spikes from MRR.",
+          "Reconcile with the MRR waterfall to confirm movements add up.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -1663,6 +1781,24 @@ export const guides: Guide[] = [
           "Track churned MRR and contraction MRR separately, then track GRR/NRR for the full picture.",
           "Use an MRR waterfall to explain whether growth is acquisition-driven or retention-driven.",
           "Segment by customer size and plan (blended churn hides weak cohorts).",
+        ],
+      },
+      { type: "h2", text: "MRR churn QA checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Use starting MRR and exclude new MRR from the denominator.",
+          "Separate churned MRR from contraction MRR in reporting.",
+          "Convert non-monthly windows to monthly equivalents when comparing periods.",
+        ],
+      },
+      { type: "h2", text: "Benchmarks and context" },
+      {
+        type: "bullets",
+        items: [
+          "Healthy churn varies by segment; SMB churn is typically higher than enterprise.",
+          "Look at trend direction rather than a single month.",
+          "Compare churn alongside activation and product adoption signals.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -1794,22 +1930,22 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "What is bookings?",
+        question: "What is bookings-",
         answer:
           "Bookings are the value of contracts you sign in a period. Bookings can include recurring subscriptions and non-recurring items (services, setup fees) depending on how you define it.",
       },
       {
-        question: "Why can bookings be higher than ARR?",
+        question: "Why can bookings be higher than ARR-",
         answer:
           "Bookings often include the full contract value (including one-time or non-recurring items), while ARR is a recurring run-rate snapshot. A big annual prepay can increase bookings and cash immediately, while ARR reflects recurring value over time.",
       },
       {
-        question: "Is ARR the same as annual revenue?",
+        question: "Is ARR the same as annual revenue-",
         answer:
           "Not always. ARR is a recurring run-rate snapshot. Annual revenue can include one-time fees or services, and it reflects what you recognized over a year rather than a current run-rate.",
       },
       {
-        question: "How does annual prepay affect ARR?",
+        question: "How does annual prepay affect ARR-",
         answer:
           "Annual prepay increases cash receipts immediately, but ARR reflects recurring run-rate. ARR typically increases based on the recurring subscription amount, not the timing of cash collection.",
       },
@@ -1929,7 +2065,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "What NRR measures" },
       {
         type: "p",
-        text: "NRR (Net Revenue Retention) measures how revenue from an existing customer cohort changes over a period, including expansion, contraction, and churn. It answers a simple question: after customers start, do they grow, shrink, or leave?",
+        text: "NRR (Net Revenue Retention) measures how revenue from an existing customer cohort changes over a period, including expansion, contraction, and churn. It answers a simple question: after customers start, do they grow, shrink, or leave-",
       },
       { type: "h2", text: "NRR formula" },
       {
@@ -2006,12 +2142,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "What is a good NRR?",
+        question: "What is a good NRR-",
         answer:
           "Benchmarks vary by segment and stage. NRR above 100% means the cohort grows without new customers. For many SMB businesses, NRR near 100% can still work if payback is short and churn is controlled.",
       },
       {
-        question: "Should I calculate NRR monthly or quarterly?",
+        question: "Should I calculate NRR monthly or quarterly-",
         answer:
           "Monthly gives faster feedback but can be noisy. Quarterly smooths seasonality and timing effects. Pick one and keep it consistent, and segment by cohort/plan when possible.",
       },
@@ -2083,7 +2219,7 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Is GRR always lower than NRR?",
+        question: "Is GRR always lower than NRR-",
         answer:
           "Usually yes because GRR excludes expansion, but it depends on how you define the metrics. GRR focuses on losses only; NRR includes gains from expansion.",
       },
@@ -2128,7 +2264,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "The core difference" },
       {
         type: "p",
-        text: "NRR (Net Revenue Retention) answers: does an existing cohort grow after expansions, downgrades, and churn? GRR (Gross Revenue Retention) answers: how much of the cohort's starting revenue survives losses, excluding expansion.",
+        text: "NRR (Net Revenue Retention) answers: does an existing cohort grow after expansions, downgrades, and churn- GRR (Gross Revenue Retention) answers: how much of the cohort's starting revenue survives losses, excluding expansion.",
       },
       { type: "h2", text: "Formulas (same inputs)" },
       {
@@ -2178,7 +2314,7 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Can NRR be above 100% if churn is high?",
+        question: "Can NRR be above 100% if churn is high-",
         answer:
           "Yes. Strong expansion can offset churn and downgrades. That's why pairing NRR with GRR (and gross churn) helps you see durability and not just cohort growth.",
       },
@@ -2237,6 +2373,16 @@ export const guides: Guide[] = [
           "Use growth rate for comparing across time; use net new MRR for planning capacity and targets.",
         ],
       },
+      { type: "h2", text: "Operational checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Reconcile starting MRR + movements to ending MRR each month.",
+          "Separate reactivations and price increases from expansion.",
+          "Validate churn classification (downgrade vs cancellation).",
+          "Review net new MRR by segment to catch hidden churn pockets.",
+        ],
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -2249,7 +2395,7 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "What is net new MRR used for?",
+        question: "What is net new MRR used for-",
         answer:
           "Net new MRR helps you track momentum and plan growth. Teams use it for forecasting, capacity planning, and understanding whether growth is driven by new customers or by expansion.",
       },
@@ -2321,6 +2467,24 @@ export const guides: Guide[] = [
           "Annual prepay is normalized to MRR instead of invoices.",
         ],
       },
+      { type: "h2", text: "How to present the waterfall" },
+      {
+        type: "bullets",
+        items: [
+          "Show starting and ending MRR as anchors.",
+          "Group new and expansion as positive drivers, churn and contraction as negative.",
+          "Add a short narrative summary so stakeholders know what moved the metric.",
+        ],
+      },
+      { type: "h2", text: "Waterfall QA checks" },
+      {
+        type: "bullets",
+        items: [
+          "Ensure the waterfall ties to the finance MRR snapshot.",
+          "Confirm that churned and contraction MRR are not overlapping.",
+          "Validate reactivations are labeled consistently across periods.",
+        ],
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -2390,7 +2554,7 @@ export const guides: Guide[] = [
           "Segment-level quick ratio is more actionable than a blended number.",
         ],
       },
-      { type: "h2", text: "What is a good quick ratio?" },
+      { type: "h2", text: "What is a good quick ratio-" },
       {
         type: "bullets",
         items: [
@@ -2415,6 +2579,24 @@ export const guides: Guide[] = [
           "Pair quick ratio with net burn or burn multiple for efficiency context.",
           "Check NRR or GRR to separate expansion from churn dynamics.",
           "Track pipeline health so growth does not rely on unsustainable sales push.",
+        ],
+      },
+      { type: "h2", text: "Quick ratio troubleshooting" },
+      {
+        type: "bullets",
+        items: [
+          "If quick ratio falls, check churn and contraction before scaling spend.",
+          "If quick ratio spikes, validate that new MRR is not one-time or promo-driven.",
+          "Segment by plan to see where expansion or churn is concentrated.",
+        ],
+      },
+      { type: "h2", text: "Quick ratio and expansion" },
+      {
+        type: "bullets",
+        items: [
+          "Expansion-heavy growth can mask churn; monitor GRR and logo retention.",
+          "Use expansion rate by cohort to confirm durability.",
+          "Avoid relying on one-time price increases to inflate expansion.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -2454,7 +2636,7 @@ export const guides: Guide[] = [
       },
       { type: "h2", text: "Formula" },
       { type: "p", text: "Rule of 40 score = growth rate (%) + profit margin (%)" },
-      { type: "h2", text: "Which margin should you use?" },
+      { type: "h2", text: "Which margin should you use-" },
       {
         type: "bullets",
         items: [
@@ -2495,6 +2677,24 @@ export const guides: Guide[] = [
           "Use the same growth definition each period (ARR, MRR, or revenue).",
           "Use the same margin definition each period (operating, EBITDA, or FCF).",
           "Explain what is driving the score, not just the number itself.",
+        ],
+      },
+      { type: "h2", text: "How to improve the score without gaming it" },
+      {
+        type: "bullets",
+        items: [
+          "Improve retention to lift growth without increasing spend.",
+          "Raise prices where value is proven, not across the board.",
+          "Reduce low-ROI acquisition channels before cutting core product spend.",
+        ],
+      },
+      { type: "h2", text: "Reporting tips" },
+      {
+        type: "bullets",
+        items: [
+          "Use the same reporting period for growth and margin inputs.",
+          "Explain the drivers behind growth and margin changes.",
+          "Show trailing averages to reduce monthly noise.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -2540,6 +2740,24 @@ export const guides: Guide[] = [
           "Period growth: (end ARR - start ARR) / start ARR.",
           "CMGR: compounded monthly growth over the period (useful for comparisons across horizons).",
           "Annualized growth (CAGR): converts the period change into an annualized rate.",
+        ],
+      },
+      { type: "h2", text: "Benchmarks and context" },
+      {
+        type: "bullets",
+        items: [
+          "ARR growth is lumpy for enterprise deals; compare trailing averages.",
+          "CMGR is useful for short periods; annualized growth is better for longer horizons.",
+          "Segment by plan or ACV band to separate true momentum from mix shifts.",
+        ],
+      },
+      { type: "h2", text: "ARR growth QA checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Ensure start and end ARR snapshots use the same definition.",
+          "Exclude one-time fees and services from ARR.",
+          "Reconcile movements with the ARR waterfall to confirm drivers.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -2599,6 +2817,24 @@ export const guides: Guide[] = [
           "Use it quarterly if monthly ARR snapshots are noisy due to deal timing.",
           "Segment by plan/channel/customer size when blended numbers hide churn pockets.",
           "Use net new ARR as a consistent input to burn multiple (same period).",
+        ],
+      },
+      { type: "h2", text: "How to reconcile with cash and bookings" },
+      {
+        type: "bullets",
+        items: [
+          "ARR is a run-rate; bookings and cash can lead or lag due to billing terms.",
+          "Track annual prepay separately so it does not inflate ARR movements.",
+          "Use the same period boundary for ARR waterfall and burn metrics.",
+        ],
+      },
+      { type: "h2", text: "ARR waterfall QA checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Confirm each customer movement is counted once (new vs expansion).",
+          "Validate churn and contraction are based on starting ARR, not ending ARR.",
+          "Match the ending ARR to the actual snapshot after all movements.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -2676,6 +2912,38 @@ export const guides: Guide[] = [
           "Align sales efficiency with product-market fit before scaling.",
         ],
       },
+      { type: "h2", text: "Operational checkpoints" },
+      {
+        type: "bullets",
+        items: [
+          "Track burn multiple quarterly to smooth timing noise.",
+          "Reconcile net new ARR to your ARR waterfall inputs.",
+          "Tie spend changes to cohort quality, not only short-term ROAS.",
+        ],
+      },
+      { type: "h2", text: "Benchmarks (directional)" },
+      {
+        type: "bullets",
+        items: [
+          "Lower is better; many teams target below 2.0 in stable growth phases.",
+          "Very low numbers can hide deferred churn or a temporary billing spike.",
+          "Use your own trendline and segment mix as the primary benchmark.",
+        ],
+      },
+      { type: "h2", text: "Burn multiple vs payback" },
+      {
+        type: "p",
+        text: "Burn multiple is a cash efficiency snapshot. Payback measures how fast you recover CAC. Use both: burn multiple for portfolio-level efficiency, payback for unit-level cash recovery.",
+      },
+      { type: "h2", text: "Data hygiene checks" },
+      {
+        type: "bullets",
+        items: [
+          "Use the same period for burn and ARR movements (monthly or quarterly).",
+          "Remove one-time revenue items from ARR inputs.",
+          "Tie net burn to cash flow statements to avoid double counting.",
+        ],
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -2731,9 +2999,19 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "Net new ARR is a dollar amount (ΔARR).",
+          "Net new ARR is a dollar amount (ARR).",
           "ARR growth rate is net new ARR / starting ARR for the period.",
           "Use growth rate for comparisons; use net new ARR for planning and efficiency metrics.",
+        ],
+      },
+      { type: "h2", text: "Reconciliation checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Starting ARR + net movements equals ending ARR for the same period.",
+          "Separate reactivations and price increases from expansion.",
+          "Normalize annual contracts to ARR, not billings.",
+          "Review net new ARR by segment to spot hidden churn.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -2838,12 +3116,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "What is a good LTV:CAC ratio?",
+        question: "What is a good LTV:CAC ratio-",
         answer:
           "It depends on payback and cash constraints, but ~3:1 is a common rough target. A lower ratio can still work with short payback and strong retention; a higher ratio can mean you're under-investing in growth.",
       },
       {
-        question: "Should I use logo churn or revenue churn for LTV?",
+        question: "Should I use logo churn or revenue churn for LTV-",
         answer:
           "For a simple customer LTV model, logo churn (customer churn) is common. If expansion is meaningful, cohort-based revenue retention (NRR/GRR) may be more informative than a single churn number.",
       },
@@ -2939,12 +3217,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Why can bookings be higher than ARR?",
+        question: "Why can bookings be higher than ARR-",
         answer:
           "Bookings can include the full contract value and one-time items, while ARR focuses on recurring run-rate. Annual prepay increases bookings and cash immediately, while ARR reflects recurring value.",
       },
       {
-        question: "Is ARR the same as annual revenue?",
+        question: "Is ARR the same as annual revenue-",
         answer:
           "Not always. ARR is a run-rate snapshot focused on recurring revenue. Annual revenue is what you recognize over a year and can include one-time items.",
       },
@@ -2988,6 +3266,24 @@ export const guides: Guide[] = [
           "Pair with retention (NRR/GRR) to ensure growth is durable.",
         ],
       },
+      { type: "h2", text: "Benchmarks (directional)" },
+      {
+        type: "bullets",
+        items: [
+          "Above 1.0 is often considered healthy in steady-state SaaS.",
+          "Values below 0.5 usually mean payback is too slow or retention is weak.",
+          "Use your own trendline; benchmarks vary by ACV and sales cycle.",
+        ],
+      },
+      { type: "h2", text: "Data QA checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Use the same lag assumption every period (often one quarter).",
+          "Confirm net new ARR excludes one-time items and migrations.",
+          "Align S&M spend definitions (sales-only vs sales + marketing).",
+        ],
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -3000,7 +3296,7 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Magic Number vs burn multiple: which is better?",
+        question: "Magic Number vs burn multiple: which is better-",
         answer:
           "They answer different questions. Magic Number focuses on sales & marketing efficiency. Burn multiple focuses on total cash efficiency. Many teams track both.",
       },
@@ -3058,10 +3354,28 @@ export const guides: Guide[] = [
           "Track churn drivers and reduce early churn (activation and onboarding).",
         ],
       },
+      { type: "h2", text: "Segmented lifetime planning" },
+      {
+        type: "bullets",
+        items: [
+          "Estimate lifetime separately for SMB vs enterprise; churn curves differ.",
+          "Use product usage tiers to separate low-usage churn from power users.",
+          "Recompute lifetime after pricing or packaging changes.",
+        ],
+      },
+      { type: "h2", text: "Lifetime data quality checks" },
+      {
+        type: "bullets",
+        items: [
+          "Use a consistent churn definition (logo vs revenue) across periods.",
+          "Exclude paused or seasonal accounts if they are not true churn.",
+          "Align churn measurement to the same billing period (monthly vs annual).",
+        ],
+      },
     ],
     faqs: [
       {
-        question: "Should I use logo churn or revenue churn?",
+        question: "Should I use logo churn or revenue churn-",
         answer:
           "Use logo churn to estimate customer lifetime (accounts). Use revenue retention (GRR/NRR) to understand revenue lifetime when expansions exist.",
       },
@@ -3095,7 +3409,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "NPV formula" },
       {
         type: "p",
-        text: "NPV = Σ (cash flow_t / (1 + r)^t) - initial investment",
+        text: "NPV = sum(cash flow_t / (1 + r)^t) - initial investment",
       },
       { type: "h2", text: "How to calculate NPV (step-by-step)" },
       {
@@ -3105,6 +3419,24 @@ export const guides: Guide[] = [
           "Choose a discount rate (your required return / MARR).",
           "Discount each cash flow back to present value.",
           "Sum discounted cash flows and subtract the upfront investment.",
+        ],
+      },
+      { type: "h2", text: "Sensitivity and scenario checks" },
+      {
+        type: "bullets",
+        items: [
+          "Test a range of discount rates to see how sensitive NPV is to risk.",
+          "Use downside and upside cash flow scenarios instead of a single base case.",
+          "Check for timing risk: delays can cut NPV even if totals look strong.",
+        ],
+      },
+      { type: "h2", text: "NPV QA checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Use consistent time units (monthly vs annual) for cash flows and rate.",
+          "Separate one-time capex from ongoing cash flows.",
+          "Avoid mixing nominal and real cash flows without adjusting the rate.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -3119,7 +3451,7 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "What is a good discount rate for NPV?",
+        question: "What is a good discount rate for NPV-",
         answer:
           "It depends on your required return and risk. Many teams start with a hurdle rate (MARR) and test a range to understand sensitivity.",
       },
@@ -3182,12 +3514,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Is higher IRR always better?",
+        question: "Is higher IRR always better-",
         answer:
           "Not necessarily. Higher IRR is attractive, but a small project can have high IRR and still create little value. Use NPV to compare total value created at a consistent required return.",
       },
       {
-        question: "What if IRR is undefined?",
+        question: "What if IRR is undefined-",
         answer:
           "Some cash flow patterns don't produce a single IRR (or any IRR). In those cases, rely on NPV at a chosen discount rate instead.",
       },
@@ -3230,7 +3562,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "Discounted payback vs simple payback" },
       {
         type: "table",
-        columns: ["Metric", "Accounts for time value?", "Best for", "Common pitfall"],
+        columns: ["Metric", "Accounts for time value-", "Best for", "Common pitfall"],
         rows: [
           [
             "Simple payback",
@@ -3254,6 +3586,25 @@ export const guides: Guide[] = [
           "Discount each cash flow: PV_t = cash flow_t / (1 + r)^t.",
           "Sum discounted cash flows cumulatively until the total reaches the initial investment.",
           "Interpolate within the year for partial-year payback.",
+        ],
+      },
+      { type: "h2", text: "When discounted payback is most useful" },
+      {
+        type: "bullets",
+        items: [
+          "Projects with long cash flow tails where time value matters.",
+          "Comparing initiatives with similar lifetimes but different timing profiles.",
+          "Capital allocation decisions where risk-adjusted timing matters.",
+          "Early screening before deeper NPV modeling.",
+        ],
+      },
+      { type: "h2", text: "How to interpret the result" },
+      {
+        type: "bullets",
+        items: [
+          "Shorter discounted payback improves liquidity resilience.",
+          "Use it alongside NPV to avoid ignoring post-payback value.",
+          "Compare payback to expected product lifecycle or contract duration.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -3315,7 +3666,7 @@ export const guides: Guide[] = [
         type: "p",
         text: "Revenue break-even works well when you have one main product and a stable margin. If you have multiple products or a variable mix, it can be more accurate to model break-even units (or break-even customers) by tier.",
       },
-      { type: "h2", text: "What margin should you use?" },
+      { type: "h2", text: "What margin should you use-" },
       {
         type: "bullets",
         items: [
@@ -3404,15 +3755,33 @@ export const guides: Guide[] = [
         type: "p",
         text: "ROAS targets are really contribution margin targets. A campaign can have a high ROAS but still be unprofitable if variable costs and overhead allocations are large.",
       },
+      { type: "h2", text: "How to use it in pricing and growth" },
+      {
+        type: "bullets",
+        items: [
+          "Set break-even ROAS or CPA from contribution margin, not revenue.",
+          "Use contribution margin by segment to decide which plans to scale.",
+          "Monitor contribution margin after discounts or channel mix shifts.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Mixing fixed and variable costs across periods.",
+          "Using blended averages when margins differ by segment.",
+          "Ignoring refunds or chargebacks that erode contribution.",
+        ],
+      },
     ],
     faqs: [
       {
-        question: "Is contribution margin the same as gross margin?",
+        question: "Is contribution margin the same as gross margin-",
         answer:
           "Not always. Gross margin usually includes COGS. Contribution margin often includes additional variable costs like fees, shipping, and returns.",
       },
       {
-        question: "Should ad spend be included in contribution margin?",
+        question: "Should ad spend be included in contribution margin-",
         answer:
           "For paid acquisition, many teams treat ad spend as a variable cost and model 'contribution after marketing' to decide what to scale.",
       },
@@ -3437,7 +3806,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "Definition" },
       {
         type: "p",
-        text: "Incrementality asks: what would have happened without ads? The incremental lift is the difference between outcomes with ads and outcomes in a comparable no-ads baseline.",
+        text: "Incrementality asks: what would have happened without ads- The incremental lift is the difference between outcomes with ads and outcomes in a comparable no-ads baseline.",
       },
       { type: "h2", text: "Why ROAS can mislead" },
       {
@@ -3467,15 +3836,25 @@ export const guides: Guide[] = [
           "Use the result to set ROAS/CPA targets and scale rules.",
         ],
       },
+      { type: "h2", text: "Test design QA" },
+      {
+        type: "bullets",
+        items: [
+          "Confirm tracking parity: events, values, and attribution windows match.",
+          "Lock creative and targeting during the test window.",
+          "Check for external shocks (promo, pricing, PR) before concluding.",
+          "Validate conversion lag so results are not premature.",
+        ],
+      },
     ],
     faqs: [
       {
-        question: "Do I need incrementality tests if I'm small?",
+        question: "Do I need incrementality tests if I'm small-",
         answer:
           "Usually not. Early on, focus on creative-market fit and basic unit economics. Incrementality becomes more valuable as spend grows and attribution bias increases.",
       },
       {
-        question: "What metric should I optimize for in a test?",
+        question: "What metric should I optimize for in a test-",
         answer:
           "If you can, optimize for contribution margin or profit. If not, use a proxy you trust (e.g., first purchases) and adjust using margin assumptions.",
       },
@@ -3502,7 +3881,7 @@ export const guides: Guide[] = [
         type: "p",
         text: "Aggregates blend together customers acquired at different times, prices, and behaviors. When your product or acquisition channel changes, averages can look stable while underlying cohorts deteriorate (or improve).",
       },
-      { type: "h2", text: "What is a cohort?" },
+      { type: "h2", text: "What is a cohort-" },
       {
         type: "p",
         text: "A cohort is a group of customers that share a start date (e.g., customers acquired in January). Cohort analysis tracks retention, expansion, and churn for that group over time.",
@@ -3516,6 +3895,24 @@ export const guides: Guide[] = [
           "When you're trying to forecast LTV or payback more accurately.",
         ],
       },
+      { type: "h2", text: "Common aggregate traps" },
+      {
+        type: "bullets",
+        items: [
+          "Blended churn hides a weak new cohort even as older cohorts remain stable.",
+          "Expansion from a few large accounts can mask broad-based churn.",
+          "Promo-heavy cohorts can inflate short-term revenue and deflate true LTV.",
+        ],
+      },
+      { type: "h2", text: "Cohort QA checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Use a consistent cohort start event (signup or first value).",
+          "Track cohorts by acquisition channel and plan for clarity.",
+          "Normalize for billing cadence (monthly vs annual) when comparing retention.",
+        ],
+      },
       { type: "h2", text: "How to use cohorts with LTV and payback" },
       {
         type: "bullets",
@@ -3525,10 +3922,19 @@ export const guides: Guide[] = [
           "Compare payback by cohort to see whether acquisition quality is changing.",
         ],
       },
+      { type: "h2", text: "When aggregates are still useful" },
+      {
+        type: "bullets",
+        items: [
+          "For quick executive dashboards where trend direction is the goal.",
+          "When cohort data is too sparse to be statistically useful.",
+          "For short-term operational monitoring (daily or weekly changes).",
+        ],
+      },
     ],
     faqs: [
       {
-        question: "Is customer churn enough, or do I need revenue retention?",
+        question: "Is customer churn enough, or do I need revenue retention-",
         answer:
           "Customer churn is useful, but revenue retention (NRR/GRR) is often more representative for SaaS because expansion and contraction can dominate the story.",
       },
@@ -3604,12 +4010,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "How do I translate annual NRR to a monthly rate?",
+        question: "How do I translate annual NRR to a monthly rate-",
         answer:
           "If you only have an annual NRR, you can approximate a monthly rate by taking the 12th root: monthly NRR ~ (annual NRR)^(1/12). It's still better to compute monthly retention directly when possible.",
       },
       {
-        question: "Should expansion and churn be applied to starting MRR or ending MRR?",
+        question: "Should expansion and churn be applied to starting MRR or ending MRR-",
         answer:
           "Most simple models apply the rates to the current MRR base at the start of each month (then update). For precision, use cohort-based retention curves and apply behavior by segment.",
       },
@@ -3690,12 +4096,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Is runway the same as burn multiple?",
+        question: "Is runway the same as burn multiple-",
         answer:
           "No. Runway is a cash survival metric. Burn multiple relates net burn to net new ARR and is a growth efficiency metric for SaaS.",
       },
       {
-        question: "Should I include R&D in burn?",
+        question: "Should I include R&D in burn-",
         answer:
           "For runway, include all cash outflows required to operate: payroll, rent, tools, cloud, and any spending you can't avoid. For unit economics decisions, you may separate growth investments from maintenance spending.",
       },
@@ -3772,12 +4178,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Should I include brand marketing spend in CAC?",
+        question: "Should I include brand marketing spend in CAC-",
         answer:
           "For planning (blended CAC), many teams include it if it contributes to acquisition at your stage. For channel optimization, keep the paid CAC numerator closer to variable costs tied to that channel.",
       },
       {
-        question: "Can blended CAC go down even if paid CAC rises?",
+        question: "Can blended CAC go down even if paid CAC rises-",
         answer:
           "Yes. If you scale acquisition volume, fixed costs per customer can fall. That can offset a rising paid CAC, which is why it helps to track both metrics.",
       },
@@ -3854,12 +4260,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Should I use revenue or gross profit for LTV?",
+        question: "Should I use revenue or gross profit for LTV-",
         answer:
           "For unit economics decisions, gross profit is usually better because it accounts for COGS and variable delivery costs. If you use revenue, you can overstate value and set CAC targets too high.",
       },
       {
-        question: "How long should the horizon be?",
+        question: "How long should the horizon be-",
         answer:
           "Use 36-60 months for many SaaS products as a practical horizon. For high retention businesses, also run scenarios since long tails dominate the sum.",
       },
@@ -3939,12 +4345,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Should I use revenue, gross profit, or contribution margin?",
+        question: "Should I use revenue, gross profit, or contribution margin-",
         answer:
           "Use contribution margin when possible because it reflects variable costs (fees, shipping, returns). Revenue-only lift can be misleading for low-margin products.",
       },
       {
-        question: "Can lift be negative?",
+        question: "Can lift be negative-",
         answer:
           "Yes. It can occur due to noise, bad targeting/creative, or true cannibalization. Double-check randomization and that the holdout truly had no exposure.",
       },
@@ -4019,12 +4425,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "What if price equals variable cost?",
+        question: "What if price equals variable cost-",
         answer:
           "Then contribution margin is zero and you will never break even because each unit contributes nothing toward fixed costs. You need either higher price or lower variable cost.",
       },
       {
-        question: "Is break-even revenue more useful than break-even units?",
+        question: "Is break-even revenue more useful than break-even units-",
         answer:
           "They answer similar questions. Units is more intuitive for products with stable pricing; revenue is more general when pricing varies or you have multiple SKUs.",
       },
@@ -4095,12 +4501,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Should I model new customer growth in the price increase math?",
+        question: "Should I model new customer growth in the price increase math-",
         answer:
           "For the break-even question, focus on the existing base first. New customer growth can hide churn issues. Once you have baseline safety, layer on new customer MRR scenarios.",
       },
       {
-        question: "Which churn should I use?",
+        question: "Which churn should I use-",
         answer:
           "For revenue impact, use revenue churn (MRR lost) rather than logo churn. If you only have logo churn, treat the output as directional and sanity-check with revenue churn once the change ships.",
       },
@@ -4156,6 +4562,24 @@ export const guides: Guide[] = [
           "Review opportunity cohorts by expected close date for a time-bound view.",
         ],
       },
+      { type: "h2", text: "Quota attainment QA checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Use the same booked definition across periods (bookings vs ARR vs ACV).",
+          "Track attainment by segment to avoid blended averages.",
+          "Reconcile booked totals with CRM close dates for the period.",
+        ],
+      },
+      { type: "h2", text: "Benchmarks and context" },
+      {
+        type: "bullets",
+        items: [
+          "Many teams close late in the period; compare pacing to prior periods.",
+          "Enterprise motions are lumpier; expect higher variance in attainment.",
+          "Use rolling averages for forecast stability.",
+        ],
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -4168,7 +4592,7 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Should I use business days or calendar days?",
+        question: "Should I use business days or calendar days-",
         answer:
           "Either can work as long as you're consistent. If your team sells mostly on business days, business-day pacing is usually more meaningful.",
       },
@@ -4226,6 +4650,42 @@ export const guides: Guide[] = [
           "Ignoring sales cycle length and timing (coverage must match the period).",
         ],
       },
+      { type: "h2", text: "Coverage checks" },
+      {
+        type: "bullets",
+        items: [
+          "Compare coverage by segment to find weak spots.",
+          "Review pipeline age to spot stale deals.",
+          "Add buffer if slippage or discounting is rising.",
+        ],
+      },
+      { type: "h2", text: "Pipeline quality filters" },
+      {
+        type: "bullets",
+        items: [
+          "Use stage-entry criteria and disqualify deals with no next step.",
+          "Require a defined close date inside the period for coverage math.",
+          "Exclude pipeline created solely for pricing requests or vendor checks.",
+        ],
+      },
+      { type: "h2", text: "How to improve coverage" },
+      {
+        type: "bullets",
+        items: [
+          "Increase qualified pipeline creation, not just raw lead volume.",
+          "Fix weak stages first (for example, discovery to demo).",
+          "Tighten ICP and messaging to lift win rate and reduce slippage.",
+        ],
+      },
+      { type: "h2", text: "Coverage benchmarks (directional)" },
+      {
+        type: "bullets",
+        items: [
+          "High win rate teams can operate with lower coverage.",
+          "Lower win rate or longer sales cycles need more coverage buffer.",
+          "Benchmarks vary by motion; validate with your own history.",
+        ],
+      },
     ],
     examples: [
       {
@@ -4271,6 +4731,24 @@ export const guides: Guide[] = [
           "Add a slippage buffer based on history (many deals push).",
         ],
       },
+      { type: "h2", text: "Translate to activity targets" },
+      {
+        type: "bullets",
+        items: [
+          "Convert opportunities needed into required SQLs using stage conversion rates.",
+          "Translate SQLs into MQLs or PQLs based on historical funnel ratios.",
+          "Back into daily or weekly targets for pipeline creation.",
+        ],
+      },
+      { type: "h2", text: "Pipeline required QA checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Use win rate and deal size from the same segment and stage definition.",
+          "Check that expected close dates fit the target period.",
+          "Remove pipeline that is stalled or missing next steps.",
+        ],
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -4278,6 +4756,15 @@ export const guides: Guide[] = [
           "Using a single average deal size across segments.",
           "Using win rate from the wrong funnel stage.",
           "Ignoring time lag (pipeline must be closeable within the period).",
+        ],
+      },
+      { type: "h2", text: "Planning checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Translate pipeline dollars into required SQLs and MQLs.",
+          "Use historical slippage to add a realistic buffer.",
+          "Review coverage weekly and adjust targets early.",
         ],
       },
     ],
@@ -4466,6 +4953,24 @@ export const guides: Guide[] = [
           "Convert MQLs into leads using lead->MQL.",
         ],
       },
+      { type: "h2", text: "Add capacity and timing constraints" },
+      {
+        type: "bullets",
+        items: [
+          "Check rep capacity (active opps per rep) before raising funnel targets.",
+          "Account for sales cycle length so this quarter's leads map to next quarter's wins.",
+          "Separate inbound vs outbound because conversion and cycle times differ.",
+        ],
+      },
+      { type: "h2", text: "Funnel QA checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Use the same stage definitions for conversion rates and targets.",
+          "Remove recycled leads to avoid double counting volume.",
+          "Validate that top-of-funnel volume is achievable by channel.",
+        ],
+      },
       { type: "h2", text: "Make it accurate" },
       {
         type: "bullets",
@@ -4538,6 +5043,24 @@ export const guides: Guide[] = [
           "Fix early lifecycle quality issues: speed, reliability, and support clarity.",
         ],
       },
+      { type: "h2", text: "Activation benchmarks (directional)" },
+      {
+        type: "bullets",
+        items: [
+          "Define an internal baseline and target a steady upward trend.",
+          "Activation benchmarks vary by complexity; enterprise workflows often activate slower.",
+          "Measure activation within a fixed window to keep comparisons fair.",
+        ],
+      },
+      { type: "h2", text: "Activation QA checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Ensure activation events are deduped across client and server.",
+          "Separate new users from reactivated users in the numerator.",
+          "Validate that activation predicts retention in cohort data.",
+        ],
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -4594,6 +5117,24 @@ export const guides: Guide[] = [
           "Add conversion nudges: in-product prompts, lifecycle emails, sales follow-up for high intent.",
         ],
       },
+      { type: "h2", text: "Trial-to-paid QA checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Use a fixed conversion window aligned to your sales cycle.",
+          "Exclude free-to-paid migrations from legacy plans unless defined as trials.",
+          "Track trial extensions separately from standard trials.",
+        ],
+      },
+      { type: "h2", text: "Benchmarks and context" },
+      {
+        type: "bullets",
+        items: [
+          "Self-serve products often convert faster; sales-assisted trials convert slower.",
+          "Short trials can raise conversion but hurt activation if time-to-value is long.",
+          "Compare by segment and acquisition channel to avoid blended averages.",
+        ],
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -4639,6 +5180,33 @@ export const guides: Guide[] = [
           "Keep a stable 'active' definition (e.g., key event) for comparability.",
           "Track by segment (persona/plan) to avoid blended averages hiding issues.",
           "Use WAU/MAU for weekly cadence products; DAU/MAU can be too noisy otherwise.",
+        ],
+      },
+      { type: "h2", text: "How to improve stickiness" },
+      {
+        type: "bullets",
+        items: [
+          "Shorten time-to-value so new users return quickly.",
+          "Make core workflows habitual with reminders, templates, and defaults.",
+          "Remove friction in repeat actions (speed, saved state, permissions).",
+        ],
+      },
+      { type: "h2", text: "Benchmarks and caveats" },
+      {
+        type: "bullets",
+        items: [
+          "Daily cadence products expect higher DAU/MAU than weekly or monthly tools.",
+          "Use a consistent active window (calendar day vs rolling 24 hours).",
+          "Compare within the same segment before comparing across products.",
+        ],
+      },
+      { type: "h2", text: "Stickiness QA checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Ensure DAU and MAU use the same event definition and filters.",
+          "Exclude internal users and test accounts from both numerators.",
+          "Deduplicate users across devices if possible.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -4790,6 +5358,33 @@ export const guides: Guide[] = [
           "Follow up with in-product education for stalled cohorts.",
         ],
       },
+      { type: "h2", text: "Instrumentation tips" },
+      {
+        type: "bullets",
+        items: [
+          "Define the adoption event clearly and version it when tracking changes.",
+          "Track adoption by cohort so you can see if changes persist.",
+          "Use a time window that matches real usage cadence.",
+        ],
+      },
+      { type: "h2", text: "Adoption benchmarks" },
+      {
+        type: "bullets",
+        items: [
+          "Benchmarks vary by feature criticality and user segment.",
+          "Compare adoption of core vs secondary features separately.",
+          "Set targets based on retention lift, not vanity usage.",
+        ],
+      },
+      { type: "h2", text: "Adoption reporting checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Report adoption by cohort to see if improvements stick.",
+          "Track adoption depth (repeat use) in addition to first use.",
+          "Align adoption definitions with your success criteria.",
+        ],
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -4844,6 +5439,24 @@ export const guides: Guide[] = [
           "Defining PQLs using vanity events.",
           "Mixing cohorts/time windows (PQLs from one month, conversions from another).",
           "Optimizing PQL volume and destroying quality (conversion drops).",
+        ],
+      },
+      { type: "h2", text: "How to improve PQL-to-paid" },
+      {
+        type: "bullets",
+        items: [
+          "Tighten PQL criteria to focus on behaviors tied to retention.",
+          "Add product nudges for the moment before purchase intent fades.",
+          "Align sales follow-up timing to the highest conversion window.",
+        ],
+      },
+      { type: "h2", text: "Benchmarks and targets" },
+      {
+        type: "bullets",
+        items: [
+          "Benchmarks vary widely by product and motion.",
+          "Use historical cohorts to set targets instead of external averages.",
+          "Targets should improve quality, not just volume.",
         ],
       },
     ],
@@ -4909,12 +5522,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "What's a good marginal ROAS target?",
+        question: "What's a good marginal ROAS target-",
         answer:
           "It depends on your contribution margin and whether you include fixed costs. As a starting point, compare marginal ROAS to break-even ROAS (1 / contribution margin) and add buffer for uncertainty.",
       },
       {
-        question: "Can marginal ROAS be higher than average ROAS?",
+        question: "Can marginal ROAS be higher than average ROAS-",
         answer:
           "Yes at low spend or when you're ramping into a new audience/creative. But as spend scales, marginal ROAS typically trends downward due to saturation.",
       },
@@ -4996,12 +5609,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Can deferred revenue go down even if you are growing?",
+        question: "Can deferred revenue go down even if you are growing-",
         answer:
           "Yes. If you shift from annual prepay to monthly billing, or if recognized revenue outpaces new billings for a period, deferred revenue can decline while the business still grows.",
       },
       {
-        question: "Is deferred revenue the same as cash collected?",
+        question: "Is deferred revenue the same as cash collected-",
         answer:
           "No. Deferred revenue is a liability balance. Cash collected is cash. They can move together under prepay, but they differ when collections timing, write-offs, or payment terms differ.",
       },
@@ -5070,12 +5683,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Why does the DCF change so much with small discount rate moves?",
+        question: "Why does the DCF change so much with small discount rate moves-",
         answer:
           "Discounting compounds over time, and terminal value is very sensitive to (r - g). Small changes in r or terminal growth can meaningfully change EV, which is why sensitivity analysis is essential.",
       },
       {
-        question: "Is this a full valuation model?",
+        question: "Is this a full valuation model-",
         answer:
           "It's a simplified enterprise value estimate. A full model would adjust to equity value using net debt and model reinvestment more explicitly (capex, working capital, taxes).",
       },
@@ -5152,12 +5765,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Do I need cohort curves if I already track churn?",
+        question: "Do I need cohort curves if I already track churn-",
         answer:
           "Yes if you want better forecasting and diagnosis. The shape of the curve matters: two businesses can have the same average churn but very different early retention, which changes payback and growth quality.",
       },
       {
-        question: "What's a good retention curve?",
+        question: "What's a good retention curve-",
         answer:
           "It depends on product and segment. The key is improvement over time and strong early retention. Track benchmarks within your own history first, then compare to peers cautiously.",
       },
@@ -5222,12 +5835,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Should target CPA include fixed costs?",
+        question: "Should target CPA include fixed costs-",
         answer:
           "For campaign optimization, target CPA usually reflects variable economics. For business planning, you can set more conservative targets to cover fixed costs and desired profit.",
       },
       {
-        question: "What if my payback is too long?",
+        question: "What if my payback is too long-",
         answer:
           "Lower your target CPA, improve retention/expansion (raise LTV), raise margin, or change pricing. Long payback can make otherwise 'profitable' acquisition impossible due to cash constraints.",
       },
@@ -5295,12 +5908,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "If NPV is positive, should I always do the project?",
+        question: "If NPV is positive, should I always do the project-",
         answer:
           "Not always. Consider risk, capacity, strategic fit, and opportunity cost. Many teams require both positive NPV and payback within a threshold.",
       },
       {
-        question: "What's a good MARR?",
+        question: "What's a good MARR-",
         answer:
           "It depends on risk and alternatives. Some teams use WACC for mature businesses and higher hurdle rates for risky projects. Consistency matters more than precision.",
       },
@@ -5363,12 +5976,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Is WACC the same as discount rate?",
+        question: "Is WACC the same as discount rate-",
         answer:
           "WACC is often used as a discount rate proxy for valuing the overall firm. But the correct discount rate should match the risk of the cash flows being discounted.",
       },
       {
-        question: "Should I use after-tax or pre-tax cash flows?",
+        question: "Should I use after-tax or pre-tax cash flows-",
         answer:
           "Be consistent. Most DCFs discount after-tax free cash flows and use WACC as an after-tax rate proxy. Mixing pre-tax cash flows with after-tax discount rates can distort valuation.",
       },
@@ -5434,12 +6047,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Is MER better than ROAS?",
+        question: "Is MER better than ROAS-",
         answer:
           "They're different tools. MER is better for a top-down check across channels. ROAS (and CPA) are better for within-channel optimization, especially when paired with incrementality tests.",
       },
       {
-        question: "What period should I use?",
+        question: "What period should I use-",
         answer:
           "Use a consistent window that matches your business cycle (weekly for fast ecommerce, monthly for many teams). Make sure revenue and spend are aligned in time.",
       },
@@ -5505,12 +6118,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "How do I pick early months?",
+        question: "How do I pick early months-",
         answer:
           "Use your cohort curve: the early months are where retention drops most steeply. For many products it's months 1-3, but it varies by onboarding and purchase cycle.",
       },
       {
-        question: "Should I use logo churn or revenue churn?",
+        question: "Should I use logo churn or revenue churn-",
         answer:
           "For customer survival curves, use logo churn. For revenue planning, also model GRR/NRR and expansion. Both are useful but answer different questions.",
       },
@@ -5588,12 +6201,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "What's a good GRR?",
+        question: "What's a good GRR-",
         answer:
           "It depends on segment and stage, but GRR is a 'leakiness' metric: higher is better. Track GRR over time and by segment; improvement is often driven by product quality and customer success.",
       },
       {
-        question: "Can I forecast growth using NRR alone?",
+        question: "Can I forecast growth using NRR alone-",
         answer:
           "NRR is only the existing base. Overall growth also depends on new customer MRR. Use an MRR forecast model that combines new MRR with retention and expansion.",
       },
@@ -5628,7 +6241,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "What max CPC answers" },
       {
         type: "p",
-        text: "Max CPC answers a simple question: how much can you pay per click and still hit your unit economics targets? It's derived from the max CPA you can afford and your click-to-conversion rate (CVR).",
+        text: "Max CPC answers a simple question: how much can you pay per click and still hit your unit economics targets- It's derived from the max CPA you can afford and your click-to-conversion rate (CVR).",
       },
       { type: "h2", text: "Core relationships" },
       {
@@ -5661,12 +6274,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Should I set bids to max CPC?",
+        question: "Should I set bids to max CPC-",
         answer:
           "Usually you bid below max CPC so you have buffer. Use max CPC as a ceiling and then optimize using marginal ROAS and incrementality as spend scales.",
       },
       {
-        question: "What if my funnel has multiple steps?",
+        question: "What if my funnel has multiple steps-",
         answer:
           "Convert CVR to 'click -> purchase' (or click -> customer) by multiplying stage conversion rates. Alternatively use a funnel calculator and LTV-based targets for more accuracy.",
       },
@@ -5729,12 +6342,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "If I have equity value, how do I get EV?",
+        question: "If I have equity value, how do I get EV-",
         answer:
           "Reverse the bridge: EV = equity value + net debt + preferred + minority - other adjustments (depending on how you define adjustments). Consistency in definitions matters more than formulas.",
       },
       {
-        question: "Do I include cash in EV?",
+        question: "Do I include cash in EV-",
         answer:
           "By convention, EV represents the operating business value excluding excess cash. That's why cash is added when converting EV to equity value.",
       },
@@ -5811,7 +6424,7 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Is post-money always pre-money + investment?",
+        question: "Is post-money always pre-money + investment-",
         answer:
           "Often as a simplified framing, yes. But term details like option pool increases, convertible instruments, and fees can change effective ownership outcomes.",
       },
@@ -5851,6 +6464,24 @@ export const guides: Guide[] = [
       {
         type: "p",
         text: "If the company raises new money, new shares are issued. If you don't buy any of them, your ownership typically drops. A simple approximation uses the pre-money / post-money ratio to estimate dilution from the new issuance.",
+      },
+      { type: "h2", text: "Allocation realities" },
+      {
+        type: "bullets",
+        items: [
+          "Your pro rata may be capped or cut in competitive rounds.",
+          "Allocation is often tied to relationship, check size, and follow-on support.",
+          "Ask about reserves and allocation policy before relying on pro rata.",
+        ],
+      },
+      { type: "h2", text: "Pro rata modeling checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Use fully diluted ownership before the round.",
+          "Include option pool increases and convertibles when estimating dilution.",
+          "Model both partial and full participation scenarios.",
+        ],
       },
       { type: "h2", text: "Common mistakes" },
       {
@@ -5903,6 +6534,24 @@ export const guides: Guide[] = [
           "Start with current option pool % (fully diluted pre).",
           "Choose a target option pool % post-money.",
           "Solve for the additional pool needed, then compute the post-money split (existing vs investor vs pool).",
+        ],
+      },
+      { type: "h2", text: "Negotiation levers" },
+      {
+        type: "bullets",
+        items: [
+          "Negotiate the target post-money pool size based on hiring plans.",
+          "Ask to split the pool increase between existing holders and new investors.",
+          "Use a cap table model to compare effective dilution across term sheets.",
+        ],
+      },
+      { type: "h2", text: "Modeling checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Include SAFE/note conversions in the pre-money fully diluted count.",
+          "Confirm whether the option pool is pre-money or post-money.",
+          "Check that all ownership percentages sum to 100% post-money.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -5965,6 +6614,16 @@ export const guides: Guide[] = [
           "Convert SAFE amount into shares at the lowest applicable conversion price.",
         ],
       },
+      { type: "h2", text: "What to verify in the SAFE" },
+      {
+        type: "bullets",
+        items: [
+          "Is the SAFE pre-money or post-money (dilution mechanics differ)-",
+          "Does it include a cap, a discount, or both-",
+          "What counts as a qualified financing and what is the conversion trigger-",
+          "How are pro-rata rights handled, if any-",
+        ],
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -6020,6 +6679,24 @@ export const guides: Guide[] = [
           "Cap sets an effective valuation for conversion (lower price per share if the round valuation is high).",
           "Discount applies a percent off the round price per share.",
           "Many notes convert at the better (lower price) of cap or discount (terms vary).",
+        ],
+      },
+      { type: "h2", text: "Maturity and repayment risk" },
+      {
+        type: "bullets",
+        items: [
+          "Convertible notes have a maturity date; know what happens if no qualified financing occurs.",
+          "Some notes allow repayment, others extend or convert at maturity (terms vary).",
+          "Plan cash runway to avoid forced negotiations at maturity.",
+        ],
+      },
+      { type: "h2", text: "Modeling checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Use fully diluted shares for cap price calculations.",
+          "Include accrued interest in the conversion amount if the note says so.",
+          "Model both cap and discount and choose the lower conversion price.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -6089,10 +6766,10 @@ export const guides: Guide[] = [
         type: "table",
         columns: ["Step", "Question", "Why it matters"],
         rows: [
-          ["1", "Who is senior to whom?", "Seniority decides payout order"],
-          ["2", "What is each class's preference multiple?", "1x vs 2x changes low-exit outcomes"],
-          ["3", "Is it participating or non-participating?", "Participation adds extra upside after preference"],
-          ["4", "When can/should investors convert?", "Conversion flips the payout regime"],
+          ["1", "Who is senior to whom-", "Seniority decides payout order"],
+          ["2", "What is each class's preference multiple-", "1x vs 2x changes low-exit outcomes"],
+          ["3", "Is it participating or non-participating-", "Participation adds extra upside after preference"],
+          ["4", "When can/should investors convert-", "Conversion flips the payout regime"],
         ],
       },
       { type: "h2", text: "Variants to watch (terms that change outcomes)" },
@@ -6192,12 +6869,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Is LTV:CAC of 3* always good?",
+        question: "Is LTV:CAC of 3* always good-",
         answer:
           "Not always. If payback is long, you can still run out of cash. For fast-growing businesses, payback and cash constraints often matter more than a single ratio.",
       },
       {
-        question: "Should I use logo churn or revenue churn in LTV?",
+        question: "Should I use logo churn or revenue churn in LTV-",
         answer:
           "For accuracy, use cohort-based revenue retention curves (especially if expansion is meaningful). Logo churn is a shortcut that can mislead when revenue per account changes over time.",
       },
@@ -6256,12 +6933,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "How do I choose CTR and CVR inputs?",
+        question: "How do I choose CTR and CVR inputs-",
         answer:
           "Start with observed averages for the same placement mix. Then run scenarios: small changes in CTR or CVR can materially change break-even CPM.",
       },
       {
-        question: "How does this relate to CPC?",
+        question: "How does this relate to CPC-",
         answer:
           "They're linked: CPM ~ CPC * CTR * 1000. If you know your max CPC and CTR, you can infer a max CPM and vice versa.",
       },
@@ -6319,12 +6996,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Why do ARR multiples differ so much?",
+        question: "Why do ARR multiples differ so much-",
         answer:
           "Because the market prices growth quality: higher growth, higher gross margin, and stronger NRR/GRR often support higher multiples. Interest rates and risk appetite also move multiples materially.",
       },
       {
-        question: "Is multiple valuation better than DCF?",
+        question: "Is multiple valuation better than DCF-",
         answer:
           "Neither is 'better' universally. Multiples are fast and market-anchored; DCF is assumption-driven and can be more detailed. Many teams use both as cross-checks.",
       },
@@ -6368,8 +7045,8 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "ARR range: use realistic forecast error or pipeline volatility (e.g., ±10-20%).",
-          "Multiple range: use a market band from comparable companies (e.g., ±1-2 turns).",
+          "ARR range: use realistic forecast error or pipeline volatility (for example +/- 10-20%).",
+          "Multiple range: use a market band from comparable companies (for example +/- 1-2 turns).",
           "Use the same ARR definition across scenarios (exclude one-time items).",
         ],
       },
@@ -6380,6 +7057,24 @@ export const guides: Guide[] = [
           "Rows/columns show how valuation responds to ARR vs multiple moves.",
           "If multiple sensitivity dominates, valuation is mostly market-driven (quality signals matter).",
           "If ARR sensitivity dominates, execution (growth, retention, pricing) matters most in the near term.",
+        ],
+      },
+      { type: "h2", text: "What to include in scenarios" },
+      {
+        type: "bullets",
+        items: [
+          "Base, downside, and upside ARR cases tied to pipeline or renewal risk.",
+          "Multiple bands that reflect market conditions and growth quality.",
+          "Net debt or cash adjustments to translate EV to equity value.",
+        ],
+      },
+      { type: "h2", text: "Sensitivity QA checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Use the same ARR definition across scenarios.",
+          "Document the source of the multiple range (comps, recent rounds).",
+          "Avoid mixing calendar-year ARR with trailing-twelve-month revenue.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -6394,7 +7089,7 @@ export const guides: Guide[] = [
     ],
     examples: [
       {
-        label: "Sensitivity example ($2.4M ARR, 6* multiple, ±15% ARR, ±1* multiple)",
+        label: "Sensitivity example ($2.4M ARR, 6* multiple, +/-15% ARR, +/-1* multiple)",
         calculatorSlug: "arr-valuation-sensitivity-calculator",
         params: {
           baseArr: "2400000",
@@ -6467,12 +7162,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "What payback is 'good'?",
+        question: "What payback is 'good'-",
         answer:
           "It depends on your cash position and growth model. Many SaaS teams aim for ~6-18 months, but earlier-stage or lower-margin businesses often need faster payback.",
       },
       {
-        question: "Should I include sales salaries in CAC?",
+        question: "Should I include sales salaries in CAC-",
         answer:
           "For planning, yes (blended CAC). For channel optimization, teams often track paid CAC separately. Be consistent in the definition you use to judge payback.",
       },
@@ -6548,12 +7243,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "What if my CTR is high but I still lose money?",
+        question: "What if my CTR is high but I still lose money-",
         answer:
           "Then the bottleneck is likely CVR or margin. CTR only gets you clicks; conversion quality and economics determine profitability.",
       },
       {
-        question: "Should I use click CVR or session CVR?",
+        question: "Should I use click CVR or session CVR-",
         answer:
           "Use click-based CVR when computing CTR/CPC economics to avoid denominator mismatch. If you only have session CVR, treat results as directional.",
       },
@@ -6594,9 +7289,18 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "Discount rate: start with WACC as a base, then test ±1-3%.",
+          "Discount rate: start with WACC as a base, then test +/-1-3%.",
           "Terminal growth: test conservative long-run rates (often 0-4% depending on context).",
           "If terminal dominates EV, consider extending the forecast or making assumptions more conservative.",
+        ],
+      },
+      { type: "h2", text: "How to read the grid" },
+      {
+        type: "bullets",
+        items: [
+          "Look for stability: if value swings wildly, the conclusion is fragile.",
+          "Use the base case as a reference point, not as the only outcome.",
+          "Check whether the same story holds across reasonable rate and growth pairs.",
         ],
       },
       { type: "h2", text: "Common traps" },
@@ -6608,22 +7312,31 @@ export const guides: Guide[] = [
           "Using accounting earnings instead of cash flow for valuation.",
         ],
       },
+      { type: "h2", text: "Modeling checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Keep units consistent (annual cash flows with annual discount rates).",
+          "Reconcile terminal value to a reasonable share of total EV.",
+          "Run sensitivity on margin and reinvestment if they drive FCF.",
+        ],
+      },
     ],
     faqs: [
       {
-        question: "Why does EV change so much when discount rate moves 1%?",
+        question: "Why does EV change so much when discount rate moves 1%-",
         answer:
           "Discounting compounds over time and terminal value is sensitive to (r - g). Small changes can meaningfully affect present value, especially for long-duration cash flows.",
       },
       {
-        question: "Is a 3*3 grid enough?",
+        question: "Is a 3*3 grid enough-",
         answer:
           "It's a quick sanity check. For important decisions, expand to more scenarios and also test key operating assumptions (margin, reinvestment, growth fade).",
       },
     ],
     examples: [
       {
-        label: "Example: $5M FCF, 5 years @ 15% growth, base 12% discount ±2%, base 3% terminal ±1%",
+        label: "Example: $5M FCF, 5 years @ 15% growth, base 12% discount +/-2%, base 3% terminal +/-1%",
         calculatorSlug: "dcf-sensitivity-calculator",
         params: {
           annualFcf: "5000000",
@@ -6678,12 +7391,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Should I use one-sided or two-sided tests?",
+        question: "Should I use one-sided or two-sided tests-",
         answer:
           "Two-sided is safer and more standard unless you truly would never act on a negative result. This calculator assumes a two-sided test.",
       },
       {
-        question: "What if traffic is low?",
+        question: "What if traffic is low-",
         answer:
           "Increase MDE (test bigger changes), increase test duration, or test higher-funnel metrics first. You can also pool traffic across similar pages if the experience is consistent.",
       },
@@ -6746,12 +7459,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Should I use CPA or CAC in reporting?",
+        question: "Should I use CPA or CAC in reporting-",
         answer:
           "CPA often refers to cost per conversion event (lead, signup, purchase). CAC should refer to cost per new paying customer. Use both, but label the denominator clearly.",
       },
       {
-        question: "What if my sales cycle is long?",
+        question: "What if my sales cycle is long-",
         answer:
           "Use cohort-based reporting: group leads by week/month acquired and measure eventual conversion to customer. Otherwise CAC will look worse in recent periods due to lag.",
       },
@@ -6831,12 +7544,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Is CVR a landing page metric or a funnel metric?",
+        question: "Is CVR a landing page metric or a funnel metric-",
         answer:
           "Both. CVR can mean click->purchase, session->purchase, or click->lead depending on your definition. Use the definition that matches your spend denominator and your business model.",
       },
       {
-        question: "How do I increase CVR fastest?",
+        question: "How do I increase CVR fastest-",
         answer:
           "Improve offer clarity, reduce friction, speed up pages, improve trust signals, and match ad intent to landing content. Also filter low-intent traffic that inflates clicks without conversions.",
       },
@@ -6910,12 +7623,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Should I prioritize GRR or NRR?",
+        question: "Should I prioritize GRR or NRR-",
         answer:
           "Both matter. GRR measures leakiness (product quality). NRR measures total existing-base growth including expansion. Strong NRR can hide weak GRR, so track both.",
       },
       {
-        question: "Do these formulas apply to all businesses?",
+        question: "Do these formulas apply to all businesses-",
         answer:
           "They apply to recurring revenue cohorts. If you have one-time revenue, use different metrics or isolate the recurring base first.",
       },
@@ -6982,12 +7695,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Should I optimize gross margin or contribution margin?",
+        question: "Should I optimize gross margin or contribution margin-",
         answer:
           "If variable costs beyond COGS are meaningful, contribution margin is more decision-useful for acquisition and payback. Use the definition that matches your model.",
       },
       {
-        question: "Can margin improvements hurt retention?",
+        question: "Can margin improvements hurt retention-",
         answer:
           "Yes if margin improvements come from reducing customer value (support cuts, feature removal). Validate with cohort retention and NRR/GRR trends.",
       },
@@ -7050,12 +7763,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "If I hit payback, am I safe?",
+        question: "If I hit payback, am I safe-",
         answer:
           "Not always. Payback is a cash constraint, but you still need long-run profitability and retention. Pair payback with LTV and retention curves.",
       },
       {
-        question: "Should I use ARR instead of ARPA?",
+        question: "Should I use ARR instead of ARPA-",
         answer:
           "For monthly payback, use monthly ARPA. You can convert annual pricing to monthly ARPA for consistent units.",
       },
@@ -7137,12 +7850,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Does this include property taxes or insurance?",
+        question: "Does this include property taxes or insurance-",
         answer:
           "No. This calculator is for principal+interest only. Taxes, insurance, PMI, and fees can materially change total monthly cost.",
       },
       {
-        question: "How do extra payments affect the loan?",
+        question: "How do extra payments affect the loan-",
         answer:
           "Extra principal payments reduce balance faster, which reduces total interest and can shorten the term. This calculator assumes no extra payments.",
       },
@@ -7219,12 +7932,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Why do savings accounts advertise APY?",
+        question: "Why do savings accounts advertise APY-",
         answer:
           "APY standardizes the effective annual yield including compounding so products are easier to compare.",
       },
       {
-        question: "Is APR always the right number for loans?",
+        question: "Is APR always the right number for loans-",
         answer:
           "APR helps compare loans, but fees, points, and repayment structure can still matter. Always check total cost under your expected repayment plan.",
       },
@@ -7305,12 +8018,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Can real return be negative when nominal return is positive?",
+        question: "Can real return be negative when nominal return is positive-",
         answer:
           "Yes. If inflation exceeds nominal return, purchasing power falls even if the nominal balance grows.",
       },
       {
-        question: "Is real return enough to compare investments?",
+        question: "Is real return enough to compare investments-",
         answer:
           "It's necessary but not sufficient. You also need to consider risk, volatility, and liquidity. Real return is about purchasing power, not risk-adjusted performance.",
       },
@@ -7398,7 +8111,7 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "What's the fastest weekly dashboard for sales ops?",
+        question: "What's the fastest weekly dashboard for sales ops-",
         answer:
           "Track quota attainment (pacing), pipeline coverage (risk), win rate (conversion), and ramp-adjusted capacity (realistic output). Segment by ACV band to avoid blended averages.",
       },
@@ -7454,11 +8167,11 @@ export const guides: Guide[] = [
       {
         type: "bullets",
         items: [
-          "Activation: do users reach value quickly after signup?",
-          "Conversion: do activated users convert to paid (and how fast)?",
-          "Stickiness: do users come back at the cadence your product needs?",
-          "Adoption: are users using the features that drive value and retention?",
-          "Retention: do cohorts survive beyond the early lifecycle drop-off?",
+          "Activation: do users reach value quickly after signup-",
+          "Conversion: do activated users convert to paid (and how fast)-",
+          "Stickiness: do users come back at the cadence your product needs-",
+          "Adoption: are users using the features that drive value and retention-",
+          "Retention: do cohorts survive beyond the early lifecycle drop-off-",
         ],
       },
       { type: "h2", text: "Tools in this cluster" },
@@ -7623,11 +8336,11 @@ export const guides: Guide[] = [
         type: "table",
         columns: ["Metric", "Answers", "Best used for"],
         rows: [
-          ["Churn rate (logos)", "How many customers left?", "Customer experience and retention risk"],
-          ["MRR churn", "How much recurring revenue churned?", "Revenue impact from churn"],
-          ["GRR", "How much revenue did we keep before expansion?", "Baseline retention health (hard to fake)"],
-          ["NRR", "Did expansion offset churn?", "Growth quality and account expansion"],
-          ["Retention curve", "Does retention stabilize over time?", "Product-market fit and cohort behavior"],
+          ["Churn rate (logos)", "How many customers left-", "Customer experience and retention risk"],
+          ["MRR churn", "How much recurring revenue churned-", "Revenue impact from churn"],
+          ["GRR", "How much revenue did we keep before expansion-", "Baseline retention health (hard to fake)"],
+          ["NRR", "Did expansion offset churn-", "Growth quality and account expansion"],
+          ["Retention curve", "Does retention stabilize over time-", "Product-market fit and cohort behavior"],
         ],
       },
       { type: "h2", text: "A simple workflow (weekly/monthly)" },
@@ -7646,7 +8359,7 @@ export const guides: Guide[] = [
         type: "bullets",
         items: [
           "Mixing cohorts (signup cohorts vs paid cohorts vs activation cohorts) in the same chart.",
-          "Counting expansion as ‘retention' without also tracking GRR (NRR can hide churn).",
+          "Counting expansion as 'retention' without also tracking GRR (NRR can hide churn).",
           "Changing event definitions or billing rules without versioning (trends become meaningless).",
           "Ignoring mix shift: enterprise NRR can rise while SMB churn worsens (segment separately).",
         ],
@@ -7659,12 +8372,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Should we optimize NRR or GRR?",
+        question: "Should we optimize NRR or GRR-",
         answer:
           "Use GRR as the baseline health metric and NRR as the growth-quality metric. NRR can be high even with serious churn if expansion is strong, so track both.",
       },
       {
-        question: "Logo churn vs revenue churn: which is ‘more important'?",
+        question: "Logo churn vs revenue churn: which is 'more important'-",
         answer:
           "It depends on who you sell to. Logo churn is often the right early warning for SMB, while revenue churn and GRR/NRR are more informative for enterprise accounts.",
       },
@@ -7734,8 +8447,8 @@ export const guides: Guide[] = [
           ["1", "CAC (and fully-loaded CAC)", "True cost to acquire customers, not just ad spend"],
           ["2", "LTV (cohorted if possible)", "Ceiling for how much acquisition you can afford"],
           ["3", "LTV:CAC", "Quick sanity-check for profitability potential"],
-          ["4", "CAC payback", "Cash constraint lens (can you fund growth?)"],
-          ["5", "Burn multiple + runway", "Are you buying growth efficiently, and for how long?"],
+          ["4", "CAC payback", "Cash constraint lens (can you fund growth-)"],
+          ["5", "Burn multiple + runway", "Are you buying growth efficiently, and for how long-"],
         ],
       },
       { type: "h2", text: "A fast operating workflow" },
@@ -7748,7 +8461,7 @@ export const guides: Guide[] = [
           "Translate improvements into cash runway impact (growth is constrained by cash).",
         ],
       },
-      { type: "h2", text: "What ‘good' looks like (rule-of-thumb, not law)" },
+      { type: "h2", text: "What 'good' looks like (rule-of-thumb, not law)" },
       {
         type: "bullets",
         items: [
@@ -7770,12 +8483,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Should we use fully-loaded CAC or paid CAC?",
+        question: "Should we use fully-loaded CAC or paid CAC-",
         answer:
           "Use fully-loaded CAC for strategic decisions and investor/board reporting. Use paid CAC for channel optimization, but keep the definitions consistent.",
       },
       {
-        question: "If LTV:CAC is great, why can we still be cash negative?",
+        question: "If LTV:CAC is great, why can we still be cash negative-",
         answer:
           "Because payback timing matters. A strong LTV doesn't help if it takes too long to recover CAC and you run out of cash first.",
       },
@@ -7835,7 +8548,7 @@ export const guides: Guide[] = [
         type: "p",
         text: "Use ROAS and funnel math for day-to-day optimization, MER for top-down alignment, marginal ROAS to understand scale limits, and incrementality tests to validate true lift. You don't need all of them at once-add layers as spend grows.",
       },
-      { type: "h2", text: "Which metric should you trust?" },
+      { type: "h2", text: "Which metric should you trust-" },
       {
         type: "table",
         columns: ["Metric", "Strength", "Blind spots"],
@@ -7869,12 +8582,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Is MER better than ROAS?",
+        question: "Is MER better than ROAS-",
         answer:
           "MER is better for top-down truth and alignment, while ROAS is better for fast optimization. Use both: ROAS for action, MER for sanity-checking.",
       },
       {
-        question: "When should we run incrementality tests?",
+        question: "When should we run incrementality tests-",
         answer:
           "When spend is meaningful, audiences overlap, and attribution disputes appear (e.g., retargeting looks too good). Incrementality becomes more valuable as you scale.",
       },
@@ -8228,12 +8941,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Is incrementality always necessary?",
+        question: "Is incrementality always necessary-",
         answer:
           "Not always. Early on, attribution can be good enough for learning. Incrementality becomes more valuable as spend grows, audiences overlap, and attribution bias increases.",
       },
       {
-        question: "Can MER replace attribution?",
+        question: "Can MER replace attribution-",
         answer:
           "No. MER is top-down truth and alignment, but it won't tell you what to change. Use attribution for action and MER to sanity-check.",
       },
@@ -8469,12 +9182,12 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Should GA4 be the source of truth for ROAS?",
+        question: "Should GA4 be the source of truth for ROAS-",
         answer:
           "Use GA4 for cross-channel consistency, but validate with blended MER and incrementality tests. GA4 can undercount due to privacy and cross-device gaps.",
       },
       {
-        question: "Do UTMs hurt SEO?",
+        question: "Do UTMs hurt SEO-",
         answer:
           "They shouldn't if canonical URLs point to the clean version without query parameters. Avoid indexing UTM variants.",
       },
@@ -8549,7 +9262,7 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Is there a universal 'good' frequency cap?",
+        question: "Is there a universal 'good' frequency cap-",
         answer:
           "No. Use your funnel metrics: if frequency rises and CTR/CVR decay, cap or expand audience and refresh creative. Retargeting often tolerates higher frequency than prospecting.",
       },
@@ -8632,7 +9345,7 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Should I use GRR or NRR for LTV?",
+        question: "Should I use GRR or NRR for LTV-",
         answer:
           "For conservative planning, use GRR-driven retention (no expansion). Use NRR for growth planning only when expansion is durable and repeatable for your segment.",
       },
@@ -8711,7 +9424,7 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "What's a typical pipeline coverage target?",
+        question: "What's a typical pipeline coverage target-",
         answer:
           "It depends on win rate stability and cycle length. Many teams aim for ~3-5x for mid-market and higher for enterprise, but you should back into it from your own historical win rate and slippage.",
       },
@@ -8761,6 +9474,24 @@ export const guides: Guide[] = [
           "Tighten billing terms and enforce collections cadence (AR).",
           "Move to upfront billing or annual prepay where feasible (especially SaaS).",
           "Negotiate longer payment terms with vendors (AP) while maintaining trust.",
+        ],
+      },
+      { type: "h2", text: "CCC diagnostics" },
+      {
+        type: "bullets",
+        items: [
+          "Track days sales outstanding (DSO) and days payables outstanding (DPO) monthly.",
+          "Compare CCC by segment to find slow-paying customer groups.",
+          "Monitor disputes and billing errors that inflate DSO.",
+        ],
+      },
+      { type: "h2", text: "CCC QA checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Match AR/AP aging windows to the reporting period.",
+          "Exclude one-time invoices when tracking recurring collections.",
+          "Reconcile CCC changes to cash flow statement movements.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -8825,6 +9556,16 @@ export const guides: Guide[] = [
           "Add a liquidity lens: discounted payback for cash risk.",
         ],
       },
+      { type: "h2", text: "Decision checklist" },
+      {
+        type: "bullets",
+        items: [
+          "Is the project mutually exclusive with another option- Use NPV.",
+          "Do cash flows change sign more than once- IRR can be unreliable.",
+          "Is scale material- Prefer NPV for total value created.",
+          "Is liquidity a constraint- Add discounted payback or runway impact.",
+        ],
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -8837,7 +9578,7 @@ export const guides: Guide[] = [
     ],
     faqs: [
       {
-        question: "Should I pick the project with the higher IRR?",
+        question: "Should I pick the project with the higher IRR-",
         answer:
           "Not always. For mutually exclusive projects, NPV at your hurdle rate is usually the better decision metric. Use IRR as supporting context.",
       },

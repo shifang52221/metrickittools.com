@@ -23,7 +23,7 @@ function formatValue(result: ResultValue): string {
     case "percent":
       return formatPercent(result.value, maxFractionDigits);
     case "multiple":
-      return `${formatNumber(result.value, maxFractionDigits)}×`;
+      return `${formatNumber(result.value, maxFractionDigits)}x`;
     case "months":
       return `${formatNumber(result.value, maxFractionDigits)} months`;
     case "ratio":
@@ -197,7 +197,7 @@ export function CalculatorPageClient({ slug }: { slug: string }) {
         ) : null}
         {calc.guideSlug ? (
           <div className="text-sm text-zinc-600 dark:text-zinc-400">
-            Prefer an explanation? Read the{" "}
+            Prefer an explanation- Read the{" "}
             <Link className="underline" href={`/guides/${calc.guideSlug}`}>
               guide
             </Link>
@@ -219,7 +219,7 @@ export function CalculatorPageClient({ slug }: { slug: string }) {
           </div>
         ) : (
           <div className="text-sm text-zinc-600 dark:text-zinc-400">
-            Need definitions? Browse the{" "}
+            Need definitions- Browse the{" "}
             <Link className="underline" href="/glossary">
               glossary
             </Link>

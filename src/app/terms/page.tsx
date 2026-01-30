@@ -86,6 +86,12 @@ export default function TermsPage() {
         date reflects the latest revision. Continued use of the site means you
         accept the updated terms.
       </p>
+      <h2>Governing law</h2>
+      <p>
+        These terms are governed by the laws applicable to the site operator.
+        If a dispute arises, it should be resolved in the relevant courts for
+        that jurisdiction unless local law requires otherwise.
+      </p>
       <h2>Contact</h2>
       <p>
         Questions: <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>

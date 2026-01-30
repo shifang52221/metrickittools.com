@@ -13,7 +13,7 @@ export function HeaderSearch() {
       onSubmit={(e) => {
         e.preventDefault();
         const query = q.trim();
-        router.push(query ? `/search?q=${encodeURIComponent(query)}` : "/search");
+        router.push(query ? `/search-q=${encodeURIComponent(query)}` : "/search");
       }}
     >
       <input

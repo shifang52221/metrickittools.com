@@ -264,15 +264,15 @@ export default async function GlossaryTermPage({ params }: PageProps) {
               <Link className="underline" href="/guides">
                 Guides
               </Link>
-              <span className="text-zinc-400">·</span>
+              <span className="text-zinc-400">-</span>
               <Link className="underline" href="/saas-metrics">
                 SaaS metrics calculators
               </Link>
-              <span className="text-zinc-400">·</span>
+              <span className="text-zinc-400">-</span>
               <Link className="underline" href="/paid-ads">
                 Paid ads calculators
               </Link>
-              <span className="text-zinc-400">·</span>
+              <span className="text-zinc-400">-</span>
               <Link className="underline" href="/finance">
                 Finance calculators
               </Link>

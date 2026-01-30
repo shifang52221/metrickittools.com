@@ -33,12 +33,12 @@ export const termsCore: GlossaryTerm[] = [
     ],
     faqs: [
       {
-        question: "ARR vs revenue: are they the same?",
+        question: "ARR vs revenue: are they the same-",
         answer:
           "No. ARR is a run-rate snapshot based on recurring subscription revenue. Revenue is what you recognize over a period under accounting rules.",
       },
       {
-        question: "Should ARR include one-time fees or services?",
+        question: "Should ARR include one-time fees or services-",
         answer:
           "Usually no. ARR is typically reserved for recurring subscription revenue to keep it comparable over time.",
       },
@@ -85,12 +85,12 @@ export const termsCore: GlossaryTerm[] = [
     ],
     faqs: [
       {
-        question: "What's the difference between MRR and cash collected?",
+        question: "What's the difference between MRR and cash collected-",
         answer:
           "MRR is a recurring run-rate metric. Cash can be lumpy (annual prepay, timing), so cash collections can move differently than MRR.",
       },
       {
-        question: "Should MRR include discounts and credits?",
+        question: "Should MRR include discounts and credits-",
         answer:
           "Use a consistent policy. Most teams report MRR net of recurring discounts and exclude one-time credits so trends remain comparable.",
       },
@@ -113,7 +113,7 @@ export const termsCore: GlossaryTerm[] = [
       { type: "h2", text: "Definition" },
       {
         type: "p",
-        text: "CMGR (Compound Monthly Growth Rate) answers: if growth were smooth and compounded monthly, what constant monthly rate would turn the starting value into the ending value over the chosen number of months?",
+        text: "CMGR (Compound Monthly Growth Rate) answers: if growth were smooth and compounded monthly, what constant monthly rate would turn the starting value into the ending value over the chosen number of months-",
       },
       { type: "h2", text: "Formula" },
       {
@@ -140,7 +140,7 @@ export const termsCore: GlossaryTerm[] = [
     ],
     faqs: [
       {
-        question: "When should I not use CMGR?",
+        question: "When should I not use CMGR-",
         answer:
           "Avoid CMGR when the starting value is near zero (the math explodes) or when growth is highly seasonal. Use supporting metrics and context.",
       },
@@ -208,12 +208,12 @@ export const termsCore: GlossaryTerm[] = [
     ],
     faqs: [
       {
-        question: "Paid CAC vs fully-loaded CAC: which should I use?",
+        question: "Paid CAC vs fully-loaded CAC: which should I use-",
         answer:
           "Use fully-loaded CAC for planning and board-level truth (it includes more acquisition costs like sales/marketing salaries and tooling). Use paid CAC for channel optimization, but keep definitions consistent.",
       },
       {
-        question: "How do I segment CAC correctly?",
+        question: "How do I segment CAC correctly-",
         answer:
           "Segment by channel and by customer type (plan, company size) because CAC and retention vary widely. Blended CAC can hide unprofitable segments.",
       },
@@ -299,12 +299,12 @@ export const termsCore: GlossaryTerm[] = [
     ],
     faqs: [
       {
-        question: "Should LTV be based on revenue or gross profit?",
+        question: "Should LTV be based on revenue or gross profit-",
         answer:
           "For unit economics decisions (CAC, payback), gross profit LTV is usually more useful because it reflects the cash you can use to recover acquisition costs.",
       },
       {
-        question: "Why does LTV sometimes look unrealistically high?",
+        question: "Why does LTV sometimes look unrealistically high-",
         answer:
           "The common shortcut LTV ~ ARPA / churn assumes constant churn. If churn is very low, small measurement errors can explode the estimate. Cohort-based LTV is more reliable.",
       },
@@ -349,12 +349,12 @@ export const termsCore: GlossaryTerm[] = [
     ],
     faqs: [
       {
-        question: "What's the difference between ROAS and ROI?",
+        question: "What's the difference between ROAS and ROI-",
         answer:
           "ROAS is revenue divided by ad spend. ROI is profit relative to total cost. You can have high ROAS and still lose money if margins or costs are poor.",
       },
       {
-        question: "Should I optimize for break-even ROAS or target ROAS?",
+        question: "Should I optimize for break-even ROAS or target ROAS-",
         answer:
           "Use break-even ROAS to avoid losing money on variable economics. Use target ROAS when you need a profit buffer and want to cover overhead and volatility.",
       },

@@ -58,7 +58,7 @@ export default function GlossaryIndexPage() {
           <li>Scan common mistakes before you set targets or report results.</li>
           <li>Use related calculators to sanity-check break-even points and constraints.</li>
           <li>Use related guides for decision-making context (not just definitions).</li>
-          <li>Keep your team’s definitions consistent so trends remain comparable.</li>
+          <li>Keep your team's definitions consistent so trends remain comparable.</li>
         </ul>
       </section>
 

@@ -58,9 +58,30 @@ const seeds: Seed[] = [
     title: "Cash Balance",
     description:
       "Cash balance is the amount of cash (and often cash equivalents) available at a point in time. It is the starting point for runway planning.",
+    example:
+      "If you have $1.2M in the bank and $200k restricted cash, available cash balance is $1.0M.",
     bullets: [
       "Use cash balance with net burn to estimate runway.",
       "Separate restricted cash from available operating cash for planning.",
+      "Track cash balance alongside collection timing and upcoming obligations.",
+      "Reconcile bank balance to ledger monthly to catch timing issues early.",
+    ],
+    mistakes: [
+      "Assuming all cash is available (ignoring restricted or pledged cash).",
+      "Using a static balance without forecasting inflows and outflows.",
+      "Ignoring upcoming debt payments or vendor prepayments that reduce usable cash.",
+    ],
+    faqs: [
+      {
+        question: "Should cash balance include undrawn credit lines-",
+        answer:
+          "Usually report cash separately from credit facilities. You can mention available credit as an additional liquidity buffer.",
+      },
+      {
+        question: "How often should cash balance be updated-",
+        answer:
+          "Update at least monthly for reporting and weekly for runway planning during volatile periods or rapid growth.",
+      },
     ],
     relatedGuideSlugs: ["cash-runway-guide", "runway-burn-cash-guide"],
     relatedCalculatorSlugs: ["cash-runway-calculator"],
@@ -70,9 +91,23 @@ const seeds: Seed[] = [
     title: "Cash Reserve",
     description:
       "A cash reserve is a buffer of cash set aside to absorb shocks (revenue drops, delayed collections) without forcing emergency cuts.",
+    example:
+      "A company targeting a 4-month reserve with $200k monthly burn keeps $800k in cash reserve.",
     bullets: [
       "Define reserve policy in months of net burn (for example 3-6 months).",
       "Reserves reduce downside risk but have opportunity cost; revisit as your risk profile changes.",
+      "Separate operational reserves from strategic cash for acquisitions or growth.",
+    ],
+    mistakes: [
+      "Setting a reserve target without modeling seasonality or sales cycle length.",
+      "Treating restricted cash as part of the usable reserve.",
+    ],
+    faqs: [
+      {
+        question: "How large should a cash reserve be-",
+        answer:
+          "It depends on revenue volatility and access to capital. Many teams use 3-6 months of net burn as a baseline.",
+      },
     ],
     relatedGuideSlugs: ["runway-burn-cash-guide"],
   },
@@ -92,9 +127,30 @@ const seeds: Seed[] = [
     title: "Investing Cash Flow",
     description:
       "Investing cash flow captures cash used for or generated from long-term investments (capex, acquisitions, asset sales).",
+    example:
+      "Buying $250k of servers shows as -$250k investing cash flow for the period.",
     bullets: [
       "Treat large capex as a runway event; it can shorten runway even if operating metrics are stable.",
       "Separate maintenance capex from growth capex for clearer planning.",
+      "Review investing cash flow when planning hiring or marketing ramps.",
+      "Track asset sales separately from operating performance to avoid noise.",
+    ],
+    mistakes: [
+      "Classifying operating expenses as investing cash flow to smooth burn.",
+      "Ignoring one-time asset sales that temporarily inflate cash.",
+      "Assuming investing cash flow is always negative (asset sales can reverse it).",
+    ],
+    faqs: [
+      {
+        question: "Is software development investing or operating cash flow-",
+        answer:
+          "It depends on capitalization policy. Many companies expense it as operating, while some capitalize development costs as investing.",
+      },
+      {
+        question: "Should acquisitions be included in investing cash flow-",
+        answer:
+          "Yes. Acquisition payments and related asset purchases typically flow through investing cash flow.",
+      },
     ],
     relatedGuideSlugs: ["runway-burn-cash-guide", "investment-decision-guide"],
     relatedCalculatorSlugs: ["investment-decision-calculator"],
@@ -148,9 +204,23 @@ const seeds: Seed[] = [
     title: "Accrual Accounting",
     description:
       "Accrual accounting recognizes revenue when earned and expenses when incurred, not when cash is received or paid.",
+    example:
+      "You deliver a $12,000 annual contract in January; accrual revenue is $1,000 per month, even if cash is prepaid.",
     bullets: [
       "Accrual profit can look healthy while cash is negative (working capital).",
       "Use accrual statements with a cash flow view for runway decisions.",
+      "Track deferred revenue and receivables to connect accruals to cash timing.",
+    ],
+    mistakes: [
+      "Assuming accrual profit equals cash available for spending.",
+      "Ignoring changes in working capital when analyzing performance.",
+    ],
+    faqs: [
+      {
+        question: "Why does accrual accounting matter for SaaS-",
+        answer:
+          "SaaS often has prepayments and deferred revenue, so accrual accounting shows true recurring performance while cash flows can be lumpy.",
+      },
     ],
     relatedGuideSlugs: ["runway-burn-cash-guide"],
   },
@@ -159,9 +229,24 @@ const seeds: Seed[] = [
     title: "Cash Accounting",
     description:
       "Cash accounting recognizes revenue and expenses when cash is received or paid. It can be simpler but may not reflect economic reality for longer-term contracts.",
+    example:
+      "If you bill $12,000 in January for a 12-month contract and collect cash immediately, cash accounting records the full $12,000 in January.",
     bullets: [
       "Cash views are helpful for runway, but they can mislead about profitability in prepay businesses.",
       "Use consistent definitions when comparing periods to avoid timing noise.",
+      "Combine cash accounting with deferred revenue schedules to avoid overreacting to prepay swings.",
+      "Use cash accounting to validate collections health, not to measure delivery performance.",
+    ],
+    mistakes: [
+      "Assuming cash timing equals customer value delivery.",
+      "Comparing cash-based periods with different billing terms without adjustment.",
+    ],
+    faqs: [
+      {
+        question: "When is cash accounting useful-",
+        answer:
+          "It is useful for cash runway, collections analysis, and very short-cycle businesses, but accrual accounting is usually better for performance tracking.",
+      },
     ],
     relatedGuideSlugs: ["runway-burn-cash-guide"],
   },
@@ -171,9 +256,23 @@ const seeds: Seed[] = [
     description:
       "Current ratio measures short-term liquidity: current assets divided by current liabilities. Higher usually implies more near-term flexibility.",
     formula: "Current ratio = current assets / current liabilities",
+    example:
+      "If current assets are $1.2M and current liabilities are $800k, current ratio is 1.5x.",
     bullets: [
       "Interpret with context: a high ratio can still hide slow collections (AR).",
       "Track trends, not only a single snapshot, especially during rapid growth.",
+      "Use with DSO and AP aging to see liquidity quality.",
+    ],
+    mistakes: [
+      "Counting inventory as fully liquid when it moves slowly.",
+      "Using current ratio without trend or seasonality context.",
+    ],
+    faqs: [
+      {
+        question: "What is a healthy current ratio-",
+        answer:
+          "It varies by industry, but many businesses target around 1.5x to 2.0x. Use historical trends and peer benchmarks for context.",
+      },
     ],
     relatedGuideSlugs: ["cash-conversion-cycle-guide"],
   },
@@ -183,9 +282,23 @@ const seeds: Seed[] = [
     description:
       "The acid-test ratio is a stricter liquidity ratio that excludes less-liquid current assets. It focuses on cash-like assets versus current liabilities.",
     formula: "Acid-test ratio = (cash + marketable securities + receivables) / current liabilities",
+    example:
+      "If cash + receivables are $900k and current liabilities are $600k, the ratio is 1.5x.",
     bullets: [
       "Use it when inventory is significant and you want a stricter liquidity lens.",
       "Receivables quality matters; aging and bad debt risk can distort the ratio.",
+      "Track the ratio alongside DSO to catch collection slowdowns early.",
+    ],
+    mistakes: [
+      "Counting slow or doubtful receivables as liquid.",
+      "Using a single snapshot without trend context.",
+    ],
+    faqs: [
+      {
+        question: "What is a healthy acid-test ratio-",
+        answer:
+          "It depends on the business, but a ratio near or above 1.0x often indicates sufficient short-term coverage. Use industry benchmarks and trendlines.",
+      },
     ],
     relatedGuideSlugs: ["cash-conversion-cycle-guide"],
   },
@@ -206,9 +319,23 @@ const seeds: Seed[] = [
     description:
       "Interest coverage ratio measures how easily a business can pay interest from operating earnings.",
     formula: "Interest coverage = EBIT / interest expense (common)",
+    example:
+      "If EBIT is $2M and interest expense is $400k, coverage is 5.0x.",
     bullets: [
       "Low coverage increases financing risk and can constrain growth.",
       "Use cash flow based views when earnings are noisy or non-cash heavy.",
+      "Track trendline coverage, not just a single quarter.",
+    ],
+    mistakes: [
+      "Using EBITDA instead of EBIT without noting the difference.",
+      "Ignoring seasonality that makes coverage appear worse in slow quarters.",
+    ],
+    faqs: [
+      {
+        question: "What is a healthy interest coverage ratio-",
+        answer:
+          "It depends on industry, but many lenders look for 2.0x or higher. Use your loan covenants as the real standard.",
+      },
     ],
     relatedGuideSlugs: ["loan-payment-guide"],
   },
@@ -229,9 +356,23 @@ const seeds: Seed[] = [
     title: "Receivables Aging",
     description:
       "Receivables aging breaks accounts receivable into buckets by how long invoices have been outstanding (for example 0-30, 31-60, 61-90 days).",
+    example:
+      "If 70% of AR is in 0-30 and 15% is in 61-90, collections risk is rising.",
     bullets: [
       "Use aging to find collections risk and prioritize follow-ups.",
       "Aging trends often predict future bad debt and cash strain.",
+      "Review aging by customer segment to spot high-risk cohorts.",
+    ],
+    mistakes: [
+      "Letting disputed invoices sit in the oldest bucket without resolution.",
+      "Ignoring payment terms changes that shift aging buckets.",
+    ],
+    faqs: [
+      {
+        question: "What is a healthy receivables aging mix-",
+        answer:
+          "It depends on your terms, but most AR should be in the current bucket. Rising 61-90 or 90+ buckets signal collections risk.",
+      },
     ],
     relatedGuideSlugs: ["cash-conversion-cycle-guide"],
   },
@@ -259,9 +400,23 @@ const seeds: Seed[] = [
     title: "Allowance for Doubtful Accounts",
     description:
       "An allowance for doubtful accounts is an estimate of receivables that may not be collected. It is used to recognize expected credit losses.",
+    example:
+      "If you expect 2% of $3M AR to be uncollectible, the allowance is $60k.",
     bullets: [
       "Use historical loss rates and adjust for segment and macro changes.",
       "Keep allowance policy consistent so trends are comparable.",
+      "Reconcile write-offs against the allowance to keep accuracy.",
+    ],
+    mistakes: [
+      "Using a single flat rate despite changes in customer mix or macro risk.",
+      "Failing to update the allowance after large write-offs.",
+    ],
+    faqs: [
+      {
+        question: "How often should the allowance be updated-",
+        answer:
+          "At least quarterly, or more often if collections risk changes or large customers become delinquent.",
+      },
     ],
     relatedGuideSlugs: ["cash-conversion-cycle-guide"],
   },
@@ -271,9 +426,23 @@ const seeds: Seed[] = [
     description:
       "DIO estimates how many days inventory sits before it is sold. It is a component of the cash conversion cycle for inventory-heavy businesses.",
     formula: "DIO ~ average inventory / (COGS per day)",
+    example:
+      "If average inventory is $900k and COGS per day is $10k, DIO is 90 days.",
     bullets: [
       "Lower DIO usually improves cash conversion, but too low can risk stockouts.",
       "For SaaS, DIO is often near zero; focus on AR/AP instead.",
+      "Track DIO alongside DSO and DPO to see the full cash cycle.",
+    ],
+    mistakes: [
+      "Reducing DIO too aggressively and causing stockouts.",
+      "Comparing DIO without accounting for seasonality.",
+    ],
+    faqs: [
+      {
+        question: "What is a healthy DIO-",
+        answer:
+          "It depends on the industry. Compare to peers and your own historical trend rather than using a universal benchmark.",
+      },
     ],
     relatedGuideSlugs: ["cash-conversion-cycle-guide"],
   },
@@ -390,10 +559,20 @@ const seeds: Seed[] = [
     bullets: [
       "Rising NWC often means cash is tied up in receivables or inventory.",
       "Use NWC changes to explain gaps between profit and cash.",
+      "Separate operating NWC from excess cash to avoid double counting liquidity.",
+      "Track NWC days (DSO, DIO, DPO) to see which lever drives changes.",
     ],
     mistakes: [
       "Including cash in NWC when analyzing operating working capital.",
       "Ignoring seasonality that can distort one-month snapshots.",
+      "Comparing NWC across periods without accounting for growth or mix shifts.",
+    ],
+    faqs: [
+      {
+        question: "Is higher net working capital always good-",
+        answer:
+          "Not necessarily. It can signal more liquidity, but it can also mean cash is stuck in receivables or inventory.",
+      },
     ],
     relatedGuideSlugs: ["cash-conversion-cycle-guide"],
   },
@@ -499,10 +678,20 @@ const seeds: Seed[] = [
     bullets: [
       "Use trailing periods to smooth volatility from collections timing.",
       "Compare to operating margin to see how much accruals shift cash timing.",
+      "Monitor working capital drivers (DSO, DPO, inventory) to explain changes.",
+      "Use cash margin for runway planning, not just profitability reporting.",
     ],
     mistakes: [
       "Using net income instead of operating cash flow.",
       "Comparing margins across periods with different revenue recognition timing.",
+      "Ignoring one-time cash inflows that temporarily inflate margin.",
+    ],
+    faqs: [
+      {
+        question: "Why can operating cash margin differ from operating margin-",
+        answer:
+          "Because cash margin includes working capital timing. Collections, payables, and deferred revenue shifts can move cash without changing profit.",
+      },
     ],
     relatedGuideSlugs: ["runway-burn-cash-guide"],
   },
@@ -573,10 +762,19 @@ const seeds: Seed[] = [
     bullets: [
       "Sweeps reduce interest expense but can constrain growth capital.",
       "Model sweeps when forecasting cash and covenant compliance.",
+      "Confirm how 'excess cash' is defined in the credit agreement.",
     ],
     mistakes: [
       "Ignoring minimum liquidity requirements in sweep assumptions.",
       "Assuming sweep terms are optional when they are mandatory.",
+      "Using sweeps without modeling growth capex needs.",
+    ],
+    faqs: [
+      {
+        question: "Is a cash sweep always required-",
+        answer:
+          "It depends on the loan agreement. Some sweeps are mandatory, others are triggered by performance thresholds.",
+      },
     ],
     relatedGuideSlugs: ["loan-payment-guide"],
   },
@@ -683,10 +881,20 @@ const seeds: Seed[] = [
     bullets: [
       "Amortization reduces interest expense over time as the balance falls.",
       "Model amortization explicitly in cash forecasts and covenants.",
+      "Separate principal from interest to avoid overstating operating expense.",
+      "Use an amortization schedule to forecast DSCR and covenant headroom.",
     ],
     mistakes: [
       "Confusing amortization with interest-only periods.",
       "Ignoring prepayment penalties when accelerating principal.",
+      "Mixing accounting amortization with actual cash repayments.",
+    ],
+    faqs: [
+      {
+        question: "How is amortization different from depreciation-",
+        answer:
+          "Debt amortization is principal repayment. Depreciation is a non-cash expense for asset wear. They affect cash flow differently.",
+      },
     ],
     relatedGuideSlugs: ["loan-payment-guide"],
   },
@@ -867,10 +1075,20 @@ const seeds: Seed[] = [
     bullets: [
       "Compare margin by segment to see where profit is concentrated.",
       "Use trailing periods to smooth noisy months.",
+      "Track margin alongside revenue growth to see scale effects.",
+      "Normalize for one-time expenses before comparing periods.",
     ],
     mistakes: [
       "Including one-time expenses without normalization.",
       "Comparing margins across different revenue recognition policies.",
+      "Using operating margin alone to assess cash health.",
+    ],
+    faqs: [
+      {
+        question: "Should I use operating margin or EBITDA margin-",
+        answer:
+          "Operating margin includes depreciation and amortization. EBITDA margin excludes them. Use operating margin for core profitability and EBITDA for leverage-style comparisons.",
+      },
     ],
     relatedGuideSlugs: ["unit-economics-hub-guide"],
   },

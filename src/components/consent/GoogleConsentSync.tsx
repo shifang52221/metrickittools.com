@@ -28,4 +28,3 @@ export function GoogleConsentSync() {
 
   return null;
 }
-

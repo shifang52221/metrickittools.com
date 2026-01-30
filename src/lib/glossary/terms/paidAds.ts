@@ -58,9 +58,34 @@ const seeds: Seed[] = [
     title: "A/B Test",
     description:
       "An A/B test compares two variants (A and B) to measure whether a change improves an outcome (e.g., conversion rate).",
+    example:
+      "Variant A converts at 2.0% and Variant B at 2.3%; the test checks if the lift is real.",
     bullets: [
       "Define a primary metric and a fixed test duration/sample size before starting.",
       "Avoid peeking and stopping early based on noisy intermediate results.",
+      "Randomize exposure so groups are comparable.",
+      "Run the test long enough to cover conversion lag.",
+      "Use the same traffic allocation rules across variants to avoid bias.",
+      "Keep landing pages and offers consistent so only one variable changes.",
+    ],
+    mistakes: [
+      "Changing multiple variables at once and losing causal clarity.",
+      "Declaring a winner without enough sample size.",
+      "Letting traffic allocation drift mid-test.",
+      "Running overlapping tests that contaminate the same audience.",
+      "Switching metrics after seeing early results.",
+    ],
+    faqs: [
+      {
+        question: "How much traffic do I need for an A/B test-",
+        answer:
+          "It depends on baseline conversion rate and the minimum detectable effect you care about. Use a sample size calculator before running the test.",
+      },
+      {
+        question: "How long should an A/B test run-",
+        answer:
+          "Run it long enough to reach the planned sample size and cover typical conversion lag. Avoid stopping on short-term spikes.",
+      },
     ],
     relatedGuideSlugs: ["ab-test-sample-size-guide"],
     relatedCalculatorSlugs: ["ab-test-sample-size-calculator"],
@@ -70,9 +95,32 @@ const seeds: Seed[] = [
     title: "Statistical Significance",
     description:
       "Statistical significance is a measure of whether an observed effect is likely to be real rather than due to random chance under a chosen false positive rate (alpha).",
+    example:
+      "A p-value below 0.05 suggests the result is unlikely under the null hypothesis.",
     bullets: [
       "A statistically significant result is not automatically a practically meaningful result.",
       "Avoid repeated peeking; it inflates false positives unless you use sequential methods.",
+      "Pair significance with effect size and confidence intervals.",
+      "Set alpha in advance and stick to it for the test.",
+      "Report sample size and variance so results can be trusted and replicated.",
+    ],
+    mistakes: [
+      "Treating p-values as proof of causality without good test design.",
+      "Ignoring multiple comparisons in multi-variant tests.",
+      "Calling a result significant when the effect size is trivial.",
+      "Changing the success metric after seeing results.",
+    ],
+    faqs: [
+      {
+        question: "Is p < 0.05 always required-",
+        answer:
+          "Not necessarily. Some teams use stricter thresholds or confidence intervals depending on decision risk. The key is to set the rule before testing.",
+      },
+      {
+        question: "What should I report alongside p-values-",
+        answer:
+          "Report effect size, confidence intervals, sample size, and the test duration so decisions are grounded in magnitude and uncertainty.",
+      },
     ],
     relatedGuideSlugs: ["ab-test-sample-size-guide"],
     relatedCalculatorSlugs: ["ab-test-sample-size-calculator"],
@@ -82,6 +130,35 @@ const seeds: Seed[] = [
     title: "Statistical Power",
     description:
       "Statistical power is the probability of detecting an effect of a given size if it truly exists (1 - beta). Higher power requires larger sample sizes.",
+    formula: "Power = 1 - beta",
+    example:
+      "At 80% power, you have an 80% chance to detect the target lift if it is real.",
+    bullets: [
+      "Typical targets are 80% or 90% power depending on decision risk.",
+      "Higher power reduces false negatives but increases required sample size.",
+      "Power depends on baseline rate, effect size, and variance.",
+      "Plan power before running experiments to avoid underpowered tests.",
+      "Use power analysis to set realistic test duration targets.",
+    ],
+    mistakes: [
+      "Using too low power and missing real improvements.",
+      "Choosing an unrealistically small effect size without enough traffic.",
+      "Stopping early before reaching the planned sample size.",
+      "Ignoring seasonality that changes baseline conversion rates.",
+      "Using power targets without checking data quality or bot traffic.",
+    ],
+    faqs: [
+      {
+        question: "What power level should I choose-",
+        answer:
+          "80% is common for product tests; high-stakes decisions may use 90% or higher. Balance decision risk with feasible sample size.",
+      },
+      {
+        question: "What happens if power is too low-",
+        answer:
+          "You increase the chance of false negatives, so real improvements can be missed or dismissed as noise.",
+      },
+    ],
     relatedGuideSlugs: ["ab-test-sample-size-guide"],
     relatedCalculatorSlugs: ["ab-test-sample-size-calculator"],
   },
@@ -90,9 +167,38 @@ const seeds: Seed[] = [
     title: "Minimum Detectable Effect (MDE)",
     description:
       "MDE is the smallest effect size you want your experiment to reliably detect. Smaller MDE requires much larger samples.",
+    example:
+      "If baseline conversion is 2%, an MDE of 0.3 points means detecting a lift to 2.3%.",
     bullets: [
       "Choose an MDE that is both realistic and action-worthy.",
       "Use absolute percentage points for conversion rates to avoid confusion.",
+      "Align MDE with the cost of acting on a change.",
+      "Revisit MDE as baseline rates change over time.",
+      "Define MDE before the test so you can size the sample correctly.",
+      "Use separate MDE targets for critical funnel steps if volume differs.",
+    ],
+    mistakes: [
+      "Setting MDE so low that the sample size is unattainable.",
+      "Using relative percent when stakeholders expect absolute points.",
+      "Choosing MDE after seeing early results.",
+      "Using a generic MDE across very different funnels or segments.",
+    ],
+    faqs: [
+      {
+        question: "How do I pick a reasonable MDE-",
+        answer:
+          "Start from the smallest change that would alter a decision. If the lift is too small to matter, you may not need to test for it.",
+      },
+      {
+        question: "Does a smaller MDE always mean a better test-",
+        answer:
+          "No. Smaller MDE means larger samples and longer tests. Pick a size that is decision-relevant and feasible.",
+      },
+      {
+        question: "Should MDE differ by segment-",
+        answer:
+          "Yes when segments have different baseline rates or business value. Use segment-specific MDEs to avoid false conclusions.",
+      },
     ],
     relatedGuideSlugs: ["ab-test-sample-size-guide"],
     relatedCalculatorSlugs: ["ab-test-sample-size-calculator"],
@@ -103,9 +209,24 @@ const seeds: Seed[] = [
     description:
       "CPL is ad spend divided by leads generated. CPL is a top-of-funnel metric and should be connected to paying-customer outcomes (CAC).",
     formula: "CPL = ad spend / leads",
+    example:
+      "If you spend $2,000 for 160 leads, CPL is $12.50.",
+    bullets: [
+      "Define lead quality tiers so CPL does not hide low-quality volume.",
+      "Use CPL with lead-to-customer rate to estimate CAC.",
+      "Track CPL by channel and audience to spot saturation or fatigue.",
+    ],
     mistakes: [
       "Optimizing CPL and destroying lead quality (CAC rises).",
       "Changing lead definitions (MQL/SQL drift) and breaking comparisons.",
+      "Ignoring conversion lag when evaluating CPL changes.",
+    ],
+    faqs: [
+      {
+        question: "Is a lower CPL always better-",
+        answer:
+          "Not necessarily. A slightly higher CPL can be better if it produces higher conversion rates and LTV.",
+      },
     ],
     relatedGuideSlugs: ["cpl-to-cac-guide"],
     relatedCalculatorSlugs: ["cpl-to-cac-calculator"],
@@ -116,6 +237,24 @@ const seeds: Seed[] = [
     description:
       "Lead-to-customer rate is the % of leads that become paying customers over a defined time window. It is a key bridge from CPL to CAC.",
     formula: "Lead-to-customer rate = customers / leads",
+    example:
+      "If 200 leads produce 24 customers in 90 days, lead-to-customer rate is 12%.",
+    bullets: [
+      "Define the conversion window based on your typical sales cycle.",
+      "Segment by channel and lead type to avoid blended averages.",
+      "Use the rate to translate CPL into CAC (CAC = CPL / lead-to-customer rate).",
+    ],
+    mistakes: [
+      "Mixing marketing-qualified leads with all raw leads in the denominator.",
+      "Using a window that is shorter than your sales cycle and undercounting wins.",
+    ],
+    faqs: [
+      {
+        question: "How is lead-to-customer rate different from MQL-to-customer-",
+        answer:
+          "Lead-to-customer uses all leads. MQL-to-customer uses only qualified leads, which usually produces a higher rate.",
+      },
+    ],
     relatedGuideSlugs: ["cpl-to-cac-guide"],
     relatedCalculatorSlugs: ["cpl-to-cac-calculator"],
   },
@@ -150,12 +289,12 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "How is CPC related to CPM and CTR?",
+        question: "How is CPC related to CPM and CTR-",
         answer:
           "When CTR is a fraction (not percent), CPC ~ CPM / (1000 * CTR). Higher CTR usually lowers CPC for a given CPM.",
       },
       {
-        question: "Should I always optimize for lower CPC?",
+        question: "Should I always optimize for lower CPC-",
         answer:
           "No. Lower CPC can come from lower-intent clicks that convert poorly, increasing CPA and reducing profit.",
       },
@@ -177,12 +316,12 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Is a high CPM always bad?",
+        question: "Is a high CPM always bad-",
         answer:
           "Not necessarily. High CPM can be normal in competitive auctions or premium audiences. What matters is the full funnel: CPM -> CTR -> CVR -> CPA/ROAS.",
       },
       {
-        question: "Why does CPM fluctuate so much?",
+        question: "Why does CPM fluctuate so much-",
         answer:
           "CPM changes with auction pressure (seasonality), audience size, placement mix, and creative relevance.",
       },
@@ -207,12 +346,12 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Should max CPC use click-based or session-based CVR?",
+        question: "Should max CPC use click-based or session-based CVR-",
         answer:
           "Use click-based CVR if possible (conversions / clicks). If you only have session-based CVR, treat the result as a rough estimate and validate with real performance.",
       },
       {
-        question: "Why add a profit buffer instead of using break-even?",
+        question: "Why add a profit buffer instead of using break-even-",
         answer:
           "Break-even leaves no room for noise, returns, attribution error, or overhead. A buffer makes bidding more robust.",
       },
@@ -249,12 +388,12 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Does a higher CTR always mean better performance?",
+        question: "Does a higher CTR always mean better performance-",
         answer:
           "Not always. High CTR can come from curiosity clicks that don't convert. Always check CVR, CPA, and profit.",
       },
       {
-        question: "How do I use break-even CTR?",
+        question: "How do I use break-even CTR-",
         answer:
           "Break-even CTR tells you the minimum CTR needed to hit a profitability target given CPM, CVR, and economics. It's a good creative-quality target for a placement mix.",
       },
@@ -280,12 +419,12 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Why does CVR drop when I scale spend?",
+        question: "Why does CVR drop when I scale spend-",
         answer:
           "Scaling often broadens audiences/placements (lower intent). CVR can also drop from creative mismatch, landing-page friction, or offer fatigue.",
       },
       {
-        question: "What's a good CVR?",
+        question: "What's a good CVR-",
         answer:
           "It depends on intent and offer. Compare CVR within the same funnel and traffic type rather than chasing a universal benchmark.",
       },
@@ -311,7 +450,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "How do I use AOV to set a target CPA?",
+        question: "How do I use AOV to set a target CPA-",
         answer:
           "AOV and contribution margin determine how much profit you have per order. Target CPA should be below profit per conversion (and usually below break-even to include a buffer).",
       },
@@ -334,6 +473,24 @@ const seeds: Seed[] = [
     title: "Target ROAS",
     description:
       "Target ROAS is the ROAS you aim for to achieve a desired profit buffer after variable costs and fixed cost allocation.",
+    example:
+      "If contribution margin is 40% and you want a 10% profit buffer, target ROAS is about 1 / (0.40 - 0.10) = 3.33.",
+    bullets: [
+      "Compute from contribution margin and desired profit buffer.",
+      "Set separate targets by channel or product when margins differ.",
+      "Validate with incrementality if attribution is noisy.",
+    ],
+    mistakes: [
+      "Using one target ROAS across offers with different margins.",
+      "Optimizing for ROAS and ignoring volume or payback constraints.",
+    ],
+    faqs: [
+      {
+        question: "Should target ROAS change with customer lifetime-",
+        answer:
+          "Yes. Higher LTV allows a lower ROAS target if cash constraints allow. Use payback targets to keep spend within runway.",
+      },
+    ],
     relatedGuideSlugs: ["target-roas-guide"],
     relatedCalculatorSlugs: ["target-roas-calculator"],
   },
@@ -351,12 +508,12 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "MER vs ROAS: what's the difference?",
+        question: "MER vs ROAS: what's the difference-",
         answer:
           "ROAS is usually channel/campaign-level. MER is top-down across all marketing spend and reduces attribution noise, but it hides what's working.",
       },
       {
-        question: "What should count as marketing spend in MER?",
+        question: "What should count as marketing spend in MER-",
         answer:
           "Be consistent. Many teams include paid media and variable acquisition costs; some include marketing headcount. The key is to keep the definition stable over time.",
       },
@@ -373,21 +530,28 @@ const seeds: Seed[] = [
     bullets: [
       "Use blended ROAS to align finance and marketing on top-down health.",
       "Use channel ROAS to optimize allocation within a blended target.",
+      "Pair blended ROAS with margin to see if growth is actually profitable.",
     ],
     mistakes: [
       "Using blended ROAS to scale a single channel (it can hide weak channels).",
       "Comparing periods with different attribution windows or delayed revenue recognition.",
+      "Ignoring changes in pricing or refunds that distort revenue.",
     ],
     faqs: [
       {
-        question: "Is blended ROAS the same as MER?",
+        question: "Is blended ROAS the same as MER-",
         answer:
           "They're often used similarly. MER is typically revenue / total marketing spend, while blended ROAS is usually revenue / total ad spend.",
       },
       {
-        question: "Can blended ROAS still be misleading?",
+        question: "Can blended ROAS still be misleading-",
         answer:
           "Yes. It can hide mix shifts (prospecting vs retargeting) and doesn't prove incrementality. Use experiments for causal truth when needed.",
+      },
+      {
+        question: "Should blended ROAS include retention revenue-",
+        answer:
+          "Only if you include the corresponding spend and can align time windows. Many teams keep blended ROAS focused on short-term revenue and use LTV separately.",
       },
     ],
   },
@@ -408,7 +572,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Is attribution the same as incrementality?",
+        question: "Is attribution the same as incrementality-",
         answer:
           "No. Attribution assigns credit; incrementality estimates causal lift (what ads caused). Incrementality is best measured via experiments.",
       },
@@ -432,12 +596,12 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Should I use click-through or view-through attribution?",
+        question: "Should I use click-through or view-through attribution-",
         answer:
           "Click-through is usually less noisy. View-through can add insight for upper-funnel, but it's easier to over-credit. Validate with incrementality tests at scale.",
       },
       {
-        question: "What window should I pick?",
+        question: "What window should I pick-",
         answer:
           "Pick one that matches your decision cycle and keep it stable. If you change windows, annotate reporting and avoid comparing across the change.",
       },
@@ -459,7 +623,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "When is last-click attribution useful?",
+        question: "When is last-click attribution useful-",
         answer:
           "When you want a consistent, easy-to-explain model for day-to-day optimization. It's less reliable for long purchase cycles or multi-touch journeys.",
       },
@@ -480,7 +644,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Does MTA prove that a channel is incremental?",
+        question: "Does MTA prove that a channel is incremental-",
         answer:
           "No. It redistributes credit but doesn't prove causality. Use holdouts/geo tests to estimate true lift.",
       },
@@ -503,12 +667,12 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Is incrementality the same as attribution?",
+        question: "Is incrementality the same as attribution-",
         answer:
           "No. Attribution assigns credit; incrementality estimates causal lift (what ads caused). Incrementality is best measured with experiments.",
       },
       {
-        question: "When should we run incrementality tests?",
+        question: "When should we run incrementality tests-",
         answer:
           "When spend is meaningful and you suspect attribution bias (retargeting disputes, diminishing returns, or channel credit conflicts).",
       },
@@ -551,12 +715,12 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "What's the difference between average ROAS and marginal ROAS?",
+        question: "What's the difference between average ROAS and marginal ROAS-",
         answer:
           "Average ROAS looks at total revenue / total spend. Marginal ROAS looks at what the next dollars of spend generate. Scaling decisions should use marginal ROAS (or incremental profit).",
       },
       {
-        question: "How do we estimate marginal ROAS?",
+        question: "How do we estimate marginal ROAS-",
         answer:
           "Best case: experiments (holdouts) or response curves. Attribution-only estimates can be biased, especially with retargeting overlap.",
       },
@@ -613,7 +777,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Why do conversions drop after a site release?",
+        question: "Why do conversions drop after a site release-",
         answer:
           "Often because events stopped firing or are double-counted then filtered. Always run an end-to-end event validation after changes to checkout and routing.",
       },
@@ -631,7 +795,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Do UTMs affect SEO?",
+        question: "Do UTMs affect SEO-",
         answer:
           "They shouldn't if you handle canonicals correctly. UTMs can create duplicate URLs, so canonical URLs should point to the clean version without query parameters.",
       },
@@ -641,7 +805,7 @@ const seeds: Seed[] = [
     slug: "ga4",
     title: "GA4 (Google Analytics 4)",
     description:
-      "GA4 is Google's analytics platform for web and app measurement. In paid ads workflows, GA4 supports cross-channel reporting but can undercount due to privacy and cross-device gaps.",
+      "GA4 is Google's analytics platform for web and app measurement. In paid ads, it helps with cross-channel reporting but can undercount conversions.",
     bullets: [
       "Use GA4 for consistent channel trends; use platforms for optimization, and reconcile with MER and incrementality tests.",
       "Validate that conversion events fire once (dedupe pixel + server events if you use both).",
@@ -658,14 +822,25 @@ const seeds: Seed[] = [
     title: "Conversion",
     description:
       "A conversion is an action you care about (purchase, signup, lead, subscription) that you measure and optimize toward.",
+    example:
+      "If a user completes a checkout after clicking an ad, that purchase is a conversion.",
     bullets: [
       "Define conversions with clear eligibility (new vs returning users) and a time window.",
       "Audit conversion tracking after site releases and checkout changes.",
       "Keep platform and analytics conversion definitions consistent where possible.",
+      "Separate primary conversions from secondary micro-conversions.",
     ],
     mistakes: [
       "Changing conversion definitions mid-stream and breaking trend comparisons.",
       "Counting duplicate events (inflates performance and misleads bidding).",
+      "Optimizing for low-value conversions that do not drive revenue.",
+    ],
+    faqs: [
+      {
+        question: "Should I optimize for leads or purchases-",
+        answer:
+          "Optimize for the deepest conversion you can track reliably. If purchases are low volume, use qualified lead events and validate with downstream quality.",
+      },
     ],
     relatedGuideSlugs: ["utm-ga4-attribution-guide"],
   },
@@ -682,7 +857,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "What frequency is too high?",
+        question: "What frequency is too high-",
         answer:
           "There's no universal number. If frequency rises and CTR/CVR fall, that's a practical signal to refresh creative, expand audiences, or cap spend.",
       },
@@ -692,7 +867,7 @@ const seeds: Seed[] = [
     slug: "frequency-cap",
     title: "Frequency Cap",
     description:
-      "A frequency cap limits how often someone can see your ad in a time window (per day/week) to reduce fatigue and wasted impressions in saturated audiences.",
+      "A frequency cap limits how often someone can see your ad in a time window (per day or week) to reduce fatigue and wasted impressions.",
     bullets: [
       "Use caps when frequency rises and CTR/CVR decay, especially in small audiences.",
       "Combine caps with audience expansion and creative refresh to avoid simply throttling delivery.",
@@ -709,9 +884,23 @@ const seeds: Seed[] = [
     title: "Reach",
     description:
       "Reach is the number of unique people who saw your ads over a period.",
+    example:
+      "If 120,000 unique users saw your ads in a week, weekly reach is 120,000.",
     bullets: [
       "Use reach with frequency to understand how saturated an audience is.",
       "High reach with low frequency usually means you still have room to scale.",
+      "Compare reach by segment (prospecting vs retargeting) to avoid mixing intent.",
+    ],
+    mistakes: [
+      "Treating reach as guaranteed exposure (it can include low-quality placements).",
+      "Comparing reach across platforms without aligning time windows.",
+    ],
+    faqs: [
+      {
+        question: "Is higher reach always better-",
+        answer:
+          "Not always. Reach is only valuable if it delivers qualified audiences and converts. Pair it with CTR, CVR, and margin-aware ROAS.",
+      },
     ],
   },
   {
@@ -719,9 +908,23 @@ const seeds: Seed[] = [
     title: "Impressions",
     description:
       "Impressions count how many times your ads were shown (not unique people).",
+    example:
+      "If an ad is shown 3 times to the same person, that counts as 3 impressions.",
     bullets: [
       "Impressions = reach * frequency (approximately, within a time window).",
       "Use impressions with CPM to estimate spend: spend ~ impressions/1000 * CPM.",
+      "Monitor impressions by placement to detect low-quality inventory.",
+    ],
+    mistakes: [
+      "Assuming impressions equal unique users (reach is the unique metric).",
+      "Optimizing for impressions without checking CTR, CVR, or profit.",
+    ],
+    faqs: [
+      {
+        question: "Are impressions the same across platforms-",
+        answer:
+          "No. Platforms count impressions differently (viewable thresholds vary). Use platform-specific definitions when comparing.",
+      },
     ],
   },
   {
@@ -756,7 +959,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "How do I know if it's creative fatigue or audience saturation?",
+        question: "How do I know if it's creative fatigue or audience saturation-",
         answer:
           "Fatigue often shows up as CTR decline at stable CPM, while saturation shows falling marginal returns as you scale. They can overlap, so test new creative and new audiences separately.",
       },
@@ -773,7 +976,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Why does retargeting look so good in ROAS dashboards?",
+        question: "Why does retargeting look so good in ROAS dashboards-",
         answer:
           "Retargeting targets people already close to conversion and can get disproportionate attribution credit. Validate with incrementality when spend becomes meaningful.",
       },

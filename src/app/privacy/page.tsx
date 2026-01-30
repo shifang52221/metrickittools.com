@@ -49,6 +49,12 @@ export default function PrivacyPage() {
         <strong>Privacy choices</strong> (or <strong>Cookie settings</strong>) link
         in the footer.
       </p>
+      <h2>Cookie categories</h2>
+      <ul>
+        <li>Essential: required for site functionality and security.</li>
+        <li>Analytics: helps us understand usage and improve content.</li>
+        <li>Advertising: enables ad delivery and measurement.</li>
+      </ul>
       <h2>Data retention</h2>
       <p>
         We retain data only as long as needed for site operations, analytics,

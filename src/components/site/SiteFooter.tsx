@@ -48,7 +48,7 @@ export function SiteFooter() {
           </div>
         </div>
         <div className="mt-8 text-xs text-zinc-500 dark:text-zinc-500">
-          © {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
+          (c) {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
         </div>
       </div>
     </footer>

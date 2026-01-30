@@ -178,12 +178,12 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Retention rate vs GRR/NRR: how are they related?",
+        question: "Retention rate vs GRR/NRR: how are they related-",
         answer:
           "Retention rate can be measured on logos or revenue. GRR/NRR are revenue retention variants for a cohort (GRR excludes expansion; NRR includes it).",
       },
       {
-        question: "Should we use cohort retention or aggregate retention?",
+        question: "Should we use cohort retention or aggregate retention-",
         answer:
           "Use cohort retention for diagnosing lifecycle changes. Aggregate retention can be distorted by mix shift (new vs old customers).",
       },
@@ -211,12 +211,12 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Is churn the same as 1 - retention?",
+        question: "Is churn the same as 1 - retention-",
         answer:
           "Only if you're measuring the same base (logos or revenue) over the same period with consistent definitions. Otherwise they can differ.",
       },
       {
-        question: "Why does churn change after a price increase?",
+        question: "Why does churn change after a price increase-",
         answer:
           "A price increase can increase churn for price-sensitive segments. Track churn/retention by segment and update LTV/payback models after pricing changes.",
       },
@@ -250,9 +250,31 @@ const seeds: Seed[] = [
     title: "New MRR",
     description:
       "New MRR is recurring revenue added from brand-new customers in a period (excluding expansions from existing customers).",
+    example:
+      "If you close 20 new customers at $500 MRR each, new MRR is $10,000.",
     bullets: [
       "Use New MRR to measure new customer acquisition output.",
       "Segment by channel and plan to learn where new customers stick.",
+      "Separate reactivations from true new logos for clarity.",
+      "Track new MRR with payback to see if growth is cash-feasible.",
+    ],
+    mistakes: [
+      "Counting expansion or upgrades as new MRR.",
+      "Mixing one-time fees with recurring revenue.",
+      "Including reactivations without labeling them separately.",
+      "Counting full contract value when revenue ramps over time.",
+    ],
+    faqs: [
+      {
+        question: "Should new MRR include free-to-paid conversions-",
+        answer:
+          "Yes if they are true new logos. Keep the definition consistent and separate reactivations to avoid trend noise.",
+      },
+      {
+        question: "Does new MRR include implementation or setup fees-",
+        answer:
+          "No. Keep one-time fees separate so recurring revenue trends are clean and comparable.",
+      },
     ],
     relatedGuideSlugs: ["mrr-waterfall-guide"],
     relatedCalculatorSlugs: ["mrr-waterfall-calculator", "net-new-mrr-calculator"],
@@ -267,7 +289,7 @@ const seeds: Seed[] = [
       "Separate expansion from reactivations and price increases for clean reporting.",
     ],
     mistakes: [
-      "Counting expansion as ‘retention' without also tracking GRR (NRR can hide churn).",
+      "Counting expansion as retention without also tracking GRR (NRR can hide churn).",
       "Mixing price-driven expansions with true usage expansion (separate when possible).",
     ],
     relatedGuideSlugs: ["nrr-guide", "retention-churn-hub-guide"],
@@ -311,7 +333,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Can logo churn be high while NRR is high?",
+        question: "Can logo churn be high while NRR is high-",
         answer:
           "Yes. If you lose many small customers but expand strongly in larger accounts, NRR can stay high. Track both logo churn and GRR/NRR by segment.",
       },
@@ -377,9 +399,9 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "NRR vs GRR: why track both?",
+        question: "NRR vs GRR: why track both-",
         answer:
-          "NRR includes expansion and can be high even with significant churn. GRR isolates churn and downgrades, making it harder to ‘hide' retention problems.",
+          "NRR includes expansion and can be high even with significant churn. GRR isolates churn and downgrades, making it harder to 'hide' retention problems.",
       },
     ],
     relatedGuideSlugs: ["nrr-guide", "nrr-vs-grr-guide", "retention-churn-hub-guide"],
@@ -403,7 +425,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Is GRR supposed to be lower than NRR?",
+        question: "Is GRR supposed to be lower than NRR-",
         answer:
           "Yes, typically. NRR adds expansion on top of GRR. If GRR is weak, NRR can still look good temporarily if expansion is strong.",
       },
@@ -428,7 +450,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "What should define the cohort start?",
+        question: "What should define the cohort start-",
         answer:
           "Use the start point that matches your question: signup for onboarding, activation for product usage, paid conversion for revenue retention.",
       },
@@ -459,9 +481,9 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "How do I pick the right activation event?",
+        question: "How do I pick the right activation event-",
         answer:
-          "Pick the earliest behavior that strongly predicts retention or revenue (the ‘aha' moment). Validate it with cohort analysis before locking it in.",
+          "Pick the earliest behavior that strongly predicts retention or revenue (the 'aha' moment). Validate it with cohort analysis before locking it in.",
       },
     ],
     relatedGuideSlugs: ["activation-rate-guide", "plg-metrics-hub-guide"],
@@ -495,13 +517,31 @@ const seeds: Seed[] = [
     description:
       "DAU counts unique active users on a given day. The definition of 'active' must be consistent (session vs key event).",
     formula: "DAU = unique active users in a day",
+    example:
+      "If 3,200 users trigger your core event today, DAU is 3,200.",
     bullets: [
       "Define 'active' using a meaningful value event when possible.",
       "Track DAU alongside MAU/WAU to understand frequency and seasonality.",
+      "Segment by persona or plan to avoid blended averages masking churn.",
+      "Monitor DAU alongside retention cohorts to validate engagement quality.",
     ],
     mistakes: [
       "Using DAU from one definition and MAU from another (not comparable).",
       "Comparing DAU across segments without adjusting for expected cadence.",
+      "Counting internal or test users in DAU.",
+      "Optimizing DAU by lowering the activation threshold and inflating counts.",
+    ],
+    faqs: [
+      {
+        question: "Should DAU be a rolling 24-hour count-",
+        answer:
+          "Either rolling 24 hours or calendar day can work, but use one definition consistently so trends remain comparable.",
+      },
+      {
+        question: "Is DAU useful for low-frequency products-",
+        answer:
+          "For weekly or monthly workflows, WAU or MAU is more meaningful. DAU can still help detect spikes or outages.",
+      },
     ],
     relatedGuideSlugs: ["dau-mau-guide"],
     relatedCalculatorSlugs: ["dau-mau-calculator"],
@@ -563,13 +603,24 @@ const seeds: Seed[] = [
     description:
       "Feature adoption rate measures what % of active users used a specific feature in a time window. It helps validate that users are discovering and using value-driving capabilities.",
     formula: "Feature adoption rate = users who used feature / active users",
+    example:
+      "If 800 of 2,000 active users used the feature this month, adoption rate is 40%.",
     bullets: [
       "Use a meaningful usage threshold (not a one-off click).",
       "Segment adoption by cohort and persona and connect it to retention outcomes.",
+      "Track adoption alongside feature activation to see first use vs habit.",
     ],
     mistakes: [
       "Using total users instead of active users as the denominator.",
       "Optimizing adoption of a feature that doesn't drive retention or revenue.",
+      "Comparing adoption across features with different eligibility.",
+    ],
+    faqs: [
+      {
+        question: "How long should the adoption window be-",
+        answer:
+          "Use a window that matches how often users should use the feature (weekly for weekly workflows, monthly for infrequent actions).",
+      },
     ],
     relatedGuideSlugs: ["feature-adoption-guide"],
     relatedCalculatorSlugs: ["feature-adoption-rate-calculator"],
@@ -580,13 +631,24 @@ const seeds: Seed[] = [
     description:
       "PQL-to-paid conversion measures what % of product-qualified leads (PQLs) become paying customers. It connects product usage signals to revenue outcomes.",
     formula: "PQL-to-paid = paid customers from PQLs / PQLs",
+    example:
+      "If 120 PQLs produce 18 paid customers, PQL-to-paid conversion is 15%.",
     bullets: [
       "Define PQLs using signals correlated with retention, not vanity actions.",
       "Segment by channel and persona to see where PQL quality differs.",
+      "Align sales follow-up timing to the PQL signal window.",
     ],
     mistakes: [
       "Mixing cohorts/time windows when attributing paid conversions to PQLs.",
       "Optimizing PQL volume at the expense of quality (conversion drops).",
+      "Changing PQL definitions without re-baselining conversion rates.",
+    ],
+    faqs: [
+      {
+        question: "What is a good PQL-to-paid conversion rate-",
+        answer:
+          "It depends on product and motion. Use your historical baseline and focus on improving the highest-value cohorts.",
+      },
     ],
     relatedGuideSlugs: ["pql-to-paid-guide"],
     relatedCalculatorSlugs: ["pql-to-paid-calculator"],
@@ -599,6 +661,18 @@ const seeds: Seed[] = [
     bullets: [
       "Use funnels to identify the largest drop-off points.",
       "Analyze by segment (channel, device, geo) to find specific issues.",
+      "Track time between steps to spot friction, not just conversion rates.",
+    ],
+    mistakes: [
+      "Using different definitions of each step across reports.",
+      "Optimizing one step while hurting overall conversion quality.",
+    ],
+    faqs: [
+      {
+        question: "How many steps should a funnel include-",
+        answer:
+          "Use the smallest number of steps that still explain drop-offs clearly. Too many steps dilute signal.",
+      },
     ],
   },
   {
@@ -606,9 +680,32 @@ const seeds: Seed[] = [
     title: "ARRR Funnel (Pirate Metrics)",
     description:
       "ARRR is a product growth framework: Acquisition, Activation, Retention, Revenue, Referral. It helps pick the right KPI for each stage.",
+    example:
+      "A typical stack is CAC and signup rate (Acquisition), activation rate (Activation), 90-day retention (Retention), ARPA (Revenue), and referral rate (Referral).",
+    bullets: [
+      "Use one primary KPI per stage to avoid metric overload.",
+      "Tie activation and retention to cohort outcomes, not vanity events.",
+      "Use referral as a signal of product delight, not just marketing reach.",
+      "Define a single activation milestone so teams align on success.",
+      "Review the full funnel monthly to keep trade-offs visible.",
+    ],
     mistakes: [
       "Measuring stages with inconsistent definitions across teams.",
       "Focusing on acquisition while ignoring retention (leaky bucket).",
+      "Optimizing one stage in a way that hurts another.",
+      "Treating the funnel as linear when product-led loops are present.",
+    ],
+    faqs: [
+      {
+        question: "Is ARRR only for early-stage products-",
+        answer:
+          "No. It is useful at any stage for diagnosing where growth is leaking, especially when paired with cohort data.",
+      },
+      {
+        question: "What if my business model is enterprise sales-",
+        answer:
+          "ARRR still works, but definitions change. Activation may mean reaching a product milestone after onboarding, and referral may be advocacy or case studies.",
+      },
     ],
   },
   {
@@ -621,10 +718,33 @@ const seeds: Seed[] = [
       "If CAC is $6,000, ARPA is $500/month, and gross margin is 80% (0.8), payback ~ $6,000 / ($500 * 0.8) = 15 months.",
     faqs: [
       {
-        question: "Why use gross margin in payback?",
+        question: "Why use gross margin in payback-",
         answer:
           "Because CAC is paid in cash, and payback is about cash recovery. Using revenue instead of gross profit overstates how fast you recover CAC.",
       },
+      {
+        question: "Is shorter payback always better-",
+        answer:
+          "Generally yes for cash flexibility, but it can come at the cost of growth. Balance payback with LTV and pipeline capacity.",
+      },
+      {
+        question: "Should I include customer success costs in payback-",
+        answer:
+          "If CS costs are material to serving a customer, include them in the gross margin input so payback reflects true cash recovery.",
+      },
+    ],
+    bullets: [
+      "Compute payback using consistent time units (monthly ARPA with monthly churn).",
+      "Shorter payback usually improves cash flexibility and resilience.",
+      "Track payback by cohort to see if acquisition quality is improving.",
+      "Use net revenue retention to model expansion in longer payback cases.",
+      "Model payback with conservative margins to stress-test cash risk.",
+    ],
+    mistakes: [
+      "Using revenue instead of gross profit in the denominator.",
+      "Ignoring expansion or contraction when payback is long.",
+      "Mixing CAC definitions across channels and time periods.",
+      "Using quarterly CAC with monthly ARPA without normalization.",
     ],
     relatedGuideSlugs: ["cac-payback-guide"],
     relatedCalculatorSlugs: ["cac-payback-period-calculator"],
@@ -647,7 +767,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "What's the fastest way to improve unit economics?",
+        question: "What's the fastest way to improve unit economics-",
         answer:
           "Usually by improving retention (raises LTV) and/or improving margin. Lowering CAC helps too, but it often has trade-offs with scale.",
       },
@@ -678,7 +798,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Does a high Rule of 40 score guarantee a good business?",
+        question: "Does a high Rule of 40 score guarantee a good business-",
         answer:
           "No. It's a rough heuristic. You still need to check retention quality (NRR/GRR), cash efficiency (burn multiple), and whether growth is durable.",
       },
@@ -701,7 +821,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "What's a ‘good' burn multiple?",
+        question: "What's a 'good' burn multiple-",
         answer:
           "It depends on stage and market. Lower is generally better, but you should compare against peers and consider retention and margin quality.",
       },
@@ -745,7 +865,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Why multiply by 4?",
+        question: "Why multiply by 4-",
         answer:
           "Net new ARR is often measured quarterly. Multiplying by 4 annualizes the quarterly ARR change before comparing it to spend.",
       },
@@ -764,7 +884,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Is a high LTV:CAC always good?",
+        question: "Is a high LTV:CAC always good-",
         answer:
           "Not always. It can be inflated by optimistic LTV assumptions or long payback. Pair it with CAC payback and cohort retention.",
       },
@@ -800,10 +920,24 @@ const seeds: Seed[] = [
     description:
       "ARR multiple is a valuation shorthand: enterprise value divided by ARR. It is a heuristic that varies by growth, margin, and retention.",
     formula: "ARR multiple = enterprise value / ARR",
+    example:
+      "If enterprise value is $30M and ARR is $5M, the ARR multiple is 6.0x.",
     bullets: [
       "Use ARR multiple for rough comparisons, not as a complete valuation model.",
       "Higher NRR and faster growth often support higher multiples.",
       "Be careful with early-stage ARR definitions (clean recurring only).",
+      "Translate EV to equity value by adjusting for cash and debt.",
+    ],
+    mistakes: [
+      "Comparing ARR multiples across companies with different ARR definitions.",
+      "Using a single multiple without a range or sensitivity check.",
+    ],
+    faqs: [
+      {
+        question: "Is ARR multiple the same as revenue multiple-",
+        answer:
+          "Not exactly. ARR multiple uses recurring run-rate, while revenue multiple often uses trailing or forward recognized revenue.",
+      },
     ],
   },
   {
@@ -840,7 +974,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "What's a ‘good' quick ratio?",
+        question: "What's a 'good' quick ratio-",
         answer:
           "It depends on stage. Higher is better, but the key is trend and segment mix. Pair it with NRR/GRR and payback to judge quality.",
       },
@@ -868,7 +1002,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "MRR churn vs GRR: which should I track?",
+        question: "MRR churn vs GRR: which should I track-",
         answer:
           "MRR churn focuses on cancellations (churned MRR). GRR includes both churn and downgrades (contraction). Track both for a complete loss picture.",
       },
@@ -882,10 +1016,24 @@ const seeds: Seed[] = [
     description:
       "MRR growth rate measures how MRR changed between two points in time. It can be expressed as period growth, CMGR, or annualized growth.",
     formula: "MRR growth (period) = (end MRR - start MRR) / start MRR",
+    example:
+      "Start MRR $200k and end MRR $230k in 3 months: period growth is 15%.",
     bullets: [
       "Use CMGR to compare growth across different horizons.",
       "Use an MRR waterfall to explain drivers (new vs expansion vs churn).",
       "Pair growth with retention (NRR/GRR) and payback to judge quality.",
+      "Track by segment to separate enterprise deal timing from core momentum.",
+    ],
+    mistakes: [
+      "Comparing short periods without adjusting for seasonality or deal timing.",
+      "Mixing run-rate MRR with recognized revenue in growth reports.",
+    ],
+    faqs: [
+      {
+        question: "Should I use CMGR or period growth-",
+        answer:
+          "Use period growth for the exact window and CMGR for comparisons across different lengths of time.",
+      },
     ],
     relatedGuideSlugs: ["mrr-growth-rate-guide", "mrr-guide"],
     relatedCalculatorSlugs: ["mrr-growth-rate-calculator", "mrr-waterfall-calculator"],
@@ -897,10 +1045,24 @@ const seeds: Seed[] = [
       "An ARR waterfall reconciles starting ARR to ending ARR using new, expansion, contraction, and churned ARR movements.",
     formula:
       "Ending ARR = starting ARR + new ARR + expansion ARR - contraction ARR - churned ARR",
+    example:
+      "Start $2.0M; +$300k new; +$200k expansion; -$80k contraction; -$120k churn = $2.3M ending ARR.",
     bullets: [
       "Use it as a reporting bridge to compute net new ARR and ARR growth.",
       "Segment by plan/channel/customer size to avoid blended averages hiding churn pockets.",
       "Use net new ARR as the numerator base for burn multiple (same period).",
+      "Reconcile waterfall totals to your ARR snapshot each period.",
+    ],
+    mistakes: [
+      "Mixing bookings or cash with ARR movements.",
+      "Double-counting expansion as new ARR for the same account.",
+    ],
+    faqs: [
+      {
+        question: "How often should I update the ARR waterfall-",
+        answer:
+          "Monthly is common for SaaS, but quarterly can reduce noise for enterprise-heavy businesses.",
+      },
     ],
     relatedGuideSlugs: ["arr-waterfall-guide", "net-new-arr-guide"],
     relatedCalculatorSlugs: ["arr-waterfall-calculator", "net-new-arr-calculator"],
@@ -921,10 +1083,31 @@ const seeds: Seed[] = [
     title: "ARPA vs ARPU",
     description:
       "ARPU is revenue per active user; ARPA is revenue per paying account/customer. Choose the denominator that matches how you bill.",
+    example:
+      "If 200 accounts pay $1,000 total and 800 users are active, ARPA is $5 and ARPU is $1.25.",
     bullets: [
       "B2B SaaS often prefers ARPA (per account).",
       "Per-seat pricing can make ARPU more natural.",
       "Label the metric clearly so teams don't mix denominators.",
+      "Use the same denominator across retention and LTV models.",
+      "Track ARPA and ARPU together if you have mixed pricing models.",
+    ],
+    mistakes: [
+      "Switching between ARPA and ARPU in the same report.",
+      "Using active users as a proxy for paying accounts.",
+      "Mixing trial users into ARPU without labeling the definition.",
+    ],
+    faqs: [
+      {
+        question: "Which should I use for LTV-",
+        answer:
+          "Use the denominator that matches your pricing. For account-based billing, ARPA is more consistent with CAC and payback models.",
+      },
+      {
+        question: "Should ARPU include free users-",
+        answer:
+          "Only if you explicitly define it as revenue per total active users. For monetization analysis, many teams use revenue per paying user instead.",
+      },
     ],
   },
   {
@@ -932,9 +1115,23 @@ const seeds: Seed[] = [
     title: "PQL (Product-Qualified Lead)",
     description:
       "A PQL is a lead identified by product usage signals (not only form fills). PQLs often convert better when the product is the primary driver of value.",
+    example:
+      "A user invites two teammates and connects a data source; the account becomes a PQL.",
     bullets: [
       "Define PQL events that correlate with retention, not vanity actions.",
       "Track PQL-to-paid conversion by cohort and segment.",
+      "Use a minimum usage window to avoid tagging one-off spikes as PQLs.",
+    ],
+    mistakes: [
+      "Using single clicks or page views as PQL criteria.",
+      "Changing PQL definitions without re-baselining conversion rates.",
+    ],
+    faqs: [
+      {
+        question: "How many PQL signals should we require-",
+        answer:
+          "Start with the smallest set of actions that consistently predicts retention or upgrade. Add signals only if they improve precision without hurting volume.",
+      },
     ],
   },
   {
@@ -942,9 +1139,37 @@ const seeds: Seed[] = [
     title: "MQL (Marketing-Qualified Lead)",
     description:
       "An MQL is a lead judged likely to become a customer based on marketing engagement signals (content, forms, intent).",
+    example:
+      "A lead that downloads a pricing guide and reaches a score threshold is labeled MQL.",
+    bullets: [
+      "Define MQL criteria jointly with sales to avoid misalignment.",
+      "Track MQL to SQL and MQL to paid conversion rates.",
+      "Review MQL quality by channel to avoid volume-driven drift.",
+      "Use explicit scoring weights so changes are auditable.",
+      "Revisit scoring when ICP or pricing changes materially.",
+    ],
     mistakes: [
       "Treating MQL volume as a success metric without conversion quality.",
       "Changing MQL scoring frequently without recalibrating reporting.",
+      "Ignoring channel quality differences that skew MQL rates.",
+      "Using one global MQL threshold across very different personas.",
+    ],
+    faqs: [
+      {
+        question: "How is an MQL different from an SQL-",
+        answer:
+          "An MQL is marketing-qualified based on engagement signals. An SQL is sales-qualified and meets stricter criteria for a sales conversation.",
+      },
+      {
+        question: "How often should MQL criteria be reviewed-",
+        answer:
+          "Review quarterly or after major funnel changes. Keep definitions stable within a reporting period.",
+      },
+      {
+        question: "Should we use intent data for MQLs-",
+        answer:
+          "Yes when it predicts conversion. Combine intent with fit and behavior so the score reflects both interest and likelihood to buy.",
+      },
     ],
   },
   {
@@ -952,9 +1177,30 @@ const seeds: Seed[] = [
     title: "SQL (Sales-Qualified Lead)",
     description:
       "An SQL is a lead that sales has validated as qualified for a sales conversation (budget/need/timing or product fit).",
+    example:
+      "A lead confirms budget and timeline on a discovery call and meets ICP criteria.",
     bullets: [
       "Track MQL->SQL and SQL->Closed rates to find funnel bottlenecks.",
       "Segment by channel to identify high-quality sources.",
+      "Document SQL criteria so marketing and sales use the same gate.",
+      "Review SQL rate alongside response time and follow-up quality.",
+    ],
+    mistakes: [
+      "Labeling a lead as SQL without a real qualification step.",
+      "Letting SQL definitions drift by rep or region.",
+      "Treating all SQLs as equal quality without scoring.",
+    ],
+    faqs: [
+      {
+        question: "Can a PQL be an SQL-",
+        answer:
+          "Yes. PQL signals can trigger a sales qualification step, and the lead becomes an SQL once it meets agreed sales criteria.",
+      },
+      {
+        question: "How should SQL criteria be documented-",
+        answer:
+          "Use a short checklist (budget, need, timing, fit) with clear owners and update only at defined review points.",
+      },
     ],
   },
   {
@@ -1058,13 +1304,24 @@ const seeds: Seed[] = [
     title: "Sales Ramp",
     description:
       "Sales ramp is the time and productivity curve it takes for a new sales rep to reach full quota productivity. Ramp affects capacity, forecasting, and hiring plans.",
+    example:
+      "If a new rep reaches 50% of quota by month 3 and 100% by month 6, ramp time is about 6 months.",
     bullets: [
       "Use historical ramp cohorts (month 1/2/3) instead of a single assumption.",
       "Ramp often differs by segment and motion (SMB vs enterprise).",
+      "Model ramped vs ramping headcount separately in capacity plans.",
     ],
     mistakes: [
       "Assuming new hires are fully productive immediately.",
       "Using a single ramp assumption across very different roles/territories.",
+      "Ignoring seasonality that changes ramp effectiveness.",
+    ],
+    faqs: [
+      {
+        question: "What is a typical sales ramp time-",
+        answer:
+          "It depends on deal complexity and training. Many SaaS teams see 3-6 months for SMB and longer for enterprise roles.",
+      },
     ],
     relatedGuideSlugs: ["sales-capacity-guide"],
     relatedCalculatorSlugs: ["sales-capacity-calculator"],
@@ -1075,13 +1332,31 @@ const seeds: Seed[] = [
     description:
       "OTE (on-target earnings) is total sales compensation at 100% quota attainment: base pay plus target variable pay.",
     formula: "OTE = base pay + variable pay (at 100% attainment)",
+    example:
+      "If base is $80k and variable target is $80k, OTE is $160k at full attainment.",
     bullets: [
       "Use OTE and quota to estimate a simplified commission rate (variable / quota).",
       "Keep time units consistent (annual OTE with annual quota).",
+      "Model accelerators separately; they change total earnings above quota.",
+      "Review OTE against market benchmarks to stay competitive.",
     ],
     mistakes: [
       "Mixing annual OTE with quarterly quota (unit mismatch).",
       "Ignoring accelerators/decels when comparing comp plans.",
+      "Assuming every rep hits 100% attainment.",
+      "Setting OTE without validating affordability in the unit economics.",
+    ],
+    faqs: [
+      {
+        question: "Is OTE the same as total compensation-",
+        answer:
+          "OTE is compensation at 100% attainment. Actual total compensation varies with performance, accelerators, and spiffs.",
+      },
+      {
+        question: "How does OTE affect hiring plans-",
+        answer:
+          "OTE drives fully loaded cost per rep. Use it with expected attainment to model CAC and sales efficiency.",
+      },
     ],
     relatedGuideSlugs: ["ote-guide"],
     relatedCalculatorSlugs: ["ote-commission-rate-calculator"],
@@ -1117,6 +1392,22 @@ const seeds: Seed[] = [
       "NDR = (starting revenue + expansion - contraction - churn) / starting revenue",
     example:
       "If starting revenue is $100k, expansion is $20k, contraction is $5k, and churn is $10k, NDR = ($100k+$20k-$5k-$10k)/$100k = 105%.",
+    bullets: [
+      "Track NDR by cohort and segment to see where expansion is durable.",
+      "Pair NDR with GRR to understand how much expansion masks churn.",
+      "Use NDR trend to forecast net retention contribution to growth.",
+    ],
+    mistakes: [
+      "Reporting NDR without separating expansion from price increases.",
+      "Using blended NDR and missing weak cohorts or segments.",
+    ],
+    faqs: [
+      {
+        question: "What is a healthy NDR-",
+        answer:
+          "It varies by segment, but many SaaS companies target 100%+ for expansion-led growth. Focus on trend and cohort quality.",
+      },
+    ],
     relatedGuideSlugs: ["nrr-guide", "nrr-vs-grr-guide", "retention-churn-hub-guide"],
     relatedCalculatorSlugs: ["nrr-calculator", "nrr-vs-grr-calculator"],
   },

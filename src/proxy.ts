@@ -9,7 +9,12 @@ const PASS_THROUGH_PATHS = new Set([
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  if (PASS_THROUGH_PATHS.has(pathname) || pathname.startsWith("/.well-known/")) {
+  if (
+    PASS_THROUGH_PATHS.has(pathname) ||
+    pathname.startsWith("/.well-known/") ||
+    pathname.startsWith("/_next/") ||
+    pathname.startsWith("/_vercel/")
+  ) {
     return NextResponse.next();
   }
 
@@ -35,5 +40,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/).*)"],
+  matcher: ["/:path*"],
 };

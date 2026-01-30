@@ -53,4 +53,3 @@ gtag('consent', 'default', {
     </>
   );
 }
-

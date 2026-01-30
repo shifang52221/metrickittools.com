@@ -67,6 +67,30 @@ export default function ContactPage() {
         We aim to respond within a few business days. For urgent issues, include
         &quot;urgent&quot; in the subject line and a short summary of impact.
       </p>
+      <h2>What to include for SEO/content requests</h2>
+      <ul>
+        <li>The target keyword or user question.</li>
+        <li>The page URL and current section you want improved.</li>
+        <li>Any constraints (tone, audience, or business model).</li>
+      </ul>
+      <h2>Calculator QA checklist</h2>
+      <ul>
+        <li>Confirm the time window (monthly, quarterly, annual).</li>
+        <li>Confirm the currency and rounding rules.</li>
+        <li>List whether refunds, churn, or discounts are included.</li>
+        <li>Note if the calculator should use gross or contribution margin.</li>
+      </ul>
+      <h2>Data handling</h2>
+      <p>
+        Do not send sensitive customer data. If you need to share a dataset,
+        anonymize it first and provide a synthetic example that reproduces the
+        issue.
+      </p>
+      <h2>Response expectations</h2>
+      <p>
+        We respond in the order received. If a request is time-sensitive, say
+        so and include the business impact so we can prioritize correctly.
+      </p>
     </div>
   );
 }

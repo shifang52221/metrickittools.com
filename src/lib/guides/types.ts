@@ -27,6 +27,6 @@ export type Guide = {
     label: string;
     calculatorSlug: string;
     params: Record<string, string>;
-    note?: string;
+  note?: string;
   }>;
 };

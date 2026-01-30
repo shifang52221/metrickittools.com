@@ -56,7 +56,7 @@ export default function OpenGraphImage() {
             {siteConfig.description}
           </div>
           <div style={{ fontSize: 22, color: "#a1a1aa" }}>
-            CAC · LTV · ROAS · Payback · Churn
+            CAC - LTV - ROAS - Payback - Churn
           </div>
         </div>
       </div>

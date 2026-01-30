@@ -114,6 +114,16 @@ export const calculators: CalculatorDefinition[] = [
         suffix: "%",
         defaultValue: "0",
       },
+      {
+        key: "targetProfitPercent",
+        label: "Target profit after ads",
+        help: "Desired profit after ads as % of revenue (optional).",
+        placeholder: "10",
+        suffix: "%",
+        defaultValue: "10",
+        min: 0,
+        step: 0.1,
+      },
     ],
     compute(values) {
       const warnings: string[] = [];
@@ -139,8 +149,22 @@ export const calculators: CalculatorDefinition[] = [
         values.revenue * Math.max(contributionMargin, 0);
       const profitAfterAds = contributionProfitBeforeAds - values.adSpend;
       const breakEvenRoas = contributionMargin > 0 ? 1 / contributionMargin : 0;
+      const targetProfit = values.targetProfitPercent / 100;
+      const requiredRevenueForBreakEven =
+        contributionMargin > 0 ? values.adSpend / contributionMargin : null;
+      const requiredRevenueForTargetProfit =
+        contributionMargin > targetProfit && targetProfit >= 0
+          ? values.adSpend / (contributionMargin - targetProfit)
+          : null;
+      const profitMarginAfterAds =
+        values.revenue > 0 ? profitAfterAds / values.revenue : null;
       const profitPerDollar =
         values.adSpend > 0 ? profitAfterAds / values.adSpend : 0;
+      if (targetProfit >= contributionMargin && values.targetProfitPercent > 0) {
+        warnings.push(
+          "Target profit exceeds contribution margin. Increase margin or lower profit target.",
+        );
+      }
       if (roasMultiple === null) {
         return {
           headline: {
@@ -181,6 +205,17 @@ export const calculators: CalculatorDefinition[] = [
             detail: "Revenue * contribution margin - ad spend",
           },
           {
+            key: "profitMarginAfterAds",
+            label: "Profit margin after ads",
+            value: profitMarginAfterAds ?? 0,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail:
+              profitMarginAfterAds === null
+                ? "Add revenue and ad spend"
+                : "Profit after ads / revenue",
+          },
+          {
             key: "profitPerDollar",
             label: "Profit per $1 of ad spend",
             value: profitPerDollar,
@@ -204,6 +239,28 @@ export const calculators: CalculatorDefinition[] = [
             format: "multiple",
             maxFractionDigits: 2,
             detail: "1 / contribution margin",
+          },
+          {
+            key: "requiredRevenueBreakEven",
+            label: "Revenue needed to break even",
+            value: requiredRevenueForBreakEven ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail:
+              requiredRevenueForBreakEven === null
+                ? "Contribution margin must be > 0"
+                : "Ad spend / contribution margin",
+          },
+          {
+            key: "requiredRevenueTargetProfit",
+            label: "Revenue needed for target profit",
+            value: requiredRevenueForTargetProfit ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail:
+              requiredRevenueForTargetProfit === null
+                ? "Target profit too high for margin"
+                : "Ad spend / (margin - target profit)",
           },
         ],
         breakdown: [
@@ -261,17 +318,17 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "What is a good ROAS?",
+        question: "What is a good ROAS-",
         answer:
           "It depends on your margins, fulfillment costs, and fixed costs. A ROAS that looks 'good' can still lose money if margins are low.",
       },
       {
-        question: "What's the difference between ROAS and ROI?",
+        question: "What's the difference between ROAS and ROI-",
         answer:
           "ROAS is revenue divided by ad spend. ROI is profit relative to cost. ROAS can look great while ROI is negative if margins or costs are poor.",
       },
       {
-        question: "Can I use ROAS for subscription businesses?",
+        question: "Can I use ROAS for subscription businesses-",
         answer:
           "Yes, but pair ROAS with CAC, payback period, and retention since revenue recurs over time and churn can change profitability.",
       },
@@ -499,12 +556,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Is break-even ROAS the same as target ROAS?",
+        question: "Is break-even ROAS the same as target ROAS-",
         answer:
           "No. Break-even ROAS is the minimum ROAS to avoid losses on variable economics. Target ROAS should be higher to cover fixed costs and desired profit.",
       },
       {
-        question: "Should I include fixed costs in break-even ROAS?",
+        question: "Should I include fixed costs in break-even ROAS-",
         answer:
           "Not in this simplified model. Fixed costs are better handled by setting a higher target ROAS or by modeling contribution profit needed to cover fixed costs.",
       },
@@ -725,12 +782,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "How do I choose a fixed cost allocation?",
+        question: "How do I choose a fixed cost allocation-",
         answer:
           "Pick a conservative percent based on your business: total fixed costs divided by your expected revenue in the same period. Keep it stable for comparisons.",
       },
       {
-        question: "Why can't I get a target ROAS?",
+        question: "Why can't I get a target ROAS-",
         answer:
           "If contribution margin minus allocations is <= 0, your unit economics can't support the chosen buffers. Reduce fixed/profit allocations or improve margin.",
       },
@@ -750,7 +807,7 @@ export const calculators: CalculatorDefinition[] = [
     slug: "paid-ads-funnel-calculator",
     title: "Paid Ads Funnel Calculator",
     description:
-      "Model CPM → CTR → CVR to estimate CPC, CPA, ROAS, and profit per 1,000 impressions (with margin and variable costs).",
+      "Model CPM -> CTR -> CVR to estimate CPC, CPA, ROAS, and profit per 1,000 impressions (with margin and variable costs).",
     category: "paid-ads",
     featured: true,
     guideSlug: "paid-ads-funnel-guide",
@@ -767,7 +824,7 @@ export const calculators: CalculatorDefinition[] = [
     ],
     seo: {
       intro: [
-        "Most ad performance can be decomposed into a simple funnel: cost per 1,000 impressions (CPM) → click-through rate (CTR) → conversion rate (CVR) → average order value (AOV).",
+        "Most ad performance can be decomposed into a simple funnel: cost per 1,000 impressions (CPM) -> click-through rate (CTR) -> conversion rate (CVR) -> average order value (AOV).",
         "This calculator turns those inputs into CPC, CPA, ROAS, break-even targets, and profit per 1,000 impressions using contribution margin (gross margin minus variable costs).",
       ],
       steps: [
@@ -993,14 +1050,14 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Why focus on profit per 1,000 impressions?",
+        question: "Why focus on profit per 1,000 impressions-",
         answer:
           "It reveals where performance is coming from. If profit is negative, you can see whether the lever is CPM, CTR, CVR, AOV, or contribution margin.",
       },
       {
-        question: "How is break-even CPA computed?",
+        question: "How is break-even CPA computed-",
         answer:
-          "Break-even CPA is the maximum you can pay per conversion without losing money on variable economics: AOV × contribution margin.",
+          "Break-even CPA is the maximum you can pay per conversion without losing money on variable economics: AOV x contribution margin.",
       },
     ],
   },
@@ -1176,7 +1233,7 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Is ROI the same as ROAS?",
+        question: "Is ROI the same as ROAS-",
         answer:
           "No. ROAS is typically revenue divided by ad spend, while ROI uses profit (revenue minus cost) divided by cost.",
       },
@@ -1211,7 +1268,7 @@ export const calculators: CalculatorDefinition[] = [
     seo: {
       intro: [
         "Customer Acquisition Cost (CAC) is the average cost to acquire one new paying customer. It is a core SaaS unit-economics metric used to evaluate channel efficiency and plan budgets.",
-        "The key is consistency: define what costs you include and what counts as a “new customer”, then use the same definition across time and segments.",
+        "The key is consistency: define what costs you include and what counts as a \"new customer\", then use the same definition across time and segments.",
       ],
       steps: [
         "Pick a time window (month/quarter) and a segment (channel, plan, geo).",
@@ -1247,35 +1304,63 @@ export const calculators: CalculatorDefinition[] = [
           defaultValue: "200",
           min: 0,
         },
-        {
-          key: "grossMarginPercent",
-          label: "Gross margin (optional)",
-          placeholder: "80",
-          suffix: "%",
-          defaultValue: "80",
-          min: 0,
-          step: 0.1,
-        },
-      ],
-      compute(values) {
-        const warnings: string[] = [];
-        const cac = safeDivide(values.spend, values.newCustomers);
-        if (values.newCustomers <= 0)
-          warnings.push("New customers must be greater than 0.");
+      {
+        key: "grossMarginPercent",
+        label: "Gross margin (optional)",
+        placeholder: "80",
+        suffix: "%",
+        defaultValue: "80",
+        min: 0,
+        step: 0.1,
+      },
+      {
+        key: "targetPaybackMonths",
+        label: "Target payback (months, optional)",
+        help: "Set 0 to disable target CAC guidance.",
+        placeholder: "12",
+        defaultValue: "12",
+        min: 0,
+        step: 1,
+      },
+    ],
+    compute(values) {
+      const warnings: string[] = [];
+      const cac = safeDivide(values.spend, values.newCustomers);
+      if (values.newCustomers <= 0)
+        warnings.push("New customers must be greater than 0.");
         const grossMargin = values.grossMarginPercent / 100;
-        const grossProfitPerMonth =
-          values.arpaMonthly > 0 && grossMargin > 0
-            ? values.arpaMonthly * grossMargin
-            : null;
-        const paybackMonths =
-          grossProfitPerMonth && grossProfitPerMonth > 0
-            ? values.spend / values.newCustomers / grossProfitPerMonth
-            : null;
-        if (cac === null) {
-          return {
-            headline: {
-              key: "cac",
-              label: "CAC",
+      const grossProfitPerMonth =
+        values.arpaMonthly > 0 && grossMargin > 0
+          ? values.arpaMonthly * grossMargin
+          : null;
+      const paybackMonths =
+        grossProfitPerMonth && grossProfitPerMonth > 0
+          ? values.spend / values.newCustomers / grossProfitPerMonth
+          : null;
+      const annualGrossProfit =
+        grossProfitPerMonth && grossProfitPerMonth > 0
+          ? grossProfitPerMonth * 12
+          : null;
+      const cacToAnnualGrossProfit =
+        annualGrossProfit && annualGrossProfit > 0 && cac
+          ? cac / annualGrossProfit
+          : null;
+      const targetPayback = Math.max(0, Math.floor(values.targetPaybackMonths));
+      if (values.targetPaybackMonths !== targetPayback)
+        warnings.push("Target payback was rounded down to a whole number.");
+      const maxCacForTargetPayback =
+        grossProfitPerMonth && targetPayback > 0
+          ? grossProfitPerMonth * targetPayback
+          : null;
+      const requiredArpaForTargetPayback =
+        targetPayback > 0 && grossMargin > 0 && cac
+          ? (cac / targetPayback) / grossMargin
+          : null;
+      if (cac === null) {
+        return {
+          headline: {
+            key: "cac",
+            label: "CAC",
             value: 0,
             format: "currency",
             currency: "USD",
@@ -1290,32 +1375,76 @@ export const calculators: CalculatorDefinition[] = [
             value: cac,
             format: "currency",
             currency: "USD",
-            detail: "Spend ÷ New customers",
+            detail: "Spend / New customers",
           },
           secondary: [
-            {
-              key: "grossProfitPerMonth",
-              label: "Gross profit per account / month",
-              value: grossProfitPerMonth ?? 0,
-              format: "currency",
-              currency: "USD",
-              detail:
-                grossProfitPerMonth === null
-                  ? "Add ARPA and gross margin"
-                  : "ARPA x gross margin",
-            },
-            {
-              key: "paybackMonths",
-              label: "Payback months (from ARPA/margin)",
-              value: paybackMonths ?? 0,
-              format: "months",
-              maxFractionDigits: 1,
-              detail:
-                paybackMonths === null
-                  ? "Add ARPA and gross margin"
-                  : "CAC / gross profit per month",
-            },
-          ],
+          {
+            key: "grossProfitPerMonth",
+            label: "Gross profit per account / month",
+            value: grossProfitPerMonth ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail:
+              grossProfitPerMonth === null
+                ? "Add ARPA and gross margin"
+                : "ARPA x gross margin",
+          },
+          {
+            key: "annualGrossProfit",
+            label: "Gross profit per account / year",
+            value: annualGrossProfit ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail:
+              annualGrossProfit === null
+                ? "Add ARPA and gross margin"
+                : "Gross profit/month x 12",
+          },
+          {
+            key: "paybackMonths",
+            label: "Payback months (from ARPA/margin)",
+            value: paybackMonths ?? 0,
+            format: "months",
+            maxFractionDigits: 1,
+            detail:
+              paybackMonths === null
+                ? "Add ARPA and gross margin"
+                : "CAC / gross profit per month",
+          },
+          {
+            key: "cacToAnnualGrossProfit",
+            label: "CAC / annual gross profit",
+            value: cacToAnnualGrossProfit ?? 0,
+            format: "multiple",
+            maxFractionDigits: 2,
+            detail:
+              cacToAnnualGrossProfit === null
+                ? "Add ARPA and gross margin"
+                : "CAC / annual gross profit",
+          },
+          {
+            key: "maxCacForTargetPayback",
+            label: `Max CAC for ${targetPayback} month payback`,
+            value: maxCacForTargetPayback ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail:
+              maxCacForTargetPayback === null
+                ? "Set target payback > 0"
+                : "Gross profit/month x target months",
+          },
+          {
+            key: "requiredArpaForTargetPayback",
+            label: "Min ARPA for target payback",
+            value: requiredArpaForTargetPayback ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail:
+              requiredArpaForTargetPayback === null
+                ? "Add CAC, margin, and target payback"
+                : "CAC / target months / margin",
+          },
+        ],
           breakdown: [
             {
               key: "spend",
@@ -1349,7 +1478,7 @@ export const calculators: CalculatorDefinition[] = [
           warnings,
         };
       },
-    formula: "CAC = Sales & Marketing Spend ÷ New Customers",
+    formula: "CAC = Sales & Marketing Spend / New Customers",
     assumptions: [
       "Spend and new customers are measured over the same time window.",
       "New customers means net new paying customers (not leads or trials).",
@@ -1358,22 +1487,22 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Should I include salaries in CAC?",
+        question: "Should I include salaries in CAC-",
         answer:
           "Many teams include the portion of sales/marketing salaries and tools attributable to acquisition; keep your definition consistent over time.",
       },
       {
-        question: "What's the difference between paid CAC and blended CAC?",
+        question: "What's the difference between paid CAC and blended CAC-",
         answer:
           "Paid CAC uses only paid acquisition spend (ads). Blended CAC includes all acquisition costs (paid + sales + marketing + tools) divided by new customers.",
       },
       {
-        question: "Is CAC a good metric on its own?",
+        question: "Is CAC a good metric on its own-",
         answer:
           "Not by itself. Pair CAC with payback period and retention/LTV. A low CAC can still be bad if churn is high, and a high CAC can be fine if payback is fast and retention is strong.",
       },
       {
-        question: "What if my sales cycle is long?",
+        question: "What if my sales cycle is long-",
         answer:
           "Match costs and customers using a consistent rule (e.g., cohort-based CAC, or lag spend by your average sales cycle) so CAC isn't artificially high or low in a given month.",
       },
@@ -1421,7 +1550,7 @@ export const calculators: CalculatorDefinition[] = [
         "Choose a time window (month/quarter) and a segment (paid channel, motion, plan).",
         "Enter paid spend and other acquisition costs for the same window.",
         "Enter the number of new paying customers acquired in the same window.",
-        "Compute fully-loaded CAC = total acquisition costs ÷ new customers.",
+        "Compute fully-loaded CAC = total acquisition costs / new customers.",
       ],
       pitfalls: [
         "Using leads/trials as 'customers' (denominator mismatch).",
@@ -1535,7 +1664,7 @@ export const calculators: CalculatorDefinition[] = [
           value: cac,
           format: "currency",
           currency: "USD",
-          detail: "Total acquisition costs ÷ new customers",
+          detail: "Total acquisition costs / new customers",
         },
           secondary: [
             {
@@ -1628,7 +1757,7 @@ export const calculators: CalculatorDefinition[] = [
         };
       },
     formula:
-      "Fully-loaded CAC = (paid spend + salaries + tools + other) ÷ new customers",
+      "Fully-loaded CAC = (paid spend + salaries + tools + other) / new customers",
     assumptions: [
       "All costs and new customers are measured over the same time window.",
       "Salaries/tools are allocated to acquisition consistently (planning definition).",
@@ -1636,12 +1765,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Is fully-loaded CAC better than paid CAC?",
+        question: "Is fully-loaded CAC better than paid CAC-",
         answer:
           "They answer different questions. Paid CAC helps optimize paid channels; fully-loaded CAC is more useful for planning and unit economics because it includes the costs required to acquire customers.",
       },
       {
-        question: "Should I include support and COGS in CAC?",
+        question: "Should I include support and COGS in CAC-",
         answer:
           "Typically no. CAC focuses on acquisition costs. Support/hosting are usually part of COGS and affect gross margin, which impacts payback and LTV.",
       },
@@ -1850,7 +1979,7 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Should I use revenue churn or customer churn?",
+        question: "Should I use revenue churn or customer churn-",
         answer:
           "This calculator uses customer churn for simplicity. For many SaaS businesses, revenue churn (NRR/GRR) is more representative.",
       },
@@ -2068,12 +2197,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Why is LTV so sensitive to churn?",
+        question: "Why is LTV so sensitive to churn-",
         answer:
           "Because churn is in the denominator. Small changes in churn can create large changes in lifetime and therefore in LTV in simple models.",
       },
       {
-        question: "Should I use this instead of cohort LTV?",
+        question: "Should I use this instead of cohort LTV-",
         answer:
           "Use this for planning and sensitivity. For accuracy, use cohort-based LTV from observed retention and expansion over time.",
       },
@@ -2276,7 +2405,7 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "What is a good LTV:CAC ratio?",
+        question: "What is a good LTV:CAC ratio-",
         answer:
           "Many SaaS teams target ~3:1, but the right ratio depends on growth rate, cash constraints, churn, and channel mix.",
       },
@@ -2481,12 +2610,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Should payback include onboarding costs?",
+        question: "Should payback include onboarding costs-",
         answer:
           "If onboarding costs are significant and variable per customer, include them in CAC so payback reflects full acquisition cost.",
       },
       {
-        question: "How do I calculate months to recover CAC?",
+        question: "How do I calculate months to recover CAC-",
         answer:
           "Compute gross profit per month (ARPA * gross margin), then divide CAC by gross profit per month. The result is the CAC payback period in months.",
       },
@@ -2717,17 +2846,17 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Why use gross margin instead of revenue for payback?",
+        question: "Why use gross margin instead of revenue for payback-",
         answer:
           "Because payback should reflect contribution (value created after COGS). Revenue-based payback can overstate how fast you recover CAC.",
       },
       {
-        question: "What ARPA and margin ranges should I test?",
+        question: "What ARPA and margin ranges should I test-",
         answer:
           "Test ranges that reflect pricing/mix uncertainty. A common starting point is +/-10-20% ARPA and +/-5-10% margin, then widen if your business is volatile.",
       },
       {
-        question: "Is this the same as cohort payback curves?",
+        question: "Is this the same as cohort payback curves-",
         answer:
           "No. This is a simple sensitivity tool for steady-state assumptions. Cohort payback curves model early churn and changing revenue/margin over time.",
       },
@@ -2880,7 +3009,7 @@ export const calculators: CalculatorDefinition[] = [
     assumptions: ["Inputs represent the same period (e.g., month, quarter)."],
     faqs: [
       {
-        question: "What about expansion revenue?",
+        question: "What about expansion revenue-",
         answer:
           "Customer churn ignores upsells/downsells. Use NRR/GRR when you want a revenue-based view.",
       },
@@ -3060,7 +3189,7 @@ export const calculators: CalculatorDefinition[] = [
     assumptions: ["Inputs represent the same period (e.g., month, quarter)."],
     faqs: [
       {
-        question: "Can retention rate be above 100%?",
+        question: "Can retention rate be above 100%-",
         answer:
           "Customer retention typically stays <= 100%. If you're above 100%, double-check inputs or consider revenue retention instead.",
       },
@@ -3086,12 +3215,12 @@ export const calculators: CalculatorDefinition[] = [
     seo: {
       intro: [
         "ARPU (Average Revenue Per User) measures how much revenue you generate per user in a period. It is commonly used to track monetization changes from pricing, packaging, and user mix.",
-        "To calculate ARPU correctly, make sure your revenue and user count are measured over the same period and that you define what an “active user” means for your product.",
+        "To calculate ARPU correctly, make sure your revenue and user count are measured over the same period and that you define what an \"active user\" means for your product.",
       ],
       steps: [
-        "Pick a time window (month/quarter) and define “active user”.",
+        "Pick a time window (month/quarter) and define \"active user\".",
         "Sum revenue for that same window (be consistent: gross vs net of refunds).",
-        "Compute average active users for the window (e.g., average DAU, or (start + end) ÷ 2).",
+        "Compute average active users for the window (e.g., average DAU, or (start + end) / 2).",
         "Divide revenue by average active users to get ARPU.",
       ],
       pitfalls: [
@@ -3168,7 +3297,7 @@ export const calculators: CalculatorDefinition[] = [
           value: arpu,
           format: "currency",
           currency: "USD",
-          detail: "Revenue ÷ Avg. users",
+          detail: "Revenue / Avg. users",
         },
         secondary: [
           {
@@ -3177,7 +3306,7 @@ export const calculators: CalculatorDefinition[] = [
             value: annualizedArpu ?? 0,
             format: "currency",
             currency: "USD",
-            detail: "ARPU ÷ period months × 12",
+            detail: "ARPU / period months x 12",
           },
           {
             key: "grossProfitPerUser",
@@ -3185,27 +3314,27 @@ export const calculators: CalculatorDefinition[] = [
             value: grossProfitPerUser ?? 0,
             format: "currency",
             currency: "USD",
-            detail: "ARPU × gross margin",
+            detail: "ARPU x gross margin",
           },
         ],
         warnings,
       };
     },
-    formula: "ARPU = Revenue ÷ Average Active Users",
+    formula: "ARPU = Revenue / Average Active Users",
     assumptions: [
       "Revenue, users, and period length use the same time window.",
       "Annualized ARPU scales linearly by period length.",
     ],
     faqs: [
       {
-        question: "ARPU vs ARPA?",
+        question: "ARPU vs ARPA-",
         answer:
           "ARPU is per user; ARPA is per account. Choose the one that matches your product and reporting.",
       },
       {
-        question: "How do you calculate ARPU?",
+        question: "How do you calculate ARPU-",
         answer:
-          "ARPU = total revenue ÷ average active users for the same period. Choose a time window (month/quarter), define 'active user', compute average active users, then divide revenue by that average.",
+          "ARPU = total revenue / average active users for the same period. Choose a time window (month/quarter), define 'active user', compute average active users, then divide revenue by that average.",
       },
     ],
     guide: [
@@ -3237,7 +3366,7 @@ export const calculators: CalculatorDefinition[] = [
     relatedGlossarySlugs: ["arpa", "arpa-vs-arpu"],
     seo: {
       intro: [
-        "ARPA (Average Revenue Per Account) is revenue ÷ average paying accounts for a period. It often matches B2B SaaS pricing better than ARPU because you sell to companies, not individual users.",
+        "ARPA (Average Revenue Per Account) is revenue / average paying accounts for a period. It often matches B2B SaaS pricing better than ARPU because you sell to companies, not individual users.",
         "To compare ARPA over time, keep the definition of 'paying account' and the revenue base consistent (gross vs net of refunds/credits).",
       ],
       steps: [
@@ -3325,7 +3454,7 @@ export const calculators: CalculatorDefinition[] = [
           value: arpa,
           format: "currency",
           currency: "USD",
-          detail: "Revenue ÷ Avg. accounts",
+          detail: "Revenue / Avg. accounts",
         },
         secondary: [
           {
@@ -3334,7 +3463,7 @@ export const calculators: CalculatorDefinition[] = [
             value: annualizedArpa ?? 0,
             format: "currency",
             currency: "USD",
-            detail: "ARPA ÷ period months × 12",
+            detail: "ARPA / period months x 12",
           },
           {
             key: "grossProfitPerAccount",
@@ -3342,27 +3471,27 @@ export const calculators: CalculatorDefinition[] = [
             value: grossProfitPerAccount ?? 0,
             format: "currency",
             currency: "USD",
-            detail: "ARPA × gross margin",
+            detail: "ARPA x gross margin",
           },
         ],
         warnings,
       };
     },
-    formula: "ARPA = Revenue ÷ Average Paying Accounts",
+    formula: "ARPA = Revenue / Average Paying Accounts",
     assumptions: [
       "Revenue, accounts, and period length use the same time window.",
       "Annualized ARPA scales linearly by period length.",
     ],
     faqs: [
       {
-        question: "ARPA vs ARPU?",
+        question: "ARPA vs ARPU-",
         answer:
           "ARPA is per paying account/customer. ARPU is per active user. If you sell to companies, ARPA often matches pricing and reporting better.",
       },
       {
-        question: "Should ARPA use revenue or gross profit?",
+        question: "Should ARPA use revenue or gross profit-",
         answer:
-          "ARPA is usually revenue-based. For unit economics decisions, also compute gross profit per account (ARPA × gross margin).",
+          "ARPA is usually revenue-based. For unit economics decisions, also compute gross profit per account (ARPA x gross margin).",
       },
     ],
     guide: [
@@ -3387,7 +3516,7 @@ export const calculators: CalculatorDefinition[] = [
     seo: {
       intro: [
         "Revenue changes because user count changes, ARPU changes, or both. Decomposing growth helps you see whether pricing/monetization or distribution/scale is doing the work.",
-        "This calculator uses a standard two-factor decomposition: revenue = users × ARPU.",
+        "This calculator uses a standard two-factor decomposition: revenue = users x ARPU.",
       ],
       steps: [
         "Enter revenue and average active users for the start period.",
@@ -3470,7 +3599,7 @@ export const calculators: CalculatorDefinition[] = [
           value: revenueChange,
           format: "currency",
           currency: "USD",
-          detail: "End revenue ? start revenue",
+          detail: "End revenue - start revenue",
         },
         secondary: [
           {
@@ -3479,7 +3608,7 @@ export const calculators: CalculatorDefinition[] = [
             value: startArpu,
             format: "currency",
             currency: "USD",
-            detail: "Start revenue ÷ start users",
+            detail: "Start revenue / start users",
           },
           {
             key: "endArpu",
@@ -3487,7 +3616,7 @@ export const calculators: CalculatorDefinition[] = [
             value: endArpu,
             format: "currency",
             currency: "USD",
-            detail: "End revenue ÷ end users",
+            detail: "End revenue / end users",
           },
           {
             key: "userEffect",
@@ -3505,7 +3634,7 @@ export const calculators: CalculatorDefinition[] = [
           },
           {
             key: "interaction",
-            label: "Interaction (users × ARPU change)",
+            label: "Interaction (users x ARPU change)",
             value: interaction,
             format: "currency",
             currency: "USD",
@@ -3516,7 +3645,7 @@ export const calculators: CalculatorDefinition[] = [
             value: userGrowth ?? 0,
             format: "percent",
             maxFractionDigits: 2,
-            detail: userGrowth === null ? "Start users must be > 0" : "Δ users ÷ start users",
+            detail: userGrowth === null ? "Start users must be > 0" : "Delta  users / start users",
           },
           {
             key: "arpuGrowth",
@@ -3524,7 +3653,7 @@ export const calculators: CalculatorDefinition[] = [
             value: arpuGrowth ?? 0,
             format: "percent",
             maxFractionDigits: 2,
-            detail: arpuGrowth === null ? "Start ARPU must be > 0" : "Δ ARPU ÷ start ARPU",
+            detail: arpuGrowth === null ? "Start ARPU must be > 0" : "Delta  ARPU / start ARPU",
           },
         ],
         breakdown: [
@@ -3568,12 +3697,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Why is there an 'interaction' term?",
+        question: "Why is there an 'interaction' term-",
         answer:
           "Because users and ARPU can change at the same time. The interaction term captures growth that comes from both increasing together (or offsetting each other).",
       },
       {
-        question: "Should I use ARPU or ARPA for B2B SaaS?",
+        question: "Should I use ARPU or ARPA for B2B SaaS-",
         answer:
           "If you bill per company (accounts), ARPA is usually more natural. If you bill per seat or per user, ARPU may match pricing better.",
       },
@@ -3704,7 +3833,7 @@ export const calculators: CalculatorDefinition[] = [
     assumptions: ["This is a simplified estimate; real MRR sums subscription amounts."],
     faqs: [
       {
-        question: "Does MRR include one-time fees?",
+        question: "Does MRR include one-time fees-",
         answer:
           "Typically no - MRR focuses on recurring revenue only. Track one-time fees separately.",
       },
@@ -3925,12 +4054,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Is MRR growth the same as revenue growth?",
+        question: "Is MRR growth the same as revenue growth-",
         answer:
           "Not necessarily. MRR is a recurring run-rate snapshot. Revenue is what you recognize over time and can include non-recurring items.",
       },
       {
-        question: "Should I use CMGR or YoY growth?",
+        question: "Should I use CMGR or YoY growth-",
         answer:
           "Use YoY for seasonal comparisons and external benchmarks. Use CMGR for planning and for comparing scenarios over different horizons.",
       },
@@ -4123,12 +4252,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Is MRR churn the same as customer churn?",
+        question: "Is MRR churn the same as customer churn-",
         answer:
           "No. MRR churn is revenue churn (lost recurring revenue). Customer churn is logo churn (lost customers). They can move differently if account sizes vary.",
       },
       {
-        question: "Should I include downgrades in churned MRR?",
+        question: "Should I include downgrades in churned MRR-",
         answer:
           "Typically churned MRR is cancellations. Downgrades are contraction MRR. You can combine them as 'gross MRR churn' if you label it clearly.",
       },
@@ -4259,12 +4388,12 @@ export const calculators: CalculatorDefinition[] = [
     assumptions: ["Assumes revenue stays stable for a year."],
     faqs: [
       {
-        question: "ARR vs annual revenue?",
+        question: "ARR vs annual revenue-",
         answer:
           "ARR is recurring revenue on an annualized basis. It doesn't include one-time fees or services revenue.",
       },
       {
-        question: "Bookings vs ARR?",
+        question: "Bookings vs ARR-",
         answer:
           "ARR is recurring run-rate (MRR x 12). Bookings are contracted value and can include one-time and non-recurring items. Cash receipts can differ again due to prepay timing.",
       },
@@ -4382,12 +4511,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Is ARR the same as annual revenue?",
+        question: "Is ARR the same as annual revenue-",
         answer:
           "Not always. ARR is a run-rate snapshot of recurring revenue. Annual revenue is what you recognize over a year and can include one-time items.",
       },
       {
-        question: "Should ARR always equal MRR x 12?",
+        question: "Should ARR always equal MRR x 12-",
         answer:
           "If both are defined as recurring run-rate, yes. If they don't match, it usually means definitions differ (one-time items, active base, annualization) or the numbers are from different dates.",
       },
@@ -4606,12 +4735,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Is ARR growth the same as revenue growth?",
+        question: "Is ARR growth the same as revenue growth-",
         answer:
           "Not necessarily. ARR is a recurring run-rate snapshot. Revenue is what you recognize over time and can include non-recurring items.",
       },
       {
-        question: "Should I use CMGR or YoY growth?",
+        question: "Should I use CMGR or YoY growth-",
         answer:
           "Use YoY growth for seasonal businesses and for external comparisons. Use CMGR for planning and comparing scenarios over different horizons.",
       },
@@ -4621,7 +4750,7 @@ export const calculators: CalculatorDefinition[] = [
         title: "ARR growth tips",
         bullets: [
           "Use consistent point-in-time snapshots (start and end of the period).",
-          "Segment ARR growth by plan and channel to find what’s driving momentum.",
+          "Segment ARR growth by plan and channel to find what's driving momentum.",
           "Pair ARR growth with retention (NRR/GRR) and payback to assess quality.",
         ],
       },
@@ -4774,12 +4903,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "What multiple should I use?",
+        question: "What multiple should I use-",
         answer:
           "Use a range (e.g., 4x-10x) and sanity-check against growth rate, gross margin, and retention. Market conditions can move multiples significantly.",
       },
       {
-        question: "Is ARR the same as annual revenue?",
+        question: "Is ARR the same as annual revenue-",
         answer:
           "Not always. ARR focuses on recurring run-rate and excludes one-time fees/services. Annual revenue may include non-recurring items.",
       },
@@ -4799,19 +4928,19 @@ export const calculators: CalculatorDefinition[] = [
     slug: "arr-valuation-sensitivity-calculator",
     title: "ARR Valuation Sensitivity Calculator",
     description:
-      "Estimate valuation sensitivity to ARR and revenue multiple assumptions (simple 3×3 grid).",
+      "Estimate valuation sensitivity to ARR and revenue multiple assumptions (simple 3x3 grid).",
     category: "saas-metrics",
     guideSlug: "arr-valuation-sensitivity-guide",
     relatedGlossarySlugs: ["arr", "arr-valuation-multiple", "sensitivity-analysis"],
     seo: {
       intro: [
-        "ARR multiple valuation is fast: enterprise value ≈ ARR × multiple. But both ARR and multiples move with market conditions, pricing, and retention.",
+        "ARR multiple valuation is fast: enterprise value ~ ARR x multiple. But both ARR and multiples move with market conditions, pricing, and retention.",
         "A small sensitivity grid helps you see how fragile (or robust) the valuation is to reasonable changes in ARR and the multiple.",
       ],
       steps: [
         "Enter your base ARR and base multiple.",
-        "Choose step sizes for ARR and the multiple (± around the base).",
-        "Review the 3×3 grid of valuations.",
+        "Choose step sizes for ARR and the multiple (+/- around the base).",
+        "Review the 3x3 grid of valuations.",
       ],
       pitfalls: [
         "Treating a single multiple as precise (false precision).",
@@ -4831,7 +4960,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         key: "arrStepPercent",
         label: "ARR step",
-        help: "Uses ± step around ARR base to create a 3×3 grid.",
+        help: "Uses +/- step around ARR base to create a 3x3 grid.",
         placeholder: "15",
         suffix: "%",
         defaultValue: "15",
@@ -4849,7 +4978,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         key: "multipleStep",
         label: "Multiple step",
-        help: "Uses ± step around the multiple base to create a 3×3 grid.",
+        help: "Uses +/- step around the multiple base to create a 3x3 grid.",
         placeholder: "1",
         defaultValue: "1",
         min: 0,
@@ -4892,7 +5021,7 @@ export const calculators: CalculatorDefinition[] = [
         if (multiple <= 0) continue;
         grid.push({
           key,
-          label: `EV @ $${arr.toFixed(0)} / ${multiple.toFixed(1)}×`,
+          label: `EV @ $${arr.toFixed(0)} / ${multiple.toFixed(1)}x`,
           value: evAt(arr, multiple),
         });
       }
@@ -4909,7 +5038,7 @@ export const calculators: CalculatorDefinition[] = [
           value: baseEv,
           format: "currency",
           currency: "USD",
-          detail: `Base: $${values.baseArr.toFixed(0)} / ${values.baseMultiple.toFixed(1)}×`,
+          detail: `Base: $${values.baseArr.toFixed(0)} / ${values.baseMultiple.toFixed(1)}x`,
         },
         secondary: grid.map((g) => ({
           key: g.key,
@@ -4921,20 +5050,20 @@ export const calculators: CalculatorDefinition[] = [
         warnings,
       };
     },
-    formula: "Enterprise value ≈ ARR × multiple; Sensitivity varies ARR and multiple around a base case",
+    formula: "Enterprise value ~ ARR x multiple; Sensitivity varies ARR and multiple around a base case",
     assumptions: [
       "This is a heuristic. Real valuation depends on growth, margin, retention, and market conditions.",
-      "Uses enterprise value (EV) as ARR × multiple (simplified).",
+      "Uses enterprise value (EV) as ARR x multiple (simplified).",
       "Only shows a small grid; use broader scenarios for full planning.",
     ],
     faqs: [
       {
-        question: "Is this a full valuation model?",
+        question: "Is this a full valuation model-",
         answer:
           "No. This is a multiple-based heuristic. For deeper analysis, use DCF or a comps model that reflects retention, growth, margin, and risk.",
       },
       {
-        question: "Why sensitivity on ARR as well as multiple?",
+        question: "Why sensitivity on ARR as well as multiple-",
         answer:
           "ARR can change with pricing, churn, and mix. The multiple can change with market conditions and your growth/retention profile. Both move in practice.",
       },
@@ -4960,7 +5089,7 @@ export const calculators: CalculatorDefinition[] = [
     guideSlug: "nrr-guide",
     seo: {
       intro: [
-        "NRR (Net Revenue Retention) measures how revenue from an existing customer cohort changes over a period, including expansion, contraction, and churn. It answers: do customers grow, shrink, or leave after they start?",
+        "NRR (Net Revenue Retention) measures how revenue from an existing customer cohort changes over a period, including expansion, contraction, and churn. It answers: do customers grow, shrink, or leave after they start-",
         "NRR is most useful when measured by cohort and segment (plan, size, channel). A blended NRR can hide problems in parts of the business.",
       ],
       steps: [
@@ -5025,8 +5154,18 @@ export const calculators: CalculatorDefinition[] = [
         values.churnedMrr;
       const netExpansionMrr =
         values.expansionMrr - values.contractionMrr - values.churnedMrr;
+      const netChange = endingMrr - values.startingMrr;
+      const grossRetention = safeDivide(
+        values.startingMrr - values.contractionMrr - values.churnedMrr,
+        values.startingMrr,
+      );
+      const expansionRate = safeDivide(values.expansionMrr, values.startingMrr);
+      const contractionRate = safeDivide(values.contractionMrr, values.startingMrr);
+      const churnRate = safeDivide(values.churnedMrr, values.startingMrr);
+      const netChangePercent = safeDivide(netChange, values.startingMrr);
 
       const nrr = safeDivide(endingMrr, values.startingMrr);
+      if (endingMrr < 0) warnings.push("Ending MRR is negative; check inputs.");
       if (nrr === null) {
         return {
           headline: {
@@ -5064,6 +5203,54 @@ export const calculators: CalculatorDefinition[] = [
             format: "currency",
             currency: "USD",
             detail: "Expansion - contraction - churn",
+          },
+          {
+            key: "netChange",
+            label: "Net MRR change",
+            value: netChange,
+            format: "currency",
+            currency: "USD",
+            detail: "Ending MRR - starting MRR",
+          },
+          {
+            key: "grossRetention",
+            label: "GRR (gross retention)",
+            value: grossRetention ?? 0,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail: "Excludes expansion",
+          },
+          {
+            key: "netChangePercent",
+            label: "Net change (% of starting)",
+            value: netChangePercent ?? 0,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail: "Net change / starting MRR",
+          },
+          {
+            key: "expansionRate",
+            label: "Expansion rate",
+            value: expansionRate ?? 0,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail: "Expansion / starting MRR",
+          },
+          {
+            key: "contractionRate",
+            label: "Contraction rate",
+            value: contractionRate ?? 0,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail: "Contraction / starting MRR",
+          },
+          {
+            key: "churnRate",
+            label: "Churn rate",
+            value: churnRate ?? 0,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail: "Churn / starting MRR",
           },
           {
             key: "nrrMultiple",
@@ -5115,12 +5302,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "What is a good NRR?",
+        question: "What is a good NRR-",
         answer:
           "NRR benchmarks vary by segment. NRR > 100% means the cohort grows without new customers. SMB businesses can succeed with NRR near 100% if CAC payback is short and margins are strong.",
       },
       {
-        question: "NRR vs GRR?",
+        question: "NRR vs GRR-",
         answer:
           "NRR includes expansion. GRR excludes expansion and focuses on durability after churn and downgrades.",
       },
@@ -5145,13 +5332,13 @@ export const calculators: CalculatorDefinition[] = [
     guideSlug: "grr-guide",
     seo: {
       intro: [
-        "GRR (Gross Revenue Retention) measures how much of a cohort’s starting revenue remains after churn and downgrades, excluding expansion. It is a clean durability metric.",
+        "GRR (Gross Revenue Retention) measures how much of a cohort's starting revenue remains after churn and downgrades, excluding expansion. It is a clean durability metric.",
       ],
       steps: [
         "Pick a cohort and time window.",
         "Measure starting MRR for the cohort.",
         "Subtract contraction and churned MRR to get ending gross MRR.",
-        "Compute GRR = ending gross MRR ÷ starting MRR.",
+        "Compute GRR = ending gross MRR / starting MRR.",
       ],
       pitfalls: [
         "Including expansion (GRR intentionally excludes it).",
@@ -5229,7 +5416,7 @@ export const calculators: CalculatorDefinition[] = [
           value: grr,
           format: "percent",
           maxFractionDigits: 1,
-          detail: "(Starting ? Contraction ? Churn) ÷ Starting",
+          detail: "(Starting - Contraction - Churn) / Starting",
         },
           secondary: [
             {
@@ -5310,12 +5497,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Why track GRR if I already track NRR?",
+        question: "Why track GRR if I already track NRR-",
         answer:
           "NRR can look strong due to expansion even when underlying churn/downgrades are weak. GRR isolates durability without expansion.",
       },
       {
-        question: "What is a good GRR?",
+        question: "What is a good GRR-",
         answer:
           "There is no single benchmark across all businesses. Use GRR trends by segment to identify where churn and downgrades are improving or worsening.",
       },
@@ -5445,7 +5632,7 @@ export const calculators: CalculatorDefinition[] = [
           value: nrr,
           format: "percent",
           maxFractionDigits: 2,
-          detail: "(Start + expansion ? contraction ? churn) ÷ start",
+          detail: "(Start + expansion - contraction - churn) / start",
         },
           secondary: [
             {
@@ -5454,11 +5641,11 @@ export const calculators: CalculatorDefinition[] = [
               value: grr,
               format: "percent",
               maxFractionDigits: 2,
-              detail: "(Start ? contraction ? churn) ÷ start",
+              detail: "(Start - contraction - churn) / start",
             },
             {
               key: "gap",
-              label: "NRR ? GRR (expansion offset)",
+              label: "NRR - GRR (expansion offset)",
               value: gap,
               format: "percent",
               maxFractionDigits: 2,
@@ -5506,12 +5693,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Can NRR be above 100%?",
+        question: "Can NRR be above 100%-",
         answer:
           "Yes. If expansion exceeds contraction + churn, the cohort grows without new customers and NRR can exceed 100%.",
       },
       {
-        question: "Why track GRR if NRR looks strong?",
+        question: "Why track GRR if NRR looks strong-",
         answer:
           "NRR can look strong due to expansion even when churn/downgrades are weak. GRR isolates durability without expansion.",
       },
@@ -5543,7 +5730,7 @@ export const calculators: CalculatorDefinition[] = [
       steps: [
         "Enter starting MRR for the cohort (beginning of period).",
         "Enter contraction MRR and churned MRR for the same cohort and period.",
-        "Compute gross revenue churn = (contraction + churn) ÷ starting MRR.",
+        "Compute gross revenue churn = (contraction + churn) / starting MRR.",
         "Optionally convert to monthly-equivalent churn for non-monthly windows.",
       ],
       pitfalls: [
@@ -5676,12 +5863,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Is gross revenue churn the same as GRR?",
+        question: "Is gross revenue churn the same as GRR-",
         answer:
             "They are closely related. GRR is the remaining revenue after losses (ending gross / starting). Gross revenue churn focuses on the losses ((contraction + churn) / starting).",
       },
       {
-        question: "Should I include expansion in gross churn?",
+        question: "Should I include expansion in gross churn-",
         answer:
           "No. Gross churn excludes expansion. Expansion is tracked separately and is included in NRR.",
       },
@@ -5899,7 +6086,7 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Is net new MRR the same as MRR growth rate?",
+        question: "Is net new MRR the same as MRR growth rate-",
         answer:
           "Net new MRR is a dollar amount (change in MRR). Growth rate is net new MRR divided by starting MRR for the period.",
       },
@@ -5919,7 +6106,7 @@ export const calculators: CalculatorDefinition[] = [
     slug: "mrr-waterfall-calculator",
     title: "MRR Waterfall Calculator",
     description:
-      "Build an MRR waterfall: starting MRR + new + expansion ? contraction ? churn = ending MRR.",
+      "Build an MRR waterfall: starting MRR + new + expansion - contraction - churn = ending MRR.",
     category: "saas-metrics",
     guideSlug: "mrr-waterfall-guide",
     relatedGlossarySlugs: ["mrr", "net-new-mrr", "quick-ratio"],
@@ -6028,11 +6215,11 @@ export const calculators: CalculatorDefinition[] = [
             value: netNewMrr,
             format: "currency",
             currency: "USD",
-            detail: "New + Expansion ? Contraction ? Churn",
+            detail: "New + Expansion - Contraction - Churn",
           },
           {
             key: "growthRate",
-            label: "MRR growth rate (net new ÷ starting)",
+            label: "MRR growth rate (net new / starting)",
             value: growthRate ?? 0,
             format: "percent",
             maxFractionDigits: 2,
@@ -6044,7 +6231,7 @@ export const calculators: CalculatorDefinition[] = [
               value: quickRatio ?? 0,
               format: "ratio",
               maxFractionDigits: 2,
-              detail: quickRatio === null ? "Losses must be > 0" : "(New + Expansion) ÷ (Contraction + Churn)",
+              detail: quickRatio === null ? "Losses must be > 0" : "(New + Expansion) / (Contraction + Churn)",
             },
             {
               key: "nrr",
@@ -6104,19 +6291,19 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "Ending MRR = starting MRR + new + expansion ? contraction ? churn; Net new MRR = new + expansion ? contraction ? churn",
+      "Ending MRR = starting MRR + new + expansion - contraction - churn; Net new MRR = new + expansion - contraction - churn",
     assumptions: [
       "All inputs represent the same period and use the same MRR definition.",
       "This is a reporting bridge; it does not model cohorts or timing within the period.",
     ],
     faqs: [
       {
-        question: "Is this the same as net new MRR?",
+        question: "Is this the same as net new MRR-",
         answer:
           "Net new MRR is the change (delta) in MRR. A waterfall adds starting MRR and produces an ending MRR to reconcile the period.",
       },
       {
-        question: "Should I segment the waterfall?",
+        question: "Should I segment the waterfall-",
         answer:
           "Yes when possible. Segment by plan, channel, and customer size to avoid blended averages hiding churn pockets or weak cohorts.",
       },
@@ -6136,7 +6323,7 @@ export const calculators: CalculatorDefinition[] = [
     slug: "saas-quick-ratio-calculator",
     title: "SaaS Quick Ratio Calculator",
     description:
-      "Calculate the SaaS quick ratio: (new + expansion) ÷ (contraction + churn).",
+      "Calculate the SaaS quick ratio: (new + expansion) / (contraction + churn).",
     category: "saas-metrics",
     guideSlug: "saas-quick-ratio-guide",
     seo: {
@@ -6146,7 +6333,7 @@ export const calculators: CalculatorDefinition[] = [
       steps: [
         "Measure new and expansion MRR for the period.",
         "Measure contraction and churned MRR for the same period.",
-        "Compute quick ratio = (new + expansion) ÷ (contraction + churn).",
+        "Compute quick ratio = (new + expansion) / (contraction + churn).",
       ],
       pitfalls: [
         "Using mismatched windows or definitions for movements.",
@@ -6221,7 +6408,7 @@ export const calculators: CalculatorDefinition[] = [
             value: ratio,
             format: "ratio",
             maxFractionDigits: 2,
-            detail: "(New + Expansion) ÷ (Contraction + Churn)",
+            detail: "(New + Expansion) / (Contraction + Churn)",
           },
           secondary: [
             {
@@ -6273,14 +6460,14 @@ export const calculators: CalculatorDefinition[] = [
         warnings,
       };
     },
-    formula: "Quick ratio = (New MRR + Expansion MRR) ÷ (Contraction MRR + Churned MRR)",
+    formula: "Quick ratio = (New MRR + Expansion MRR) / (Contraction MRR + Churned MRR)",
     assumptions: [
       "All movements are measured for the same period.",
       "Use MRR movements (not billings/cash) to keep the metric consistent.",
     ],
     faqs: [
       {
-        question: "What is a good SaaS quick ratio?",
+        question: "What is a good SaaS quick ratio-",
         answer:
           "Benchmarks vary by stage, but higher ratios generally indicate healthier growth quality (more positive MRR compared to losses). Use trends and segment-level ratios to diagnose where losses are coming from.",
       },
@@ -6371,12 +6558,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Which margin should I use for Rule of 40?",
+        question: "Which margin should I use for Rule of 40-",
         answer:
           "Teams commonly use operating margin, EBITDA margin, or free cash flow margin. Pick one and keep it consistent so you can compare trends.",
       },
       {
-        question: "Does Rule of 40 guarantee good performance?",
+        question: "Does Rule of 40 guarantee good performance-",
         answer:
           "No. It is a rough benchmark for balancing growth and profitability. It does not replace retention, payback, and cash efficiency analysis.",
       },
@@ -6403,7 +6590,7 @@ export const calculators: CalculatorDefinition[] = [
     seo: {
       intro: [
         "Net new ARR is the net change in recurring run-rate over a period after you add new and expansion ARR and subtract contraction and churned ARR.",
-        "It’s commonly used in efficiency metrics like burn multiple and the SaaS magic number.",
+        "It's commonly used in efficiency metrics like burn multiple and the SaaS magic number.",
       ],
       steps: [
         "Measure new ARR added in the period (from new customers).",
@@ -6484,7 +6671,7 @@ export const calculators: CalculatorDefinition[] = [
             value: netNewArr,
             format: "currency",
             currency: "USD",
-            detail: "New + Expansion ? Contraction ? Churn",
+            detail: "New + Expansion - Contraction - Churn",
           },
           secondary: [
             {
@@ -6527,19 +6714,19 @@ export const calculators: CalculatorDefinition[] = [
           warnings,
         };
       },
-    formula: "Net new ARR = new ARR + expansion ARR ? contraction ARR ? churned ARR",
+    formula: "Net new ARR = new ARR + expansion ARR - contraction ARR - churned ARR",
     assumptions: [
       "All movements are measured for the same period using a consistent ARR definition.",
       "ARR is treated as recurring run-rate (not recognized revenue).",
     ],
     faqs: [
       {
-        question: "Is net new ARR the same as ARR growth rate?",
+        question: "Is net new ARR the same as ARR growth rate-",
         answer:
-          "Net new ARR is a dollar change (ΔARR). Growth rate is net new ARR divided by starting ARR for the period.",
+          "Net new ARR is a dollar change (Delta ARR). Growth rate is net new ARR divided by starting ARR for the period.",
       },
       {
-        question: "How is net new ARR used for burn multiple?",
+        question: "How is net new ARR used for burn multiple-",
         answer:
           "Burn multiple compares net cash burn to net new ARR for the same period (often quarterly). Lower burn multiple means better growth efficiency.",
       },
@@ -6559,14 +6746,14 @@ export const calculators: CalculatorDefinition[] = [
     slug: "arr-waterfall-calculator",
     title: "ARR Waterfall Calculator",
     description:
-      "Build an ARR waterfall: starting ARR + new + expansion ? contraction ? churn = ending ARR.",
+      "Build an ARR waterfall: starting ARR + new + expansion - contraction - churn = ending ARR.",
     category: "saas-metrics",
     guideSlug: "arr-waterfall-guide",
     relatedGlossarySlugs: ["arr", "net-new-arr", "arr-waterfall"],
     seo: {
       intro: [
         "An ARR waterfall reconciles a starting ARR snapshot to an ending ARR snapshot using ARR movements: new, expansion, contraction, and churned ARR.",
-        "It’s a practical reporting template and a clean way to compute net new ARR and ARR growth for a period.",
+        "It's a practical reporting template and a clean way to compute net new ARR and ARR growth for a period.",
       ],
       steps: [
         "Enter starting ARR for the period.",
@@ -6672,11 +6859,11 @@ export const calculators: CalculatorDefinition[] = [
             value: netNewArr,
             format: "currency",
             currency: "USD",
-            detail: "New + Expansion ? Contraction ? Churn",
+            detail: "New + Expansion - Contraction - Churn",
           },
           {
             key: "growthRate",
-            label: "ARR growth rate (net new ÷ starting)",
+            label: "ARR growth rate (net new / starting)",
             value: growthRate ?? 0,
             format: "percent",
             maxFractionDigits: 2,
@@ -6684,11 +6871,11 @@ export const calculators: CalculatorDefinition[] = [
           },
             {
               key: "ratio",
-              label: "ARR quick ratio (additions ÷ losses)",
+              label: "ARR quick ratio (additions / losses)",
               value: quickRatio ?? 0,
               format: "ratio",
               maxFractionDigits: 2,
-              detail: quickRatio === null ? "Losses must be > 0" : "(New + Expansion) ÷ (Contraction + Churn)",
+              detail: quickRatio === null ? "Losses must be > 0" : "(New + Expansion) / (Contraction + Churn)",
             },
             {
               key: "nrr",
@@ -6756,21 +6943,21 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "Ending ARR = starting ARR + new + expansion ? contraction ? churn; Net new ARR = new + expansion ? contraction ? churn",
+      "Ending ARR = starting ARR + new + expansion - contraction - churn; Net new ARR = new + expansion - contraction - churn",
     assumptions: [
       "All inputs represent the same period and use the same ARR definition (clean recurring run-rate).",
       "This is a reporting bridge; it does not model intra-period timing or cohort curves.",
     ],
     faqs: [
       {
-        question: "Is net new ARR the same as ARR growth?",
+        question: "Is net new ARR the same as ARR growth-",
         answer:
-          "Net new ARR is a dollar amount (ΔARR). ARR growth rate is net new ARR divided by starting ARR for the period.",
+          "Net new ARR is a dollar amount (Delta ARR). ARR growth rate is net new ARR divided by starting ARR for the period.",
       },
       {
-        question: "Should I segment the waterfall?",
+        question: "Should I segment the waterfall-",
         answer:
-          "Yes when possible. Segment by plan, channel, and customer size so blended numbers don’t hide churn pockets or weak cohorts.",
+          "Yes when possible. Segment by plan, channel, and customer size so blended numbers don't hide churn pockets or weak cohorts.",
       },
     ],
     guide: [
@@ -6788,7 +6975,7 @@ export const calculators: CalculatorDefinition[] = [
     slug: "burn-multiple-calculator",
     title: "Burn Multiple Calculator",
     description:
-      "Calculate burn multiple: net burn ÷ net new ARR (a growth efficiency metric).",
+      "Calculate burn multiple: net burn / net new ARR (a growth efficiency metric).",
     category: "saas-metrics",
     featured: true,
     guideSlug: "burn-multiple-guide",
@@ -6799,7 +6986,7 @@ export const calculators: CalculatorDefinition[] = [
       steps: [
         "Measure net burn for a period (often quarterly).",
         "Measure net new ARR for the same period.",
-        "Compute burn multiple = net burn ÷ net new ARR.",
+        "Compute burn multiple = net burn / net new ARR.",
       ],
       pitfalls: [
         "Using inconsistent periods (net burn quarterly vs net new ARR monthly).",
@@ -6862,7 +7049,7 @@ export const calculators: CalculatorDefinition[] = [
             value: multiple,
             format: "multiple",
             maxFractionDigits: 2,
-            detail: "Net burn ÷ Net new ARR",
+            detail: "Net burn / Net new ARR",
           },
           secondary: [
             {
@@ -6891,19 +7078,19 @@ export const calculators: CalculatorDefinition[] = [
           warnings,
         };
       },
-    formula: "Burn multiple = Net burn ÷ Net new ARR",
+    formula: "Burn multiple = Net burn / Net new ARR",
     assumptions: [
       "Use the same time window for burn and net new ARR (often quarterly).",
       "Net burn is net cash outflow (cash out - cash in) for the period.",
     ],
     faqs: [
       {
-        question: "What is a good burn multiple?",
+        question: "What is a good burn multiple-",
         answer:
           "Benchmarks vary widely by stage and go-to-market motion. Use trends and compare within your peer group. Pair burn multiple with retention and gross margin to judge growth quality.",
       },
       {
-        question: "Is burn multiple the same as the SaaS magic number?",
+        question: "Is burn multiple the same as the SaaS magic number-",
         answer:
           "No. Burn multiple uses cash burn and net new ARR. Magic number uses sales & marketing spend and revenue output with a lag. Both are efficiency heuristics with different inputs.",
       },
@@ -6944,7 +7131,7 @@ export const calculators: CalculatorDefinition[] = [
       ],
       steps: [
         "Enter ARPA (monthly revenue per account) and gross margin (%).",
-        "Enter monthly churn (%). This approximates customer lifetime (1 ÷ churn).",
+        "Enter monthly churn (%). This approximates customer lifetime (1 / churn).",
         "Enter CAC per new customer/account.",
         "Review payback months, LTV (gross profit), and LTV:CAC ratio.",
       ],
@@ -7014,7 +7201,7 @@ export const calculators: CalculatorDefinition[] = [
           value: paybackMonths,
           format: "months",
           maxFractionDigits: 1,
-          detail: "CAC ÷ monthly gross profit",
+          detail: "CAC / monthly gross profit",
         },
         secondary: [
           {
@@ -7046,26 +7233,26 @@ export const calculators: CalculatorDefinition[] = [
             value: lifetimeMonths,
             format: "months",
             maxFractionDigits: 1,
-            detail: "1 ÷ churn",
+            detail: "1 / churn",
           },
         ],
         warnings,
       };
     },
     formula:
-      "Payback = CAC ÷ (ARPA × gross margin); LTV ≈ (ARPA × gross margin) ÷ churn; LTV:CAC = LTV ÷ CAC",
+      "Payback = CAC / (ARPA x gross margin); LTV ~ (ARPA x gross margin) / churn; LTV:CAC = LTV / CAC",
     assumptions: [
-      "Uses a simple constant-churn model (lifetime ≈ 1 ÷ churn).",
-      "LTV is modeled as gross profit (revenue × gross margin) to align with CAC.",
+      "Uses a simple constant-churn model (lifetime ~ 1 / churn).",
+      "LTV is modeled as gross profit (revenue x gross margin) to align with CAC.",
     ],
     faqs: [
       {
-        question: "Should LTV be revenue or gross profit?",
+        question: "Should LTV be revenue or gross profit-",
         answer:
           "For unit economics, LTV should usually be based on gross profit so it reflects the value created after COGS. If you use revenue LTV, label it clearly and be consistent when comparing to CAC.",
       },
       {
-        question: "Why does this use monthly churn?",
+        question: "Why does this use monthly churn-",
         answer:
           "Because ARPA is monthly in this model. Time units must match: monthly ARPA uses monthly churn. If you prefer annual units, convert both ARPA and churn consistently.",
       },
@@ -7270,12 +7457,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Is bookings the same as ARR?",
+        question: "Is bookings the same as ARR-",
         answer:
             "No. Bookings measure contracted value signed in a period. ARR measures recurring run-rate (MRR x 12). They answer different questions.",
       },
       {
-        question: "Why can bookings be much higher than ARR?",
+        question: "Why can bookings be much higher than ARR-",
         answer:
           "Bookings can include the full contract term and one-time items, while ARR only reflects recurring run-rate. Annual prepay can also increase bookings and cash without changing run-rate proportionally.",
       },
@@ -7464,12 +7651,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Is deferred revenue the same as cash?",
+        question: "Is deferred revenue the same as cash-",
         answer:
           "No. Deferred revenue is a balance sheet liability (unearned revenue). Cash is cash. Deferred revenue often increases with annual prepay, but cash and deferred can still differ due to collections timing.",
       },
       {
-        question: "Why does deferred revenue matter for SaaS metrics?",
+        question: "Why does deferred revenue matter for SaaS metrics-",
         answer:
           "Because it explains timing differences between billings/cash and recognized revenue. It's especially important when customers prepay annually or when billing terms change.",
       },
@@ -7656,7 +7843,7 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Is Magic Number the same as burn multiple?",
+        question: "Is Magic Number the same as burn multiple-",
         answer:
           "No. Magic Number uses sales & marketing spend and net new ARR. Burn multiple uses net cash burn and net new ARR.",
       },
@@ -7779,7 +7966,7 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Why is this only an estimate?",
+        question: "Why is this only an estimate-",
         answer:
           "Churn usually changes by tenure (early churn is higher). This formula assumes churn is constant, so it should be used as a quick approximation or compared across segments consistently.",
       },
@@ -7794,7 +7981,7 @@ export const calculators: CalculatorDefinition[] = [
     guideSlug: "break-even-guide",
     seo: {
       intro: [
-        "Break-even revenue answers: how much revenue do you need to cover fixed costs given a contribution margin (gross margin is a common proxy)?",
+        "Break-even revenue answers: how much revenue do you need to cover fixed costs given a contribution margin (gross margin is a common proxy)-",
         "This calculator assumes a simple model: fixed costs are covered by gross profit, so break-even revenue = fixed costs / gross margin.",
       ],
       steps: [
@@ -7953,7 +8140,7 @@ export const calculators: CalculatorDefinition[] = [
     assumptions: ["Gross margin is expressed as a percent of revenue."],
     faqs: [
       {
-        question: "What if my costs are not fixed?",
+        question: "What if my costs are not fixed-",
         answer:
           "This calculator assumes fixed costs. If costs scale with revenue, use a contribution margin model instead.",
       },
@@ -8118,12 +8305,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "What discount rate should I use?",
+        question: "What discount rate should I use-",
         answer:
           "Use your required return or hurdle rate (often called MARR). Many teams test a range (e.g., 8%-20%) to see sensitivity.",
       },
       {
-        question: "NPV vs IRR?",
+        question: "NPV vs IRR-",
         answer:
           "NPV is value created at a chosen discount rate. IRR is the implied discount rate where NPV equals zero.",
       },
@@ -8145,7 +8332,7 @@ export const calculators: CalculatorDefinition[] = [
       ],
       steps: [
         "Enter the upfront investment (cash outflow).",
-        "Enter expected annual cash flows for years 1–5.",
+        "Enter expected annual cash flows for years 1-5.",
         "Optionally include a terminal value in year 5.",
         "Calculate IRR and compare to your required return (MARR).",
       ],
@@ -8403,12 +8590,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "IRR vs NPV: which should I use?",
+        question: "IRR vs NPV: which should I use-",
         answer:
           "Use NPV for decisions at a chosen required return (MARR) because it measures value created in dollars. Use IRR to compare opportunities when capital is constrained, but validate with NPV to avoid misleading results.",
       },
       {
-        question: "Why might IRR be undefined or weird?",
+        question: "Why might IRR be undefined or weird-",
         answer:
           "If cash flows change sign multiple times, the NPV curve can cross zero multiple times (multiple IRRs) or not at all. In those cases, rely on NPV instead.",
       },
@@ -8424,7 +8611,7 @@ export const calculators: CalculatorDefinition[] = [
     relatedGlossarySlugs: ["payback-period", "discount-rate", "npv", "marr"],
     seo: {
       intro: [
-        "Discounted payback answers: how long until the present value of cash flows pays back the initial investment?",
+        "Discounted payback answers: how long until the present value of cash flows pays back the initial investment-",
         "It is stricter than simple payback because it accounts for the time value of money via a discount rate (required return / MARR).",
       ],
       steps: [
@@ -8580,7 +8767,7 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Why is discounted payback longer than simple payback?",
+        question: "Why is discounted payback longer than simple payback-",
         answer:
           "Discounting reduces the present value of future cash flows, so it usually takes longer (in discounted terms) to recover the initial investment.",
       },
@@ -8612,7 +8799,7 @@ export const calculators: CalculatorDefinition[] = [
         "Enter your starting MRR (current recurring run-rate).",
         "Estimate new MRR added per month (from new customers).",
         "Set monthly expansion, contraction, and churn rates for existing MRR.",
-        "Choose a horizon (e.g., 6–24 months) and compare scenarios.",
+        "Choose a horizon (e.g., 6-24 months) and compare scenarios.",
       ],
       pitfalls: [
         "Mixing time units (monthly churn with annual inputs).",
@@ -8745,7 +8932,7 @@ export const calculators: CalculatorDefinition[] = [
         secondary: [
           {
             key: "endingArrRunRate",
-            label: "ARR run-rate (ending MRR × 12)",
+            label: "ARR run-rate (ending MRR x 12)",
             value: mrr * 12,
             format: "currency",
             currency: "USD",
@@ -8883,14 +9070,14 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Is this the same as NRR forecasting?",
+        question: "Is this the same as NRR forecasting-",
         answer:
           "This model includes both new customer growth (new MRR) and existing customer dynamics (expansion, contraction, churn). NRR focuses only on existing customers; here we show the implied monthly NRR from your assumptions.",
       },
       {
-        question: "What horizon should I use?",
+        question: "What horizon should I use-",
         answer:
-          "For execution planning, 6–12 months is common. For longer-range strategy, use scenarios (base/optimistic/conservative) because small rate changes compound quickly.",
+          "For execution planning, 6-12 months is common. For longer-range strategy, use scenarios (base/optimistic/conservative) because small rate changes compound quickly.",
       },
     ],
   },
@@ -8912,7 +9099,7 @@ export const calculators: CalculatorDefinition[] = [
     ],
     seo: {
       intro: [
-        "Runway answers a simple question: how many months can you operate before cash hits zero at your current net burn?",
+        "Runway answers a simple question: how many months can you operate before cash hits zero at your current net burn-",
         "This calculator estimates net burn from revenue, gross margin, and operating expenses, and optionally simulates runway with a monthly revenue growth assumption.",
       ],
       steps: [
@@ -9162,12 +9349,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Why is runway different from profitability?",
+        question: "Why is runway different from profitability-",
         answer:
           "Runway is about cash. You can be profitable on an accounting basis but still have cash issues due to collections timing, prepayments, capex, or working capital changes.",
       },
       {
-        question: "Should I include non-recurring revenue?",
+        question: "Should I include non-recurring revenue-",
         answer:
           "If it reliably produces cash inflows (services, one-time fees), you can include it, but label it clearly. For SaaS planning, recurring revenue is often the most stable input.",
       },
@@ -9286,7 +9473,7 @@ export const calculators: CalculatorDefinition[] = [
           value: blendedCac,
           format: "currency",
           currency: "USD",
-          detail: "Variable + fixed S&M spend ÷ new customers",
+          detail: "Variable + fixed S&M spend / new customers",
         },
         secondary: [
           {
@@ -9295,7 +9482,7 @@ export const calculators: CalculatorDefinition[] = [
             value: paidCac,
             format: "currency",
             currency: "USD",
-            detail: "Variable acquisition spend ÷ new customers",
+            detail: "Variable acquisition spend / new customers",
           },
           {
             key: "paybackMonths",
@@ -9306,7 +9493,7 @@ export const calculators: CalculatorDefinition[] = [
             detail:
               paybackMonths === null
                 ? "Enter ARPA and margin to calculate"
-                : "CAC ÷ monthly gross profit per customer",
+                : "CAC / monthly gross profit per customer",
           },
           {
             key: "fixedShare",
@@ -9351,12 +9538,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "When should I use paid CAC vs blended CAC?",
+        question: "When should I use paid CAC vs blended CAC-",
         answer:
           "Use paid CAC to optimize channels and campaigns. Use blended CAC for planning and to understand whether your overall go-to-market is efficient after salaries and tools.",
       },
       {
-        question: "What should the denominator be?",
+        question: "What should the denominator be-",
         answer:
           "For CAC, the denominator should be new paying customers. If you use leads or signups, label it clearly (CPL/CPA) and connect it to downstream conversion rates.",
       },
@@ -9385,7 +9572,7 @@ export const calculators: CalculatorDefinition[] = [
       steps: [
         "Enter ARPA and gross margin to get gross profit per account per month.",
         "Set monthly logo churn and expansion rate assumptions for the cohort.",
-        "Choose a horizon (e.g., 36–60 months) and an optional annual discount rate.",
+        "Choose a horizon (e.g., 36-60 months) and an optional annual discount rate.",
         "Use the discounted LTV for planning and the undiscounted LTV for intuition.",
       ],
       pitfalls: [
@@ -9537,7 +9724,7 @@ export const calculators: CalculatorDefinition[] = [
               value: approxLifetimeMonths ?? 0,
               format: "months",
               maxFractionDigits: 1,
-              detail: approxLifetimeMonths === null ? "Churn is 0%" : "1 ÷ monthly churn",
+              detail: approxLifetimeMonths === null ? "Churn is 0%" : "1 / monthly churn",
             },
             {
               key: "averageGrossProfit",
@@ -9597,7 +9784,7 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "Expected revenue_t = ARPA * (1+expansion)^(t-1) * (1-churn)^(t-1); LTV = Σ gross_profit_t (optionally discounted)",
+      "Expected revenue_t = ARPA * (1+expansion)^(t-1) * (1-churn)^(t-1); LTV = sum  gross_profit_t (optionally discounted)",
     assumptions: [
       "Uses constant monthly churn and expansion assumptions.",
       "Expansion is applied to surviving accounts' revenue each month.",
@@ -9605,14 +9792,14 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Is this better than LTV = ARPA * margin / churn?",
+        question: "Is this better than LTV = ARPA * margin / churn-",
         answer:
           "Often yes for planning. The simple churn formula assumes constant churn and no expansion and can be very sensitive to small churn changes. Cohort-style forecasts are easier to scenario test and extend with discounting.",
       },
       {
-        question: "What discount rate should I use?",
+        question: "What discount rate should I use-",
         answer:
-          "Use your required return / cost of capital as a rough starting point (e.g., 8–20% annually). If you're comparing scenarios, keep the discount rate consistent.",
+          "Use your required return / cost of capital as a rough starting point (e.g., 8-20% annually). If you're comparing scenarios, keep the discount rate consistent.",
       },
     ],
   },
@@ -9861,12 +10048,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Why can incremental ROAS be lower than platform ROAS?",
+        question: "Why can incremental ROAS be lower than platform ROAS-",
         answer:
-          "Platforms often claim credit for conversions that would have happened anyway (especially retargeting). Incremental ROAS isolates lift, so it’s often lower but more decision-useful.",
+          "Platforms often claim credit for conversions that would have happened anyway (especially retargeting). Incremental ROAS isolates lift, so it's often lower but more decision-useful.",
       },
       {
-        question: "What if my holdout conversion rate is higher than exposed?",
+        question: "What if my holdout conversion rate is higher than exposed-",
         answer:
           "That implies negative lift. It can happen due to noise, non-random assignment, or true cannibalization. Check randomization, sample size, and whether holdout users were truly unexposed.",
       },
@@ -10079,12 +10266,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Is break-even the same as profitability?",
+        question: "Is break-even the same as profitability-",
         answer:
           "Break-even is the point where profit is exactly zero. Profitability means you are above break-even (positive profit) and ideally have margin to absorb uncertainty and fund growth.",
       },
       {
-        question: "Should marketing spend be fixed or variable?",
+        question: "Should marketing spend be fixed or variable-",
         answer:
           "It depends on your model. Some marketing scales with volume (variable) and some is budgeted as fixed for a period. For break-even analysis, use the classification that matches how your costs actually behave.",
       },
@@ -10114,7 +10301,7 @@ export const calculators: CalculatorDefinition[] = [
       ],
       steps: [
         "Enter starting MRR and your planned price increase (%).",
-        "Choose a forecast horizon (e.g., 6–24 months).",
+        "Choose a forecast horizon (e.g., 6-24 months).",
         "Enter baseline monthly churn, then either immediate churn from the change or an ongoing churn increase.",
         "Compare revenue impact and the break-even churn thresholds.",
       ],
@@ -10323,7 +10510,7 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "Break-even immediate churn ≈ 1 - 1/(1+price increase). For ongoing churn, compare the discounted retention of cash flows over the horizon.",
+      "Break-even immediate churn ~ 1 - 1/(1+price increase). For ongoing churn, compare the discounted retention of cash flows over the horizon.",
     assumptions: [
       "Models the existing revenue base only (no new customer MRR).",
       "Baseline churn is constant over the horizon.",
@@ -10331,12 +10518,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Why does break-even immediate churn depend only on price increase?",
+        question: "Why does break-even immediate churn depend only on price increase-",
         answer:
-          "If churn happens as a one-time shock right after the change, the break-even point is when (1 + increase) × (1 - churn) = 1. Horizon affects payback and compounding effects, but the immediate break-even threshold is purely arithmetic.",
+          "If churn happens as a one-time shock right after the change, the break-even point is when (1 + increase) x (1 - churn) = 1. Horizon affects payback and compounding effects, but the immediate break-even threshold is purely arithmetic.",
       },
       {
-        question: "Should I model downgrades as churn?",
+        question: "Should I model downgrades as churn-",
         answer:
           "For revenue impact, downgrades are effectively revenue churn. If downgrades are likely, treat them as revenue loss in immediate churn or as an increase in ongoing churn for the period after the change.",
       },
@@ -10484,7 +10671,7 @@ export const calculators: CalculatorDefinition[] = [
             value: profitOpt,
             format: "currency",
             currency: "USD",
-            detail: "Revenue × margin - spend",
+            detail: "Revenue x margin - spend",
           },
           {
             key: "roasOpt",
@@ -10558,7 +10745,7 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "Assume revenue = k * spend^b (0<b<1). Profit = margin*revenue - spend. Optimal spend occurs when marginal profit ≈ 0.",
+      "Assume revenue = k * spend^b (0<b<1). Profit = margin*revenue - spend. Optimal spend occurs when marginal profit ~ 0.",
     assumptions: [
       "Uses a simple power-law response curve; real curves vary by channel and saturation.",
       "Current spend/revenue anchor the curve (k).",
@@ -10566,14 +10753,14 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "What exponent should I use?",
+        question: "What exponent should I use-",
         answer:
-          "If you don't know, start with 0.7–0.85 and scenario test. Lower means stronger diminishing returns. The right value varies by channel, creative freshness, audience size, and tracking.",
+          "If you don't know, start with 0.7-0.85 and scenario test. Lower means stronger diminishing returns. The right value varies by channel, creative freshness, audience size, and tracking.",
       },
       {
-        question: "How is marginal ROAS different from average ROAS?",
+        question: "How is marginal ROAS different from average ROAS-",
         answer:
-          "Average ROAS is total revenue ÷ total spend. Marginal ROAS is incremental revenue from an extra $1 of spend. Scaling decisions should use marginal ROAS (or incremental profit), not average ROAS.",
+          "Average ROAS is total revenue / total spend. Marginal ROAS is incremental revenue from an extra $1 of spend. Scaling decisions should use marginal ROAS (or incremental profit), not average ROAS.",
       },
     ],
   },
@@ -10604,7 +10791,7 @@ export const calculators: CalculatorDefinition[] = [
         "Set terminal growth (must be lower than discount rate).",
       ],
       pitfalls: [
-        "Using terminal growth ≥ discount rate (blows up the terminal value).",
+        "Using terminal growth >= discount rate (blows up the terminal value).",
         "Using accounting profit instead of cash flow (working capital and capex matter).",
         "Over-weighting terminal value without checking sensitivity.",
       ],
@@ -10675,6 +10862,7 @@ export const calculators: CalculatorDefinition[] = [
       if (values.annualFcf <= 0) warnings.push("FCF should be greater than 0 for valuation.");
       if (r <= 0) warnings.push("Discount rate must be greater than 0%.");
       if (tg >= r) warnings.push("Terminal growth should be less than the discount rate.");
+      if (years < 3) warnings.push("Short forecast horizons can over-weight terminal value.");
 
       let pvForecast = 0;
       let fcf = values.annualFcf;
@@ -10687,20 +10875,25 @@ export const calculators: CalculatorDefinition[] = [
       const fcfTerminal = fcf * (1 + tg);
         const terminalValue =
           tg < r ? fcfTerminal / (r - tg) : 0;
-        const pvTerminal = terminalValue / Math.pow(1 + r, years);
-        const enterpriseValue = pvForecast + pvTerminal;
-        const terminalShare = enterpriseValue > 0 ? pvTerminal / enterpriseValue : 0;
-        const equityValue = enterpriseValue - values.netDebt;
-        const terminalGrowthGap = r - tg;
+      const pvTerminal = terminalValue / Math.pow(1 + r, years);
+      const enterpriseValue = pvForecast + pvTerminal;
+      const terminalShare = enterpriseValue > 0 ? pvTerminal / enterpriseValue : 0;
+      const pvForecastShare = enterpriseValue > 0 ? pvForecast / enterpriseValue : 0;
+      const equityValue = enterpriseValue - values.netDebt;
+      const terminalGrowthGap = r - tg;
         const evToFcf =
           values.annualFcf > 0 ? enterpriseValue / values.annualFcf : null;
         const terminalMultiple =
           fcfTerminal > 0 ? terminalValue / fcfTerminal : null;
 
-        return {
-          headline: {
-            key: "enterpriseValue",
-            label: "Enterprise value (DCF)",
+      if (terminalShare > 0.7) {
+        warnings.push("Terminal value exceeds 70% of EV; sensitivity is high.");
+      }
+
+      return {
+        headline: {
+          key: "enterpriseValue",
+          label: "Enterprise value (DCF)",
           value: enterpriseValue,
           format: "currency",
           currency: "USD",
@@ -10720,6 +10913,14 @@ export const calculators: CalculatorDefinition[] = [
               value: pvTerminal,
               format: "currency",
               currency: "USD",
+            },
+            {
+              key: "pvForecastShare",
+              label: "Forecast value share",
+              value: pvForecastShare,
+              format: "percent",
+              maxFractionDigits: 0,
+              detail: "Share of EV from forecast period",
             },
             {
               key: "terminalValue",
@@ -10810,7 +11011,7 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "EV = Σ(FCF_t / (1+r)^t) + (FCF_(n+1) / (r - g_terminal)) / (1+r)^n",
+      "EV = sum (FCF_t / (1+r)^t) + (FCF_(n+1) / (r - g_terminal)) / (1+r)^n",
     assumptions: [
       "FCF grows at a constant rate during the forecast period.",
       "Terminal value uses a perpetuity growth model.",
@@ -10818,14 +11019,14 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Why is terminal value often so large?",
+        question: "Why is terminal value often so large-",
         answer:
           "Because most businesses are assumed to operate beyond the explicit forecast period. If terminal dominates, run sensitivity tables (discount rate, terminal growth) and consider extending the forecast period or using more conservative assumptions.",
       },
       {
-        question: "Is enterprise value the same as equity value?",
+        question: "Is enterprise value the same as equity value-",
         answer:
-          "No. Enterprise value is value of the business operations. To get equity value you’d adjust for net debt (cash, debt) and other claims. This calculator focuses on EV.",
+          "No. Enterprise value is value of the business operations. To get equity value you'd adjust for net debt (cash, debt) and other claims. This calculator focuses on EV.",
       },
     ],
   },
@@ -11016,7 +11217,7 @@ export const calculators: CalculatorDefinition[] = [
               value: lifetimeMonths ?? 0,
               format: "months",
               maxFractionDigits: 1,
-              detail: lifetimeMonths === null ? "Churn is 0%" : "1 ÷ monthly churn (rough)",
+              detail: lifetimeMonths === null ? "Churn is 0%" : "1 / monthly churn (rough)",
             },
             {
               key: "halfLifeMonths",
@@ -11061,12 +11262,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Why use a retention curve instead of a single churn rate?",
+        question: "Why use a retention curve instead of a single churn rate-",
         answer:
           "Retention curves show where churn happens (early vs late). Two products can have the same average churn but very different early drop-off, which affects activation work and payback.",
       },
       {
-        question: "How do I make this more realistic?",
+        question: "How do I make this more realistic-",
         answer:
           "Use observed cohorts segmented by plan/channel and model churn that decays over time. If you have expansion, model revenue retention (NRR/GRR) alongside logo retention.",
       },
@@ -11125,7 +11326,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         key: "targetProfitBufferPercent",
         label: "Target profit buffer (optional)",
-        help: "Profit buffer as % of gross profit LTV (e.g., 20% means spend ≤ 80% of gross profit LTV).",
+        help: "Profit buffer as % of gross profit LTV (e.g., 20% means spend <= 80% of gross profit LTV).",
         placeholder: "20",
         suffix: "%",
         defaultValue: "20",
@@ -11195,7 +11396,7 @@ export const calculators: CalculatorDefinition[] = [
             value: grossProfitLtv,
             format: "currency",
             currency: "USD",
-            detail: "Revenue LTV × contribution margin",
+            detail: "Revenue LTV x contribution margin",
           },
           {
             key: "targetByBuffer",
@@ -11210,7 +11411,7 @@ export const calculators: CalculatorDefinition[] = [
             value: targetByShare ?? 0,
             format: "currency",
             currency: "USD",
-            detail: targetByShare === null ? "Disabled" : "Gross profit LTV × spend share",
+            detail: targetByShare === null ? "Disabled" : "Gross profit LTV x spend share",
           },
         ],
         breakdown: [
@@ -11233,7 +11434,7 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "Gross profit LTV = revenue LTV × contribution margin; Break-even CPA = gross profit LTV; Target CPA = break-even × (1 - buffer) or × spend share",
+      "Gross profit LTV = revenue LTV x contribution margin; Break-even CPA = gross profit LTV; Target CPA = break-even x (1 - buffer) or x spend share",
     assumptions: [
       "LTV is measured on a consistent basis with your CPA attribution window.",
       "Contribution margin reflects variable costs (not fixed overhead).",
@@ -11241,12 +11442,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Should I use CAC or CPA?",
+        question: "Should I use CAC or CPA-",
         answer:
           "CPA is often used at the campaign level (purchase/lead). CAC usually means cost per new paying customer. Use the denominator that matches your funnel stage and label it clearly.",
       },
       {
-        question: "Why set a target below break-even?",
+        question: "Why set a target below break-even-",
         answer:
           "Because forecasts are uncertain and you usually need buffer for returns, fraud, attribution bias, and overhead. A target CPA below break-even reduces the risk of scaling into losses.",
       },
@@ -11512,12 +11713,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Which metric should I trust most?",
+        question: "Which metric should I trust most-",
         answer:
           "NPV is usually the best decision metric at a chosen required return because it measures value created in dollars. Use IRR for intuition and comparison, and use payback/PI as constraints or secondary lenses.",
       },
       {
-        question: "What does profitability index mean?",
+        question: "What does profitability index mean-",
         answer:
           "PI normalizes value by investment: PI > 1 means positive NPV. It's useful when capital is constrained and you want value per dollar invested.",
       },
@@ -11620,7 +11821,7 @@ export const calculators: CalculatorDefinition[] = [
           value: pi ?? 0,
           format: "multiple",
           maxFractionDigits: 2,
-          detail: "PV inflows ÷ initial investment",
+          detail: "PV inflows / initial investment",
         },
         secondary: [
           {
@@ -11643,7 +11844,7 @@ export const calculators: CalculatorDefinition[] = [
             value: maxInvestment ?? 0,
             format: "currency",
             currency: "USD",
-            detail: values.targetPi > 0 ? "PV inflows ÷ target PI" : "Target PI is 0",
+            detail: values.targetPi > 0 ? "PV inflows / target PI" : "Target PI is 0",
           },
         ],
         breakdown: [
@@ -11672,7 +11873,7 @@ export const calculators: CalculatorDefinition[] = [
         warnings,
       };
     },
-    formula: "PI = PV(inflows) ÷ initial investment; NPV = PV(inflows) - investment",
+    formula: "PI = PV(inflows) / initial investment; NPV = PV(inflows) - investment",
     assumptions: [
       "Cash flows are annual and occur at the end of each year.",
       "Uses a constant annual cash flow for simplicity.",
@@ -11680,12 +11881,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Is PI better than NPV?",
+        question: "Is PI better than NPV-",
         answer:
           "PI is a ratio, so it helps rank projects when capital is constrained. NPV is still the best measure of total value created.",
       },
       {
-        question: "What PI should I target?",
+        question: "What PI should I target-",
         answer:
           "PI > 1 means positive NPV. Higher targets (e.g., 1.1 to 1.3) add buffer for uncertainty and risk.",
       },
@@ -11718,7 +11919,7 @@ export const calculators: CalculatorDefinition[] = [
       pitfalls: [
         "Using WACC for projects with different risk than the overall business.",
         "Mixing market-value weights with book-value costs (inconsistent inputs).",
-        "Treating WACC as precise; it’s an estimate that should be scenario tested.",
+        "Treating WACC as precise; it's an estimate that should be scenario tested.",
       ],
     },
     inputs: [
@@ -11813,7 +12014,7 @@ export const calculators: CalculatorDefinition[] = [
             value: afterTaxDebt,
             format: "percent",
             maxFractionDigits: 2,
-            detail: "Cost of debt × (1 - tax rate)",
+            detail: "Cost of debt x (1 - tax rate)",
           },
             {
               key: "equityDebtSpread",
@@ -11845,7 +12046,7 @@ export const calculators: CalculatorDefinition[] = [
             value: taxShield,
             format: "percent",
             maxFractionDigits: 2,
-            detail: "Cost of debt × tax rate",
+            detail: "Cost of debt x tax rate",
           },
           {
             key: "equityWeight",
@@ -11888,7 +12089,7 @@ export const calculators: CalculatorDefinition[] = [
         warnings,
       };
     },
-    formula: "WACC = w_e×k_e + w_d×k_d×(1 - tax rate)",
+    formula: "WACC = w_exk_e + w_dxk_dx(1 - tax rate)",
     assumptions: [
       "Debt benefit is modeled via the interest tax shield (after-tax cost of debt).",
       "Weights should ideally reflect market value capital structure.",
@@ -11896,12 +12097,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Should I use WACC as my DCF discount rate?",
+        question: "Should I use WACC as my DCF discount rate-",
         answer:
           "Often yes as a starting point for valuing the overall firm. For projects with different risk than the core business, use a risk-adjusted discount rate instead of the company WACC.",
       },
       {
-        question: "Why do we adjust debt for taxes?",
+        question: "Why do we adjust debt for taxes-",
         answer:
           "Interest expense is often tax deductible, so debt financing has a tax shield. Using after-tax cost of debt reflects that benefit in WACC.",
       },
@@ -12034,7 +12235,7 @@ export const calculators: CalculatorDefinition[] = [
           value: mer,
           format: "multiple",
           maxFractionDigits: 2,
-          detail: "Total revenue ÷ total marketing spend",
+          detail: "Total revenue / total marketing spend",
         },
         secondary: [
           {
@@ -12043,7 +12244,7 @@ export const calculators: CalculatorDefinition[] = [
             value: profitAfterSpend,
             format: "currency",
             currency: "USD",
-            detail: "Revenue × margin - marketing spend",
+            detail: "Revenue x margin - marketing spend",
           },
           {
             key: "grossProfit",
@@ -12058,7 +12259,7 @@ export const calculators: CalculatorDefinition[] = [
             value: breakEvenMer ?? 0,
             format: "multiple",
             maxFractionDigits: 2,
-            detail: breakEvenMer === null ? "Margin is 0%" : "1 ÷ margin",
+            detail: breakEvenMer === null ? "Margin is 0%" : "1 / margin",
           },
           {
             key: "targetMer",
@@ -12066,7 +12267,7 @@ export const calculators: CalculatorDefinition[] = [
             value: targetMer ?? 0,
             format: "multiple",
             maxFractionDigits: 2,
-            detail: targetMer === null ? "Margin is 0%" : "1 ÷ (margin × (1 - buffer))",
+            detail: targetMer === null ? "Margin is 0%" : "1 / (margin x (1 - buffer))",
           },
             {
               key: "maxSpendAtTargetMer",
@@ -12074,7 +12275,7 @@ export const calculators: CalculatorDefinition[] = [
               value: maxSpendAtTargetMer ?? 0,
               format: "currency",
               currency: "USD",
-              detail: values.targetMer > 0 ? "Revenue ÷ target MER" : "Target MER is 0",
+              detail: values.targetMer > 0 ? "Revenue / target MER" : "Target MER is 0",
             },
             {
               key: "requiredRevenueForTargetProfit",
@@ -12126,7 +12327,7 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "MER = revenue ÷ marketing spend; Profit ≈ revenue×margin - spend; Break-even MER = 1 ÷ margin",
+      "MER = revenue / marketing spend; Profit ~ revenuexmargin - spend; Break-even MER = 1 / margin",
     assumptions: [
       "Uses contribution margin as a simplified proxy for gross profit after variable costs.",
       "Revenue and spend are measured over the same period and on the same attribution basis.",
@@ -12134,14 +12335,14 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Is MER the same as ROAS?",
+        question: "Is MER the same as ROAS-",
         answer:
-          "It’s a blended version. ROAS is often channel/campaign-level attributed revenue ÷ spend. MER uses total revenue ÷ total marketing spend, which reduces attribution noise but hides what’s driving performance.",
+          "It's a blended version. ROAS is often channel/campaign-level attributed revenue / spend. MER uses total revenue / total marketing spend, which reduces attribution noise but hides what's driving performance.",
       },
       {
-        question: "How do I pick a profit buffer?",
+        question: "How do I pick a profit buffer-",
         answer:
-          "Start with 10–30% of gross profit as buffer for uncertainty, overhead, refunds, and measurement error. More volatility and longer payback generally require a larger buffer.",
+          "Start with 10-30% of gross profit as buffer for uncertainty, overhead, refunds, and measurement error. More volatility and longer payback generally require a larger buffer.",
       },
     ],
   },
@@ -12167,14 +12368,14 @@ export const calculators: CalculatorDefinition[] = [
         "This calculator builds a simple retention curve with separate early and steady-state churn rates and estimates expected revenue and gross profit per original customer.",
       ],
       steps: [
-        "Set an early churn rate and how many months it applies (e.g., months 1–3).",
+        "Set an early churn rate and how many months it applies (e.g., months 1-3).",
         "Set a steady-state churn rate for later months.",
         "Enter ARPA and gross margin to convert retention into expected value.",
       ],
       pitfalls: [
         "Using churn rates from blended segments (plan/channel).",
         "Treating this as a substitute for real cohort curves; use it for planning and sensitivity.",
-        "Ignoring expansion (revenue retention) when it’s a major driver of value.",
+        "Ignoring expansion (revenue retention) when it's a major driver of value.",
       ],
     },
     inputs: [
@@ -12397,7 +12598,7 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "Retention(m) = (1 - churn_early)^(min(m, earlyMonths)) × (1 - churn_steady)^(max(0, m - earlyMonths))",
+      "Retention(m) = (1 - churn_early)^(min(m, earlyMonths)) x (1 - churn_steady)^(max(0, m - earlyMonths))",
     assumptions: [
       "Logo churn is modeled in two phases (early vs steady-state).",
       "ARPA and gross margin are constant over the horizon.",
@@ -12405,14 +12606,14 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "When should I use two-stage churn?",
+        question: "When should I use two-stage churn-",
         answer:
           "When you observe a clear activation/onboarding drop early and much lower churn later. Two-stage models let you stress-test the impact of improving early retention vs improving steady-state retention.",
       },
       {
-        question: "Does this replace cohort analysis?",
+        question: "Does this replace cohort analysis-",
         answer:
-          "No. It’s a planning shortcut. Real cohort curves (by segment) are the gold standard for understanding retention dynamics and forecasting LTV.",
+          "No. It's a planning shortcut. Real cohort curves (by segment) are the gold standard for understanding retention dynamics and forecasting LTV.",
       },
     ],
   },
@@ -12435,7 +12636,7 @@ export const calculators: CalculatorDefinition[] = [
     ],
     seo: {
       intro: [
-        "Revenue retention curves show how dollars retained change over time. They’re more actionable than a single NRR/GRR snapshot because they reveal compounding effects.",
+        "Revenue retention curves show how dollars retained change over time. They're more actionable than a single NRR/GRR snapshot because they reveal compounding effects.",
         "This calculator models a simple monthly retention process for an existing cohort: GRR excludes expansion; NRR includes expansion and contraction.",
       ],
       steps: [
@@ -12681,12 +12882,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Why can NRR be above 100% while GRR is below 100%?",
+        question: "Why can NRR be above 100% while GRR is below 100%-",
         answer:
           "GRR excludes expansion, so churn and downgrades drive it down. NRR includes expansion, so upgrades can offset (or exceed) churn and contraction, pushing NRR above 100%.",
       },
       {
-        question: "How do I make this more accurate?",
+        question: "How do I make this more accurate-",
         answer:
           "Use real cohort curves segmented by plan/channel and model expansion and churn as time-varying (often higher early and lower later). This tool is a planning shortcut and scenario tester.",
       },
@@ -12709,7 +12910,7 @@ export const calculators: CalculatorDefinition[] = [
     ],
     seo: {
       intro: [
-        "Max CPC answers: how much can you pay per click and still break even (or hit a profit target) given your conversion rate and order economics?",
+        "Max CPC answers: how much can you pay per click and still break even (or hit a profit target) given your conversion rate and order economics-",
         "This calculator translates AOV and contribution margin into break-even CPA, then converts it into max CPC using CVR. If you also enter CTR, it estimates max CPM.",
       ],
       steps: [
@@ -12837,7 +13038,7 @@ export const calculators: CalculatorDefinition[] = [
             value: targetCpa,
             format: "currency",
             currency: "USD",
-            detail: "Contribution per conversion × (1 - buffer)",
+            detail: "Contribution per conversion x (1 - buffer)",
           },
           {
             key: "breakEvenCpa",
@@ -12845,7 +13046,7 @@ export const calculators: CalculatorDefinition[] = [
             value: breakEvenCpa,
             format: "currency",
             currency: "USD",
-            detail: "Contribution per conversion (AOV × margin)",
+            detail: "Contribution per conversion (AOV x margin)",
           },
           {
             key: "breakEvenCpm",
@@ -12853,7 +13054,7 @@ export const calculators: CalculatorDefinition[] = [
             value: breakEvenCpm ?? 0,
             format: "currency",
             currency: "USD",
-            detail: breakEvenCpm === null ? "CTR is 0%" : "CPC × CTR × 1000",
+            detail: breakEvenCpm === null ? "CTR is 0%" : "CPC x CTR x 1000",
           },
             {
               key: "targetCpm",
@@ -12861,7 +13062,7 @@ export const calculators: CalculatorDefinition[] = [
               value: targetCpm ?? 0,
               format: "currency",
               currency: "USD",
-              detail: targetCpm === null ? "CTR is 0%" : "Target CPC × CTR × 1000",
+              detail: targetCpm === null ? "CTR is 0%" : "Target CPC x CTR x 1000",
             },
             {
               key: "breakEvenCpl",
@@ -12923,19 +13124,19 @@ export const calculators: CalculatorDefinition[] = [
       "Contribution/conversion = AOV * margin; Break-even CPA = contribution; Break-even CPC = CPA * CVR; CPM = CPC * CTR * 1000",
     assumptions: [
       "Uses contribution margin as a simplified variable-profit proxy per conversion.",
-      "CVR is click-based (conversions ÷ clicks).",
+      "CVR is click-based (conversions / clicks).",
       "Ignores fixed costs and long-term LTV (use LTV-based targets for subscription).",
     ],
     faqs: [
       {
-        question: "Should I use this for SaaS trials/leads?",
+        question: "Should I use this for SaaS trials/leads-",
         answer:
           "If your conversion is a lead or trial (not a purchase), this is still useful, but you must adjust AOV to expected value per lead/trial (lead value), or use an LTV-based target CPA instead.",
       },
       {
-        question: "Why does CPC depend on CVR?",
+        question: "Why does CPC depend on CVR-",
         answer:
-          "Because CPA = CPC ÷ CVR. If CVR drops, the same CPC produces a higher CPA, so your max CPC must fall to stay within your CPA target.",
+          "Because CPA = CPC / CVR. If CVR drops, the same CPC produces a higher CPA, so your max CPC must fall to stay within your CPA target.",
       },
     ],
   },
@@ -13131,12 +13332,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Why does DCF give enterprise value instead of equity value?",
+        question: "Why does DCF give enterprise value instead of equity value-",
         answer:
           "Many DCFs discount unlevered free cash flows (available to all capital providers), producing EV. You then bridge to equity value using net debt and other claims.",
       },
       {
-        question: "What about working capital, leases, and other liabilities?",
+        question: "What about working capital, leases, and other liabilities-",
         answer:
           "A full valuation model would treat those explicitly. This tool keeps the bridge simple; use 'other adjustments' for major non-standard items and rely on a full model for precision.",
       },
@@ -13153,7 +13354,7 @@ export const calculators: CalculatorDefinition[] = [
     seo: {
       intro: [
         "Pre-money valuation is the company value before the new investment. Post-money valuation is pre-money plus the new investment (simplified).",
-        "Investor ownership in a new round is typically approximated as investment ÷ post-money (ignoring option pool changes and other instruments).",
+        "Investor ownership in a new round is typically approximated as investment / post-money (ignoring option pool changes and other instruments).",
       ],
       steps: [
         "Enter pre-money valuation.",
@@ -13205,7 +13406,7 @@ export const calculators: CalculatorDefinition[] = [
           value: investorOwnership ?? 0,
           format: "percent",
           maxFractionDigits: 2,
-          detail: "Investment ÷ post-money",
+          detail: "Investment / post-money",
         },
           secondary: [
             {
@@ -13252,21 +13453,21 @@ export const calculators: CalculatorDefinition[] = [
         warnings,
       };
     },
-    formula: "Post-money = pre-money + investment; investor % ≈ investment ÷ post-money",
+    formula: "Post-money = pre-money + investment; investor % ~ investment / post-money",
     assumptions: [
       "Simplified equity financing model; ignores option pool changes, SAFEs/notes, and fees.",
       "Uses valuation-based ownership approximation rather than a full cap table.",
     ],
     faqs: [
       {
-        question: "Is investor ownership always investment ÷ post-money?",
+        question: "Is investor ownership always investment / post-money-",
         answer:
           "Often as a first approximation, yes. But option pool increases, SAFEs/notes converting, and share-class terms can change the final ownership.",
       },
       {
-        question: "What is the option pool shuffle?",
+        question: "What is the option pool shuffle-",
         answer:
-          "It’s when the option pool is increased before the investment and counted in the pre-money, which dilutes existing shareholders more than the simple investment ÷ post-money calculation suggests.",
+          "It's when the option pool is increased before the investment and counted in the pre-money, which dilutes existing shareholders more than the simple investment / post-money calculation suggests.",
       },
     ],
     guide: [
@@ -13274,7 +13475,7 @@ export const calculators: CalculatorDefinition[] = [
         title: "Valuation tips",
         bullets: [
           "Use post-money for quick ownership math, but validate with a cap table model.",
-          "Model the option pool shuffle explicitly if you’re negotiating founder dilution.",
+          "Model the option pool shuffle explicitly if you're negotiating founder dilution.",
           "Keep definitions consistent (pre-money, post-money, fully diluted shares).",
         ],
       },
@@ -13407,12 +13608,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Why is pro rata investment current % x round size?",
+        question: "Why is pro rata investment current % x round size-",
         answer:
           "If you own X% and want to keep X% after new shares are issued, you typically need to buy X% of the new issuance, which corresponds to about X% of the round size in a priced round.",
       },
       {
-        question: "Why does ownership drop if I do not participate?",
+        question: "Why does ownership drop if I do not participate-",
         answer:
           "New shares are issued to new investors (and sometimes the option pool), so existing shareholders are diluted unless they buy some of the new shares.",
       },
@@ -13596,12 +13797,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Why does the option pool shuffle matter?",
+        question: "Why does the option pool shuffle matter-",
         answer:
           "Because increasing the option pool before the investment effectively reduces the ownership left for existing holders (founders and prior investors), even if the headline valuation is unchanged.",
       },
       {
-        question: "Is this a full cap table model?",
+        question: "Is this a full cap table model-",
         answer:
           "No. It's a simplified model to estimate the direction and magnitude. For negotiation and legal accuracy, build a full cap table including SAFEs/notes and share classes.",
       },
@@ -13729,7 +13930,8 @@ export const calculators: CalculatorDefinition[] = [
       const investorShares = safeDivide(values.newMoney, roundPrice) ?? 0;
       const postShares = shares + safeShares + investorShares;
       const safeOwnership = safeDivide(safeShares, postShares) ?? 0;
-      const effectiveDiscount = roundPrice > 0 ? 1 - conversionPrice / roundPrice : null;
+      const effectiveDiscount =
+        roundPrice > 0 ? 1 - conversionPrice / roundPrice : null;
       const impliedPreMoney = conversionPrice * shares;
 
       return {
@@ -13816,12 +14018,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Cap vs discount: which one applies?",
+        question: "Cap vs discount: which one applies-",
         answer:
           "Many SAFEs convert at the better (lower price) of the cap price or the discount price. Terms vary, so confirm your SAFE document.",
       },
       {
-        question: "Why do I need existing shares?",
+        question: "Why do I need existing shares-",
         answer:
           "To convert valuation into a per-share price. Conversion is ultimately about how many shares the SAFE buys at a given price per share.",
       },
@@ -13980,7 +14182,8 @@ export const calculators: CalculatorDefinition[] = [
       const investorShares = safeDivide(values.newMoney, roundPrice) ?? 0;
       const postShares = shares + noteShares + investorShares;
       const noteOwnership = safeDivide(noteShares, postShares) ?? 0;
-      const effectiveDiscount = roundPrice > 0 ? 1 - conversionPrice / roundPrice : null;
+      const effectiveDiscount =
+        roundPrice > 0 ? 1 - conversionPrice / roundPrice : null;
       const impliedPreMoney = conversionPrice * shares;
       const interestPercent = values.principal > 0 ? interest / values.principal : null;
 
@@ -14085,12 +14288,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Does interest always convert into shares?",
+        question: "Does interest always convert into shares-",
         answer:
           "Often yes, but terms vary. Some notes may pay interest in cash or have specific conversion rules. Confirm the note documents.",
       },
       {
-        question: "Is cap vs discount always best of?",
+        question: "Is cap vs discount always best of-",
         answer:
           "Many notes apply the better (lower conversion price) of cap or discount, but terms vary; confirm the conversion mechanics in your agreement.",
       },
@@ -14198,7 +14401,7 @@ export const calculators: CalculatorDefinition[] = [
             value: asConverted,
             format: "currency",
             currency: "USD",
-            detail: "Ownership % × exit",
+            detail: "Ownership % x exit",
           },
         ],
         breakdown: [
@@ -14208,26 +14411,26 @@ export const calculators: CalculatorDefinition[] = [
             value: preference,
             format: "currency",
             currency: "USD",
-            detail: "Investment × preference multiple",
+            detail: "Investment x preference multiple",
           },
         ],
         warnings,
       };
     },
     formula:
-      "Investor proceeds (1× non-participating) = max(preference multiple × investment, ownership % × exit value)",
+      "Investor proceeds (1x non-participating) = max(preference multiple x investment, ownership % x exit value)",
     assumptions: [
       "Models a single investor class with non-participating preferred only (simplified).",
       "Ignores stacked preferences, seniority, participation, dividends, and caps.",
     ],
     faqs: [
       {
-        question: "What if there are multiple preference stacks?",
+        question: "What if there are multiple preference stacks-",
         answer:
           "You need a waterfall model with seniority (Series B before Series A, etc.). This calculator is a simplified single-layer version.",
       },
       {
-        question: "What about participating preferred?",
+        question: "What about participating preferred-",
         answer:
           "Participating preferred can take preference and then also share in remaining proceeds as common. This calculator does not model participation.",
       },
@@ -14252,8 +14455,8 @@ export const calculators: CalculatorDefinition[] = [
     ],
     seo: {
       intro: [
-        "Unit economics answer: do we create enough gross profit per customer to justify what we spend to acquire them, and how fast do we get cash back?",
-        "This dashboard calculator computes gross profit LTV, CAC payback months, LTV:CAC, and simple break-even targets. It’s designed for fast scenario testing and planning.",
+        "Unit economics answer: do we create enough gross profit per customer to justify what we spend to acquire them, and how fast do we get cash back-",
+        "This dashboard calculator computes gross profit LTV, CAC payback months, LTV:CAC, and simple break-even targets. It's designed for fast scenario testing and planning.",
       ],
       steps: [
         "Enter ARPA, gross margin, and monthly churn to estimate gross profit LTV.",
@@ -14329,6 +14532,13 @@ export const calculators: CalculatorDefinition[] = [
       const paybackMonths =
         grossProfitPerMonth > 0 ? values.cac / grossProfitPerMonth : null;
       const ltvToCac = grossProfitLtv ? grossProfitLtv / values.cac : null;
+      const annualGrossProfit = grossProfitPerMonth * 12;
+      const ltvMinusCac =
+        grossProfitLtv !== null ? grossProfitLtv - values.cac : null;
+      const paybackToLifetime =
+        paybackMonths !== null && lifetimeMonths !== null && lifetimeMonths > 0
+          ? paybackMonths / lifetimeMonths
+          : null;
 
       const targetPayback = Math.floor(values.targetPaybackMonths);
       if (values.targetPaybackMonths !== targetPayback)
@@ -14336,11 +14546,21 @@ export const calculators: CalculatorDefinition[] = [
 
       const maxCacForTargetPayback =
         targetPayback > 0 ? grossProfitPerMonth * targetPayback : null;
+      const requiredArpaForTargetPayback =
+        targetPayback > 0 && margin > 0
+          ? (values.cac / targetPayback) / margin
+          : null;
 
       const breakEvenMonthlyChurn =
         grossProfitLtv && grossProfitLtv > 0
           ? safeDivide(grossProfitPerMonth, grossProfitLtv)
           : churn;
+      if (ltvToCac !== null && ltvToCac < 1) {
+        warnings.push("LTV:CAC is below 1x; payback may not be achievable.");
+      }
+      if (paybackToLifetime !== null && paybackToLifetime > 1) {
+        warnings.push("Payback exceeds estimated lifetime; unit economics are negative.");
+      }
 
       return {
         headline: {
@@ -14349,7 +14569,7 @@ export const calculators: CalculatorDefinition[] = [
           value: ltvToCac ?? 0,
           format: "multiple",
           maxFractionDigits: 2,
-          detail: ltvToCac === null ? "Enter valid churn and CAC" : "Gross profit LTV ÷ CAC",
+          detail: ltvToCac === null ? "Enter valid churn and CAC" : "Gross profit LTV / CAC",
         },
         secondary: [
           {
@@ -14358,7 +14578,7 @@ export const calculators: CalculatorDefinition[] = [
             value: grossProfitLtv ?? 0,
             format: "currency",
             currency: "USD",
-            detail: grossProfitLtv === null ? "Requires churn > 0" : "Gross profit/month × lifetime",
+            detail: grossProfitLtv === null ? "Requires churn > 0" : "Gross profit/month x lifetime",
           },
           {
             key: "paybackMonths",
@@ -14366,7 +14586,7 @@ export const calculators: CalculatorDefinition[] = [
             value: paybackMonths ?? 0,
             format: "months",
             maxFractionDigits: 1,
-            detail: paybackMonths === null ? "Requires margin and ARPA" : "CAC ÷ gross profit/month",
+            detail: paybackMonths === null ? "Requires margin and ARPA" : "CAC / gross profit/month",
           },
           {
             key: "grossProfitPerMonth",
@@ -14374,7 +14594,15 @@ export const calculators: CalculatorDefinition[] = [
             value: grossProfitPerMonth,
             format: "currency",
             currency: "USD",
-            detail: "ARPA × gross margin",
+            detail: "ARPA x gross margin",
+          },
+          {
+            key: "annualGrossProfit",
+            label: "Gross profit per year",
+            value: annualGrossProfit,
+            format: "currency",
+            currency: "USD",
+            detail: "Gross profit/month x 12",
           },
           {
             key: "lifetimeMonths",
@@ -14382,7 +14610,16 @@ export const calculators: CalculatorDefinition[] = [
             value: lifetimeMonths ?? 0,
             format: "months",
             maxFractionDigits: 1,
-            detail: lifetimeMonths === null ? "Churn is 0%" : "1 ÷ monthly churn",
+            detail: lifetimeMonths === null ? "Churn is 0%" : "1 / monthly churn",
+          },
+          {
+            key: "ltvMinusCac",
+            label: "Gross profit LTV - CAC",
+            value: ltvMinusCac ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail:
+              ltvMinusCac === null ? "Requires churn > 0" : "Value created per customer",
           },
           {
             key: "maxCac",
@@ -14390,7 +14627,29 @@ export const calculators: CalculatorDefinition[] = [
             value: maxCacForTargetPayback ?? 0,
             format: "currency",
             currency: "USD",
-            detail: maxCacForTargetPayback === null ? "Set target payback > 0" : "Gross profit/month × target months",
+            detail: maxCacForTargetPayback === null ? "Set target payback > 0" : "Gross profit/month x target months",
+          },
+          {
+            key: "requiredArpaForTargetPayback",
+            label: "Min ARPA for target payback",
+            value: requiredArpaForTargetPayback ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail:
+              requiredArpaForTargetPayback === null
+                ? "Set target payback and margin"
+                : "CAC / target months / margin",
+          },
+          {
+            key: "paybackToLifetime",
+            label: "Payback / lifetime",
+            value: paybackToLifetime ?? 0,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail:
+              paybackToLifetime === null
+                ? "Requires churn > 0"
+                : "Payback months / lifetime months",
           },
           {
             key: "breakEvenChurn",
@@ -14435,7 +14694,7 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "Gross profit LTV ≈ (ARPA×gross margin) ÷ churn; Payback ≈ CAC ÷ (ARPA×gross margin); LTV:CAC ≈ LTV ÷ CAC",
+      "Gross profit LTV ~ (ARPAxgross margin) / churn; Payback ~ CAC / (ARPAxgross margin); LTV:CAC ~ LTV / CAC",
     assumptions: [
       "Uses logo churn as a shortcut lifetime estimate (1/churn).",
       "Assumes constant ARPA and gross margin over lifetime.",
@@ -14443,12 +14702,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "What LTV:CAC is good?",
+        question: "What LTV:CAC is good-",
         answer:
-          "It depends on growth stage and payback constraints. Many teams use ~3× as a rough rule of thumb, but payback and cash constraints matter more than a single ratio.",
+          "It depends on growth stage and payback constraints. Many teams use ~3x as a rough rule of thumb, but payback and cash constraints matter more than a single ratio.",
       },
       {
-        question: "Why can this be misleading?",
+        question: "Why can this be misleading-",
         answer:
           "Because churn is rarely constant and expansion can change revenue over time. This is a planning shortcut; validate with cohort curves when possible.",
       },
@@ -14497,7 +14756,7 @@ export const calculators: CalculatorDefinition[] = [
       },
       {
         key: "cvrPercent",
-        label: "CVR (click → conversion)",
+        label: "CVR (click -> conversion)",
         placeholder: "2.5",
         suffix: "%",
         defaultValue: "2.5",
@@ -14579,7 +14838,7 @@ export const calculators: CalculatorDefinition[] = [
             value: conversionsPerThousand,
             format: "number",
             maxFractionDigits: 2,
-            detail: "1000×CTR×CVR",
+            detail: "1000xCTRxCVR",
           },
             {
               key: "contributionPerConversion",
@@ -14587,7 +14846,7 @@ export const calculators: CalculatorDefinition[] = [
               value: contributionPerConversion,
               format: "currency",
               currency: "USD",
-              detail: "AOV×margin",
+              detail: "AOVxmargin",
             },
             {
               key: "breakEvenCpc",
@@ -14670,20 +14929,20 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "Conversions/1000 = 1000×CTR×CVR; Break-even CPM = conversions/1000 × (AOV×margin); Target CPM = break-even × (1-buffer)",
+      "Conversions/1000 = 1000xCTRxCVR; Break-even CPM = conversions/1000 x (AOVxmargin); Target CPM = break-even x (1-buffer)",
     assumptions: [
-      "CVR is click-based (conversions ÷ clicks).",
+      "CVR is click-based (conversions / clicks).",
       "Contribution margin captures variable costs (not fixed overhead).",
       "Ignores long-term LTV; best for one-time purchase economics.",
     ],
     faqs: [
       {
-        question: "How is this different from max CPC?",
+        question: "How is this different from max CPC-",
         answer:
-          "Max CPC tells you what you can pay per click. Break-even CPM tells you what you can pay per 1,000 impressions. They are linked via CTR: CPM ≈ CPC×CTR×1000.",
+          "Max CPC tells you what you can pay per click. Break-even CPM tells you what you can pay per 1,000 impressions. They are linked via CTR: CPM ~ CPCxCTRx1000.",
       },
       {
-        question: "What if my platform charges CPM but optimizes for conversions?",
+        question: "What if my platform charges CPM but optimizes for conversions-",
         answer:
           "You can still use this as a sanity check, but ensure CTR and CVR reflect observed performance for that campaign and placement mix.",
       },
@@ -15048,7 +15307,7 @@ export const calculators: CalculatorDefinition[] = [
           value: paybackMonth ?? 0,
           format: "months",
           maxFractionDigits: 1,
-          detail: paybackMonth === null ? "Not reached in horizon" : "Cumulative gross profit ≥ CAC",
+          detail: paybackMonth === null ? "Not reached in horizon" : "Cumulative gross profit >= CAC",
         },
         secondary: [
           {
@@ -15064,7 +15323,7 @@ export const calculators: CalculatorDefinition[] = [
             value: ltvToCac,
             format: "multiple",
             maxFractionDigits: 2,
-            detail: "Cumulative gross profit ÷ CAC",
+            detail: "Cumulative gross profit / CAC",
           },
             {
               key: "gp12",
@@ -15149,7 +15408,7 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "Cumulative gross profit = Σ(retained_customers_t × ARPA_t × gross margin); Payback occurs when cumulative gross profit ≥ CAC",
+      "Cumulative gross profit = sum (retained_customers_t x ARPA_t x gross margin); Payback occurs when cumulative gross profit >= CAC",
     assumptions: [
       "Two-stage logo churn (early vs steady-state).",
       "Expansion applies to surviving customers' revenue each month (simplified).",
@@ -15157,12 +15416,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Why model early churn separately?",
+        question: "Why model early churn separately-",
         answer:
           "Because early churn often dominates payback. Improving activation and onboarding can dramatically reduce payback even if steady-state churn is unchanged.",
       },
       {
-        question: "Should I use logo churn or revenue churn?",
+        question: "Should I use logo churn or revenue churn-",
         answer:
           "Payback is about cash from customers. If expansion and downgrades matter, model revenue retention curves (NRR/GRR). Logo churn is still useful for intuition but can miss dollar effects.",
       },
@@ -15211,7 +15470,7 @@ export const calculators: CalculatorDefinition[] = [
       },
       {
         key: "cvrPercent",
-        label: "CVR (click → conversion)",
+        label: "CVR (click -> conversion)",
         placeholder: "2.5",
         suffix: "%",
         defaultValue: "2.5",
@@ -15366,20 +15625,20 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "Break-even CTR = CPM / (1000×CVR×AOV×margin); Target CTR = break-even / (1 - buffer)",
+      "Break-even CTR = CPM / (1000xCVRxAOVxmargin); Target CTR = break-even / (1 - buffer)",
     assumptions: [
-      "CVR is click-based (conversions ÷ clicks).",
+      "CVR is click-based (conversions / clicks).",
       "Margin reflects variable economics (contribution margin).",
       "Ignores long-term LTV; best for one-time purchase economics.",
     ],
     faqs: [
       {
-        question: "Why does required CTR increase when margin is lower?",
+        question: "Why does required CTR increase when margin is lower-",
         answer:
           "Lower margin means less contribution per conversion. To cover the same CPM, you need more conversions per 1,000 impressions, which requires higher CTR (or higher CVR).",
       },
       {
-        question: "Should I use this for subscription products?",
+        question: "Should I use this for subscription products-",
         answer:
           "Use it as a first-order sanity check, but subscription businesses should typically use LTV-based targets (because value is not captured in a single purchase AOV).",
       },
@@ -15389,22 +15648,22 @@ export const calculators: CalculatorDefinition[] = [
     slug: "dcf-sensitivity-calculator",
     title: "DCF Sensitivity Calculator",
     description:
-      "Estimate how enterprise value changes with discount rate and terminal growth assumptions (simple 3×3 sensitivity).",
+      "Estimate how enterprise value changes with discount rate and terminal growth assumptions (simple 3x3 sensitivity).",
     category: "finance",
     guideSlug: "dcf-sensitivity-guide",
     relatedGlossarySlugs: ["dcf", "discount-rate", "terminal-value", "wacc", "sensitivity-analysis"],
     seo: {
       intro: [
         "Most DCFs are dominated by discount rate and terminal value assumptions. A sensitivity grid helps you see how fragile (or robust) your valuation is.",
-        "This calculator computes enterprise value at a 3×3 grid around your base discount rate and terminal growth assumptions.",
+        "This calculator computes enterprise value at a 3x3 grid around your base discount rate and terminal growth assumptions.",
       ],
       steps: [
         "Enter current annual free cash flow (FCF) and a simple forecast (years + growth).",
         "Enter base discount rate and terminal growth.",
-        "Enter steps for discount rate and terminal growth to generate a 3×3 grid.",
+        "Enter steps for discount rate and terminal growth to generate a 3x3 grid.",
       ],
       pitfalls: [
-        "Terminal growth ≥ discount rate (invalid in perpetuity model).",
+        "Terminal growth >= discount rate (invalid in perpetuity model).",
         "Treating a single scenario as precise (false precision).",
         "Using accounting profit instead of free cash flow.",
       ],
@@ -15574,7 +15833,7 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "EV = Σ(FCF_t/(1+r)^t) + (FCF_(n+1)/(r - g_terminal))/(1+r)^n; Sensitivity varies r and g_terminal",
+      "EV = sum (FCF_t/(1+r)^t) + (FCF_(n+1)/(r - g_terminal))/(1+r)^n; Sensitivity varies r and g_terminal",
     assumptions: [
       "Uses a simple constant growth forecast during the explicit period.",
       "Terminal value uses a perpetuity growth model.",
@@ -15582,14 +15841,14 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Why do some grid points disappear?",
+        question: "Why do some grid points disappear-",
         answer:
           "Because the perpetuity model requires terminal growth to be less than the discount rate (r > g). When g is too high relative to r, the terminal value becomes mathematically invalid.",
       },
       {
-        question: "How should I pick the steps?",
+        question: "How should I pick the steps-",
         answer:
-          "A common starting point is ±1–3% for discount rate and ±0.5–1% for terminal growth. If valuation changes wildly, you need more conservative assumptions and/or better forecasting detail.",
+          "A common starting point is +/-1-3% for discount rate and +/-0.5-1% for terminal growth. If valuation changes wildly, you need more conservative assumptions and/or better forecasting detail.",
       },
     ],
   },
@@ -15613,7 +15872,7 @@ export const calculators: CalculatorDefinition[] = [
       ],
       pitfalls: [
         "Stopping early when a result looks good (peeking inflates false positives).",
-        "Using an MDE that’s smaller than what you can act on (forces huge samples).",
+        "Using an MDE that's smaller than what you can act on (forces huge samples).",
         "Mixing click-based and session-based conversion rates (definition mismatch).",
       ],
     },
@@ -15630,7 +15889,7 @@ export const calculators: CalculatorDefinition[] = [
       {
         key: "mdePercentPoints",
         label: "MDE (absolute lift)",
-        help: "Minimum detectable effect as percentage points (e.g., 0.5 means 2.5% → 3.0%).",
+        help: "Minimum detectable effect as percentage points (e.g., 0.5 means 2.5% -> 3.0%).",
         placeholder: "0.5",
         suffix: "pp",
         defaultValue: "0.5",
@@ -15783,7 +16042,7 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "n ≈ ((z_(1-α/2)√(2p?(1-p?)) + z_(power)√(p1(1-p1)+p2(1-p2)))2) / (p2-p1)2",
+      "n ~ ((z_(1-alpha/2)sqrt(2p-(1-p-)) + z_(power)sqrt(p1(1-p1)+p2(1-p2)))2) / (p2-p1)2",
     assumptions: [
       "Two-sided z-test approximation for proportions.",
       "Independent samples and stable baseline rate.",
@@ -15791,12 +16050,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Why does sample size explode when CVR is low?",
+        question: "Why does sample size explode when CVR is low-",
         answer:
           "When conversion is rare, noise is high relative to the signal. Detecting small lifts requires much larger samples.",
       },
       {
-        question: "Should I run until I hit the sample size exactly?",
+        question: "Should I run until I hit the sample size exactly-",
         answer:
           "Use it as a baseline and add buffer. Also avoid peeking; if you want to stop early, use sequential testing methods instead of naive p-values.",
       },
@@ -15882,7 +16141,7 @@ export const calculators: CalculatorDefinition[] = [
           value: cac,
           format: "currency",
           currency: "USD",
-          detail: "CPL ÷ lead-to-customer rate",
+          detail: "CPL / lead-to-customer rate",
         },
         secondary: [
           {
@@ -15898,7 +16157,7 @@ export const calculators: CalculatorDefinition[] = [
               value: requiredRate ?? 0,
               format: "percent",
               maxFractionDigits: 2,
-              detail: requiredRate === null ? "Target CAC disabled" : "CPL ÷ target CAC",
+              detail: requiredRate === null ? "Target CAC disabled" : "CPL / target CAC",
             },
             {
               key: "allInCpl",
@@ -15914,7 +16173,7 @@ export const calculators: CalculatorDefinition[] = [
               value: allInCac,
               format: "currency",
               currency: "USD",
-              detail: values.salesCostPerLead > 0 ? "All-in CPL ÷ lead-to-customer rate" : "Add sales cost per lead",
+              detail: values.salesCostPerLead > 0 ? "All-in CPL / lead-to-customer rate" : "Add sales cost per lead",
             },
           ],
           breakdown: [
@@ -15943,7 +16202,7 @@ export const calculators: CalculatorDefinition[] = [
         warnings,
       };
     },
-    formula: "CAC = CPL ÷ (lead-to-customer rate)",
+    formula: "CAC = CPL / (lead-to-customer rate)",
     assumptions: [
       "Lead-to-customer rate reflects final paying customers (not MQLs).",
       "CPL and close rate are measured over consistent time windows.",
@@ -15951,12 +16210,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Should I include sales cost in CPL or CAC?",
+        question: "Should I include sales cost in CPL or CAC-",
         answer:
           "For planning, include sales salaries and tooling in CAC (blended CAC). For channel optimization, teams often track paid CPL/CPA separately. The key is labeling and consistency.",
       },
       {
-        question: "What if leads convert over multiple months?",
+        question: "What if leads convert over multiple months-",
         answer:
           "Then use cohort-based tracking (lead cohorts) and measure lead-to-customer rate after enough time has passed. Short windows can undercount conversions and overstate CAC.",
       },
@@ -15972,7 +16231,7 @@ export const calculators: CalculatorDefinition[] = [
     relatedGlossarySlugs: ["cvr", "cpm", "ctr", "aov", "contribution-margin", "break-even-cpm"],
     seo: {
       intro: [
-        "When buying impressions, CVR is a major profit lever. If CVR is too low, even great CTR won’t save economics at a given CPM.",
+        "When buying impressions, CVR is a major profit lever. If CVR is too low, even great CTR won't save economics at a given CPM.",
         "This calculator computes break-even CVR at a given CPM and CTR, plus a target CVR with a profit buffer.",
       ],
       steps: [
@@ -16143,7 +16402,7 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "Break-even CVR = CPM / (1000×CTR×AOV×margin); Target CVR = break-even / (1-buffer)",
+      "Break-even CVR = CPM / (1000xCTRxAOVxmargin); Target CVR = break-even / (1-buffer)",
     assumptions: [
       "CTR and CVR are measured on a click basis (consistent denominators).",
       "Margin reflects variable economics (contribution margin).",
@@ -16151,14 +16410,14 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "If my CVR is below break-even, what can I do?",
+        question: "If my CVR is below break-even, what can I do-",
         answer:
           "Increase CVR via landing page/offer improvements, increase AOV, improve margin, lower CPM, or improve CTR. If none are feasible, the placement may not be viable.",
       },
       {
-        question: "How does this relate to break-even CTR?",
+        question: "How does this relate to break-even CTR-",
         answer:
-          "They’re symmetric levers. Break-even CTR and CVR are both derived from the same underlying economics; improving either increases allowable CPM.",
+          "They're symmetric levers. Break-even CTR and CVR are both derived from the same underlying economics; improving either increases allowable CPM.",
       },
     ],
   },
@@ -16253,7 +16512,7 @@ export const calculators: CalculatorDefinition[] = [
           value: cvr ?? 0,
           format: "percent",
           maxFractionDigits: 2,
-          detail: "Conversions ÷ clicks",
+          detail: "Conversions / clicks",
         },
         secondary: [
           {
@@ -16262,7 +16521,7 @@ export const calculators: CalculatorDefinition[] = [
             value: clicksPerConversion ?? 0,
             format: "number",
             maxFractionDigits: 1,
-            detail: values.conversions > 0 ? "Clicks ÷ conversions" : "No conversions",
+            detail: values.conversions > 0 ? "Clicks / conversions" : "No conversions",
           },
             {
               key: "requiredClicks",
@@ -16270,7 +16529,7 @@ export const calculators: CalculatorDefinition[] = [
               value: requiredClicksForTarget ?? 0,
               format: "number",
               maxFractionDigits: 0,
-              detail: cvr && cvr > 0 ? "Target conversions ÷ CVR" : "Enter valid clicks",
+              detail: cvr && cvr > 0 ? "Target conversions / CVR" : "Enter valid clicks",
             },
             {
               key: "cpc",
@@ -16278,7 +16537,7 @@ export const calculators: CalculatorDefinition[] = [
               value: cpc ?? 0,
               format: "currency",
               currency: "USD",
-              detail: cpc === null ? "Add spend" : "Spend ÷ clicks",
+              detail: cpc === null ? "Add spend" : "Spend / clicks",
             },
             {
               key: "cpa",
@@ -16286,7 +16545,7 @@ export const calculators: CalculatorDefinition[] = [
               value: cpa ?? 0,
               format: "currency",
               currency: "USD",
-              detail: cpa === null ? "Add spend and conversions" : "Spend ÷ conversions",
+              detail: cpa === null ? "Add spend and conversions" : "Spend / conversions",
             },
             {
               key: "roas",
@@ -16294,7 +16553,7 @@ export const calculators: CalculatorDefinition[] = [
               value: roas ?? 0,
               format: "multiple",
               maxFractionDigits: 2,
-              detail: roas === null ? "Add spend and revenue" : "Revenue ÷ spend",
+              detail: roas === null ? "Add spend and revenue" : "Revenue / spend",
             },
           ],
           breakdown: [
@@ -16330,19 +16589,19 @@ export const calculators: CalculatorDefinition[] = [
           warnings,
         };
       },
-    formula: "Click-through CVR = conversions ÷ clicks",
+    formula: "Click-through CVR = conversions / clicks",
     assumptions: [
       "Clicks and conversions are measured over the same window and attribution rules.",
       "Uses click-based CVR (not session-based).",
     ],
     faqs: [
       {
-        question: "Is this the same as session CVR?",
+        question: "Is this the same as session CVR-",
         answer:
           "No. Session CVR uses sessions as the denominator. If your spend is click-based, click CVR keeps units consistent.",
       },
       {
-        question: "What if my conversions lag clicks?",
+        question: "What if my conversions lag clicks-",
         answer:
           "Use a longer attribution window or wait for lag to settle before calculating CVR. Short windows often understate true conversion rate.",
       },
@@ -16588,12 +16847,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Why annualizing monthly NRR/GRR can look extreme?",
+        question: "Why annualizing monthly NRR/GRR can look extreme-",
         answer:
           "Because compounding is powerful. A small monthly difference compounds over 12 months, so always sanity-check annualized implied outcomes.",
       },
       {
-        question: "Should I set targets by segment?",
+        question: "Should I set targets by segment-",
         answer:
           "Yes. Blended NRR/GRR can hide weak segments. Set targets by plan, channel, cohort, and customer size to make them actionable.",
       },
@@ -16690,7 +16949,7 @@ export const calculators: CalculatorDefinition[] = [
           value: attainment ?? 0,
           format: "percent",
           maxFractionDigits: 2,
-          detail: "Booked ÷ quota",
+          detail: "Booked / quota",
         },
         secondary: [
           {
@@ -16699,7 +16958,7 @@ export const calculators: CalculatorDefinition[] = [
             value: projectedBookings,
             format: "currency",
             currency: "USD",
-            detail: "Booked/day × total days",
+            detail: "Booked/day x total days",
           },
           {
             key: "projectedAttainment",
@@ -16707,7 +16966,7 @@ export const calculators: CalculatorDefinition[] = [
             value: projectedAttainment ?? 0,
             format: "percent",
             maxFractionDigits: 2,
-            detail: "Projected bookings ÷ quota",
+            detail: "Projected bookings / quota",
           },
           {
             key: "remaining",
@@ -16722,7 +16981,7 @@ export const calculators: CalculatorDefinition[] = [
             value: onTrackToDate,
             format: "currency",
             currency: "USD",
-            detail: "Quota × (days elapsed ÷ total days)",
+            detail: "Quota x (days elapsed / total days)",
           },
           {
             key: "paceRatio",
@@ -16730,7 +16989,7 @@ export const calculators: CalculatorDefinition[] = [
             value: paceRatio ?? 0,
             format: "multiple",
             maxFractionDigits: 2,
-            detail: "Booked to date ÷ on-track",
+            detail: "Booked to date / on-track",
           },
           {
             key: "requiredPerDay",
@@ -16738,14 +16997,14 @@ export const calculators: CalculatorDefinition[] = [
             value: requiredPerDay,
             format: "currency",
             currency: "USD",
-            detail: remainingDays > 0 ? "Remaining ÷ remaining days" : "No remaining days",
+            detail: remainingDays > 0 ? "Remaining / remaining days" : "No remaining days",
           },
         ],
         warnings,
       };
     },
     formula:
-      "Attainment = booked ÷ quota; projected bookings ≈ (booked ÷ days elapsed) × days in period",
+      "Attainment = booked / quota; projected bookings ~ (booked / days elapsed) x days in period",
     assumptions: [
       "Uses a simple linear pace projection (deal timing is often lumpy).",
       "Uses calendar-day pacing; use business days if that matches your process.",
@@ -16753,12 +17012,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Should I pace using business days?",
+        question: "Should I pace using business days-",
         answer:
-          "If your team sells primarily on business days, yes. The key is consistency—use the same day definition for both pacing and period length.",
+          "If your team sells primarily on business days, yes. The key is consistency-use the same day definition for both pacing and period length.",
       },
       {
-        question: "Why can projected bookings be misleading early in the period?",
+        question: "Why can projected bookings be misleading early in the period-",
         answer:
           "Many teams close deals late in the month/quarter. Early pace can understate or overstate the final outcome depending on your deal timing pattern.",
       },
@@ -16784,7 +17043,7 @@ export const calculators: CalculatorDefinition[] = [
     relatedGlossarySlugs: ["pipeline", "pipeline-coverage", "quota", "win-rate"],
     seo: {
       intro: [
-        "Pipeline coverage is a simple sanity check: pipeline ÷ quota. If win rate is below 100%, you usually need multiple turns of pipeline to hit quota.",
+        "Pipeline coverage is a simple sanity check: pipeline / quota. If win rate is below 100%, you usually need multiple turns of pipeline to hit quota.",
         "This calculator also converts pipeline into expected bookings using your win rate so you can compare expected output to quota.",
       ],
       steps: [
@@ -16846,7 +17105,7 @@ export const calculators: CalculatorDefinition[] = [
           value: coverage ?? 0,
           format: "multiple",
           maxFractionDigits: 2,
-          detail: "Pipeline ÷ quota",
+          detail: "Pipeline / quota",
         },
         secondary: [
           {
@@ -16855,7 +17114,7 @@ export const calculators: CalculatorDefinition[] = [
             value: expectedBookings,
             format: "currency",
             currency: "USD",
-            detail: "Pipeline × win rate",
+            detail: "Pipeline x win rate",
           },
           {
             key: "expectedAttainment",
@@ -16870,7 +17129,7 @@ export const calculators: CalculatorDefinition[] = [
             value: requiredPipeline ?? 0,
             format: "currency",
             currency: "USD",
-            detail: "Quota ÷ win rate",
+            detail: "Quota / win rate",
           },
           {
             key: "pipelineGap",
@@ -16894,19 +17153,19 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "Coverage = pipeline ÷ quota; expected bookings = pipeline × win rate; expected attainment = expected bookings ÷ quota",
+      "Coverage = pipeline / quota; expected bookings = pipeline x win rate; expected attainment = expected bookings / quota",
     assumptions: [
       "Pipeline is for the same time window as quota (e.g., this quarter) and similarly staged.",
       "Win rate is applied as an average and assumes stable conversion.",
     ],
     faqs: [
       {
-        question: "What coverage ratio is 'good'?",
+        question: "What coverage ratio is 'good'-",
         answer:
-          "It depends on win rate and stage quality. A rough rule is coverage ≈ 1 ÷ win rate (e.g., 25% win rate implies ~4× coverage), adjusted for deal slippage and timing.",
+          "It depends on win rate and stage quality. A rough rule is coverage ~ 1 / win rate (e.g., 25% win rate implies ~4x coverage), adjusted for deal slippage and timing.",
       },
       {
-        question: "Should I use pipeline value or weighted pipeline?",
+        question: "Should I use pipeline value or weighted pipeline-",
         answer:
           "If you have reliable stage probabilities, weighted pipeline can be more realistic. But many teams start with unweighted pipeline + historical win rate for simplicity.",
       },
@@ -16997,7 +17256,7 @@ export const calculators: CalculatorDefinition[] = [
           value: requiredPipeline,
           format: "currency",
           currency: "USD",
-          detail: "Target ÷ win rate",
+          detail: "Target / win rate",
         },
         secondary: [
           {
@@ -17006,7 +17265,7 @@ export const calculators: CalculatorDefinition[] = [
             value: requiredOpps ?? 0,
             format: "number",
             maxFractionDigits: 0,
-            detail: requiredOpps === null ? "Invalid inputs" : "Wins ÷ win rate",
+            detail: requiredOpps === null ? "Invalid inputs" : "Wins / win rate",
           },
           {
             key: "requiredWins",
@@ -17014,7 +17273,7 @@ export const calculators: CalculatorDefinition[] = [
             value: requiredWins ?? 0,
             format: "number",
             maxFractionDigits: 0,
-            detail: requiredWins === null ? "Invalid inputs" : "Target ÷ avg deal size",
+            detail: requiredWins === null ? "Invalid inputs" : "Target / avg deal size",
           },
           {
             key: "impliedCoverage",
@@ -17022,7 +17281,7 @@ export const calculators: CalculatorDefinition[] = [
             value: impliedCoverage ?? 0,
             format: "multiple",
             maxFractionDigits: 2,
-            detail: "Required pipeline ÷ target",
+            detail: "Required pipeline / target",
           },
           {
             key: "pipelinePerRep",
@@ -17030,7 +17289,7 @@ export const calculators: CalculatorDefinition[] = [
             value: pipelinePerRep ?? 0,
             format: "currency",
             currency: "USD",
-            detail: reps > 0 ? "Required pipeline ÷ reps" : "Add reps to estimate",
+            detail: reps > 0 ? "Required pipeline / reps" : "Add reps to estimate",
           },
           {
             key: "oppsPerRep",
@@ -17038,28 +17297,28 @@ export const calculators: CalculatorDefinition[] = [
             value: oppsPerRep ?? 0,
             format: "number",
             maxFractionDigits: 1,
-            detail: reps > 0 ? "Required opps ÷ reps" : "Add reps to estimate",
+            detail: reps > 0 ? "Required opps / reps" : "Add reps to estimate",
           },
         ],
         warnings,
       };
     },
     formula:
-      "Required pipeline = target ÷ win rate; wins = target ÷ avg deal size; opps = wins ÷ win rate",
+      "Required pipeline = target / win rate; wins = target / avg deal size; opps = wins / win rate",
     assumptions: [
       "Uses average deal size; segment for higher accuracy.",
       "Win rate is stable and measured on the same stage definition as your pipeline.",
     ],
     faqs: [
       {
-        question: "Why is required pipeline target ÷ win rate?",
+        question: "Why is required pipeline target / win rate-",
         answer:
           "If you win X% of pipeline value on average, you need about 1/X times the target in pipeline to produce the target in closed revenue (before adding buffer for slippage).",
       },
       {
-        question: "Should I add a buffer above required pipeline?",
+        question: "Should I add a buffer above required pipeline-",
         answer:
-          "Often yes. Deal slippage and push-outs can be material. Many teams set an additional buffer (e.g., +10–30%) based on historical slippage.",
+          "Often yes. Deal slippage and push-outs can be material. Many teams set an additional buffer (e.g., +10-30%) based on historical slippage.",
       },
     ],
   },
@@ -17084,7 +17343,7 @@ export const calculators: CalculatorDefinition[] = [
       ],
       pitfalls: [
         "Assuming all reps are fully ramped.",
-        "Using quota that doesn’t match the same period definition.",
+        "Using quota that doesn't match the same period definition.",
         "Ignoring pipeline constraints (capacity without pipeline is theoretical).",
       ],
     },
@@ -17175,7 +17434,7 @@ export const calculators: CalculatorDefinition[] = [
           value: capacity,
           format: "currency",
           currency: "USD",
-          detail: "Reps × quota × attainment × ramp mix",
+          detail: "Reps x quota x attainment x ramp mix",
         },
         secondary: [
           {
@@ -17214,21 +17473,21 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "Capacity ≈ reps × quota per rep × attainment × (ramped% + (1-ramped%)×ramping productivity)",
+      "Capacity ~ reps x quota per rep x attainment x (ramped% + (1-ramped%)xramping productivity)",
     assumptions: [
       "Ramping productivity is expressed relative to ramped rep productivity.",
       "Attainment applies to ramped productivity; actual outcomes vary by segment and seasonality.",
     ],
     faqs: [
       {
-        question: "Why use ramp-adjusted effective reps?",
+        question: "Why use ramp-adjusted effective reps-",
         answer:
           "Because a team with many new hires has fewer 'fully productive' reps. Adjusting for ramp helps you avoid over-forecasting bookings.",
       },
       {
-        question: "How should I pick ramping productivity?",
+        question: "How should I pick ramping productivity-",
         answer:
-          "Use historical ramp curves (month 1, 2, 3 productivity). If you don’t have data, start conservative (e.g., 20–50%) and refine with observed cohorts.",
+          "Use historical ramp curves (month 1, 2, 3 productivity). If you don't have data, start conservative (e.g., 20-50%) and refine with observed cohorts.",
       },
     ],
   },
@@ -17243,7 +17502,7 @@ export const calculators: CalculatorDefinition[] = [
     seo: {
       intro: [
         "Sales compensation often starts with OTE (on-target earnings): base + variable at 100% attainment.",
-        "From OTE and quota you can derive a simple commission rate (variable ÷ quota) and sanity-check incentive alignment.",
+        "From OTE and quota you can derive a simple commission rate (variable / quota) and sanity-check incentive alignment.",
       ],
       steps: [
         "Enter base and variable compensation for the period (usually annual).",
@@ -17314,7 +17573,7 @@ export const calculators: CalculatorDefinition[] = [
         secondary: [
           {
             key: "commissionRate",
-            label: "Commission rate (variable ÷ quota)",
+            label: "Commission rate (variable / quota)",
             value: commissionRate ?? 0,
             format: "percent",
             maxFractionDigits: 2,
@@ -17403,19 +17662,19 @@ export const calculators: CalculatorDefinition[] = [
         warnings,
       };
     },
-    formula: "OTE = base + variable; commission rate ≈ variable ÷ quota",
+    formula: "OTE = base + variable; commission rate ~ variable / quota",
     assumptions: [
       "Assumes linear commission proportional to quota attainment (no accelerators/decels).",
       "Base and quota are for the same time unit (annual vs quarterly).",
     ],
     faqs: [
       {
-        question: "What’s a typical OTE split?",
+        question: "What's a typical OTE split-",
         answer:
           "Many AE roles use ~50/50 base/variable, but it varies by motion and market. Use this as a sanity check, not a rule.",
       },
       {
-        question: "Does this include accelerators?",
+        question: "Does this include accelerators-",
         answer:
           "No. Accelerators can materially change effective commission rate at high attainment. Use a full comp plan model if you need precision.",
       },
@@ -17436,7 +17695,7 @@ export const calculators: CalculatorDefinition[] = [
       ],
       steps: [
         "Enter your revenue target and average deal size (ACV).",
-        "Enter funnel conversion rates from lead → MQL → SQL → opp → win.",
+        "Enter funnel conversion rates from lead -> MQL -> SQL -> opp -> win.",
         "Review required counts at each funnel stage.",
       ],
       pitfalls: [
@@ -17464,7 +17723,7 @@ export const calculators: CalculatorDefinition[] = [
       },
       {
         key: "leadToMqlPercent",
-        label: "Lead → MQL",
+        label: "Lead -> MQL",
         placeholder: "20",
         suffix: "%",
         defaultValue: "20",
@@ -17473,7 +17732,7 @@ export const calculators: CalculatorDefinition[] = [
       },
       {
         key: "mqlToSqlPercent",
-        label: "MQL → SQL",
+        label: "MQL -> SQL",
         placeholder: "30",
         suffix: "%",
         defaultValue: "30",
@@ -17482,7 +17741,7 @@ export const calculators: CalculatorDefinition[] = [
       },
       {
         key: "sqlToOppPercent",
-        label: "SQL → Opportunity",
+        label: "SQL -> Opportunity",
         placeholder: "40",
         suffix: "%",
         defaultValue: "40",
@@ -17491,7 +17750,7 @@ export const calculators: CalculatorDefinition[] = [
       },
       {
         key: "oppToWinPercent",
-        label: "Opportunity → Win",
+        label: "Opportunity -> Win",
         placeholder: "25",
         suffix: "%",
         defaultValue: "25",
@@ -17508,10 +17767,10 @@ export const calculators: CalculatorDefinition[] = [
 
       if (values.revenueTarget <= 0) warnings.push("Revenue target must be greater than 0.");
       if (values.avgDealSize <= 0) warnings.push("Average deal size must be greater than 0.");
-      if (leadToMql <= 0) warnings.push("Lead → MQL must be greater than 0%.");
-      if (mqlToSql <= 0) warnings.push("MQL → SQL must be greater than 0%.");
-      if (sqlToOpp <= 0) warnings.push("SQL → Opportunity must be greater than 0%.");
-      if (oppToWin <= 0) warnings.push("Opportunity → Win must be greater than 0%.");
+      if (leadToMql <= 0) warnings.push("Lead -> MQL must be greater than 0%.");
+      if (mqlToSql <= 0) warnings.push("MQL -> SQL must be greater than 0%.");
+      if (sqlToOpp <= 0) warnings.push("SQL -> Opportunity must be greater than 0%.");
+      if (oppToWin <= 0) warnings.push("Opportunity -> Win must be greater than 0%.");
 
       const wins = safeDivide(values.revenueTarget, values.avgDealSize);
       const opps = wins !== null ? safeDivide(wins, oppToWin) : null;
@@ -17562,7 +17821,7 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "wins = target ÷ deal size; opps = wins ÷ opp→win; SQLs = opps ÷ SQL→opp; MQLs = SQLs ÷ MQL→SQL; leads = MQLs ÷ lead→MQL",
+      "wins = target / deal size; opps = wins / opp->win; SQLs = opps / SQL->opp; MQLs = SQLs / MQL->SQL; leads = MQLs / lead->MQL",
     assumptions: [
       "Conversion rates are stable and measured over consistent windows.",
       "Ignores time lag (sales cycle); align inputs to the same period.",
@@ -17570,12 +17829,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Why does a small change in conversion rates move leads a lot?",
+        question: "Why does a small change in conversion rates move leads a lot-",
         answer:
           "Because conversion rates multiply. Small improvements at each stage compound into a large reduction in top-of-funnel volume required.",
       },
       {
-        question: "Should I use leads or MQLs as the starting point?",
+        question: "Should I use leads or MQLs as the starting point-",
         answer:
           "Use the earliest stage you can measure consistently. If lead quality varies widely by channel, model channels separately for accuracy.",
       },
@@ -17591,7 +17850,7 @@ export const calculators: CalculatorDefinition[] = [
     relatedGlossarySlugs: ["activation-rate", "conversion-rate", "funnel", "arrr-funnel"],
     seo: {
       intro: [
-        "Activation is a leading indicator of retention. If users don’t reach an 'aha moment', they’re unlikely to stick.",
+        "Activation is a leading indicator of retention. If users don't reach an 'aha moment', they're unlikely to stick.",
         "This calculator computes activation rate from signups and activated users, and optionally computes the activated users needed to hit a target activation rate.",
       ],
       steps: [
@@ -17705,12 +17964,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "What should count as 'activated'?",
+        question: "What should count as 'activated'-",
         answer:
           "Use an event that correlates with retention and value (the 'aha' moment). Avoid vanity events like 'visited settings' unless they predict long-term use.",
       },
       {
-        question: "Should I measure activation by account instead of user?",
+        question: "Should I measure activation by account instead of user-",
         answer:
           "If your product is sold per account, account-level activation is often more meaningful. The key is choosing a denominator that matches your business model and staying consistent.",
       },
@@ -17735,7 +17994,7 @@ export const calculators: CalculatorDefinition[] = [
         "Optionally enter a target trial-to-paid rate to compute required paid conversions.",
       ],
       pitfalls: [
-        "Using a window that’s too short (under-counts conversions for long sales cycles).",
+        "Using a window that's too short (under-counts conversions for long sales cycles).",
         "Mixing self-serve and sales-assisted trials (different funnels).",
         "Changing trial definitions and comparing rates as if equal.",
       ],
@@ -17827,12 +18086,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "What window should I use (7/14/30 days)?",
+        question: "What window should I use (7/14/30 days)-",
         answer:
-          "Use a window that matches your typical conversion lag. If sales-assisted conversions take longer, track them separately or extend the window so you don’t undercount conversions.",
+          "Use a window that matches your typical conversion lag. If sales-assisted conversions take longer, track them separately or extend the window so you don't undercount conversions.",
       },
       {
-        question: "Should I include free users in trials?",
+        question: "Should I include free users in trials-",
         answer:
           "Only if the definition is consistent. Many teams separate free-to-paid and trial-to-paid because the activation and conversion behavior differs.",
       },
@@ -17849,7 +18108,7 @@ export const calculators: CalculatorDefinition[] = [
     seo: {
       intro: [
         "DAU/MAU is a common stickiness metric: how frequently monthly active users are active on a typical day.",
-        "It’s useful for product engagement, but it depends on how you define 'active' and can vary widely by product type.",
+        "It's useful for product engagement, but it depends on how you define 'active' and can vary widely by product type.",
       ],
       steps: [
         "Enter DAU and MAU for the same period and same 'active' definition.",
@@ -17957,12 +18216,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "What is a good DAU/MAU?",
+        question: "What is a good DAU/MAU-",
         answer:
-          "It depends on product cadence. Daily tools can be 20–60%+; weekly workflows may be lower. Track trends and segment by persona/plan for actionability.",
+          "It depends on product cadence. Daily tools can be 20-60%+; weekly workflows may be lower. Track trends and segment by persona/plan for actionability.",
       },
       {
-        question: "Should I use WAU/MAU instead?",
+        question: "Should I use WAU/MAU instead-",
         answer:
           "If your product is naturally weekly (not daily), WAU/MAU can be a better stickiness metric and less noisy than DAU/MAU.",
       },
@@ -18091,14 +18350,14 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "When should I use WAU/MAU instead of DAU/MAU?",
+        question: "When should I use WAU/MAU instead of DAU/MAU-",
         answer:
-          "Use WAU/MAU when usage is naturally weekly (e.g., planning, reporting). It’s often a more stable signal than DAU/MAU for weekly cadence products.",
+          "Use WAU/MAU when usage is naturally weekly (e.g., planning, reporting). It's often a more stable signal than DAU/MAU for weekly cadence products.",
       },
       {
-        question: "Can WAU/MAU be above 100%?",
+        question: "Can WAU/MAU be above 100%-",
         answer:
-          "No, not with consistent definitions. If it happens, it usually indicates you’re using mismatched denominators or date ranges.",
+          "No, not with consistent definitions. If it happens, it usually indicates you're using mismatched denominators or date ranges.",
       },
     ],
   },
@@ -18213,12 +18472,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Should I measure adoption by user or account?",
+        question: "Should I measure adoption by user or account-",
         answer:
           "Use the unit that matches how value is realized. In B2B tools, account-level adoption can be more meaningful than user-level adoption for expansion and retention.",
       },
       {
-        question: "What’s the difference between adoption and activation?",
+        question: "What's the difference between adoption and activation-",
         answer:
           "Activation is the first meaningful value moment early in the lifecycle. Adoption usually means ongoing usage of a feature over time (often after activation).",
       },
@@ -18333,12 +18592,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "What should define a PQL?",
+        question: "What should define a PQL-",
         answer:
           "Use product signals that correlate with conversion and retention (e.g., invited teammates, created X items, integrated Y). Validate PQL definitions by cohort outcomes.",
       },
       {
-        question: "Should I track PQL-to-paid by channel?",
+        question: "Should I track PQL-to-paid by channel-",
         answer:
           "Yes. PQL quality varies by channel and persona. Segmenting helps you invest in channels that produce PQLs that convert and retain.",
       },
@@ -18510,7 +18769,7 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "Gross profit LTV ≈ (ARPA×gross margin) ÷ churn; Payback ≈ CAC ÷ (ARPA×gross margin)",
+      "Gross profit LTV ~ (ARPAxgross margin) / churn; Payback ~ CAC / (ARPAxgross margin)",
     assumptions: [
       "Churn-based LTV shortcut (constant churn).",
       "ARPA constant; ignores expansion and contraction.",
@@ -18518,12 +18777,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Should I use contribution margin instead of gross margin?",
+        question: "Should I use contribution margin instead of gross margin-",
         answer:
           "If variable costs beyond COGS materially affect profit (fees, shipping, support), contribution margin can be a better proxy. Use the definition that matches your unit economics model.",
       },
       {
-        question: "How can I improve gross margin?",
+        question: "How can I improve gross margin-",
         answer:
           "Reduce COGS/infra costs, optimize support and success costs, improve pricing and packaging, and reduce refunds/returns where applicable.",
       },
@@ -18601,7 +18860,8 @@ export const calculators: CalculatorDefinition[] = [
 
       const requiredGrossProfitPerMonth = values.cac / paybackMonths;
       const minArpa = margin > 0 ? requiredGrossProfitPerMonth / margin : 0;
-      const maxDiscount = values.currentArpaMonthly > 0 ? 1 - minArpa / values.currentArpaMonthly : 0;
+      const maxDiscount =
+        values.currentArpaMonthly > 0 ? 1 - minArpa / values.currentArpaMonthly : 0;
 
       return {
         headline: {
@@ -18619,7 +18879,7 @@ export const calculators: CalculatorDefinition[] = [
             value: requiredGrossProfitPerMonth,
             format: "currency",
             currency: "USD",
-            detail: "CAC ÷ target payback months",
+            detail: "CAC / target payback months",
           },
           {
             key: "maxDiscount",
@@ -18664,20 +18924,20 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "Payback = CAC ÷ (ARPA×margin) ? min ARPA = (CAC ÷ payback) ÷ margin; max discount = 1 - minARPA/currentARPA",
+      "Payback = CAC / (ARPAxmargin) - min ARPA = (CAC / payback) / margin; max discount = 1 - minARPA/currentARPA",
     assumptions: [
-      "Payback is computed on gross profit (ARPA × gross margin).",
+      "Payback is computed on gross profit (ARPA x gross margin).",
       "Ignores churn changes from pricing; validate with cohort data.",
       "Use segment-level ARPA/CAC for realistic guardrails.",
     ],
     faqs: [
       {
-        question: "Is this the only pricing guardrail I should use?",
+        question: "Is this the only pricing guardrail I should use-",
         answer:
           "No. Pair payback guardrails with retention risk (churn) and value perception. A discount can hit payback and still be bad if it changes customer quality or expansion potential.",
       },
       {
-        question: "Should I use contribution margin instead of gross margin?",
+        question: "Should I use contribution margin instead of gross margin-",
         answer:
           "If variable costs beyond COGS are meaningful, contribution margin is more conservative and usually better for payback guardrails.",
       },
@@ -18852,7 +19112,7 @@ export const calculators: CalculatorDefinition[] = [
       };
     },
     formula:
-      "Payment = P×r×(1+r)^n / ((1+r)^n - 1) where r is monthly rate and n is months (for r>0)",
+      "Payment = Pxrx(1+r)^n / ((1+r)^n - 1) where r is monthly rate and n is months (for r>0)",
     assumptions: [
       "Fixed-rate, fully amortizing loan with constant monthly payments.",
       "Does not include taxes, insurance, or extra fees.",
@@ -18860,12 +19120,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Why is total interest so high on long terms?",
+        question: "Why is total interest so high on long terms-",
         answer:
           "Because interest accrues on outstanding principal over many months. Longer terms reduce payment but increase total interest paid.",
       },
       {
-        question: "What if I make extra payments?",
+        question: "What if I make extra payments-",
         answer:
           "Extra principal payments reduce outstanding balance faster, lowering total interest and shortening term. This calculator assumes no extra payments.",
       },
@@ -18988,12 +19248,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Is APY always higher than APR?",
+        question: "Is APY always higher than APR-",
         answer:
           "If APR is positive and compounding occurs more than once per year, APY is higher because interest earns interest. If APR is 0, APY is 0.",
       },
       {
-        question: "Why do banks advertise APY for savings?",
+        question: "Why do banks advertise APY for savings-",
         answer:
           "APY standardizes the effective annual yield including compounding, making products easier to compare.",
       },
@@ -19117,12 +19377,12 @@ export const calculators: CalculatorDefinition[] = [
     ],
     faqs: [
       {
-        question: "Why can real return be negative?",
+        question: "Why can real return be negative-",
         answer:
           "If inflation exceeds nominal return, your purchasing power declines even though your nominal balance grows.",
       },
       {
-        question: "Is real return the same as risk-adjusted return?",
+        question: "Is real return the same as risk-adjusted return-",
         answer:
           "No. Real return adjusts for inflation. Risk-adjusted return accounts for volatility and risk (e.g., Sharpe ratio).",
       },

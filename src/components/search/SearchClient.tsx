@@ -85,7 +85,7 @@ export function SearchClient() {
               const next = e.target.value;
               setQuery(next);
               const q = next.trim();
-              router.replace(q ? `/search?q=${encodeURIComponent(q)}` : "/search");
+              router.replace(q ? `/search-q=${encodeURIComponent(q)}` : "/search");
             }}
             placeholder="Search (e.g., CAC, ROAS, churn, payback)"
             className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-black dark:focus:border-zinc-600"

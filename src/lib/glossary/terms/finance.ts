@@ -71,12 +71,12 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "What discount rate should I use in a DCF?",
+        question: "What discount rate should I use in a DCF-",
         answer:
           "Teams often use WACC as a starting point for an overall business discount rate, then run sensitivity scenarios. The right rate depends on risk and cash flow timing.",
       },
       {
-        question: "Why does terminal value dominate many DCFs?",
+        question: "Why does terminal value dominate many DCFs-",
         answer:
           "Because a large share of cash flows occur after the explicit forecast window. This is why sensitivity analysis and conservative terminal assumptions matter.",
       },
@@ -99,12 +99,12 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Why must discount rate be higher than terminal growth?",
+        question: "Why must discount rate be higher than terminal growth-",
         answer:
           "In the perpetuity formula, if growth >= discount rate, the denominator goes to zero or negative and the terminal value explodes or becomes invalid.",
       },
       {
-        question: "What's a reasonable terminal growth rate?",
+        question: "What's a reasonable terminal growth rate-",
         answer:
           "Often a conservative long-run growth rate below the discount rate. Use scenarios rather than a single point estimate.",
       },
@@ -127,12 +127,12 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Can I use WACC for every project?",
+        question: "Can I use WACC for every project-",
         answer:
           "Not always. If a project has different risk than the overall business, you may need an adjusted discount rate rather than the company-wide WACC.",
       },
       {
-        question: "Should WACC use market value weights or book value weights?",
+        question: "Should WACC use market value weights or book value weights-",
         answer:
           "Market value weights are often preferred for valuation work. The key is consistency between weights and cost assumptions.",
       },
@@ -158,7 +158,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Is cost of equity the same as expected stock return?",
+        question: "Is cost of equity the same as expected stock return-",
         answer:
           "It's a required return estimate, not a guarantee. It's commonly used as an input to WACC and valuation, but realized returns can differ materially.",
       },
@@ -177,16 +177,30 @@ const seeds: Seed[] = [
     bullets: [
       "Use the company's current borrowing rate for similar maturity and risk.",
       "Remember the tax shield: after-tax cost of debt is lower than the nominal coupon.",
+      "Use the weighted average rate if multiple debt instruments exist.",
+      "Include fees and amortized costs when estimating effective debt cost.",
     ],
     mistakes: [
       "Using old debt coupons when the firm's risk or rates have changed.",
       "Forgetting the tax shield when using WACC as a discount rate proxy.",
+      "Ignoring fees or amortization costs that raise effective rates.",
+      "Using short-term debt rates to price long-term cash flows.",
     ],
     faqs: [
       {
-        question: "What if the company has no debt today?",
+        question: "What if the company has no debt today-",
         answer:
           "You can still estimate a cost of debt from comparable firms or an assumed target rating/capital structure for WACC scenarios.",
+      },
+      {
+        question: "Should I use pre-tax or after-tax cost of debt-",
+        answer:
+          "Use after-tax cost of debt in WACC. Use pre-tax cost of debt when modeling interest expense directly.",
+      },
+      {
+        question: "How do variable-rate loans affect cost of debt-",
+        answer:
+          "Model variable-rate debt with rate scenarios, then use a blended expected rate for WACC sensitivity analysis.",
       },
     ],
     relatedGuideSlugs: ["wacc-guide"],
@@ -289,6 +303,33 @@ const seeds: Seed[] = [
     description:
       "APY is the effective annual rate after compounding. It makes products with different compounding frequencies easier to compare.",
     formula: "APY = (1 + APR/n)^n - 1",
+    example:
+      "If APR is 12% and compounding is monthly (n=12), APY = (1+0.12/12)^12 - 1 = 12.68%.",
+    bullets: [
+      "APY includes compounding; APR does not.",
+      "The difference between APR and APY grows with more frequent compounding.",
+      "Use APY for savings yields and APR for loan costs.",
+      "Compare products with the same compounding frequency when possible.",
+      "Ask whether the rate is fixed or variable; APY can change with rate resets.",
+    ],
+    mistakes: [
+      "Comparing APY on one product to APR on another.",
+      "Ignoring fees that reduce the effective yield.",
+      "Mixing nominal APR assumptions with effective APY outcomes.",
+      "Using a teaser APY without checking how long it lasts.",
+    ],
+    faqs: [
+      {
+        question: "Does a higher APY always mean a better product-",
+        answer:
+          "Not always. Fees, minimum balances, and withdrawal limits can reduce real returns despite a higher stated APY.",
+      },
+      {
+        question: "How often should I recalculate APY-",
+        answer:
+          "Recalculate when rates reset or compounding frequency changes. For variable-rate products, check APY each statement period.",
+      },
+    ],
     relatedGuideSlugs: ["apr-vs-apy-guide"],
     relatedCalculatorSlugs: ["apr-to-apy-calculator"],
   },
@@ -298,15 +339,36 @@ const seeds: Seed[] = [
     description:
       "Compounding is earning interest on interest. More frequent compounding increases the effective annual rate (APY) for a given APR.",
     formula: "APY = (1 + APR / n)^n - 1",
+    example:
+      "At 10% APR, annual compounding yields 10%. Monthly compounding yields 10.47% APY.",
     bullets: [
       "Compounding frequency (daily, monthly, quarterly) changes the effective return.",
       "APR is the nominal rate; APY reflects compounding effects.",
       "Small rate differences can compound into large gaps over long horizons.",
+      "Compounding applies to growth rates too (revenue, users, and cash).",
+      "Use the same compounding basis when comparing products.",
+      "Long horizons amplify small compounding differences.",
+      "Align compounding with payment timing when modeling loans or savings.",
     ],
     mistakes: [
       "Comparing APR to APY without converting to the same basis.",
       "Assuming compounding frequency does not matter for short horizons.",
       "Ignoring fees that reduce effective yield.",
+      "Mixing nominal and effective rates in the same model.",
+      "Using annual rates in monthly models without converting.",
+      "Applying compounding to one line item but not to the related assumptions.",
+    ],
+    faqs: [
+      {
+        question: "Does compounding matter over short periods-",
+        answer:
+          "It matters less over very short periods, but even small differences accumulate over time. For planning, use the same compounding basis across scenarios.",
+      },
+      {
+        question: "Is daily compounding always better than monthly-",
+        answer:
+          "For a given nominal rate, more frequent compounding yields a slightly higher effective rate. The practical impact depends on the time horizon and fees.",
+      },
     ],
     relatedGuideSlugs: ["apr-vs-apy-guide"],
     relatedCalculatorSlugs: ["apr-to-apy-calculator"],
@@ -316,6 +378,34 @@ const seeds: Seed[] = [
     title: "Amortization",
     description:
       "Amortization is the process of paying down a loan over time with scheduled payments that include both interest and principal.",
+    example:
+      "In a 30-year mortgage, early payments are mostly interest, but the principal share increases over time.",
+    bullets: [
+      "Early payments are mostly interest; principal share grows over time.",
+      "An amortization schedule shows the split between interest and principal each period.",
+      "Longer terms lower monthly payments but increase total interest paid.",
+      "Prepayments reduce interest and shorten the effective term.",
+      "Use the schedule to forecast cash outflows and remaining balance.",
+    ],
+    mistakes: [
+      "Assuming the interest share is constant over the term.",
+      "Comparing loans without aligning term length and compounding.",
+      "Ignoring fees that change the effective rate.",
+      "Using amortization schedules with mismatched payment frequency.",
+      "Confusing accounting amortization with loan amortization.",
+    ],
+    faqs: [
+      {
+        question: "Does amortization apply to intangible assets-",
+        answer:
+          "In accounting, amortization can also refer to expensing intangible assets over time. In lending, it refers to loan repayment schedules.",
+      },
+      {
+        question: "How do extra payments change amortization-",
+        answer:
+          "Extra principal payments reduce the balance, lower total interest, and shorten the loan term. They may or may not change the required monthly payment.",
+      },
+    ],
     relatedGuideSlugs: ["loan-payment-guide"],
     relatedCalculatorSlugs: ["loan-payment-calculator"],
   },
@@ -324,6 +414,27 @@ const seeds: Seed[] = [
     title: "Principal",
     description:
       "Principal is the amount borrowed (or invested) before interest. For loans, interest is calculated on the outstanding principal balance.",
+    formula: "Interest = principal x rate x time",
+    example:
+      "If principal is $10,000 at 6% annual interest, first-year interest is about $600.",
+    bullets: [
+      "Principal declines as you repay a loan; interest is charged on the balance.",
+      "Extra payments reduce principal and total interest over time.",
+      "For investments, principal is the initial amount you contribute.",
+      "Principal is different from total cost over the life of a loan.",
+    ],
+    mistakes: [
+      "Confusing principal with total amount repaid (principal + interest).",
+      "Ignoring how principal changes in an amortization schedule.",
+      "Using original principal when interest should be based on current balance.",
+    ],
+    faqs: [
+      {
+        question: "Does interest ever get added to principal-",
+        answer:
+          "It can, in cases like capitalized interest or negative amortization. In standard loans, interest is paid separately from principal reduction.",
+      },
+    ],
     relatedGuideSlugs: ["loan-payment-guide"],
     relatedCalculatorSlugs: ["loan-payment-calculator"],
   },
@@ -340,6 +451,28 @@ const seeds: Seed[] = [
     title: "Inflation",
     description:
       "Inflation is the general rise in prices over time, which reduces purchasing power. Inflation is why real return can differ from nominal return.",
+    example:
+      "If prices rise 3% per year, a $100 basket costs about $103 next year.",
+    bullets: [
+      "Inflation affects costs, pricing power, and real returns.",
+      "Even low inflation compounds into large real differences over time.",
+      "Use consistent inflation assumptions across scenarios.",
+      "Separate short-term price spikes from long-term inflation assumptions.",
+      "Adjust multi-year forecasts to keep comparisons in real terms.",
+    ],
+    mistakes: [
+      "Assuming inflation is zero in long-term planning.",
+      "Mixing nominal and real rates in the same model.",
+      "Using national inflation rates for local cost structures without adjustment.",
+      "Forgetting that wage inflation can differ from overall CPI.",
+    ],
+    faqs: [
+      {
+        question: "Is inflation always bad for businesses-",
+        answer:
+          "Not always. Companies with strong pricing power can pass through costs, but inflation still pressures cash flow and can reduce demand in price-sensitive segments.",
+      },
+    ],
     relatedGuideSlugs: ["real-vs-nominal-return-guide"],
     relatedCalculatorSlugs: ["real-return-calculator"],
   },
@@ -349,6 +482,33 @@ const seeds: Seed[] = [
     description:
       "Real return is the inflation-adjusted return that reflects change in purchasing power rather than just nominal balances.",
     formula: "Real return ~ (1 + nominal return) / (1 + inflation) - 1",
+    example:
+      "If nominal return is 8% and inflation is 3%, real return is about 4.85%.",
+    bullets: [
+      "Real return is the right metric for long-term purchasing power.",
+      "When inflation is high, nominal gains can hide flat real outcomes.",
+      "Use the same period basis for return and inflation assumptions.",
+      "Model real return for retirement or long-term planning, not just nominal growth.",
+      "Compare real return to your spending growth, not just market benchmarks.",
+      "Stress test real return with low-return, high-inflation scenarios.",
+    ],
+    mistakes: [
+      "Comparing nominal returns to real targets.",
+      "Using monthly inflation with annual return rates without conversion.",
+      "Ignoring taxes, which further reduce real purchasing power.",
+    ],
+    faqs: [
+      {
+        question: "Should I use CPI for inflation-",
+        answer:
+          "CPI is a common proxy, but use an inflation measure that matches your spending basket if it differs materially.",
+      },
+      {
+        question: "Can real return be negative even if nominal return is positive-",
+        answer:
+          "Yes. If inflation exceeds nominal return, purchasing power falls even when the account balance grows.",
+      },
+    ],
     relatedGuideSlugs: ["real-vs-nominal-return-guide"],
     relatedCalculatorSlugs: ["real-return-calculator"],
   },
@@ -398,12 +558,12 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Contribution margin vs gross margin: what's the difference?",
+        question: "Contribution margin vs gross margin: what's the difference-",
         answer:
           "Gross margin usually means revenue minus COGS. Contribution margin often subtracts additional variable costs like payment fees, shipping, and returns, so it's closer to per-order profit.",
       },
       {
-        question: "Why does contribution margin matter for paid ads?",
+        question: "Why does contribution margin matter for paid ads-",
         answer:
           "Because break-even ROAS/CPA depends on profit per conversion, not revenue. Using revenue-only targets can make campaigns look profitable when they're not.",
       },
@@ -420,6 +580,33 @@ const seeds: Seed[] = [
     title: "Fixed Costs",
     description:
       "Fixed costs do not scale directly with volume in the short term (rent, base salaries, core tools). They matter for break-even and operating leverage.",
+    example:
+      "Rent and full-time salaries stay constant whether you sell 100 or 1,000 units.",
+    bullets: [
+      "Fixed costs create operating leverage as revenue scales.",
+      "Some costs are fixed only within a volume range (step costs).",
+      "Separate fixed vs variable to compute contribution margin correctly.",
+      "Review fixed cost growth when planning new hiring or facilities.",
+      "Model fixed costs over the same period as your revenue target.",
+    ],
+    mistakes: [
+      "Classifying step-function costs as purely fixed.",
+      "Ignoring fixed costs when setting break-even targets.",
+      "Allocating fixed costs to units inconsistently across periods.",
+      "Treating fixed costs as sunk when planning new programs.",
+    ],
+    faqs: [
+      {
+        question: "Are software subscriptions fixed or variable costs-",
+        answer:
+          "They are often fixed within a range but can become step costs as usage grows. Track when pricing tiers change.",
+      },
+      {
+        question: "Do fixed costs ever become variable-",
+        answer:
+          "Yes. At scale, fixed costs can become step costs (new teams, data centers, or office space). Model thresholds explicitly.",
+      },
+    ],
     relatedGuideSlugs: ["break-even-pricing-guide"],
     relatedCalculatorSlugs: ["break-even-pricing-calculator"],
   },
@@ -428,6 +615,29 @@ const seeds: Seed[] = [
     title: "Variable Costs",
     description:
       "Variable costs scale with volume (payment fees, shipping, returns, usage-based infrastructure). They determine contribution margin.",
+    example:
+      "If COGS is $20 and payment fees are $3 per order, variable cost per order is $23.",
+    bullets: [
+      "Variable costs drive contribution margin and break-even analysis.",
+      "Some costs are semi-variable (fixed base plus usage spikes).",
+      "Model variable costs per unit to estimate scale economics.",
+      "Track variable costs by segment when mix shifts are large.",
+      "Recalculate variable cost per unit when suppliers change pricing.",
+    ],
+    mistakes: [
+      "Treating fixed overhead as variable and overstating contribution margin.",
+      "Ignoring refund, chargeback, or returns costs.",
+      "Using averages when costs vary materially by segment.",
+      "Excluding usage-based infrastructure costs in SaaS.",
+      "Mixing variable cost definitions across periods.",
+    ],
+    faqs: [
+      {
+        question: "How do I estimate variable costs for new products-",
+        answer:
+          "Start with per-unit COGS, fees, and fulfillment, then add a buffer for early-stage variability and update after initial cohorts.",
+      },
+    ],
     relatedGuideSlugs: ["break-even-pricing-guide"],
     relatedCalculatorSlugs: ["break-even-pricing-calculator"],
   },
@@ -439,15 +649,27 @@ const seeds: Seed[] = [
     formula: "Break-even revenue = fixed costs / gross margin",
     example:
       "If fixed costs are $50,000/month and gross margin is 60% (0.6), break-even revenue ~ $50,000 / 0.6 = $83,333/month.",
+    bullets: [
+      "Use contribution margin when variable costs beyond COGS are material.",
+      "Recalculate when pricing, mix, or discounts change materially.",
+      "Segment break-even by product or plan if margins differ.",
+      "Pair break-even revenue with volume assumptions to estimate break-even units.",
+    ],
     mistakes: [
       "Using net margin instead of gross/contribution margin.",
       "Forgetting semi-fixed costs that are effectively fixed at your scale.",
+      "Ignoring seasonality that creates temporary break-even misses.",
     ],
     faqs: [
       {
-        question: "Should I use gross margin or contribution margin?",
+        question: "Should I use gross margin or contribution margin-",
         answer:
           "Use contribution margin if variable costs beyond COGS are material (fees, shipping, returns). Otherwise gross margin can be a reasonable shortcut.",
+      },
+      {
+        question: "Is break-even revenue the same as cash break-even-",
+        answer:
+          "No. Cash break-even also depends on timing (collections, payables, deferred revenue). Use a cash flow view for runway decisions.",
       },
     ],
     relatedGuideSlugs: ["break-even-pricing-guide"],
@@ -485,7 +707,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Burn rate vs burn multiple: how are they different?",
+        question: "Burn rate vs burn multiple: how are they different-",
         answer:
           "Burn rate is dollars of cash consumed per period. Burn multiple relates cash burn to growth output (e.g., net new ARR) and is a growth efficiency metric.",
       },
@@ -516,13 +738,24 @@ const seeds: Seed[] = [
     title: "Cash Break-even",
     description:
       "Cash break-even is when cash inflows cover cash outflows (net burn is ~0). It can differ from accounting break-even due to timing.",
+    example:
+      "If monthly inflows are $500k and outflows are $500k, cash break-even is reached.",
     bullets: [
       "Cash break-even focuses on cash timing (collections, payables, prepay), not accounting profit.",
       "A company can be accounting-profitable but still cash-negative if working capital is consuming cash.",
+      "Track cash break-even alongside runway to gauge survival risk.",
     ],
     mistakes: [
       "Confusing cash break-even with profitability in financial statements.",
       "Ignoring collections timing (AR) and deferred revenue effects.",
+      "Treating one-time cash events as sustainable break-even.",
+    ],
+    faqs: [
+      {
+        question: "How is cash break-even different from EBITDA break-even-",
+        answer:
+          "EBITDA excludes working capital and capex. Cash break-even reflects actual cash in and out, which can differ materially.",
+      },
     ],
     relatedGuideSlugs: ["runway-burn-cash-guide", "cash-runway-guide"],
     relatedCalculatorSlugs: ["cash-runway-calculator"],
@@ -553,7 +786,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "How does working capital affect runway?",
+        question: "How does working capital affect runway-",
         answer:
           "Working capital changes can increase or decrease net burn without changing headline revenue. Faster collections and better payment terms can extend runway.",
       },
@@ -621,12 +854,24 @@ const seeds: Seed[] = [
     description:
       "DPO estimates how many days, on average, you take to pay suppliers. Higher DPO can improve short-term cash timing, but it can also strain vendor relationships.",
     formula: "DPO ~ accounts payable / (COGS per day)",
+    example:
+      "If accounts payable is $300k and COGS is $3.6M per year ($9,863 per day), DPO is about 30 days.",
     bullets: [
       "Negotiate longer terms when appropriate, but protect reliability and trust with key vendors.",
       "Match payment terms to your collections cycle to reduce cash stress.",
+      "Track DPO alongside DSO and DIO to monitor the cash conversion cycle.",
+      "Watch for early-pay discounts that can outperform holding cash.",
     ],
     mistakes: [
       "Pushing terms too far and creating hidden costs (supply risk, penalties, lower service levels).",
+      "Comparing DPO across periods without adjusting for seasonality in COGS.",
+    ],
+    faqs: [
+      {
+        question: "Is higher DPO always better-",
+        answer:
+          "Not always. Higher DPO can improve cash timing, but it can also reduce vendor priority or pricing. Balance cash benefits with supply reliability.",
+      },
     ],
     relatedGuideSlugs: ["cash-conversion-cycle-guide"],
   },
@@ -635,6 +880,24 @@ const seeds: Seed[] = [
     title: "Billings",
     description:
       "Billings are amounts invoiced in a period. Billings can differ from cash collected and recognized revenue due to timing.",
+    example:
+      "You invoice $120k annual contracts in Q1; billings are $120k even if revenue is recognized monthly.",
+    bullets: [
+      "Billings are useful for sales execution and collections tracking.",
+      "Compare billings to deferred revenue to see cash timing shifts.",
+      "Keep billings definitions consistent (include or exclude one-time fees).",
+    ],
+    mistakes: [
+      "Using billings as a proxy for revenue in SaaS reporting.",
+      "Mixing billings and bookings in the same metric without clarity.",
+    ],
+    faqs: [
+      {
+        question: "Are billings the same as cash receipts-",
+        answer:
+          "No. Billings are invoices issued, while cash receipts are money collected. Timing differences can be significant.",
+      },
+    ],
     relatedGuideSlugs: ["deferred-revenue-guide", "bookings-vs-arr-guide"],
     relatedCalculatorSlugs: [
       "deferred-revenue-rollforward-calculator",
@@ -652,6 +915,34 @@ const seeds: Seed[] = [
     title: "Recognized Revenue",
     description:
       "Recognized revenue is revenue recorded as earned based on delivery over time. It can differ from billings and cash receipts.",
+    example:
+      "A $12,000 annual SaaS contract is recognized as about $1,000 per month.",
+    bullets: [
+      "Recognition follows delivery or service over time, not payment timing.",
+      "Annual prepay increases cash but revenue is recognized ratably.",
+      "Track recognized revenue to compare performance across periods.",
+      "Reconcile recognized revenue to deferred revenue rollforward.",
+      "Align revenue recognition with performance obligations and contract terms.",
+      "Separate recurring and non-recurring revenue for cleaner trend analysis.",
+    ],
+    mistakes: [
+      "Using billings or cash receipts as a proxy for revenue.",
+      "Comparing recognized revenue across periods without consistent deferrals.",
+      "Including one-time items in recurring revenue without disclosure.",
+      "Changing recognition policies without re-baselining historical metrics.",
+    ],
+    faqs: [
+      {
+        question: "Why does recognized revenue matter for SaaS metrics-",
+        answer:
+          "It reflects delivered value and keeps margin and growth analysis consistent across billing terms.",
+      },
+      {
+        question: "How does recognized revenue affect ARR reporting-",
+        answer:
+          "ARR is a run-rate metric; recognized revenue is actual delivered revenue. Use both, but do not mix them in the same trend without labels.",
+      },
+    ],
     relatedGuideSlugs: ["deferred-revenue-guide"],
     relatedCalculatorSlugs: ["deferred-revenue-rollforward-calculator"],
   },
@@ -660,9 +951,32 @@ const seeds: Seed[] = [
     title: "Deferred Revenue",
     description:
       "Deferred revenue is a liability representing cash collected (or billed) for services not yet delivered. It becomes recognized revenue over time as you deliver.",
+    formula: "Ending deferred revenue = beginning deferred revenue + billings - recognized revenue",
+    example:
+      "A $12,000 annual contract paid upfront creates $12,000 deferred revenue that is recognized monthly.",
     bullets: [
       "Annual prepay increases deferred revenue up front.",
       "Deferred revenue declines as revenue is recognized.",
+      "Track deferred revenue rollforward to validate recognition.",
+      "Large deferred balances can signal strong cash collection but also delivery obligations.",
+      "Split current vs long-term deferred revenue for better liquidity analysis.",
+    ],
+    mistakes: [
+      "Treating deferred revenue as profit instead of a liability.",
+      "Ignoring deferred revenue changes when analyzing cash vs revenue.",
+      "Failing to reconcile billings, collections, and recognition schedules.",
+    ],
+    faqs: [
+      {
+        question: "Why does deferred revenue matter for SaaS metrics-",
+        answer:
+          "It shows the gap between cash collected and revenue recognized, which affects runway and growth analysis.",
+      },
+      {
+        question: "Does deferred revenue equal future revenue-",
+        answer:
+          "Not always. It represents obligations to deliver; refunds, downgrades, or non-renewals can reduce the eventual recognized revenue.",
+      },
     ],
     relatedGuideSlugs: ["deferred-revenue-guide"],
     relatedCalculatorSlugs: ["deferred-revenue-rollforward-calculator"],
@@ -672,6 +986,42 @@ const seeds: Seed[] = [
     title: "Revenue Recognition",
     description:
       "Revenue recognition is the accounting process of recording revenue when earned (delivered), not necessarily when billed or collected.",
+    example:
+      "If a customer prepays $24,000 for 12 months, you recognize about $2,000 per month as revenue.",
+    bullets: [
+      "Accrual accounting recognizes revenue as performance obligations are met.",
+      "Cash collection timing can differ from revenue recognition timing.",
+      "For SaaS, revenue is often recognized ratably over the contract term.",
+      "Document recognition policies so metrics remain comparable over time.",
+      "Use deferred revenue schedules to validate recognition math.",
+      "Separate one-time setup fees from recurring revenue for cleaner trends.",
+      "Align recognition schedules with contract start dates and service periods.",
+    ],
+    mistakes: [
+      "Using cash receipts as a proxy for revenue in SaaS reporting.",
+      "Mixing bookings, billings, and revenue in the same report.",
+      "Ignoring deferrals and refunds that affect recognized revenue.",
+      "Changing recognition rules without re-baselining reports.",
+      "Recognizing revenue before delivery milestones are met.",
+      "Applying revenue recognition rules inconsistently across segments.",
+    ],
+    faqs: [
+      {
+        question: "Is revenue recognition the same as billings-",
+        answer:
+          "No. Billings reflect invoices issued, while revenue recognition reflects when the service is delivered. They can differ materially with annual prepay or multi-year contracts.",
+      },
+      {
+        question: "Why does revenue recognition matter for SaaS metrics-",
+        answer:
+          "It ensures revenue reflects delivered value, which keeps margins, growth rates, and retention analysis consistent over time.",
+      },
+      {
+        question: "How should I handle refunds in recognition-",
+        answer:
+          "Adjust recognized revenue and deferred revenue schedules to reflect refunds so revenue reflects delivered value net of reversals.",
+      },
+    ],
     relatedGuideSlugs: ["deferred-revenue-guide"],
     relatedCalculatorSlugs: ["deferred-revenue-rollforward-calculator"],
   },
@@ -699,13 +1049,57 @@ const seeds: Seed[] = [
     title: "EBITDA",
     description:
       "EBITDA approximates operating profit before interest, taxes, depreciation, and amortization. It is not the same as cash flow.",
-    mistakes: ["Treating EBITDA as cash flow (working capital and CapEx matter)."],
+    formula: "EBITDA = operating income + depreciation + amortization",
+    example:
+      "If operating profit is $2M and depreciation/amortization is $300k, EBITDA is about $2.3M.",
+    bullets: [
+      "EBITDA is useful for comparing operating performance across firms.",
+      "It excludes capital intensity and working capital timing effects.",
+      "Use EBITDA margin to compare profitability across different revenue scales.",
+      "Pair EBITDA with cash flow to avoid overstating performance.",
+    ],
+    mistakes: [
+      "Treating EBITDA as cash flow (working capital and CapEx matter).",
+      "Ignoring stock-based compensation and other non-cash costs when they are material.",
+      "Using EBITDA without noting revenue recognition or capitalization policies.",
+    ],
+    faqs: [
+      {
+        question: "Why do lenders care about EBITDA-",
+        answer:
+          "It is a proxy for operating earnings used in leverage and coverage ratios, even though it is not cash flow.",
+      },
+      {
+        question: "Can EBITDA be negative while cash flow is positive-",
+        answer:
+          "Yes. Large collections, deferred revenue, or working capital shifts can make cash flow positive even when EBITDA is negative.",
+      },
+    ],
   },
   {
     slug: "free-cash-flow",
     title: "Free Cash Flow (FCF)",
     description:
       "Free cash flow is cash generated by operations minus capital expenditures. FCF is a key measure of financial sustainability.",
+    formula: "Free cash flow = operating cash flow - capital expenditures",
+    example:
+      "If operating cash flow is $1.2M and capex is $300k, free cash flow is $900k.",
+    bullets: [
+      "Use FCF to compare how efficiently revenue turns into cash.",
+      "Negative FCF is common during growth, but trend and drivers should be clear.",
+      "Separate maintenance capex from growth capex when evaluating durability.",
+    ],
+    mistakes: [
+      "Treating EBITDA as a proxy for FCF without adjusting for working capital.",
+      "Ignoring seasonality in collections that swings operating cash flow.",
+    ],
+    faqs: [
+      {
+        question: "Is free cash flow the same as profit-",
+        answer:
+          "No. Profit is an accounting measure; free cash flow reflects actual cash generated after capital spending and working capital changes.",
+      },
+    ],
   },
   {
     slug: "lifetime-gross-profit",
@@ -724,7 +1118,7 @@ const seeds: Seed[] = [
     title: "Discount Rate",
     description:
       "Discount rate is used to convert future cash flows into present value (time value of money). It's used in valuation models.",
-    formula: "PV = Σ cash_flow_t / (1 + r)^t",
+    formula: "PV = sum  cash_flow_t / (1 + r)^t",
     example:
       "If r = 10%, $100 received in 1 year is worth about $100 / 1.10 = $90.91 today.",
     bullets: [
@@ -738,7 +1132,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Discount rate vs interest rate: what's the difference?",
+        question: "Discount rate vs interest rate: what's the difference-",
         answer:
           "Interest rates are observed borrowing/lending rates. Discount rate is the required return used to value risky cash flows (it may include risk premiums).",
       },
@@ -756,7 +1150,7 @@ const seeds: Seed[] = [
     title: "NPV (Net Present Value)",
     description:
       "NPV is the present value of future cash flows minus initial cost. NPV helps compare projects and investments.",
-    formula: "NPV = Σ cash_flow_t / (1 + r)^t - initial investment",
+    formula: "NPV = sum  cash_flow_t / (1 + r)^t - initial investment",
     example:
       "If PV of future cash flows is $140k and the upfront investment is $100k, NPV = $40k (value created at the chosen discount rate).",
     bullets: [
@@ -769,7 +1163,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "If NPV is positive, should we always do the project?",
+        question: "If NPV is positive, should we always do the project-",
         answer:
           "Not always. You still need to consider risk, capital constraints, operational capacity, and whether cash flow assumptions are realistic.",
       },
@@ -796,7 +1190,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Why can IRR be misleading?",
+        question: "Why can IRR be misleading-",
         answer:
           "IRR ignores scale and can favor small projects. It can also produce multiple values or no value when cash flows change sign multiple times.",
       },
@@ -822,7 +1216,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "Payback vs discounted payback: which should I use?",
+        question: "Payback vs discounted payback: which should I use-",
         answer:
           "Discounted payback is more realistic because it accounts for time value of money. Simple payback is faster but can be misleading for longer projects.",
       },
@@ -835,6 +1229,25 @@ const seeds: Seed[] = [
     title: "Operating Leverage",
     description:
       "Operating leverage describes how profit changes as revenue grows when fixed costs are significant. SaaS often has high operating leverage at scale.",
+    formula: "Operating leverage rises when fixed costs are high relative to variable costs",
+    example:
+      "If revenue grows 20% while fixed costs stay flat, operating profit can grow faster than revenue.",
+    bullets: [
+      "High operating leverage amplifies both upside and downside.",
+      "Track contribution margin to understand how revenue scales into profit.",
+      "Operating leverage improves as fixed costs are spread across more revenue.",
+    ],
+    mistakes: [
+      "Assuming leverage is permanent despite rising support or infrastructure costs.",
+      "Ignoring that pricing pressure can reduce leverage even as revenue grows.",
+    ],
+    faqs: [
+      {
+        question: "Is operating leverage always good-",
+        answer:
+          "It is powerful but risky. High fixed costs make downturns more painful, so balance leverage with cash runway and demand stability.",
+      },
+    ],
   },
   {
     slug: "unit-margin",
@@ -864,7 +1277,7 @@ const seeds: Seed[] = [
     ],
     faqs: [
       {
-        question: "How is MARR different from WACC?",
+        question: "How is MARR different from WACC-",
         answer:
           "WACC is a blended required return for an overall business (often used in valuation). MARR is a project/decision hurdle rate and may be higher or lower depending on risk and constraints.",
       },
@@ -939,13 +1352,24 @@ const seeds: Seed[] = [
     title: "Pro Rata Rights",
     description:
       "Pro rata rights allow an existing investor to participate in a future financing to maintain ownership, typically by buying a proportional share of the new issuance (subject to terms and allocation).",
+    example:
+      "If you own 5% and the company raises $10M, a simplified pro rata check is about $500k to maintain 5%.",
     bullets: [
       "A rough check-size estimate is current ownership % * round size (priced equity, simplified).",
       "Your ability to take pro rata can be limited by allocation and company discretion.",
+      "Confirm whether pro rata applies to the full round or only to a portion.",
     ],
     mistakes: [
       "Assuming full pro rata is always available (many rounds are oversubscribed).",
       "Ignoring other dilution sources (option pool increases, SAFE/note conversions).",
+      "Modeling pro rata without a fully diluted share count.",
+    ],
+    faqs: [
+      {
+        question: "Do all investors get pro rata rights-",
+        answer:
+          "No. Rights depend on the financing documents and sometimes require a minimum ownership threshold.",
+      },
     ],
     relatedGuideSlugs: ["pro-rata-rights-guide"],
     relatedCalculatorSlugs: ["pro-rata-investment-calculator"],
@@ -988,13 +1412,24 @@ const seeds: Seed[] = [
     description:
       "A SAFE is an instrument that typically converts into equity at a future priced round. It often includes a valuation cap, a discount, or both to reward early investors.",
     updatedAt: "2026-01-28",
+    example:
+      "A $500k SAFE with an $8M cap converts at the cap if the priced round is above $8M.",
     bullets: [
       "Conversion price is often the better (lower price) of cap vs discount (terms vary).",
       "Model conversion using fully diluted shares to avoid underestimating dilution.",
+      "Understand post-money vs pre-money SAFE mechanics before modeling dilution.",
     ],
     mistakes: [
       "Ignoring post-money SAFE mechanics and MFN clauses (terms vary).",
       "Treating simplified math as legal truth without reconciling documents and cap table.",
+      "Forgetting multiple SAFEs stack and compound dilution.",
+    ],
+    faqs: [
+      {
+        question: "Do SAFEs have interest or maturity-",
+        answer:
+          "No. SAFEs are not debt and typically do not accrue interest or have a maturity date, unlike convertible notes.",
+      },
     ],
     relatedGuideSlugs: ["safe-guide"],
     relatedCalculatorSlugs: ["safe-conversion-calculator"],
@@ -1004,13 +1439,24 @@ const seeds: Seed[] = [
     title: "Convertible Note",
     description:
       "A convertible note is debt that typically converts into equity at a future priced round. It often includes an interest rate, a maturity date, and cap/discount conversion terms.",
+    example:
+      "A $500k note at 6% interest converts at the better of an $8M cap or 20% discount in the next round.",
     bullets: [
       "Conversion amount may include accrued interest (terms vary).",
       "Conversion price may be set by valuation cap, discount, or round price (terms vary).",
+      "Maturity terms can trigger repayment or conversion if no round happens.",
     ],
     mistakes: [
       "Modeling interest incorrectly (simple vs compounding; check the note).",
       "Ignoring stacked convertibles and option pool changes when estimating dilution.",
+      "Assuming conversion is automatic without reading maturity clauses.",
+    ],
+    faqs: [
+      {
+        question: "How is a convertible note different from a SAFE-",
+        answer:
+          "Notes are debt with interest and maturity. SAFEs are not debt and usually do not accrue interest.",
+      },
     ],
     relatedGuideSlugs: ["convertible-note-guide"],
     relatedCalculatorSlugs: ["convertible-note-conversion-calculator"],
@@ -1020,13 +1466,24 @@ const seeds: Seed[] = [
     title: "Liquidation Preference",
     description:
       "Liquidation preference defines what preferred shareholders receive at an exit before common shareholders. A common structure is 1* non-participating preferred.",
+    example:
+      "In a $10M exit with $5M in preference, preferred holders take $5M first, and the remainder goes to common.",
     bullets: [
       "Non-participating preferred often takes the greater of preference payout or as-converted common payout.",
       "Multiple classes and seniority create a waterfall that requires a full model.",
+      "Participation rights can materially change outcomes; model both cases.",
     ],
     mistakes: [
       "Ignoring stacked preferences and seniority across rounds.",
       "Confusing participating and non-participating preferred (very different outcomes).",
+      "Using post-money ownership without modeling the preference stack.",
+    ],
+    faqs: [
+      {
+        question: "What does 1x non-participating mean-",
+        answer:
+          "Investors either take 1x their original investment or convert to common and take their ownership share, whichever is higher.",
+      },
     ],
     relatedGuideSlugs: ["liquidation-preference-guide"],
     relatedCalculatorSlugs: ["liquidation-preference-calculator"],

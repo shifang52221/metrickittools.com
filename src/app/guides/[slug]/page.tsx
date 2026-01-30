@@ -120,7 +120,9 @@ export default async function GuidePage({ params }: PageProps) {
   const idx = sortedGuides.findIndex((g) => g.slug === guide.slug);
   const prevGuide = idx > 0 ? sortedGuides[idx - 1] : null;
   const nextGuide =
-    idx >= 0 && idx < sortedGuides.length - 1 ? sortedGuides[idx + 1] : null;
+    idx >= 0 && idx < sortedGuides.length - 1
+      ? sortedGuides[idx + 1]
+      : null;
 
   const articleLd = {
     "@context": "https://schema.org",

@@ -155,7 +155,7 @@ export default async function CategoryPage({ params }: PageProps) {
       ) : null}
 
       <div className="rounded-2xl border border-zinc-200 bg-white p-5 text-sm text-zinc-600 dark:border-zinc-800 dark:bg-black dark:text-zinc-400">
-        Prefer a specific tool? Start with{" "}
+        Prefer a specific tool- Start with{" "}
         <Link className="underline" href="/saas-metrics/cac-calculator">
           CAC
         </Link>{" "}

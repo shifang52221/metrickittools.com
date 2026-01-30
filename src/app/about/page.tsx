@@ -65,6 +65,18 @@ export default function AboutPage() {
         materially affect a result, we try to clarify the assumption in the
         guide or glossary entry linked to the calculator.
       </p>
+      <h2>Data and privacy</h2>
+      <ul>
+        <li>Calculations run in your browser with the inputs you provide.</li>
+        <li>We do not require logins for the calculators.</li>
+        <li>See Privacy for details on ads and analytics.</li>
+      </ul>
+      <h2>How we prioritize new content</h2>
+      <ul>
+        <li>High-impact metrics tied to retention, payback, or margin.</li>
+        <li>Common confusion points that lead to bad decisions.</li>
+        <li>Requests with clear inputs, outputs, and definitions.</li>
+      </ul>
       <h2>What you can do here</h2>
       <ul>
         <li>Compute metrics fast with transparent assumptions.</li>

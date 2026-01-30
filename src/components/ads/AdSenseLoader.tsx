@@ -23,7 +23,7 @@ export function AdSenseLoader() {
     <Script
       async
       strategy="afterInteractive"
-      src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(
+      src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js-client=${encodeURIComponent(
         client,
       )}`}
       crossOrigin="anonymous"

@@ -21,7 +21,7 @@ export function GoogleAnalytics() {
       <Script
         async
         strategy="afterInteractive"
-        src={`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(
+        src={`https://www.googletagmanager.com/gtag/js-id=${encodeURIComponent(
           measurementId,
         )}`}
       />
