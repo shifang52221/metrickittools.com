@@ -1195,10 +1195,12 @@ const seeds: Seed[] = [
     bullets: [
       "Coverage targets vary by win rate and sales cycle length.",
       "Measure coverage by segment for accuracy.",
+      "Add a slippage buffer if close dates often push out.",
     ],
     mistakes: [
       "Counting unqualified deals to inflate coverage.",
       "Using stale close dates that hide slippage.",
+      "Comparing coverage across teams with different stage definitions.",
     ],
     relatedGuideSlugs: ["pipeline-coverage-sales-cycle-guide", "sales-ops-hub-guide"],
   },

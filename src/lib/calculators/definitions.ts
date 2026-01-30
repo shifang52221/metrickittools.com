@@ -17338,7 +17338,7 @@ export const calculators: CalculatorDefinition[] = [
       steps: [
         "Enter the period quota and booked revenue so far.",
         "Enter how many days have elapsed and total days in the period.",
-        "Review attainment %, projected bookings, and required daily pace to hit quota.",
+        "Review attainment %, projected bookings, pace delta, and required daily pace to hit quota.",
       ],
       pitfalls: [
         "Using calendar days when only business days matter (be consistent).",
@@ -17403,8 +17403,12 @@ export const calculators: CalculatorDefinition[] = [
 
       const remainingDays = Math.max(0, daysInPeriod - daysElapsed);
       const remainingToQuota = Math.max(0, values.quota - values.bookedToDate);
+      const remainingAttainment = safeDivide(remainingToQuota, values.quota);
+      const currentDailyPace = daysElapsed > 0 ? values.bookedToDate / daysElapsed : 0;
       const requiredPerDay =
         remainingDays > 0 ? remainingToQuota / remainingDays : remainingToQuota > 0 ? 0 : 0;
+      const paceDelta = requiredPerDay - currentDailyPace;
+      const onTrackGap = values.bookedToDate - onTrackToDate;
 
       return {
         headline: {
@@ -17464,6 +17468,40 @@ export const calculators: CalculatorDefinition[] = [
             detail: remainingDays > 0 ? "Remaining / remaining days" : "No remaining days",
           },
         ],
+        breakdown: [
+          {
+            key: "currentDailyPace",
+            label: "Current daily pace",
+            value: currentDailyPace,
+            format: "currency",
+            currency: "USD",
+            detail: "Booked / days elapsed",
+          },
+          {
+            key: "paceDelta",
+            label: "Pace delta vs required",
+            value: paceDelta,
+            format: "currency",
+            currency: "USD",
+            detail: paceDelta > 0 ? "Need to increase daily pace" : "Ahead of required pace",
+          },
+          {
+            key: "onTrackGap",
+            label: "Ahead/behind on-track",
+            value: onTrackGap,
+            format: "currency",
+            currency: "USD",
+            detail: "Booked to date - on-track",
+          },
+          {
+            key: "remainingAttainment",
+            label: "Remaining quota %",
+            value: remainingAttainment ?? 0,
+            format: "percent",
+            maxFractionDigits: 2,
+            detail: "Remaining / quota",
+          },
+        ],
         warnings,
       };
     },
@@ -17513,6 +17551,7 @@ export const calculators: CalculatorDefinition[] = [
       steps: [
         "Enter quota for the period and current pipeline amount.",
         "Enter estimated win rate for the same stage definition.",
+        "Optionally add a slippage buffer to see coverage targets with push-outs.",
         "Review coverage ratio and expected bookings / expected attainment.",
       ],
       pitfalls: [
@@ -17547,13 +17586,26 @@ export const calculators: CalculatorDefinition[] = [
         min: 0,
         step: 0.1,
       },
+      {
+        key: "slippagePercent",
+        label: "Slippage buffer (optional)",
+        help: "Extra pipeline to cover deal slippage/push-outs.",
+        placeholder: "10",
+        suffix: "%",
+        defaultValue: "10",
+        min: 0,
+        step: 0.1,
+      },
     ],
     compute(values) {
       const warnings: string[] = [];
       const winRate = values.winRatePercent / 100;
+      const slippage = values.slippagePercent / 100;
       if (values.quota <= 0) warnings.push("Quota must be greater than 0.");
       if (values.pipelineAmount < 0) warnings.push("Pipeline amount must be 0 or greater.");
       if (winRate < 0 || winRate > 1) warnings.push("Win rate must be between 0% and 100%.");
+      if (slippage < 0 || slippage > 2)
+        warnings.push("Slippage buffer should be between 0% and 200%.");
 
       const coverage = safeDivide(values.pipelineAmount, values.quota);
       const expectedBookings = values.pipelineAmount * winRate;
@@ -17561,6 +17613,15 @@ export const calculators: CalculatorDefinition[] = [
       const requiredPipeline = winRate > 0 ? values.quota / winRate : null;
       const pipelineGap =
         requiredPipeline === null ? null : values.pipelineAmount - requiredPipeline;
+      const bufferedRequiredPipeline =
+        requiredPipeline === null ? null : requiredPipeline * (1 + slippage);
+      const bufferedCoverage =
+        bufferedRequiredPipeline === null
+          ? null
+          : safeDivide(bufferedRequiredPipeline, values.quota);
+      const bufferedGap =
+        bufferedRequiredPipeline === null ? null : values.pipelineAmount - bufferedRequiredPipeline;
+      const targetCoverage = winRate > 0 ? 1 / winRate : null;
 
       return {
         headline: {
@@ -17603,6 +17664,22 @@ export const calculators: CalculatorDefinition[] = [
             currency: "USD",
             detail: "Current pipeline - required",
           },
+          {
+            key: "bufferedRequiredPipeline",
+            label: "Pipeline required (with buffer)",
+            value: bufferedRequiredPipeline ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: "Required pipeline x (1 + slippage)",
+          },
+          {
+            key: "bufferedGap",
+            label: "Buffered surplus / shortfall",
+            value: bufferedGap ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: "Current pipeline - buffered required",
+          },
         ],
         breakdown: [
           {
@@ -17610,6 +17687,20 @@ export const calculators: CalculatorDefinition[] = [
             label: "Win rate",
             value: winRate,
             format: "percent",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "targetCoverage",
+            label: "Coverage target (1 / win rate)",
+            value: targetCoverage ?? 0,
+            format: "multiple",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "bufferedCoverage",
+            label: "Coverage target (with buffer)",
+            value: bufferedCoverage ?? 0,
+            format: "multiple",
             maxFractionDigits: 2,
           },
         ],
@@ -17651,7 +17742,8 @@ export const calculators: CalculatorDefinition[] = [
       steps: [
         "Enter your quota/target for the period.",
         "Enter win rate and average deal size (ACV/ARR/bookings).",
-        "Review required pipeline $ and required opportunities and wins.",
+        "Optionally add a slippage buffer and active reps for per-rep targets.",
+        "Review required pipeline $, required opportunities, and wins.",
       ],
       pitfalls: [
         "Using average deal size without segmenting (SMB vs enterprise).",
@@ -17694,19 +17786,35 @@ export const calculators: CalculatorDefinition[] = [
         min: 0,
         step: 1,
       },
+      {
+        key: "slippagePercent",
+        label: "Slippage buffer (optional)",
+        help: "Extra buffer to cover pipeline push-outs.",
+        placeholder: "15",
+        suffix: "%",
+        defaultValue: "15",
+        min: 0,
+        step: 0.1,
+      },
     ],
     compute(values) {
       const warnings: string[] = [];
       const winRate = values.winRatePercent / 100;
+      const slippage = values.slippagePercent / 100;
       if (values.target <= 0) warnings.push("Target must be greater than 0.");
       if (winRate <= 0) warnings.push("Win rate must be greater than 0%.");
       if (values.avgDealSize <= 0) warnings.push("Average deal size must be greater than 0.");
       if (values.activeReps < 0) warnings.push("Active reps must be 0 or greater.");
+      if (slippage < 0 || slippage > 2)
+        warnings.push("Slippage buffer should be between 0% and 200%.");
 
       const requiredWins = safeDivide(values.target, values.avgDealSize);
       const requiredOpps =
         requiredWins !== null && winRate > 0 ? requiredWins / winRate : null;
       const requiredPipeline = winRate > 0 ? values.target / winRate : 0;
+      const bufferedPipeline = requiredPipeline * (1 + slippage);
+      const bufferedOpps =
+        requiredOpps === null ? null : requiredOpps * (1 + slippage);
       const impliedCoverage = safeDivide(requiredPipeline, values.target);
       const reps = Math.floor(values.activeReps);
       const pipelinePerRep =
@@ -17762,6 +17870,22 @@ export const calculators: CalculatorDefinition[] = [
             format: "number",
             maxFractionDigits: 1,
             detail: reps > 0 ? "Required opps / reps" : "Add reps to estimate",
+          },
+          {
+            key: "bufferedPipeline",
+            label: "Pipeline with buffer",
+            value: bufferedPipeline,
+            format: "currency",
+            currency: "USD",
+            detail: "Required pipeline x (1 + slippage)",
+          },
+          {
+            key: "bufferedOpps",
+            label: "Opportunities with buffer",
+            value: bufferedOpps ?? 0,
+            format: "number",
+            maxFractionDigits: 0,
+            detail: "Required opps x (1 + slippage)",
           },
         ],
         warnings,
@@ -17871,6 +17995,8 @@ export const calculators: CalculatorDefinition[] = [
       const attainment = values.attainmentPercent / 100;
       const ramped = values.rampedPercent / 100;
       const rampingProd = values.rampingProductivityPercent / 100;
+      const rampedReps = reps * ramped;
+      const rampingReps = reps - rampedReps;
 
       if (reps < 0) warnings.push("Sales reps must be 0 or greater.");
       if (values.quotaPerRep < 0) warnings.push("Quota per rep must be 0 or greater.");
@@ -17883,7 +18009,9 @@ export const calculators: CalculatorDefinition[] = [
 
       const effectiveReps = reps * (ramped + (1 - ramped) * rampingProd);
       const perRepCapacity = values.quotaPerRep * attainment;
-      const capacity = effectiveReps * perRepCapacity;
+      const rampedCapacity = rampedReps * perRepCapacity;
+      const rampingCapacity = rampingReps * perRepCapacity * rampingProd;
+      const capacity = rampedCapacity + rampingCapacity;
       const denom =
         values.quotaPerRep > 0 ? perRepCapacity * (ramped + (1 - ramped) * rampingProd) : 0;
       const requiredReps =
@@ -17933,6 +18061,36 @@ export const calculators: CalculatorDefinition[] = [
             detail: values.targetBookings > 0 ? "Capacity - target" : "Add target",
           },
         ],
+        breakdown: [
+          {
+            key: "rampedReps",
+            label: "Ramped reps",
+            value: rampedReps,
+            format: "number",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "rampingReps",
+            label: "Ramping reps",
+            value: rampingReps,
+            format: "number",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "rampedCapacity",
+            label: "Ramped capacity",
+            value: rampedCapacity,
+            format: "currency",
+            currency: "USD",
+          },
+          {
+            key: "rampingCapacity",
+            label: "Ramping capacity",
+            value: rampingCapacity,
+            format: "currency",
+            currency: "USD",
+          },
+        ],
         warnings,
       };
     },
@@ -17971,7 +18129,7 @@ export const calculators: CalculatorDefinition[] = [
       steps: [
         "Enter base and variable compensation for the period (usually annual).",
         "Enter quota for the same period.",
-        "Review OTE, commission rate, and base/variable split.",
+        "Review OTE, OTE to quota ratio, commission rate, and base/variable split.",
         "Use the payout scenarios to see how earnings move at 80%, 100%, and 120% attainment.",
       ],
       pitfalls: [
@@ -18018,9 +18176,12 @@ export const calculators: CalculatorDefinition[] = [
       const commissionRate = safeDivide(values.variablePay, values.quota);
       const baseSplit = safeDivide(values.basePay, ote);
       const variableSplit = safeDivide(values.variablePay, ote);
+      const oteToQuota = safeDivide(ote, values.quota);
+      const baseToVariable = safeDivide(values.basePay, values.variablePay);
       const monthlyOte = ote / 12;
       const monthlyBase = values.basePay / 12;
       const monthlyVariable = values.variablePay / 12;
+      const variablePerPoint = values.variablePay / 100;
       const payoutAt = (attainment: number) =>
         values.basePay + values.variablePay * attainment;
       const variableAt = (attainment: number) => values.variablePay * attainment;
@@ -18078,8 +18239,29 @@ export const calculators: CalculatorDefinition[] = [
             format: "currency",
             currency: "USD",
           },
+          {
+            key: "oteToQuota",
+            label: "OTE to quota ratio",
+            value: oteToQuota ?? 0,
+            format: "multiple",
+            maxFractionDigits: 2,
+          },
         ],
         breakdown: [
+          {
+            key: "baseToVariable",
+            label: "Base to variable ratio",
+            value: baseToVariable ?? 0,
+            format: "multiple",
+            maxFractionDigits: 2,
+          },
+          {
+            key: "variablePerPoint",
+            label: "Variable payout per 1% attainment",
+            value: variablePerPoint,
+            format: "currency",
+            currency: "USD",
+          },
           {
             key: "payout80",
             label: "Payout at 80% attainment",
@@ -18160,7 +18342,7 @@ export const calculators: CalculatorDefinition[] = [
       steps: [
         "Enter your revenue target and average deal size (ACV).",
         "Enter funnel conversion rates from lead -> MQL -> SQL -> opp -> win.",
-        "Review required counts at each funnel stage.",
+        "Review required counts at each funnel stage and implied pipeline value.",
       ],
       pitfalls: [
         "Using conversion rates from a different segment (SMB vs enterprise).",
@@ -18241,6 +18423,10 @@ export const calculators: CalculatorDefinition[] = [
       const sqls = opps !== null ? safeDivide(opps, sqlToOpp) : null;
       const mqls = sqls !== null ? safeDivide(sqls, mqlToSql) : null;
       const leads = mqls !== null ? safeDivide(mqls, leadToMql) : null;
+      const pipelineValue = opps !== null ? opps * values.avgDealSize : null;
+      const pipelineCoverage =
+        pipelineValue !== null ? safeDivide(pipelineValue, values.revenueTarget) : null;
+      const leadsPerWin = wins !== null ? safeDivide(leads ?? 0, wins) : null;
 
       return {
         headline: {
@@ -18279,6 +18465,31 @@ export const calculators: CalculatorDefinition[] = [
             value: wins ?? 0,
             format: "number",
             maxFractionDigits: 0,
+          },
+          {
+            key: "pipelineValue",
+            label: "Implied pipeline value",
+            value: pipelineValue ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail: "Opportunities x deal size",
+          },
+          {
+            key: "pipelineCoverage",
+            label: "Implied pipeline coverage",
+            value: pipelineCoverage ?? 0,
+            format: "multiple",
+            maxFractionDigits: 2,
+          },
+        ],
+        breakdown: [
+          {
+            key: "leadsPerWin",
+            label: "Leads per win",
+            value: leadsPerWin ?? 0,
+            format: "number",
+            maxFractionDigits: 0,
+            detail: "Required leads / required wins",
           },
         ],
         warnings,

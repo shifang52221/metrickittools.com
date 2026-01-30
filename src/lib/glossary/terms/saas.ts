@@ -1259,11 +1259,13 @@ const seeds: Seed[] = [
       "Use time-bound pipeline (closing in the period), not all open opportunities.",
       "A rough rule: coverage ~ 1 / win rate (then add buffer for slippage).",
       "Segment by deal size and stage because win rates differ.",
+      "Track coverage weekly to catch shortfalls early.",
     ],
     mistakes: [
       "Counting unqualified early-stage deals as real pipeline (inflates coverage).",
       "Using a win rate from a different stage definition.",
       "Ignoring sales cycle length and timing (coverage must match the period).",
+      "Skipping a slippage buffer when historical push-outs are common.",
     ],
     relatedGuideSlugs: [
       "pipeline-coverage-guide",
@@ -1306,10 +1308,12 @@ const seeds: Seed[] = [
     bullets: [
       "Keep quota time units consistent with booked/attainment reporting.",
       "Pair quota with pipeline coverage and win rate for forecasting.",
+      "Validate quota per rep against historical attainment and capacity.",
     ],
     mistakes: [
       "Comparing annual quota to monthly bookings (unit mismatch).",
       "Using quota as the only forecast signal (deal timing is lumpy).",
+      "Setting quota without adjusting for ramping reps.",
     ],
     relatedGuideSlugs: ["quota-attainment-guide", "sales-capacity-guide", "ote-guide"],
     relatedCalculatorSlugs: [
@@ -1327,10 +1331,12 @@ const seeds: Seed[] = [
     bullets: [
       "Use pacing to project end-of-period, but cross-check with pipeline and win rate.",
       "Segment by rep and region to identify risks early.",
+      "Track on-track bookings and pace delta to avoid false confidence.",
     ],
     mistakes: [
       "Overreacting to pacing without pipeline context.",
       "Mixing bookings/ARR/ACV definitions across reports.",
+      "Using early-period pace as a forecast without seasonality context.",
     ],
     relatedGuideSlugs: ["quota-attainment-guide"],
     relatedCalculatorSlugs: ["quota-attainment-calculator"],
@@ -1373,6 +1379,7 @@ const seeds: Seed[] = [
     bullets: [
       "Use OTE and quota to estimate a simplified commission rate (variable / quota).",
       "Keep time units consistent (annual OTE with annual quota).",
+      "Use OTE to quota ratio as a quick sanity check on plan generosity.",
       "Model accelerators separately; they change total earnings above quota.",
       "Review OTE against market benchmarks to stay competitive.",
     ],
@@ -1381,6 +1388,7 @@ const seeds: Seed[] = [
       "Ignoring accelerators/decels when comparing comp plans.",
       "Assuming every rep hits 100% attainment.",
       "Setting OTE without validating affordability in the unit economics.",
+      "Comparing OTEs without verifying quota definitions.",
     ],
     faqs: [
       {
