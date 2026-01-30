@@ -8881,6 +8881,9 @@ export const calculators: CalculatorDefinition[] = [
         let totalContraction = 0;
         let totalChurn = 0;
         let sumMrr = 0;
+        let mrrAt3 = 0;
+        let mrrAt6 = 0;
+        let mrrAt12 = 0;
 
       const baseMrr = mrr;
 
@@ -8897,6 +8900,9 @@ export const calculators: CalculatorDefinition[] = [
         totalChurn += churn;
 
         mrr = Math.max(0, next);
+        if (month === 3) mrrAt3 = mrr;
+        if (month === 6) mrrAt6 = mrr;
+        if (month === 12) mrrAt12 = mrr;
         if (next < 0) warnings.push("Your assumptions drive MRR below $0; the forecast is floored at $0.");
       }
 
@@ -8904,6 +8910,8 @@ export const calculators: CalculatorDefinition[] = [
         const averageMrr = sumMrr / months;
         const cmgr = baseMrr > 0 ? Math.pow(mrr / baseMrr, 1 / months) - 1 : 0;
         const totalNetNew = totalNew + totalExpansion - totalContraction - totalChurn;
+        const endingMultiple = baseMrr > 0 ? mrr / baseMrr : 0;
+        const netChangePercent = baseMrr > 0 ? netNewMrr / baseMrr : 0;
 
       const oneMonthExistingMrr = baseMrr;
       const oneMonthNrr = safeDivide(
@@ -8946,6 +8954,22 @@ export const calculators: CalculatorDefinition[] = [
             detail: "Ending MRR - starting MRR",
           },
           {
+            key: "netChangePercent",
+            label: "Net change (% of starting MRR)",
+            value: netChangePercent,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail: "Net new / starting MRR",
+          },
+          {
+            key: "endingMultiple",
+            label: "Ending MRR multiple",
+            value: endingMultiple,
+            format: "multiple",
+            maxFractionDigits: 2,
+            detail: "Ending MRR / starting MRR",
+          },
+          {
             key: "cmgr",
             label: "CMGR (monthly growth rate)",
             value: cmgr,
@@ -8976,6 +9000,30 @@ export const calculators: CalculatorDefinition[] = [
               format: "currency",
               currency: "USD",
               detail: "Average of monthly starting MRR",
+            },
+            {
+              key: "mrrAt3",
+              label: "MRR at month 3",
+              value: mrrAt3,
+              format: "currency",
+              currency: "USD",
+              detail: months < 3 ? "Horizon < 3 months" : "Ending MRR at month 3",
+            },
+            {
+              key: "mrrAt6",
+              label: "MRR at month 6",
+              value: mrrAt6,
+              format: "currency",
+              currency: "USD",
+              detail: months < 6 ? "Horizon < 6 months" : "Ending MRR at month 6",
+            },
+            {
+              key: "mrrAt12",
+              label: "MRR at month 12",
+              value: mrrAt12,
+              format: "currency",
+              currency: "USD",
+              detail: months < 12 ? "Horizon < 12 months" : "Ending MRR at month 12",
             },
             {
               key: "totalNew",
@@ -10630,8 +10678,9 @@ export const calculators: CalculatorDefinition[] = [
       const currentProfit = rev0 * margin - spend0;
 
       let optimalSpend = 0;
+      let k: number | null = null;
       if (spend0 > 0 && rev0 > 0 && margin > 0 && b > 0 && b < 1) {
-        const k = rev0 / Math.pow(spend0, b);
+        k = rev0 / Math.pow(spend0, b);
         const numerator = margin * b * k;
         optimalSpend = Math.pow(numerator, 1 / (1 - b));
       }
@@ -10640,20 +10689,31 @@ export const calculators: CalculatorDefinition[] = [
 
       const revenueAt = (spend: number) => {
         if (spend0 <= 0 || rev0 <= 0 || spend <= 0 || b <= 0) return 0;
-        const k = rev0 / Math.pow(spend0, b);
-        return k * Math.pow(spend, b);
+        const coeff = k ?? rev0 / Math.pow(spend0, b);
+        return coeff * Math.pow(spend, b);
       };
 
       const revenueOpt = revenueAt(optimalSpend);
       const profitOpt = revenueOpt * margin - optimalSpend;
       const roasOpt = safeDivide(revenueOpt, optimalSpend) ?? 0;
+      const spendGap = optimalSpend - spend0;
+      const profitDelta = profitOpt - currentProfit;
 
       const marginalRevenuePerDollar =
         spend0 > 0 && rev0 > 0 && optimalSpend > 0 && b > 0
-          ? (rev0 / Math.pow(spend0, b)) * b * Math.pow(optimalSpend, b - 1)
+          ? (k ?? rev0 / Math.pow(spend0, b)) * b * Math.pow(optimalSpend, b - 1)
           : 0;
       const marginalRoas = marginalRevenuePerDollar;
       const marginalProfitPerDollar = margin * marginalRevenuePerDollar - 1;
+      const marginalRevenueAtCurrent =
+        spend0 > 0 && rev0 > 0 && b > 0
+          ? (k ?? rev0 / Math.pow(spend0, b)) * b * Math.pow(spend0, b - 1)
+          : 0;
+      const marginalRoasAtCurrent = marginalRevenueAtCurrent;
+      const marginalProfitAtCurrent = margin * marginalRevenueAtCurrent - 1;
+      if (marginalProfitAtCurrent < 0) {
+        warnings.push("Marginal profit is negative at current spend (scaling likely loses money).");
+      }
 
       return {
         headline: {
@@ -10674,6 +10734,22 @@ export const calculators: CalculatorDefinition[] = [
             detail: "Revenue x margin - spend",
           },
           {
+            key: "spendGap",
+            label: "Spend gap vs current",
+            value: spendGap,
+            format: "currency",
+            currency: "USD",
+            detail: spendGap >= 0 ? "Additional spend to reach optimum" : "Reduce spend to reach optimum",
+          },
+          {
+            key: "profitDelta",
+            label: "Profit change vs current",
+            value: profitDelta,
+            format: "currency",
+            currency: "USD",
+            detail: "Profit at optimal - current profit",
+          },
+          {
             key: "roasOpt",
             label: "Expected ROAS at optimal spend",
             value: roasOpt,
@@ -10689,12 +10765,28 @@ export const calculators: CalculatorDefinition[] = [
             detail: "Incremental revenue per incremental $1 spend",
           },
           {
+            key: "marginalRoasCurrent",
+            label: "Marginal ROAS at current spend",
+            value: marginalRoasAtCurrent,
+            format: "multiple",
+            maxFractionDigits: 2,
+            detail: "Incremental revenue per $1 at current spend",
+          },
+          {
             key: "marginalProfit",
             label: "Marginal profit per $1 at optimal spend",
             value: marginalProfitPerDollar,
             format: "currency",
             currency: "USD",
             detail: "If ~0, you're near the optimum",
+          },
+          {
+            key: "marginalProfitCurrent",
+            label: "Marginal profit per $1 at current spend",
+            value: marginalProfitAtCurrent,
+            format: "currency",
+            currency: "USD",
+            detail: "If negative, reduce spend or improve economics",
           },
           {
             key: "currentRoas",
@@ -12213,10 +12305,17 @@ export const calculators: CalculatorDefinition[] = [
       const margin = values.contributionMarginPercent / 100;
       const grossProfit = values.totalRevenue * margin;
       const profitAfterSpend = grossProfit - values.totalMarketingSpend;
+      const profitMarginAfterSpend =
+        values.totalRevenue > 0 ? profitAfterSpend / values.totalRevenue : null;
+      const spendShare =
+        values.totalRevenue > 0 ? values.totalMarketingSpend / values.totalRevenue : null;
 
         const breakEvenMer = margin > 0 ? 1 / margin : null;
         const buffer = values.profitBufferPercent / 100;
         const targetMer = margin > 0 ? 1 / (margin * Math.max(0.0001, 1 - buffer)) : null;
+        const breakEvenRevenue = margin > 0 ? values.totalMarketingSpend / margin : null;
+        const revenueShortfall =
+          breakEvenRevenue !== null ? breakEvenRevenue - values.totalRevenue : null;
         const requiredRevenueForTargetProfit =
           margin > 0 ? (values.targetProfit + values.totalMarketingSpend) / margin : null;
         const requiredMerForTargetProfit =
@@ -12254,12 +12353,53 @@ export const calculators: CalculatorDefinition[] = [
             currency: "USD",
           },
           {
+            key: "profitMarginAfterSpend",
+            label: "Profit margin after spend",
+            value: profitMarginAfterSpend ?? 0,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail:
+              profitMarginAfterSpend === null
+                ? "Add revenue and spend"
+                : "Profit after spend / revenue",
+          },
+          {
+            key: "spendShare",
+            label: "Marketing spend share of revenue",
+            value: spendShare ?? 0,
+            format: "percent",
+            maxFractionDigits: 1,
+            detail: spendShare === null ? "Add revenue" : "Spend / revenue",
+          },
+          {
             key: "breakEvenMer",
             label: "Break-even MER",
             value: breakEvenMer ?? 0,
             format: "multiple",
             maxFractionDigits: 2,
             detail: breakEvenMer === null ? "Margin is 0%" : "1 / margin",
+          },
+          {
+            key: "breakEvenRevenue",
+            label: "Revenue needed to break even",
+            value: breakEvenRevenue ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail:
+              breakEvenRevenue === null
+                ? "Add contribution margin"
+                : "Spend / margin",
+          },
+          {
+            key: "revenueShortfall",
+            label: "Break-even revenue gap",
+            value: revenueShortfall ?? 0,
+            format: "currency",
+            currency: "USD",
+            detail:
+              revenueShortfall === null
+                ? "Add contribution margin"
+                : "Break-even revenue - current revenue",
           },
           {
             key: "targetMer",
@@ -15271,6 +15411,10 @@ export const calculators: CalculatorDefinition[] = [
         let gp12 = 0;
         let gp24 = 0;
         let gpMonth1 = 0;
+        const retention12 = retentionAt(12);
+        const retention24 = retentionAt(24);
+        const arpaMonth12 =
+          values.arpaMonthly * Math.pow(1 + expansion, 11);
 
       for (let month = 1; month <= horizon; month++) {
           const active = retentionAt(month - 1);
@@ -15299,6 +15443,8 @@ export const calculators: CalculatorDefinition[] = [
         const ltvToCac24 = values.cac > 0 ? gp24 / values.cac : null;
         const paybackShare =
           paybackMonth !== null ? paybackMonth / horizon : null;
+        const paybackGap =
+          paybackMonth !== null ? horizon - paybackMonth : null;
 
       return {
         headline: {
@@ -15350,6 +15496,29 @@ export const calculators: CalculatorDefinition[] = [
               detail: "Per original customer",
             },
             {
+              key: "retention12",
+              label: "Retention after 12 months",
+              value: retention12,
+              format: "percent",
+              maxFractionDigits: 1,
+              detail: "Two-stage churn model",
+            },
+            {
+              key: "retention24",
+              label: "Retention after 24 months",
+              value: retention24,
+              format: "percent",
+              maxFractionDigits: 1,
+              detail: "Two-stage churn model",
+            },
+            {
+              key: "arpaMonth12",
+              label: "ARPA in month 12 (with expansion)",
+              value: arpaMonth12,
+              format: "currency",
+              currency: "USD",
+            },
+            {
               key: "ltvToCac12",
               label: "LTV:CAC at 12 months",
               value: ltvToCac12 ?? 0,
@@ -15372,6 +15541,14 @@ export const calculators: CalculatorDefinition[] = [
               format: "percent",
               maxFractionDigits: 1,
               detail: paybackShare === null ? "Payback not reached" : "Payback / horizon",
+            },
+            {
+              key: "paybackGap",
+              label: "Months remaining after payback",
+              value: paybackGap ?? 0,
+              format: "months",
+              maxFractionDigits: 1,
+              detail: paybackGap === null ? "Payback not reached" : "Horizon - payback",
             },
           ],
         breakdown: [
@@ -16325,6 +16502,14 @@ export const calculators: CalculatorDefinition[] = [
         const currentContributionPerThousand = currentRevenuePerThousand * margin;
         const currentProfitPerThousand = currentContributionPerThousand - values.cpm;
         const currentRoas = values.cpm > 0 ? currentRevenuePerThousand / values.cpm : 0;
+        const breakEvenCpa = breakEvenCvr > 0 ? impliedCpc / breakEvenCvr : 0;
+        const targetCpa = targetCvr > 0 ? impliedCpc / targetCvr : 0;
+        const breakEvenCpmAtCurrent =
+          currentCvr > 0 ? 1000 * ctr * currentCvr * values.aov * margin : 0;
+        const targetCpmAtCurrent =
+          currentCvr > 0
+            ? breakEvenCpmAtCurrent * Math.max(0, 1 - buffer)
+            : 0;
 
         return {
           headline: {
@@ -16344,12 +16529,44 @@ export const calculators: CalculatorDefinition[] = [
             maxFractionDigits: 2,
             detail: "CVR where profit = 0 (variable economics)",
           },
+          {
+            key: "breakEvenCpa",
+            label: "Break-even CPA (implied)",
+            value: breakEvenCpa,
+            format: "currency",
+            currency: "USD",
+            detail: "Implied CPC / break-even CVR",
+          },
             {
               key: "impliedCpc",
               label: "Implied CPC from CPM and CTR",
               value: impliedCpc,
               format: "currency",
               currency: "USD",
+            },
+            {
+              key: "targetCpa",
+              label: "Target CPA (with buffer)",
+              value: targetCpa,
+              format: "currency",
+              currency: "USD",
+              detail: "Implied CPC / target CVR",
+            },
+            {
+              key: "breakEvenCpmAtCurrent",
+              label: "Break-even CPM (at current CVR)",
+              value: breakEvenCpmAtCurrent,
+              format: "currency",
+              currency: "USD",
+              detail: currentCvr > 0 ? "CPM ceiling for current CVR" : "Add current CVR",
+            },
+            {
+              key: "targetCpmAtCurrent",
+              label: "Target CPM (at current CVR)",
+              value: targetCpmAtCurrent,
+              format: "currency",
+              currency: "USD",
+              detail: currentCvr > 0 ? "Break-even CPM x (1 - buffer)" : "Add current CVR",
             },
             {
               key: "currentRoas",
