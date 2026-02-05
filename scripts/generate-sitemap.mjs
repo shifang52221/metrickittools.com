@@ -237,6 +237,8 @@ const robotsText = [
   "User-agent: *",
   "Allow: /",
   "Disallow: /reports",
+  "Disallow: /search",
+  "Disallow: /search?",
   `Sitemap: ${siteUrl}/sitemap.xml`,
   "",
 ].join("\n");

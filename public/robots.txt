@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /reports
+Disallow: /search
+Disallow: /search?
 Sitemap: https://metrickittools.com/sitemap.xml
