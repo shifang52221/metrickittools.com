@@ -6,8 +6,11 @@ export const guides: Guide[] = [
     title: "ROAS: What it is and how to use it",
     description:
       "A practical guide to ROAS (Return on Ad Spend): definitions, formulas, benchmarks, and common pitfalls.",
+    seo: {
+      title: "ROAS formula: how to calculate ROAS",
+    },
     category: "paid-ads",
-    updatedAt: "2026-01-05",
+    updatedAt: "2026-02-16",
     relatedCalculatorSlugs: ["roas-calculator", "roi-calculator"],
     sections: [
       { type: "h2", text: "Definition" },
@@ -17,6 +20,21 @@ export const guides: Guide[] = [
       },
       { type: "h2", text: "Formula" },
       { type: "p", text: "ROAS = revenue attributed to ads / ad spend" },
+      { type: "h2", text: "How to calculate ROAS (step-by-step)" },
+      {
+        type: "bullets",
+        items: [
+          "Pick a time window and attribution model.",
+          "Sum revenue attributed to ads for that same window.",
+          "Sum ad spend for that window.",
+          "Divide revenue by ad spend to get ROAS.",
+        ],
+      },
+      { type: "h2", text: "ROAS example" },
+      {
+        type: "p",
+        text: "If you spend $1,000 on ads and attribute $5,000 in revenue, ROAS = 5.0.",
+      },
       { type: "h2", text: "Benchmarks (rule of thumb)" },
       {
         type: "bullets",
@@ -169,15 +187,429 @@ export const guides: Guide[] = [
     ],
   },
   {
+    slug: "ctr-guide",
+    title: "CTR (Click-Through Rate): definition, formula, and how to improve",
+    description:
+      "CTR explained: what click-through rate is, how to calculate it, and how to improve CTR without sacrificing conversion quality.",
+    seo: {
+      title: "CTR formula: how to calculate click-through rate",
+    },
+    category: "paid-ads",
+    updatedAt: "2026-02-16",
+    relatedCalculatorSlugs: [
+      "paid-ads-funnel-calculator",
+      "break-even-ctr-calculator",
+      "max-cpc-calculator",
+    ],
+    relatedGlossarySlugs: ["ctr", "cpm", "cpc", "cvr", "cpa"],
+    sections: [
+      { type: "h2", text: "Definition" },
+      {
+        type: "p",
+        text: "CTR (click-through rate) is the share of impressions that turn into clicks. It is a creative-market fit signal and a key input to CPC and CPA.",
+      },
+      { type: "h2", text: "CTR formula" },
+      { type: "p", text: "CTR = clicks / impressions" },
+      { type: "h2", text: "How to calculate CTR (step-by-step)" },
+      {
+        type: "bullets",
+        items: [
+          "Choose a time window and placement mix.",
+          "Count impressions for that window.",
+          "Count clicks for that same window.",
+          "Divide clicks by impressions and express as a percent.",
+        ],
+      },
+      { type: "h2", text: "CTR example" },
+      {
+        type: "p",
+        text: "If an ad gets 2,000 clicks from 100,000 impressions, CTR = 2,000 / 100,000 = 2%.",
+      },
+      { type: "h2", text: "How CTR affects CPC and CPA" },
+      {
+        type: "bullets",
+        items: [
+          "Higher CTR generally lowers CPC for a given CPM.",
+          "Lower CPC can reduce CPA only if CVR is stable.",
+          "CTR gains from low-intent clicks can hurt CVR and raise CPA.",
+        ],
+      },
+      { type: "h2", text: "How to improve CTR (without harming CVR)" },
+      {
+        type: "bullets",
+        items: [
+          "Tighten message-match between ad and landing page.",
+          "Test hooks that speak to the top pain point or outcome.",
+          "Use proof or specificity (numbers, time saved, results).",
+          "Segment by intent and tailor creative per audience/placement.",
+        ],
+      },
+      { type: "h2", text: "CTR vs CVR" },
+      {
+        type: "bullets",
+        items: [
+          "CTR is a creative signal; CVR is an offer + landing-page signal.",
+          "Optimize CTR only if CVR and CPA remain healthy.",
+          "Use the funnel view (CPM -> CTR -> CVR -> CPA) to find the real bottleneck.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Comparing CTR across placements with very different intent.",
+          "Optimizing CTR alone and ignoring profit or CPA.",
+          "Mixing link CTR with all-click CTR in the same trend line.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is a higher CTR always better-",
+        answer:
+          "Not always. High CTR can come from curiosity clicks that do not convert. Always check CVR, CPA, and profit.",
+      },
+      {
+        question: "What is a good CTR-",
+        answer:
+          "It depends on placement, audience, and objective. Compare CTR within the same placement and time window rather than chasing a universal benchmark.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $10 CPM, 1.2% CTR, 2.5% CVR, $90 AOV, 55% margin",
+        calculatorSlug: "paid-ads-funnel-calculator",
+        params: {
+          cpm: "10",
+          ctrPercent: "1.2",
+          cvrPercent: "2.5",
+          aov: "90",
+          grossMarginPercent: "55",
+          paymentFeesPercent: "3",
+          shippingPercent: "5",
+          returnsPercent: "2",
+        },
+      },
+    ],
+  },
+  {
+    slug: "cvr-guide",
+    title: "CVR (Conversion Rate): definition, formula, and how to calculate",
+    description:
+      "CVR explained: what conversion rate means, how to calculate it correctly, and how to improve it without sacrificing scale.",
+    seo: {
+      title: "CVR formula: how to calculate conversion rate",
+    },
+    category: "paid-ads",
+    updatedAt: "2026-02-16",
+    relatedCalculatorSlugs: [
+      "paid-ads-funnel-calculator",
+      "break-even-cvr-calculator",
+      "target-cpa-ltv-calculator",
+    ],
+    relatedGlossarySlugs: ["cvr", "ctr", "cpc", "cpa", "conversion-rate"],
+    sections: [
+      { type: "h2", text: "Definition" },
+      {
+        type: "p",
+        text: "CVR (conversion rate) is the percent of visitors who complete a goal action. In ads, CVR is often conversions per click; on-site it can be conversions per session.",
+      },
+      { type: "h2", text: "CVR formula" },
+      { type: "p", text: "CVR = conversions / clicks (or sessions)" },
+      { type: "h2", text: "Click-based vs session-based CVR" },
+      {
+        type: "bullets",
+        items: [
+          "Click-based CVR is best when bidding on clicks (CPC).",
+          "Session-based CVR is best for landing page optimization and UX testing.",
+          "Do not mix the two in the same report or benchmark.",
+        ],
+      },
+      { type: "h2", text: "How to calculate CVR (step-by-step)" },
+      {
+        type: "bullets",
+        items: [
+          "Pick the conversion event (purchase, signup, lead).",
+          "Pick the denominator (clicks or sessions) and keep it consistent.",
+          "Count conversions and denominator for the same time window.",
+          "Divide and express as a percent.",
+        ],
+      },
+      { type: "h2", text: "CVR example" },
+      {
+        type: "p",
+        text: "If you have 50 purchases from 2,000 clicks, click-based CVR = 50 / 2,000 = 2.5%.",
+      },
+      { type: "h2", text: "How CVR affects CPA" },
+      {
+        type: "bullets",
+        items: [
+          "CPA = CPC / CVR, so higher CVR lowers CPA if CPC is stable.",
+          "CVR drops often explain why CPA worsens as you scale.",
+          "Use CVR together with margin to set realistic CPA targets.",
+        ],
+      },
+      { type: "h2", text: "How to improve CVR" },
+      {
+        type: "bullets",
+        items: [
+          "Tighten message match between ad and landing page.",
+          "Reduce friction: fewer fields, faster load, clearer CTA.",
+          "Use proof (reviews, logos, guarantees) to reduce risk.",
+          "Segment by intent and personalize the offer.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Mixing click-based CVR with session-based CVR.",
+          "Optimizing CVR by narrowing intent and losing scale.",
+          "Ignoring downstream quality (refunds, churn, LTV).",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Why does CVR drop when I scale spend-",
+        answer:
+          "Scaling often broadens audiences or placements, reducing intent. Creative mismatch and landing-page friction can also lower CVR.",
+      },
+      {
+        question: "What is a good CVR-",
+        answer:
+          "It depends on intent and offer. Compare CVR within the same funnel and traffic type rather than chasing a universal benchmark.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $12 CPM, 1.8% CTR, 3.2% CVR, $85 AOV, 60% margin",
+        calculatorSlug: "paid-ads-funnel-calculator",
+        params: {
+          cpm: "12",
+          ctrPercent: "1.8",
+          cvrPercent: "3.2",
+          aov: "85",
+          grossMarginPercent: "60",
+          paymentFeesPercent: "3",
+          shippingPercent: "0",
+          returnsPercent: "0",
+        },
+      },
+    ],
+  },
+  {
+    slug: "cpc-guide",
+    title: "CPC (Cost Per Click): definition, formula, and how to calculate",
+    description:
+      "CPC explained: what cost per click means, how to calculate it, and how CPC connects to CTR, CVR, and CPA.",
+    seo: {
+      title: "CPC formula: how to calculate cost per click",
+    },
+    category: "paid-ads",
+    updatedAt: "2026-02-16",
+    relatedCalculatorSlugs: [
+      "paid-ads-funnel-calculator",
+      "max-cpc-calculator",
+      "break-even-cpm-calculator",
+    ],
+    relatedGlossarySlugs: ["cpc", "cpm", "ctr", "cvr", "cpa"],
+    sections: [
+      { type: "h2", text: "Definition" },
+      {
+        type: "p",
+        text: "CPC (cost per click) is how much you pay for each click on your ads. It connects CPM and CTR to downstream CPA and ROAS.",
+      },
+      { type: "h2", text: "CPC formula" },
+      { type: "p", text: "CPC = ad spend / clicks" },
+      { type: "h2", text: "How to calculate CPC (step-by-step)" },
+      {
+        type: "bullets",
+        items: [
+          "Choose a time window and placement mix.",
+          "Sum ad spend for that window.",
+          "Count clicks for the same window.",
+          "Divide spend by clicks to get CPC.",
+        ],
+      },
+      { type: "h2", text: "CPC example" },
+      {
+        type: "p",
+        text: "If you spend $1,000 and get 800 clicks, CPC = $1.25.",
+      },
+      { type: "h2", text: "How CPC relates to CPM and CTR" },
+      {
+        type: "bullets",
+        items: [
+          "CPC ~ CPM / (1000 * CTR) when CTR is a fraction.",
+          "Higher CTR lowers CPC for a given CPM.",
+          "If CPM rises, CPC rises unless CTR improves.",
+        ],
+      },
+      { type: "h2", text: "CPC vs CPA" },
+      {
+        type: "bullets",
+        items: [
+          "CPA = CPC / CVR, so CPC only matters with CVR.",
+          "Lower CPC does not guarantee lower CPA if CVR falls.",
+          "Use funnel math to decide whether CTR or CVR is the bottleneck.",
+        ],
+      },
+      { type: "h2", text: "How to lower CPC without harming CPA" },
+      {
+        type: "bullets",
+        items: [
+          "Improve CTR with stronger creative and tighter message match.",
+          "Refine targeting to reduce low-intent clicks.",
+          "Improve landing page relevance to preserve CVR as CTR changes.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Optimizing CPC alone and ignoring CVR or profit.",
+          "Comparing CPC across placements with very different intent.",
+          "Mixing click-based CVR and session-based CVR in the same analysis.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is a lower CPC always better-",
+        answer:
+          "No. Lower CPC can come from lower-intent clicks that convert poorly, increasing CPA and reducing profit.",
+      },
+      {
+        question: "How does CPC relate to CPM and CTR-",
+        answer:
+          "When CTR is a fraction (not percent), CPC is roughly CPM / (1000 * CTR). Improving CTR usually lowers CPC.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $14 CPM, 1.4% CTR, 2.8% CVR, $95 AOV, 55% margin",
+        calculatorSlug: "paid-ads-funnel-calculator",
+        params: {
+          cpm: "14",
+          ctrPercent: "1.4",
+          cvrPercent: "2.8",
+          aov: "95",
+          grossMarginPercent: "55",
+          paymentFeesPercent: "3",
+          shippingPercent: "5",
+          returnsPercent: "2",
+        },
+      },
+    ],
+  },
+  {
+    slug: "cpm-guide",
+    title: "CPM (Cost Per 1,000 Impressions): definition, formula, and how to calculate",
+    description:
+      "CPM explained: what cost per mille means, how to calculate it, and how CPM affects CPC and CPA.",
+    seo: {
+      title: "CPM formula: how to calculate cost per 1,000 impressions",
+    },
+    category: "paid-ads",
+    updatedAt: "2026-02-16",
+    relatedCalculatorSlugs: [
+      "paid-ads-funnel-calculator",
+      "break-even-cpm-calculator",
+      "break-even-ctr-calculator",
+    ],
+    relatedGlossarySlugs: ["cpm", "ctr", "cpc", "cvr", "cpa"],
+    sections: [
+      { type: "h2", text: "Definition" },
+      {
+        type: "p",
+        text: "CPM (cost per mille) is the cost per 1,000 impressions. It reflects auction pressure, audience size, and placement mix.",
+      },
+      { type: "h2", text: "CPM formula" },
+      { type: "p", text: "CPM = (ad spend / impressions) * 1000" },
+      { type: "h2", text: "How to calculate CPM (step-by-step)" },
+      {
+        type: "bullets",
+        items: [
+          "Choose a time window and placement mix.",
+          "Sum ad spend for that window.",
+          "Count impressions for that same window.",
+          "Divide spend by impressions and multiply by 1,000.",
+        ],
+      },
+      { type: "h2", text: "CPM example" },
+      {
+        type: "p",
+        text: "If you spend $1,200 for 100,000 impressions, CPM = ($1,200 / 100,000) * 1000 = $12.",
+      },
+      { type: "h2", text: "How CPM affects CPC and CPA" },
+      {
+        type: "bullets",
+        items: [
+          "CPC ~ CPM / (1000 * CTR), so higher CPM raises CPC unless CTR improves.",
+          "CPA depends on both CPC and CVR, so rising CPM can worsen CPA quickly.",
+          "Use break-even CPM to set upper bounds by placement.",
+        ],
+      },
+      { type: "h2", text: "What drives CPM" },
+      {
+        type: "bullets",
+        items: [
+          "Auction pressure and seasonality.",
+          "Audience size and targeting constraints.",
+          "Placement and format mix (feed vs video vs search).",
+          "Creative relevance and predicted engagement.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Judging CPM without considering CTR, CVR, and margin.",
+          "Comparing CPM across placements with different intent.",
+          "Optimizing for low CPM at the expense of quality and conversion.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is a high CPM always bad-",
+        answer:
+          "Not necessarily. High CPM can be normal in competitive auctions or premium audiences. What matters is the full funnel: CPM -> CTR -> CVR -> CPA/ROAS.",
+      },
+      {
+        question: "Why does CPM fluctuate so much-",
+        answer:
+          "CPM changes with auction pressure, audience size, placement mix, and creative relevance. Seasonality is often a major driver.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $16 CPM, 1.6% CTR, 2.4% CVR, $75 AOV, 50% margin",
+        calculatorSlug: "paid-ads-funnel-calculator",
+        params: {
+          cpm: "16",
+          ctrPercent: "1.6",
+          cvrPercent: "2.4",
+          aov: "75",
+          grossMarginPercent: "50",
+          paymentFeesPercent: "3",
+          shippingPercent: "0",
+          returnsPercent: "0",
+        },
+      },
+    ],
+  },
+  {
     slug: "roi-guide",
     title: "ROI vs ROAS: definitions, formulas, and when to use each",
     description:
       "A concise guide to ROI and ROAS: what each metric measures, how to interpret results, and pitfalls in cost attribution.",
     seo: {
-      title: "ROI vs ROAS guide: definitions, formulas, and use cases",
+      title: "ROI vs ROAS: formulas and differences",
     },
     category: "paid-ads",
-    updatedAt: "2026-01-05",
+    updatedAt: "2026-02-16",
     relatedCalculatorSlugs: ["roi-calculator", "roas-calculator"],
     sections: [
       { type: "h2", text: "The difference" },
@@ -187,6 +619,14 @@ export const guides: Guide[] = [
           "ROAS focuses on revenue per ad dollar: revenue / ad spend.",
           "ROI focuses on profit relative to total cost: (revenue - cost) / cost.",
           "A high ROAS can still have a negative ROI if margins or costs are poor.",
+        ],
+      },
+      { type: "h2", text: "Formulas (quick reference)" },
+      {
+        type: "bullets",
+        items: [
+          "ROAS = revenue / ad spend.",
+          "ROI = (revenue - total cost) / total cost.",
         ],
       },
       { type: "h2", text: "When to use ROAS" },
@@ -225,6 +665,11 @@ export const guides: Guide[] = [
           "Use both when budgets are constrained.",
         ],
       },
+      { type: "h2", text: "Example: ROAS vs ROI" },
+      {
+        type: "p",
+        text: "If you spend $1,000 and generate $5,000 in revenue with $3,000 in total costs, ROAS = 5.0 but ROI = (5,000 - 3,000) / 3,000 = 0.67 (67%).",
+      },
       { type: "h2", text: "ROI QA checklist" },
       {
         type: "bullets",
@@ -260,15 +705,126 @@ export const guides: Guide[] = [
     ],
   },
   {
+    slug: "cac-vs-cpa-guide",
+    title: "CAC vs CPA: definitions, formulas, and when to use each",
+    description:
+      "CAC vs CPA explained: what each metric measures, how to calculate them, and how to translate CPA into CAC for planning.",
+    seo: {
+      title: "CAC vs CPA: differences and formulas",
+    },
+    category: "paid-ads",
+    updatedAt: "2026-02-16",
+    relatedCalculatorSlugs: [
+      "cac-calculator",
+      "fully-loaded-cac-calculator",
+      "cpl-to-cac-calculator",
+      "target-cpa-ltv-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "cac",
+      "fully-loaded-cac",
+      "cpa",
+      "cpl",
+      "lead-to-customer-rate",
+      "ltv",
+      "payback-period",
+    ],
+    sections: [
+      { type: "h2", text: "The difference" },
+      {
+        type: "bullets",
+        items: [
+          "CPA is ad spend divided by conversions (lead, signup, or purchase).",
+          "CAC is total acquisition cost divided by new paying customers.",
+          "CPA is tactical; CAC is unit economics and planning-grade.",
+        ],
+      },
+      { type: "h2", text: "Formulas" },
+      {
+        type: "bullets",
+        items: [
+          "CPA = ad spend / conversions.",
+          "CAC = total acquisition costs / new paying customers.",
+        ],
+      },
+      { type: "h2", text: "When to use CPA" },
+      {
+        type: "bullets",
+        items: [
+          "Campaign-level optimization (ads platform performance).",
+          "Early-funnel conversion events (lead, signup, purchase).",
+          "Short-window iteration on creative, targeting, or landing pages.",
+        ],
+      },
+      { type: "h2", text: "When to use CAC" },
+      {
+        type: "bullets",
+        items: [
+          "Unit economics, payback, and growth planning.",
+          "Comparing channels or segments with different funnel quality.",
+          "Board or finance reporting (fully-loaded CAC).",
+        ],
+      },
+      { type: "h2", text: "How to translate CPA to CAC" },
+      {
+        type: "bullets",
+        items: [
+          "If CPA is for leads: CAC = CPA / lead-to-customer rate.",
+          "Add sales costs if CPA only includes ad spend.",
+          "If CPA is for purchases, it is closer to paid CAC but still excludes fully-loaded costs.",
+        ],
+      },
+      { type: "h2", text: "CAC vs CPA example" },
+      {
+        type: "p",
+        text: "If CPA (lead) is $80 and lead-to-customer rate is 10%, CAC is $800. If you spent $50,000 and acquired 100 customers, CAC is $500.",
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Calling lead CPA \"CAC\" without converting leads to customers.",
+          "Mixing paid-only CAC with fully-loaded CAC in the same report.",
+          "Comparing CPA across campaigns with different conversion definitions.",
+          "Ignoring churn and LTV when judging whether CAC is sustainable.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is CPA the same as CAC-",
+        answer:
+          "Only if the conversion is a new paying customer and your costs include all acquisition spend. In most cases, CPA is narrower than CAC.",
+      },
+      {
+        question: "Should I report both CPA and CAC-",
+        answer:
+          "Yes. Use CPA for campaign-level optimization and CAC for unit economics and payback decisions.",
+      },
+    ],
+    examples: [
+      {
+        label: "Lead example ($80 CPL; 10% lead-to-customer rate)",
+        calculatorSlug: "cpl-to-cac-calculator",
+        params: { cpl: "80", leadToCustomerRatePercent: "10" },
+      },
+      {
+        label: "CAC example ($50k spend; 100 customers)",
+        calculatorSlug: "cac-calculator",
+        params: { spend: "50000", newCustomers: "100" },
+      },
+    ],
+  },
+  {
     slug: "break-even-roas-guide",
     title: "Break-even ROAS: how to calculate it (and set a target ROAS)",
     description:
       "Learn how break-even ROAS works using contribution margin, what to include in the model, and how to turn it into a realistic target ROAS.",
     seo: {
-      title: "Break-even ROAS guide: formula, margin model, target ROAS",
+      title: "Break-even ROAS formula: how to calculate it",
     },
     category: "paid-ads",
-    updatedAt: "2026-01-05",
+    updatedAt: "2026-02-16",
     relatedCalculatorSlugs: ["break-even-roas-calculator", "roas-calculator"],
     sections: [
       { type: "h2", text: "Definition" },
@@ -285,6 +841,20 @@ export const guides: Guide[] = [
       {
         type: "p",
         text: "Break-even ROAS = 1 / contribution margin.",
+      },
+      { type: "h2", text: "How to calculate break-even ROAS (step-by-step)" },
+      {
+        type: "bullets",
+        items: [
+          "Estimate contribution margin as a percent of revenue.",
+          "Convert it to a decimal (e.g., 40% -> 0.40).",
+          "Compute 1 / contribution margin to get break-even ROAS.",
+        ],
+      },
+      { type: "h2", text: "Break-even ROAS example" },
+      {
+        type: "p",
+        text: "If contribution margin is 40%, break-even ROAS = 1 / 0.40 = 2.5.",
       },
       { type: "h2", text: "What to include (practical)" },
       {
@@ -336,8 +906,11 @@ export const guides: Guide[] = [
     title: "Target ROAS: how to set a realistic ROAS goal",
     description:
       "A practical guide to target ROAS: use contribution margin and allocations for fixed costs and profit to set a ROAS goal that fits your business.",
+    seo: {
+      title: "Target ROAS formula: how to set a ROAS goal",
+    },
     category: "paid-ads",
-    updatedAt: "2026-01-05",
+    updatedAt: "2026-02-16",
     relatedCalculatorSlugs: [
       "target-roas-calculator",
       "break-even-roas-calculator",
@@ -357,6 +930,16 @@ export const guides: Guide[] = [
       {
         type: "p",
         text: "Start from contribution margin (gross margin minus variable costs). Decide what percent of revenue must cover fixed costs and profit. The remainder is the maximum ad spend as a percent of revenue.",
+      },
+      { type: "h2", text: "Target ROAS formula" },
+      {
+        type: "p",
+        text: "Target ROAS = 1 / (contribution margin - fixed allocation - desired profit).",
+      },
+      { type: "h2", text: "Target ROAS example" },
+      {
+        type: "p",
+        text: "If contribution margin is 50% and you want 10% for fixed costs and 10% profit, target ROAS = 1 / (0.50 - 0.10 - 0.10) = 3.33.",
       },
       { type: "h2", text: "Formula" },
       {
@@ -1139,10 +1722,10 @@ export const guides: Guide[] = [
     description:
       "Learn retention rate definitions, how it differs from churn, and how to measure retention by cohort and segment.",
     seo: {
-      title: "Retention rate guide: definition, formula, and cohorts",
+      title: "Retention rate formula: how to calculate retention",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-05",
+    updatedAt: "2026-02-16",
     relatedCalculatorSlugs: ["retention-rate-calculator", "churn-rate-calculator"],
     sections: [
       { type: "h2", text: "Definition" },
@@ -1154,6 +1737,21 @@ export const guides: Guide[] = [
       {
         type: "p",
         text: "Retention rate = (customers at end - new customers) / customers at start.",
+      },
+      { type: "h2", text: "How to calculate retention (step-by-step)" },
+      {
+        type: "bullets",
+        items: [
+          "Pick a time window (month/quarter) and count customers at the start.",
+          "Count new customers acquired during the period.",
+          "Count customers at the end of the period.",
+          "Plug into the formula above and express as a percentage.",
+        ],
+      },
+      { type: "h2", text: "Retention rate example" },
+      {
+        type: "p",
+        text: "If you started with 1,000 customers, added 200 new customers, and ended with 1,050 customers, retention = (1,050 - 200) / 1,000 = 85%.",
       },
       { type: "h2", text: "Retention vs churn" },
       {
@@ -1241,8 +1839,11 @@ export const guides: Guide[] = [
     title: "How to calculate ARPU (Average Revenue Per User)",
     description:
       "ARPU calculation guide: definition, formula, worked example, and how to use ARPU with retention and LTV.",
+    seo: {
+      title: "ARPU formula: how to calculate ARPU",
+    },
     category: "saas-metrics",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-02-16",
     relatedCalculatorSlugs: ["arpu-calculator", "ltv-calculator"],
     sections: [
       { type: "h2", text: "Definition" },
@@ -3190,10 +3791,10 @@ export const guides: Guide[] = [
     description:
       "Bookings vs ARR explained: what each metric measures, the formulas, and how to avoid common mistakes with annual prepay and one-time fees.",
     seo: {
-      title: "Bookings vs ARR guide: definitions, formulas, examples",
+      title: "Bookings vs ARR: formula, example, and calculator",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-02-16",
     relatedCalculatorSlugs: ["bookings-vs-arr-calculator", "arr-calculator", "mrr-calculator"],
     sections: [
       { type: "h2", text: "Bookings vs ARR (quick definition)" },
@@ -3234,6 +3835,11 @@ export const guides: Guide[] = [
           "MRR equivalent = recurring portion / contract term months.",
           "ARR = MRR * 12.",
         ],
+      },
+      { type: "h2", text: "Bookings vs ARR example" },
+      {
+        type: "p",
+        text: "If you sign a $120k, 12-month contract with a $10k one-time fee, bookings are $120k. Recurring run-rate is ($120k - $10k) / 12 = $9,167 MRR, so ARR is about $110k.",
       },
       { type: "h2", text: "Bookings vs billings vs revenue" },
       {
@@ -3296,10 +3902,10 @@ export const guides: Guide[] = [
     description:
       "SaaS Magic Number explained: what it measures, the formula, lag assumptions, and how to interpret it alongside burn multiple and payback.",
     seo: {
-      title: "SaaS Magic Number guide: definition, formula, interpretation",
+      title: "SaaS Magic Number guide: definition, formula, example",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-02-16",
     relatedCalculatorSlugs: ["saas-magic-number-calculator", "burn-multiple-calculator"],
     sections: [
       { type: "h2", text: "Definition" },
@@ -3311,6 +3917,11 @@ export const guides: Guide[] = [
       {
         type: "p",
         text: "Magic Number ~ (net new ARR in period * 4) / prior-period sales & marketing spend",
+      },
+      { type: "h2", text: "SaaS Magic Number example" },
+      {
+        type: "p",
+        text: "If net new ARR is $250k in the quarter and prior-quarter S&M spend was $400k, Magic Number ~ (250k * 4) / 400k = 2.5. Use it as a directional efficiency signal and validate with retention.",
       },
       { type: "h2", text: "How to use it" },
       {
@@ -3449,10 +4060,10 @@ export const guides: Guide[] = [
     description:
       "NPV explained: what net present value means, how to calculate NPV, how to pick a discount rate (MARR), and common pitfalls.",
     seo: {
-      title: "NPV guide: definition, formula, discount rate, pitfalls",
+      title: "NPV formula: how to calculate net present value",
     },
     category: "finance",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-02-16",
     relatedCalculatorSlugs: ["npv-calculator"],
     relatedGlossarySlugs: ["npv", "discount-rate", "marr", "irr"],
     sections: [
@@ -3475,6 +4086,11 @@ export const guides: Guide[] = [
           "Discount each cash flow back to present value.",
           "Sum discounted cash flows and subtract the upfront investment.",
         ],
+      },
+      { type: "h2", text: "NPV example" },
+      {
+        type: "p",
+        text: "If you invest $100k today and expect $30k per year for 5 years at a 12% discount rate, the NPV is about $8.1k (positive value created).",
       },
       { type: "h2", text: "Sensitivity and scenario checks" },
       {
@@ -3525,10 +4141,10 @@ export const guides: Guide[] = [
     description:
       "IRR explained: what internal rate of return means, how to calculate IRR, and when IRR can be misleading (use NPV too).",
     seo: {
-      title: "IRR guide: definition, calculation, pitfalls (use NPV)",
+      title: "IRR formula: how to calculate internal rate of return",
     },
     category: "finance",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-02-16",
     relatedCalculatorSlugs: ["irr-calculator", "npv-calculator"],
     relatedGlossarySlugs: ["irr", "npv", "discount-rate", "marr"],
     sections: [
@@ -3539,6 +4155,21 @@ export const guides: Guide[] = [
       },
       { type: "h2", text: "IRR definition" },
       { type: "p", text: "IRR is the rate r where NPV(r) = 0." },
+      { type: "h2", text: "How to calculate IRR (step-by-step)" },
+      {
+        type: "bullets",
+        items: [
+          "List the initial investment (negative cash flow) and future cash flows by period.",
+          "Use an IRR function or solver to find the rate r where NPV = 0.",
+          "Validate by checking NPV at that rate is near zero.",
+          "Compare the IRR to your hurdle rate (MARR).",
+        ],
+      },
+      { type: "h2", text: "IRR example" },
+      {
+        type: "p",
+        text: "If you invest $100k and receive $30k per year for 5 years, the IRR is about 15%.",
+      },
       { type: "h2", text: "Why IRR is useful" },
       {
         type: "bullets",
@@ -5745,10 +6376,10 @@ export const guides: Guide[] = [
     description:
       "A practical guide to marginal ROAS: why average ROAS misleads at scale, how diminishing returns work, and how to pick a profit-maximizing spend level.",
     seo: {
-      title: "Marginal ROAS guide: scale and diminishing returns",
+      title: "Marginal ROAS formula: how to calculate incremental ROAS",
     },
     category: "paid-ads",
-    updatedAt: "2026-01-28",
+    updatedAt: "2026-02-16",
     relatedCalculatorSlugs: [
       "marginal-roas-calculator",
       "break-even-roas-calculator",
@@ -5766,6 +6397,25 @@ export const guides: Guide[] = [
       {
         type: "p",
         text: "Average ROAS is total revenue divided by total spend. Marginal ROAS is the incremental revenue generated by the next dollar of spend. Scaling decisions should be based on marginal profit (or marginal ROAS vs break-even), not average ROAS.",
+      },
+      { type: "h2", text: "Marginal ROAS formula" },
+      {
+        type: "p",
+        text: "Marginal ROAS = incremental revenue / incremental ad spend.",
+      },
+      { type: "h2", text: "How to calculate marginal ROAS (step-by-step)" },
+      {
+        type: "bullets",
+        items: [
+          "Increase spend by a small amount for a test period.",
+          "Measure incremental revenue caused by that extra spend.",
+          "Divide incremental revenue by incremental spend.",
+        ],
+      },
+      { type: "h2", text: "Marginal ROAS example" },
+      {
+        type: "p",
+        text: "If an extra $10,000 in spend generates $18,000 in incremental revenue, marginal ROAS = 1.8.",
       },
       { type: "h2", text: "Why diminishing returns happen" },
       {
@@ -5904,10 +6554,10 @@ export const guides: Guide[] = [
     description:
       "A practical guide to DCF valuation: how to forecast FCF, choose a discount rate, and avoid terminal value traps.",
     seo: {
-      title: "DCF valuation guide: steps and inputs",
+      title: "DCF valuation guide: formula and steps",
     },
     category: "finance",
-    updatedAt: "2026-01-28",
+    updatedAt: "2026-02-16",
     relatedCalculatorSlugs: ["dcf-valuation-calculator", "npv-calculator", "irr-calculator"],
     relatedGlossarySlugs: [
       "dcf",
@@ -5922,6 +6572,23 @@ export const guides: Guide[] = [
       {
         type: "p",
         text: "A DCF values a business by taking expected future free cash flows and discounting them back to present value. Because businesses last beyond the explicit forecast period, DCFs typically add a terminal value that represents cash flows after the forecast horizon.",
+      },
+      { type: "h2", text: "DCF formula (NPV of cash flows + terminal value)" },
+      {
+        type: "p",
+        text: "Enterprise value = sum(FCF_t / (1 + r)^t) + terminal value / (1 + r)^n.",
+      },
+      { type: "h2", text: "How to calculate DCF (step-by-step)" },
+      {
+        type: "bullets",
+        items: [
+          "Forecast free cash flow (FCF) for each year in the explicit period.",
+          "Choose a discount rate that matches the risk (often WACC as a proxy).",
+          "Discount each year's FCF back to present value.",
+          "Compute terminal value (perpetual growth or exit multiple).",
+          "Discount terminal value back to present value and sum with forecast PVs.",
+          "Adjust enterprise value to equity value using net debt and other claims.",
+        ],
       },
       { type: "h2", text: "Key inputs and how to choose them" },
       {
@@ -6065,10 +6732,10 @@ export const guides: Guide[] = [
     description:
       "A practical guide to target CPA: connect acquisition cost to LTV, contribution margin, and payback constraints (and avoid common mismatches).",
     seo: {
-      title: "Target CPA guide: set CPA from economics",
+      title: "Target CPA formula: set CPA from LTV and margin",
     },
     category: "paid-ads",
-    updatedAt: "2026-01-28",
+    updatedAt: "2026-02-16",
     relatedCalculatorSlugs: ["target-cpa-ltv-calculator", "incrementality-lift-calculator"],
     relatedGlossarySlugs: ["cpa", "cac", "ltv", "contribution-margin", "payback-period", "incrementality"],
     sections: [
@@ -6084,6 +6751,20 @@ export const guides: Guide[] = [
           "Break-even CPA: the max you can pay and still make $0 profit on gross profit LTV (no buffer).",
           "Target CPA: a more conservative number that leaves buffer for uncertainty, overhead, and measurement error.",
         ],
+      },
+      { type: "h2", text: "Target CPA formula (simple model)" },
+      {
+        type: "bullets",
+        items: [
+          "Break-even CPA = revenue LTV * contribution margin.",
+          "Target CPA = break-even CPA * (1 - buffer).",
+          "Use a payback cap if you need cash back within a fixed window.",
+        ],
+      },
+      { type: "h2", text: "Target CPA example" },
+      {
+        type: "p",
+        text: "If revenue LTV is $3,000 and contribution margin is 60%, break-even CPA is $1,800. With a 20% buffer, target CPA is $1,440.",
       },
       { type: "h2", text: "Best practices" },
       {
@@ -6208,10 +6889,10 @@ export const guides: Guide[] = [
     description:
       "A practical guide to WACC: what it is, how to compute it, and how to use it (carefully) as a DCF discount rate.",
     seo: {
-      title: "WACC guide: cost of capital calculation",
+      title: "WACC formula: how to calculate cost of capital",
     },
     category: "finance",
-    updatedAt: "2026-01-28",
+    updatedAt: "2026-02-16",
     relatedCalculatorSlugs: ["wacc-calculator", "dcf-valuation-calculator"],
     relatedGlossarySlugs: ["wacc", "discount-rate", "cost-of-equity", "cost-of-debt", "terminal-value"],
     sections: [
@@ -6224,6 +6905,17 @@ export const guides: Guide[] = [
       {
         type: "p",
         text: "WACC = w_e*k_e + w_d*k_d*(1 - tax rate)",
+      },
+      { type: "h2", text: "How to calculate WACC (step-by-step)" },
+      {
+        type: "bullets",
+        items: [
+          "Estimate market-value weights for equity and debt (w_e and w_d).",
+          "Estimate cost of equity (k_e), often via CAPM as a starting point.",
+          "Estimate cost of debt (k_d) from current borrowing rates or comparable issuers.",
+          "Apply the tax shield: after-tax cost of debt = k_d * (1 - tax rate).",
+          "Compute WACC using the core formula above.",
+        ],
       },
       { type: "h2", text: "How to choose inputs (practical)" },
       {
@@ -6272,6 +6964,110 @@ export const guides: Guide[] = [
     ],
   },
   {
+    slug: "discount-rate-guide",
+    title: "Discount rate: how to choose it for NPV and DCF",
+    description:
+      "A practical guide to discount rates: what they mean, how to choose a rate (WACC vs MARR), and how to avoid common mistakes.",
+    seo: {
+      title: "Discount rate: how to calculate and choose",
+    },
+    category: "finance",
+    updatedAt: "2026-02-16",
+    relatedCalculatorSlugs: [
+      "npv-calculator",
+      "dcf-valuation-calculator",
+      "wacc-calculator",
+      "investment-decision-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "discount-rate",
+      "wacc",
+      "marr",
+      "npv",
+      "irr",
+      "cash-flow",
+      "terminal-value",
+    ],
+    sections: [
+      { type: "h2", text: "What a discount rate means" },
+      {
+        type: "p",
+        text: "A discount rate is the required return you use to convert future cash flows into present value. Higher risk implies a higher discount rate and lower present value.",
+      },
+      { type: "h2", text: "Discount rate formula (present value)" },
+      {
+        type: "p",
+        text: "PV = sum(cash flow_t / (1 + r)^t), where r is the discount rate.",
+      },
+      { type: "h2", text: "How to choose a discount rate (step-by-step)" },
+      {
+        type: "bullets",
+        items: [
+          "Start with a base rate (often WACC for firms, or MARR for projects).",
+          "Adjust for risk: higher uncertainty -> higher rate.",
+          "Make sure the rate matches the cash flow type (after-tax vs pre-tax).",
+          "Test a range of rates to understand sensitivity.",
+        ],
+      },
+      { type: "h2", text: "WACC vs MARR vs hurdle rate" },
+      {
+        type: "bullets",
+        items: [
+          "WACC: blended required return for the firm (common DCF base).",
+          "MARR: minimum acceptable rate of return for a project or portfolio.",
+          "Hurdle rate: a policy rate that can include extra buffer or strategic risk.",
+        ],
+      },
+      { type: "h2", text: "Nominal vs real rates" },
+      {
+        type: "bullets",
+        items: [
+          "Nominal cash flows should use nominal discount rates.",
+          "Real cash flows should use real discount rates (inflation-adjusted).",
+          "Do not mix nominal with real; it distorts value.",
+        ],
+      },
+      { type: "h2", text: "Discount rate example" },
+      {
+        type: "p",
+        text: "If your required return is 12%, $100 received in one year is worth $89.29 today ($100 / 1.12).",
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using a single-point rate without sensitivity analysis.",
+          "Using the same rate for projects with different risk profiles.",
+          "Mixing nominal and real cash flows or tax assumptions.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is discount rate the same as interest rate-",
+        answer:
+          "Not exactly. Interest rates are observed borrowing/lending rates, while discount rate is the required return for risky cash flows (often including a risk premium).",
+      },
+      {
+        question: "What discount rate should I use for startups-",
+        answer:
+          "Startups are higher risk, so discount rates are typically higher than mature businesses. Many teams use a higher hurdle rate than WACC and then test sensitivity ranges.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $100k upfront, $30k/year for 5 years, 12% discount",
+        calculatorSlug: "npv-calculator",
+        params: {
+          initialInvestment: "100000",
+          annualCashFlow: "30000",
+          years: "5",
+          discountRatePercent: "12",
+        },
+      },
+    ],
+  },
+  {
     slug: "mer-guide",
     title: "MER (blended ROAS): how to use it without fooling yourself",
     description:
@@ -6280,7 +7076,7 @@ export const guides: Guide[] = [
       title: "MER guide: marketing efficiency ratio",
     },
     category: "paid-ads",
-    updatedAt: "2026-01-28",
+    updatedAt: "2026-02-16",
     relatedCalculatorSlugs: ["mer-calculator", "break-even-roas-calculator", "marginal-roas-calculator"],
     relatedGlossarySlugs: ["mer", "blended-roas", "roas", "contribution-margin", "incrementality", "attribution-window"],
     sections: [
@@ -6288,6 +7084,11 @@ export const guides: Guide[] = [
       {
         type: "p",
         text: "MER (marketing efficiency ratio) is total revenue / total marketing spend over the same period. It's a top-down metric that reduces attribution noise, but it hides channel-level performance.",
+      },
+      { type: "h2", text: "MER formula (how to calculate)" },
+      {
+        type: "p",
+        text: "MER = total revenue / total marketing spend (use the same time window for both).",
       },
       { type: "h2", text: "Break-even and target MER" },
       {
@@ -7544,10 +8345,10 @@ export const guides: Guide[] = [
     description:
       "A practical guide to DCF sensitivity analysis: why valuations swing, how to pick ranges, and how to avoid terminal value traps.",
     seo: {
-      title: "DCF sensitivity guide: discount vs terminal",
+      title: "DCF sensitivity analysis: discount rate vs terminal growth",
     },
     category: "finance",
-    updatedAt: "2026-01-28",
+    updatedAt: "2026-02-16",
     relatedCalculatorSlugs: ["dcf-sensitivity-calculator", "dcf-valuation-calculator", "wacc-calculator"],
     relatedGlossarySlugs: ["dcf", "wacc", "discount-rate", "terminal-value", "sensitivity-analysis"],
     sections: [
@@ -7555,6 +8356,16 @@ export const guides: Guide[] = [
       {
         type: "p",
         text: "DCF valuation is highly sensitive to discount rate and terminal assumptions. Sensitivity analysis shows how robust your conclusion is to reasonable ranges of inputs.",
+      },
+      { type: "h2", text: "How to run DCF sensitivity (step-by-step)" },
+      {
+        type: "bullets",
+        items: [
+          "Start with your base-case DCF (FCF forecast, discount rate, terminal growth).",
+          "Pick a range for discount rate (r) and terminal growth (g).",
+          "Recalculate value for each r/g pair to build a grid.",
+          "Compare how far valuations move from the base case.",
+        ],
       },
       { type: "h2", text: "How to pick ranges" },
       {
@@ -7564,6 +8375,11 @@ export const guides: Guide[] = [
           "Terminal growth: test conservative long-run rates (often 0-4% depending on context).",
           "If terminal dominates EV, consider extending the forecast or making assumptions more conservative.",
         ],
+      },
+      { type: "h2", text: "DCF sensitivity example" },
+      {
+        type: "p",
+        text: "If your base case uses a 12% discount rate and 3% terminal growth, test 10-14% for discount rate and 2-4% for terminal growth. A stable valuation across the grid signals robustness.",
       },
       { type: "h2", text: "How to read the grid" },
       {
@@ -8140,15 +8956,112 @@ export const guides: Guide[] = [
     ],
   },
   {
+    slug: "interest-expense-guide",
+    title: "Interest expense: definition, formula, and how to calculate",
+    description:
+      "Interest expense explained: what it is, the formula, how to calculate it, and how net interest expense works.",
+    seo: {
+      title: "Interest expense: definition, formula, how to calculate",
+    },
+    category: "finance",
+    updatedAt: "2026-02-16",
+    relatedCalculatorSlugs: ["loan-payment-calculator", "wacc-calculator"],
+    relatedGlossarySlugs: ["interest-expense", "interest-rate", "cost-of-debt", "apr"],
+    sections: [
+      { type: "h2", text: "What interest expense is" },
+      {
+        type: "p",
+        text: "Interest expense is the cost of borrowing over a period. It includes cash interest paid and can include amortization of fees or discounts depending on your accounting.",
+      },
+      { type: "h2", text: "Interest expense formula" },
+      {
+        type: "p",
+        text: "Interest expense = average debt balance * interest rate (for the period).",
+      },
+      { type: "h2", text: "How to calculate interest expense (step-by-step)" },
+      {
+        type: "bullets",
+        items: [
+          "List each debt instrument and its interest rate (fixed or variable).",
+          "Compute the average balance for the period (not just ending balance).",
+          "Multiply average balance by the rate for the period and sum across loans.",
+          "Add non-cash interest (amortized fees or discounts) if you report GAAP interest expense.",
+        ],
+      },
+      { type: "h2", text: "Example" },
+      {
+        type: "p",
+        text: "If average debt is $1,000,000 at 8% annual interest, annual interest expense is about $80,000. For a quarter, divide by 4.",
+      },
+      { type: "h2", text: "Net interest expense vs interest expense" },
+      {
+        type: "p",
+        text: "Net interest expense = interest expense - interest income. If interest income is higher, you report net interest income.",
+      },
+      { type: "h2", text: "Cash vs non-cash interest" },
+      {
+        type: "bullets",
+        items: [
+          "Cash interest affects runway and cash flow directly.",
+          "Non-cash interest (fee or discount amortization) affects accounting profit but not cash.",
+          "Track both in planning so you do not confuse cash burn with accounting expense.",
+        ],
+      },
+      { type: "h2", text: "Where it appears on financial statements" },
+      {
+        type: "bullets",
+        items: [
+          "Income statement: typically below operating income (EBIT/EBITDA).",
+          "Cash flow statement: non-cash interest is added back; interest paid is shown in operating or financing depending on policy.",
+          "Balance sheet: accrued interest increases liabilities until paid.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using ending balance instead of the average balance for the period.",
+          "Mixing annual rates with monthly periods without conversion.",
+          "Ignoring variable-rate resets and rate caps.",
+          "Forgetting to include amortized fees or discounts in GAAP interest expense.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is interest expense the same as interest paid-",
+        answer:
+          "Not always. Interest expense can include non-cash amortization of fees or discounts, while interest paid is the cash outflow. Timing differences can also matter.",
+      },
+      {
+        question: "How do I calculate net interest expense-",
+        answer:
+          "Net interest expense equals interest expense minus interest income. If interest income is higher, the result is net interest income.",
+      },
+      {
+        question: "Where does interest expense show up-",
+        answer:
+          "It appears on the income statement below operating income. Cash paid for interest is shown on the cash flow statement based on your accounting classification.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $1M principal, 8% APR, 5 years",
+        calculatorSlug: "loan-payment-calculator",
+        params: { principal: "1000000", aprPercent: "8", termYears: "5" },
+      },
+    ],
+  },
+  {
     slug: "apr-vs-apy-guide",
     title: "APR vs APY: how compounding changes the effective rate",
     description:
       "A practical guide to APR vs APY: what each means, how to convert between them, and common comparison mistakes.",
     seo: {
-      title: "APR vs APY guide: compounding and comparison",
+      title: "APR vs APY formula: how to convert",
     },
     category: "finance",
-    updatedAt: "2026-01-28",
+    updatedAt: "2026-02-16",
     relatedCalculatorSlugs: ["apr-to-apy-calculator"],
     relatedGlossarySlugs: ["apr", "apy", "compounding", "interest-rate"],
     sections: [
@@ -8162,6 +9075,15 @@ export const guides: Guide[] = [
         type: "p",
         text: "APY = (1 + APR/n)^n - 1, where n is compounding periods per year.",
       },
+      { type: "h2", text: "How to convert APR to APY (step-by-step)" },
+      {
+        type: "bullets",
+        items: [
+          "Identify compounding frequency (monthly, daily, etc.).",
+          "Convert APR to a periodic rate (APR / n).",
+          "Apply the formula to compute APY.",
+        ],
+      },
       { type: "h2", text: "Quick conversion examples" },
       {
         type: "table",
@@ -8171,6 +9093,11 @@ export const guides: Guide[] = [
           ["6.0%", "365 (daily)", "~6.18%"],
           ["12.0%", "12 (monthly)", "~12.68%"],
         ],
+      },
+      { type: "h2", text: "APR vs APY example" },
+      {
+        type: "p",
+        text: "At 6% APR compounded monthly, APY is about 6.17% because interest earns interest.",
       },
       { type: "h2", text: "APR/APY for deposits vs loans" },
       {
@@ -9789,10 +10716,10 @@ export const guides: Guide[] = [
     description:
       "A practical guide to NPV vs IRR: why IRR can mislead, when NPV is superior, and how to compare projects with different scale and timing.",
     seo: {
-      title: "NPV vs IRR guide: decision trade-offs",
+      title: "NPV vs IRR: differences and how to choose",
     },
     category: "finance",
-    updatedAt: "2026-01-28",
+    updatedAt: "2026-02-16",
     relatedCalculatorSlugs: [
       "npv-calculator",
       "irr-calculator",
@@ -9827,6 +10754,11 @@ export const guides: Guide[] = [
           "Add a liquidity lens: discounted payback for cash risk.",
         ],
       },
+      { type: "h2", text: "NPV vs IRR example" },
+      {
+        type: "p",
+        text: "Project A: invest $100k to return $140k (NPV +$20k at 10%, IRR 18%). Project B: invest $1M to return $1.3M (NPV +$100k at 10%, IRR 14%). IRR favors A, but NPV shows B creates more value.",
+      },
       { type: "h2", text: "Decision checklist" },
       {
         type: "bullets",
@@ -9852,6 +10784,18 @@ export const guides: Guide[] = [
         question: "Should I pick the project with the higher IRR-",
         answer:
           "Not always. For mutually exclusive projects, NPV at your hurdle rate is usually the better decision metric. Use IRR as supporting context.",
+      },
+    ],
+    examples: [
+      {
+        label: "Example: $100k upfront, $30k/year for 5 years, 12% discount",
+        calculatorSlug: "investment-decision-calculator",
+        params: {
+          initialInvestment: "100000",
+          annualCashFlow: "30000",
+          years: "5",
+          discountRatePercent: "12",
+        },
       },
     ],
   },

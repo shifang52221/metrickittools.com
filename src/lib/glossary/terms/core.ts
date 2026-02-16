@@ -245,7 +245,12 @@ export const termsCore: GlossaryTerm[] = [
           "Segment by channel and by customer type (plan, company size) because CAC and retention vary widely. Blended CAC can hide unprofitable segments.",
       },
     ],
-    relatedGuideSlugs: ["cac-guide", "blended-cac-guide", "cac-payback-guide"],
+    relatedGuideSlugs: [
+      "cac-guide",
+      "cac-vs-cpa-guide",
+      "blended-cac-guide",
+      "cac-payback-guide",
+    ],
     relatedCalculatorSlugs: [
       "cac-calculator",
       "blended-cac-calculator",

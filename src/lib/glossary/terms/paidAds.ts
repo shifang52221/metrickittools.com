@@ -269,7 +269,7 @@ const seeds: Seed[] = [
       "Comparing CPA across campaigns with different conversion definitions.",
       "Ignoring downstream quality (refunds, churn, LTV).",
     ],
-    relatedGuideSlugs: ["target-cpa-guide", "paid-ads-funnel-guide"],
+    relatedGuideSlugs: ["cac-vs-cpa-guide", "target-cpa-guide", "paid-ads-funnel-guide"],
     relatedCalculatorSlugs: ["target-cpa-ltv-calculator", "paid-ads-funnel-calculator"],
   },
   {
@@ -299,7 +299,7 @@ const seeds: Seed[] = [
           "No. Lower CPC can come from lower-intent clicks that convert poorly, increasing CPA and reducing profit.",
       },
     ],
-    relatedGuideSlugs: ["max-cpc-guide", "paid-ads-funnel-guide"],
+    relatedGuideSlugs: ["cpc-guide", "max-cpc-guide", "paid-ads-funnel-guide"],
     relatedCalculatorSlugs: ["max-cpc-calculator", "paid-ads-funnel-calculator"],
   },
   {
@@ -326,7 +326,7 @@ const seeds: Seed[] = [
           "CPM changes with auction pressure (seasonality), audience size, placement mix, and creative relevance.",
       },
     ],
-    relatedGuideSlugs: ["break-even-cpm-guide", "paid-ads-funnel-guide"],
+    relatedGuideSlugs: ["cpm-guide", "break-even-cpm-guide", "paid-ads-funnel-guide"],
     relatedCalculatorSlugs: ["break-even-cpm-calculator", "paid-ads-funnel-calculator"],
   },
   {
@@ -398,7 +398,7 @@ const seeds: Seed[] = [
           "Break-even CTR tells you the minimum CTR needed to hit a profitability target given CPM, CVR, and economics. It's a good creative-quality target for a placement mix.",
       },
     ],
-    relatedGuideSlugs: ["break-even-ctr-guide", "paid-ads-funnel-guide"],
+    relatedGuideSlugs: ["ctr-guide", "break-even-ctr-guide", "paid-ads-funnel-guide"],
     relatedCalculatorSlugs: ["break-even-ctr-calculator", "paid-ads-funnel-calculator"],
   },
   {
@@ -429,7 +429,7 @@ const seeds: Seed[] = [
           "It depends on intent and offer. Compare CVR within the same funnel and traffic type rather than chasing a universal benchmark.",
       },
     ],
-    relatedGuideSlugs: ["break-even-cvr-guide", "paid-ads-funnel-guide"],
+    relatedGuideSlugs: ["cvr-guide", "break-even-cvr-guide", "paid-ads-funnel-guide"],
     relatedCalculatorSlugs: ["break-even-cvr-calculator", "paid-ads-funnel-calculator"],
   },
   {

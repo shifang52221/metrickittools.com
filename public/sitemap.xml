@@ -329,23 +329,43 @@
   </url>
   <url>
     <loc>https://metrickittools.com/guides/roas-guide</loc>
-    <lastmod>2026-01-05</lastmod>
+    <lastmod>2026-02-16</lastmod>
   </url>
   <url>
     <loc>https://metrickittools.com/guides/paid-ads-funnel-guide</loc>
     <lastmod>2026-01-23</lastmod>
   </url>
   <url>
+    <loc>https://metrickittools.com/guides/ctr-guide</loc>
+    <lastmod>2026-02-16</lastmod>
+  </url>
+  <url>
+    <loc>https://metrickittools.com/guides/cvr-guide</loc>
+    <lastmod>2026-02-16</lastmod>
+  </url>
+  <url>
+    <loc>https://metrickittools.com/guides/cpc-guide</loc>
+    <lastmod>2026-02-16</lastmod>
+  </url>
+  <url>
+    <loc>https://metrickittools.com/guides/cpm-guide</loc>
+    <lastmod>2026-02-16</lastmod>
+  </url>
+  <url>
     <loc>https://metrickittools.com/guides/roi-guide</loc>
-    <lastmod>2026-01-05</lastmod>
+    <lastmod>2026-02-16</lastmod>
+  </url>
+  <url>
+    <loc>https://metrickittools.com/guides/cac-vs-cpa-guide</loc>
+    <lastmod>2026-02-16</lastmod>
   </url>
   <url>
     <loc>https://metrickittools.com/guides/break-even-roas-guide</loc>
-    <lastmod>2026-01-05</lastmod>
+    <lastmod>2026-02-16</lastmod>
   </url>
   <url>
     <loc>https://metrickittools.com/guides/target-roas-guide</loc>
-    <lastmod>2026-01-05</lastmod>
+    <lastmod>2026-02-16</lastmod>
   </url>
   <url>
     <loc>https://metrickittools.com/guides/cac-guide</loc>
@@ -381,11 +401,11 @@
   </url>
   <url>
     <loc>https://metrickittools.com/guides/retention-guide</loc>
-    <lastmod>2026-01-05</lastmod>
+    <lastmod>2026-02-16</lastmod>
   </url>
   <url>
     <loc>https://metrickittools.com/guides/arpu-guide</loc>
-    <lastmod>2026-01-23</lastmod>
+    <lastmod>2026-02-16</lastmod>
   </url>
   <url>
     <loc>https://metrickittools.com/guides/arpa-guide</loc>
@@ -469,11 +489,11 @@
   </url>
   <url>
     <loc>https://metrickittools.com/guides/bookings-vs-arr-guide</loc>
-    <lastmod>2026-01-23</lastmod>
+    <lastmod>2026-02-16</lastmod>
   </url>
   <url>
     <loc>https://metrickittools.com/guides/saas-magic-number-guide</loc>
-    <lastmod>2026-01-23</lastmod>
+    <lastmod>2026-02-16</lastmod>
   </url>
   <url>
     <loc>https://metrickittools.com/guides/customer-lifetime-guide</loc>
@@ -481,11 +501,11 @@
   </url>
   <url>
     <loc>https://metrickittools.com/guides/npv-guide</loc>
-    <lastmod>2026-01-23</lastmod>
+    <lastmod>2026-02-16</lastmod>
   </url>
   <url>
     <loc>https://metrickittools.com/guides/irr-guide</loc>
-    <lastmod>2026-01-23</lastmod>
+    <lastmod>2026-02-16</lastmod>
   </url>
   <url>
     <loc>https://metrickittools.com/guides/discounted-payback-period-guide</loc>
@@ -589,7 +609,7 @@
   </url>
   <url>
     <loc>https://metrickittools.com/guides/marginal-roas-guide</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-02-16</lastmod>
   </url>
   <url>
     <loc>https://metrickittools.com/guides/deferred-revenue-guide</loc>
@@ -597,7 +617,7 @@
   </url>
   <url>
     <loc>https://metrickittools.com/guides/dcf-valuation-guide</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-02-16</lastmod>
   </url>
   <url>
     <loc>https://metrickittools.com/guides/retention-curve-guide</loc>
@@ -605,7 +625,7 @@
   </url>
   <url>
     <loc>https://metrickittools.com/guides/target-cpa-guide</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-02-16</lastmod>
   </url>
   <url>
     <loc>https://metrickittools.com/guides/investment-decision-guide</loc>
@@ -613,11 +633,15 @@
   </url>
   <url>
     <loc>https://metrickittools.com/guides/wacc-guide</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-02-16</lastmod>
+  </url>
+  <url>
+    <loc>https://metrickittools.com/guides/discount-rate-guide</loc>
+    <lastmod>2026-02-16</lastmod>
   </url>
   <url>
     <loc>https://metrickittools.com/guides/mer-guide</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-02-16</lastmod>
   </url>
   <url>
     <loc>https://metrickittools.com/guides/two-stage-retention-guide</loc>
@@ -685,7 +709,7 @@
   </url>
   <url>
     <loc>https://metrickittools.com/guides/dcf-sensitivity-guide</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-02-16</lastmod>
   </url>
   <url>
     <loc>https://metrickittools.com/guides/ab-test-sample-size-guide</loc>
@@ -716,8 +740,12 @@
     <lastmod>2026-01-28</lastmod>
   </url>
   <url>
+    <loc>https://metrickittools.com/guides/interest-expense-guide</loc>
+    <lastmod>2026-02-16</lastmod>
+  </url>
+  <url>
     <loc>https://metrickittools.com/guides/apr-vs-apy-guide</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-02-16</lastmod>
   </url>
   <url>
     <loc>https://metrickittools.com/guides/real-vs-nominal-return-guide</loc>
@@ -793,7 +821,7 @@
   </url>
   <url>
     <loc>https://metrickittools.com/guides/npv-vs-irr-guide</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-02-16</lastmod>
   </url>
   <url>
     <loc>https://metrickittools.com/glossary/arr</loc>
@@ -1293,6 +1321,7 @@
   </url>
   <url>
     <loc>https://metrickittools.com/glossary/discount-rate</loc>
+    <lastmod>2026-02-16</lastmod>
   </url>
   <url>
     <loc>https://metrickittools.com/glossary/npv</loc>
@@ -1851,7 +1880,7 @@
   </url>
   <url>
     <loc>https://metrickittools.com/glossary/interest-expense</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-02-16</lastmod>
   </url>
   <url>
     <loc>https://metrickittools.com/glossary/cash-flow-forecast</loc>

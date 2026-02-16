@@ -581,7 +581,7 @@ const seeds: Seed[] = [
     title: "Interest Expense",
     description:
       "Interest expense is the cost of debt over a period. It includes cash interest and can include amortized fees.",
-    updatedAt: "2026-01-28",
+    updatedAt: "2026-02-16",
     formula: "Interest expense = average debt balance * interest rate",
     example: "Average debt $1M at 8% implies $80k annual interest expense.",
     bullets: [
@@ -592,6 +592,20 @@ const seeds: Seed[] = [
       "Using ending balance instead of average balance for the period.",
       "Ignoring refinancing risk when interest rates are rising.",
     ],
+    faqs: [
+      {
+        question: "Is interest expense the same as interest paid-",
+        answer:
+          "Not always. Interest expense can include non-cash amortization of fees or discounts, while interest paid is the cash outflow.",
+      },
+      {
+        question: "How do I calculate net interest expense-",
+        answer:
+          "Net interest expense equals interest expense minus interest income. If the result is negative, it is net interest income.",
+      },
+    ],
+    relatedGuideSlugs: ["interest-expense-guide"],
+    relatedCalculatorSlugs: ["loan-payment-calculator"],
   },
   {
     slug: "cash-flow-forecast",

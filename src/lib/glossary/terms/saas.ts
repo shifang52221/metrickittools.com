@@ -1145,6 +1145,8 @@ const seeds: Seed[] = [
           "Only if you explicitly define it as revenue per total active users. For monetization analysis, many teams use revenue per paying user instead.",
       },
     ],
+    relatedGuideSlugs: ["arpa-guide", "arpu-guide"],
+    relatedCalculatorSlugs: ["arpa-calculator", "arpu-calculator"],
   },
   {
     slug: "pql",

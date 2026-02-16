@@ -1118,6 +1118,7 @@ const seeds: Seed[] = [
     title: "Discount Rate",
     description:
       "Discount rate is used to convert future cash flows into present value (time value of money). It's used in valuation models.",
+    updatedAt: "2026-02-16",
     formula: "PV = sum  cash_flow_t / (1 + r)^t",
     example:
       "If r = 10%, $100 received in 1 year is worth about $100 / 1.10 = $90.91 today.",
@@ -1137,7 +1138,12 @@ const seeds: Seed[] = [
           "Interest rates are observed borrowing/lending rates. Discount rate is the required return used to value risky cash flows (it may include risk premiums).",
       },
     ],
-    relatedGuideSlugs: ["dcf-valuation-guide", "wacc-guide", "investment-decision-guide"],
+    relatedGuideSlugs: [
+      "discount-rate-guide",
+      "dcf-valuation-guide",
+      "wacc-guide",
+      "investment-decision-guide",
+    ],
     relatedCalculatorSlugs: [
       "dcf-valuation-calculator",
       "wacc-calculator",
