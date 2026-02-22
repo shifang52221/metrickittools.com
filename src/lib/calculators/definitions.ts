@@ -3656,7 +3656,7 @@ export const calculators: CalculatorDefinition[] = [
     slug: "arpa-calculator",
     title: "ARPA Calculator",
     description:
-      "Calculate Average Revenue Per Account (ARPA) for a period and understand the ARPA formula.",
+      "Calculate Average Revenue Per Account (ARPA) for SaaS businesses and understand the ARPA formula.",
     category: "saas-metrics",
     guideSlug: "arpa-guide",
     relatedGlossarySlugs: ["arpa", "arpa-vs-arpu"],
@@ -8376,7 +8376,7 @@ export const calculators: CalculatorDefinition[] = [
     slug: "saas-magic-number-calculator",
     title: "SaaS Magic Number Calculator",
     description:
-      "Estimate sales efficiency using net new ARR and prior-period sales & marketing spend (Magic Number).",
+      "SaaS Magic Number definition and calculation using net new ARR and prior-period sales & marketing spend.",
     category: "saas-metrics",
     guideSlug: "saas-magic-number-guide",
     seo: {
@@ -11560,7 +11560,7 @@ export const calculators: CalculatorDefinition[] = [
     slug: "dcf-valuation-calculator",
     title: "DCF Valuation Calculator",
     description:
-      "Estimate enterprise value using a simple DCF: forecast cash flows, discount them, and add a terminal value.",
+      "Estimate enterprise value using a simple DCF: forecast cash flows, apply a discount rate (often WACC), and add a terminal value.",
     category: "finance",
     guideSlug: "dcf-valuation-guide",
     relatedGlossarySlugs: [

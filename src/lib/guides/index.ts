@@ -1971,12 +1971,12 @@ export const guides: Guide[] = [
     slug: "arpa-guide",
     title: "ARPA: how to calculate Average Revenue Per Account (formula + examples)",
     description:
-      "ARPA explained: definition, ARPA formula, step-by-step calculation, and how to use ARPA with churn, payback, and LTV.",
+      "ARPA (SaaS) explained: definition, ARPA formula, step-by-step calculation, and how to use ARPA with churn, payback, and LTV.",
     seo: {
-      title: "ARPA guide: definition, formula, and examples",
+      title: "ARPA (SaaS) guide: definition, formula, and examples",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-02-22",
     relatedCalculatorSlugs: [
       "arpa-calculator",
       "ltv-calculator",
@@ -3900,12 +3900,12 @@ export const guides: Guide[] = [
     slug: "saas-magic-number-guide",
     title: "SaaS Magic Number: definition, formula, and how to use it",
     description:
-      "SaaS Magic Number explained: what it measures, the formula, lag assumptions, and how to interpret it alongside burn multiple and payback.",
+      "SaaS Magic Number definition explained: what it measures, the formula, an example, lag assumptions, and how to interpret it alongside burn multiple and payback.",
     seo: {
       title: "SaaS Magic Number guide: definition, formula, example",
     },
     category: "saas-metrics",
-    updatedAt: "2026-02-16",
+    updatedAt: "2026-02-22",
     relatedCalculatorSlugs: ["saas-magic-number-calculator", "burn-multiple-calculator"],
     sections: [
       { type: "h2", text: "Definition" },

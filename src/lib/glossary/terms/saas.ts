@@ -65,8 +65,11 @@ const seeds: Seed[] = [
     slug: "arpa",
     title: "ARPA (Average Revenue Per Account)",
     description:
-      "ARPA measures average revenue per paying account/customer in a period. In B2B SaaS, ARPA often matches pricing better than ARPU.",
+      "ARPA (SaaS) measures average revenue per paying account/customer in a period. In B2B SaaS, ARPA often matches pricing better than ARPU.",
+    updatedAt: "2026-02-22",
     formula: "ARPA = revenue / average paying accounts",
+    example:
+      "If revenue is $120k in a month and you have 60 average paying accounts, ARPA is $2,000 per account.",
     bullets: [
       "Use ARPA when you bill per company account (not per seat).",
       "Segment ARPA by plan, industry, and channel to understand monetization.",
@@ -900,22 +903,34 @@ const seeds: Seed[] = [
     slug: "saas-magic-number",
     title: "SaaS Magic Number",
     description:
-      "SaaS Magic Number is a heuristic for sales efficiency using net new ARR relative to sales & marketing spend (with a lag).",
+      "SaaS Magic Number definition: a sales efficiency heuristic that compares net new ARR to prior-period sales & marketing spend (with a lag).",
+    updatedAt: "2026-02-22",
     formula:
       "Magic Number ~ (net new ARR in quarter * 4) / prior-quarter sales & marketing spend",
     example:
       "If net new ARR in the quarter is $1.0M and prior-quarter sales & marketing spend was $2.0M, Magic Number ~ ($1.0M * 4) / $2.0M = 2.0.",
+    bullets: [
+      "Use a consistent lag (often one quarter) so trends are comparable.",
+      "Pair with retention or burn multiple to validate quality of growth.",
+    ],
     mistakes: [
       "Ignoring lag effects between spend and revenue.",
       "Using blended averages that hide channel differences.",
     ],
     faqs: [
       {
+        question: "What is the SaaS Magic Number definition-",
+        answer:
+          "It is a simple sales efficiency ratio: net new ARR (annualized) divided by prior-period sales and marketing spend.",
+      },
+      {
         question: "Why multiply by 4-",
         answer:
           "Net new ARR is often measured quarterly. Multiplying by 4 annualizes the quarterly ARR change before comparing it to spend.",
       },
     ],
+    relatedGuideSlugs: ["saas-magic-number-guide", "burn-multiple-guide"],
+    relatedCalculatorSlugs: ["saas-magic-number-calculator"],
   },
   {
     slug: "ltv-to-cac",
