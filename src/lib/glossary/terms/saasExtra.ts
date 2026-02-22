@@ -1014,10 +1014,11 @@ const seeds: Seed[] = [
     slug: "gross-adds",
     title: "Gross Adds",
     description:
-      "Gross adds is the number of new customers (or new MRR/ARR) added in a period before accounting for churn.",
-    updatedAt: "2026-01-28",
-    formula: "Gross adds = new customers acquired in the period",
-    example: "If you sign 120 new customers in a month, gross adds is 120.",
+      "Gross adds (meaning the total new customers or new MRR/ARR added in a period before churn) is a top-line growth input.",
+    updatedAt: "2026-02-22",
+    formula: "Gross adds = new customers acquired in the period (or new MRR/ARR before churn)",
+    example:
+      "If you sign 120 new customers or $80k of new ARR in a month, gross adds are 120 customers or $80k ARR.",
     bullets: [
       "Track gross adds with churn to understand net growth drivers.",
       "Use a consistent definition for what counts as a new customer.",
@@ -1025,6 +1026,13 @@ const seeds: Seed[] = [
     mistakes: [
       "Counting reactivations as new adds without disclosing it.",
       "Comparing gross adds across periods with different marketing intensity.",
+    ],
+    faqs: [
+      {
+        question: "What is the meaning of gross adds-",
+        answer:
+          "Gross adds is simply the total new customers or new recurring revenue added in a period before subtracting churn.",
+      },
     ],
     relatedGuideSlugs: ["sales-ops-hub-guide", "churn-guide"],
   },

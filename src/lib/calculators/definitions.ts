@@ -3399,7 +3399,7 @@ export const calculators: CalculatorDefinition[] = [
     guideSlug: "arpu-guide",
     seo: {
       intro: [
-        "ARPU (Average Revenue Per User) measures how much revenue you generate per user in a period. It is commonly used to track monetization changes from pricing, packaging, and user mix.",
+        "This ARPU calculator computes Average Revenue Per User by dividing revenue by average active users for a period. It is commonly used to track monetization changes from pricing, packaging, and user mix.",
         "To calculate ARPU correctly, make sure your revenue and user count are measured over the same period and that you define what an \"active user\" means for your product.",
         "Use ARPU to compare monetization across segments (plan, geo, channel), not just a blended average.",
       ],
@@ -12917,7 +12917,7 @@ export const calculators: CalculatorDefinition[] = [
     ],
     seo: {
       intro: [
-        "MER (marketing efficiency ratio) is total revenue divided by total marketing spend over the same period. It's a useful top-down health metric that reduces channel attribution noise.",
+        "This MER calculator uses total revenue divided by total marketing spend over the same period. It's a useful top-down health metric that reduces channel attribution noise.",
         "To make MER decision-useful, translate it into profit using contribution margin and compute break-even and target MER thresholds.",
       ],
       steps: [
@@ -17992,7 +17992,7 @@ export const calculators: CalculatorDefinition[] = [
     slug: "sales-quota-calculator",
     title: "Sales Quota Calculator (Team to Rep)",
     description:
-      "Estimate quota per rep from a team target using expected attainment, ramp mix, and optional pipeline coverage checks.",
+      "Sales quota calculator to estimate quota per rep from a team target using expected attainment, ramp mix, and optional pipeline coverage checks.",
     category: "saas-metrics",
     guideSlug: "sales-quota-setting-guide",
     relatedGlossarySlugs: [
@@ -18005,7 +18005,7 @@ export const calculators: CalculatorDefinition[] = [
     ],
     seo: {
       intro: [
-        "Quota setting starts with a team target, but reality depends on headcount, ramp, and expected attainment. This calculator converts a team target into an implied quota per rep.",
+        "This sales quota calculator converts a team target into an implied quota per rep based on headcount, ramp, and expected attainment.",
         "It also connects targets to pipeline needs using win rate so you can stress-test feasibility before locking quotas.",
       ],
       steps: [

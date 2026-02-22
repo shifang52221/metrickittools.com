@@ -1840,10 +1840,10 @@ export const guides: Guide[] = [
     description:
       "ARPU calculation guide: definition, formula, worked example, and how to use ARPU with retention and LTV.",
     seo: {
-      title: "ARPU formula: how to calculate ARPU",
+      title: "ARPU calculation: how to calculate ARPU",
     },
     category: "saas-metrics",
-    updatedAt: "2026-02-16",
+    updatedAt: "2026-02-22",
     relatedCalculatorSlugs: ["arpu-calculator", "ltv-calculator"],
     sections: [
       { type: "h2", text: "Definition" },
@@ -3789,18 +3789,18 @@ export const guides: Guide[] = [
     slug: "bookings-vs-arr-guide",
     title: "Bookings vs ARR: definitions, formulas, and examples",
     description:
-      "Bookings vs ARR explained: what each metric measures, the formulas, and how to avoid common mistakes with annual prepay and one-time fees.",
+      "Bookings vs ARR explained (ARR vs bookings): what each metric measures, the formulas, and how to avoid common mistakes with annual prepay and one-time fees.",
     seo: {
-      title: "Bookings vs ARR: formula, example, and calculator",
+      title: "ARR vs Bookings: formula, example, and calculator",
     },
     category: "saas-metrics",
-    updatedAt: "2026-02-16",
+    updatedAt: "2026-02-22",
     relatedCalculatorSlugs: ["bookings-vs-arr-calculator", "arr-calculator", "mrr-calculator"],
     sections: [
       { type: "h2", text: "Bookings vs ARR (quick definition)" },
       {
         type: "p",
-        text: "Bookings measure contracted value you sign in a period. ARR (Annual Recurring Revenue) is an annualized recurring run-rate snapshot (typically MRR * 12). They are related but not interchangeable.",
+        text: "ARR vs bookings is a common comparison: bookings measure contracted value you sign in a period, while ARR (Annual Recurring Revenue) is an annualized recurring run-rate snapshot (typically MRR * 12). They are related but not interchangeable.",
       },
       { type: "h2", text: "What each metric measures" },
       {
@@ -5610,12 +5610,12 @@ export const guides: Guide[] = [
     slug: "sales-quota-setting-guide",
     title: "Sales quota setting: a practical framework (capacity, pipeline, and ramp)",
     description:
-      "Learn how to set sales quota using capacity math, pipeline coverage, and ramp assumptions so targets are ambitious but achievable.",
+      "Learn how to set sales quota using capacity math, pipeline coverage, and ramp assumptions, plus a sales quota calculator to sanity-check targets.",
     seo: {
-      title: "Sales quota setting guide: capacity, pipeline, ramp",
+      title: "Sales quota setting guide + calculator: capacity, pipeline, ramp",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-30",
+    updatedAt: "2026-02-22",
     relatedCalculatorSlugs: [
       "sales-capacity-calculator",
       "pipeline-required-calculator",
@@ -6552,12 +6552,12 @@ export const guides: Guide[] = [
     slug: "dcf-valuation-guide",
     title: "DCF valuation: forecast cash flows, discount rate, and terminal value",
     description:
-      "A practical guide to DCF valuation: how to forecast FCF, choose a discount rate, and avoid terminal value traps.",
+      "A practical guide to DCF valuation and WACC discount rate choices: how to forecast FCF, choose a discount rate, and avoid terminal value traps.",
     seo: {
-      title: "DCF valuation guide: formula and steps",
+      title: "DCF valuation guide: WACC discount rate, formula, steps",
     },
     category: "finance",
-    updatedAt: "2026-02-16",
+    updatedAt: "2026-02-22",
     relatedCalculatorSlugs: ["dcf-valuation-calculator", "npv-calculator", "irr-calculator"],
     relatedGlossarySlugs: [
       "dcf",
@@ -6889,10 +6889,10 @@ export const guides: Guide[] = [
     description:
       "A practical guide to WACC: what it is, how to compute it, and how to use it (carefully) as a DCF discount rate.",
     seo: {
-      title: "WACC formula: how to calculate cost of capital",
+      title: "WACC for DCF: formula and cost of capital",
     },
     category: "finance",
-    updatedAt: "2026-02-16",
+    updatedAt: "2026-02-22",
     relatedCalculatorSlugs: ["wacc-calculator", "dcf-valuation-calculator"],
     relatedGlossarySlugs: ["wacc", "discount-rate", "cost-of-equity", "cost-of-debt", "terminal-value"],
     sections: [

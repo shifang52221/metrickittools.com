@@ -134,9 +134,12 @@ const seeds: Seed[] = [
   },
   {
     slug: "arr-vs-bookings",
-    title: "Bookings vs ARR",
+    title: "ARR vs Bookings",
     description:
-      "Bookings are contracted value closed in a period; ARR is a recurring run-rate snapshot (MRR * 12). They answer different questions.",
+      "ARR vs bookings: bookings are contracted value closed in a period; ARR is a recurring run-rate snapshot (MRR * 12). They answer different questions.",
+    updatedAt: "2026-02-22",
+    example:
+      "If you sign a $120k annual deal with a $10k one-time onboarding fee, bookings are $120k while ARR is $110k.",
     bullets: [
       "Use bookings to evaluate sales performance and contracted demand.",
       "Use ARR to compare recurring scale and momentum over time.",
@@ -146,6 +149,13 @@ const seeds: Seed[] = [
       "Treating bookings as recurring run-rate.",
       "Comparing bookings to ARR without excluding one-time services and setup fees.",
       "Ignoring term length and billing timing when comparing periods.",
+    ],
+    faqs: [
+      {
+        question: "Is ARR the same as bookings-",
+        answer:
+          "No. Bookings include total contract value signed in the period (often including one-time items), while ARR is recurring run-rate only.",
+      },
     ],
     relatedGuideSlugs: ["arr-guide", "bookings-vs-arr-guide"],
     relatedCalculatorSlugs: ["bookings-vs-arr-calculator"],

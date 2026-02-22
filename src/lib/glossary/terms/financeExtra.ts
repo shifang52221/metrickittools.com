@@ -580,8 +580,8 @@ const seeds: Seed[] = [
     slug: "interest-expense",
     title: "Interest Expense",
     description:
-      "Interest expense is the cost of debt over a period. It includes cash interest and can include amortized fees.",
-    updatedAt: "2026-02-16",
+      "Interest expense is the cost of debt over a period (meaning cash interest plus any amortized fees).",
+    updatedAt: "2026-02-22",
     formula: "Interest expense = average debt balance * interest rate",
     example: "Average debt $1M at 8% implies $80k annual interest expense.",
     bullets: [
@@ -593,6 +593,11 @@ const seeds: Seed[] = [
       "Ignoring refinancing risk when interest rates are rising.",
     ],
     faqs: [
+      {
+        question: "What does interest expense mean-",
+        answer:
+          "Interest expense means the cost of borrowing over a period, including cash interest and any non-cash amortized fees.",
+      },
       {
         question: "Is interest expense the same as interest paid-",
         answer:
