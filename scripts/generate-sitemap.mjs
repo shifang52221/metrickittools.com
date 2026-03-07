@@ -33,15 +33,15 @@ function parseCategories(definitions) {
   return [...slugs];
 }
 
-function parseCalculators(definitions) {
-  const lines = definitions.split(/\r?\n/);
+function parseCalculatorsArray(text, exportMarker = "export const calculators") {
+  const lines = text.split(/\r?\n/);
   const results = [];
   let inCalc = false;
   let depth = 0;
   let slug = null;
   let category = null;
   for (const line of lines) {
-    if (!inCalc && line.includes("export const calculators")) {
+    if (!inCalc && line.includes(exportMarker)) {
       inCalc = true;
       continue;
     }
@@ -68,6 +68,20 @@ function parseCalculators(definitions) {
     }
   }
   return results;
+}
+
+function parseCalculators(definitions) {
+  const partMatches = [...definitions.matchAll(/from "\.\/(definitions\.part\d+)"/g)];
+  if (partMatches.length > 0) {
+    const partFiles = partMatches.map((match) => `src/lib/calculators/${match[1]}.ts`);
+    const merged = [];
+    for (const file of partFiles) {
+      const partText = readText(file);
+      merged.push(...parseCalculatorsArray(partText, "export const calculatorsPart"));
+    }
+    return merged;
+  }
+  return parseCalculatorsArray(definitions, "export const calculators");
 }
 
 function parseGuides(guidesText) {
