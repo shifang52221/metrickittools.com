@@ -817,10 +817,10 @@ const seeds: Seed[] = [
   },
   {
     slug: "covenant-headroom",
-    title: "Covenant Headroom",
+    title: "Covenant Headroom Meaning",
     description:
-      "Covenant headroom is the buffer between actual financial metrics and covenant thresholds in a debt agreement.",
-    updatedAt: "2026-01-28",
+      "Covenant headroom meaning: the buffer between actual financial metrics and debt covenant thresholds.",
+    updatedAt: "2026-03-07",
     formula: "Headroom = covenant threshold - actual metric",
     example: "If leverage covenant is 4.0x and actual is 3.2x, headroom is 0.8x.",
     bullets: [
@@ -830,6 +830,13 @@ const seeds: Seed[] = [
     mistakes: [
       "Relying on trailing data when forward-looking forecasts are weaker.",
       "Ignoring cure rights or waivers when assessing near-term risk.",
+    ],
+    faqs: [
+      {
+        question: "How do I read covenant headroom quickly-",
+        answer:
+          "Positive headroom means you are inside covenant limits. Shrinking or negative headroom signals rising breach risk and needs immediate forecast stress testing.",
+      },
     ],
     relatedGuideSlugs: ["loan-payment-guide"],
   },

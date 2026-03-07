@@ -402,12 +402,12 @@ export const guides: Guide[] = [
     slug: "cpc-guide",
     title: "CPC (Cost Per Click): definition, formula, and how to calculate",
     description:
-      "CPC explained: what cost per click means, how to calculate it, and how CPC connects to CTR, CVR, and CPA.",
+      "CPC formula guide: what cost per click means, how to calculate CPC, and how it connects to CTR, CVR, and CPA.",
     seo: {
-      title: "CPC formula: how to calculate cost per click",
+      title: "CPC formula guide: how to calculate cost per click",
     },
     category: "paid-ads",
-    updatedAt: "2026-02-16",
+    updatedAt: "2026-03-07",
     relatedCalculatorSlugs: [
       "paid-ads-funnel-calculator",
       "max-cpc-calculator",
@@ -1115,12 +1115,12 @@ export const guides: Guide[] = [
     slug: "fully-loaded-cac-guide",
     title: "Fully-loaded CAC: definition, formula, and what to include",
     description:
-      "A practical guide to fully-loaded CAC: how it differs from paid CAC, what to include, and how to keep the definition consistent for planning.",
+      "Fully-loaded CAC formula guide: how it differs from paid CAC, what to include, and how to keep the definition consistent for planning.",
     seo: {
-      title: "Fully-loaded CAC guide: definition, formula, and inclusions",
+      title: "Fully-loaded CAC formula guide: definition and inclusions",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-03-07",
     relatedCalculatorSlugs: [
       "fully-loaded-cac-calculator",
       "cac-calculator",
@@ -4630,12 +4630,12 @@ export const guides: Guide[] = [
     slug: "mrr-forecast-guide",
     title: "MRR forecasting: a simple bridge model (new, expansion, churn)",
     description:
-      "A practical way to forecast MRR using a monthly bridge: starting MRR + new MRR + expansion - contraction - churn.",
+      "MRR forecast guide with monthly bridge formula: starting MRR + new MRR + expansion - contraction - churn.",
     seo: {
-      title: "MRR forecast guide: simple bridge model",
+      title: "MRR forecast guide: formula, example, and template",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-27",
+    updatedAt: "2026-03-07",
     relatedCalculatorSlugs: [
       "mrr-forecast-calculator",
       "net-new-mrr-calculator",
@@ -5509,12 +5509,12 @@ export const guides: Guide[] = [
     slug: "sales-capacity-guide",
     title: "Sales capacity planning: quota, attainment, ramp, and what to watch",
     description:
-      "A practical guide to sales capacity: estimate bookings capacity using headcount, quota, expected attainment, and ramped vs ramping mix.",
+      "Sales capacity planning guide with calculator logic: estimate bookings from headcount, quota, attainment, and ramped vs ramping mix.",
     seo: {
-      title: "Sales capacity guide: quota, ramp, and attainment",
+      title: "Sales capacity guide + calculator: quota, ramp, attainment",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-30",
+    updatedAt: "2026-03-07",
     relatedCalculatorSlugs: ["sales-capacity-calculator", "quota-attainment-calculator"],
     relatedGlossarySlugs: ["sales-capacity", "sales-ramp", "quota", "quota-attainment", "pipeline"],
     sections: [
@@ -6059,12 +6059,12 @@ export const guides: Guide[] = [
     slug: "dau-mau-guide",
     title: "DAU/MAU (stickiness): definition, how to calculate, and benchmarks",
     description:
-      "DAU/MAU explained: what it measures, how to compute it correctly, and how to interpret stickiness for different product cadences.",
+      "DAU/MAU formula guide: what it measures, how to calculate stickiness correctly, and how to interpret it by product cadence.",
     seo: {
-      title: "DAU/MAU guide: stickiness definition and use",
+      title: "DAU/MAU formula guide: stickiness definition and benchmarks",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-27",
+    updatedAt: "2026-03-07",
     relatedCalculatorSlugs: ["dau-mau-calculator", "wau-mau-calculator"],
     relatedGlossarySlugs: ["dau", "mau", "wau", "stickiness"],
     sections: [
@@ -7301,12 +7301,12 @@ export const guides: Guide[] = [
     slug: "max-cpc-guide",
     title: "Max CPC and break-even CPC: how to set bidding targets from margin",
     description:
-      "A practical guide to max CPC: translate AOV, CVR, and contribution margin into break-even CPC and a target CPC with buffer.",
+      "Max CPC formula guide: translate AOV, CVR, and contribution margin into break-even CPC and a target CPC with buffer.",
     seo: {
-      title: "Max CPC guide: break-even CPC from margin",
+      title: "Max CPC formula: break-even CPC from margin",
     },
     category: "paid-ads",
-    updatedAt: "2026-01-28",
+    updatedAt: "2026-03-07",
     relatedCalculatorSlugs: ["max-cpc-calculator", "target-cpa-ltv-calculator", "break-even-roas-calculator"],
     relatedGlossarySlugs: ["cpc", "cpa", "cvr", "aov", "contribution-margin", "break-even-roas"],
     sections: [
@@ -8343,12 +8343,12 @@ export const guides: Guide[] = [
     slug: "dcf-sensitivity-guide",
     title: "DCF sensitivity: discount rate vs terminal growth (how to read it)",
     description:
-      "A practical guide to DCF sensitivity analysis: why valuations swing, how to pick ranges, and how to avoid terminal value traps.",
+      "DCF sensitivity analysis guide: how WACC and terminal growth move valuation, how to pick ranges, and how to avoid terminal value traps.",
     seo: {
-      title: "DCF sensitivity analysis: discount rate vs terminal growth",
+      title: "DCF sensitivity analysis: WACC vs terminal growth",
     },
     category: "finance",
-    updatedAt: "2026-02-16",
+    updatedAt: "2026-03-07",
     relatedCalculatorSlugs: ["dcf-sensitivity-calculator", "dcf-valuation-calculator", "wacc-calculator"],
     relatedGlossarySlugs: ["dcf", "wacc", "discount-rate", "terminal-value", "sensitivity-analysis"],
     sections: [

@@ -74,9 +74,9 @@ const seeds: Seed[] = [
   },
   {
     slug: "fbclid",
-    title: "FBCLID (Facebook Click ID)",
+    title: "FBCLID (Facebook Click ID) Meaning",
     description:
-      "FBCLID is a click identifier appended by Meta to landing page URLs to help connect on-site sessions and outcomes back to ads.",
+      "FBCLID parameter meaning: a Facebook click identifier appended by Meta to landing page URLs to connect sessions and conversions back to ads.",
     example:
       "A landing page URL includes -fbclid=... so Meta can match the click to a conversion event.",
     bullets: [
@@ -90,6 +90,11 @@ const seeds: Seed[] = [
       "Treating FBCLID as a user ID instead of a click identifier.",
     ],
     faqs: [
+      {
+        question: "What does FBCLID parameter mean-",
+        answer:
+          "FBCLID means Facebook Click ID. It is a click-level identifier used for attribution and conversion matching.",
+      },
       {
         question: "Should I store FBCLID in my database-",
         answer:
@@ -1343,9 +1348,9 @@ const seeds: Seed[] = [
   },
   {
     slug: "thumbstop-rate",
-    title: "Thumbstop Rate",
+    title: "Thumbstop Rate Meaning",
     description:
-      "Thumbstop rate is a creative metric for paid social that estimates how many users stop scrolling and pay attention to your ad (definitions vary by platform).",
+      "Thumbstop rate meaning: a paid social creative metric estimating how many users stop scrolling to view your ad (definitions vary by platform).",
     example:
       "If 10,000 people see a video and 2,200 watch long enough to count as a thumbstop, the rate is 22%.",
     bullets: [

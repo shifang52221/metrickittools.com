@@ -1260,10 +1260,10 @@ const seeds: Seed[] = [
   },
   {
     slug: "quota-carrying-reps",
-    title: "Quota-carrying Reps",
+    title: "Quota-carrying Reps Meaning",
     description:
-      "Quota-carrying reps are salespeople with assigned revenue targets. They are the core capacity unit for forecasting.",
-    updatedAt: "2026-01-28",
+      "Quota-carrying reps meaning: salespeople with assigned revenue targets, used as the core capacity unit in sales forecasting.",
+    updatedAt: "2026-03-07",
     example:
       "If you have 8 fully ramped AEs with $500k quarterly quotas, total capacity is about $4M.",
     bullets: [
@@ -1290,7 +1290,7 @@ const seeds: Seed[] = [
           "Align quota to historical attainment by segment and role. A single quota across very different territories creates noise.",
       },
     ],
-    relatedGuideSlugs: ["sales-ops-hub-guide"],
+    relatedGuideSlugs: ["sales-ops-hub-guide", "sales-capacity-guide", "sales-quota-setting-guide"],
   },
   {
     slug: "pipeline-review",

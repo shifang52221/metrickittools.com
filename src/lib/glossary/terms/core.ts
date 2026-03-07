@@ -3,11 +3,11 @@ import type { GlossaryTerm } from "../types";
 export const termsCore: GlossaryTerm[] = [
   {
     slug: "arr",
-    title: "ARR (Annual Recurring Revenue)",
+    title: "ARR (Annual Recurring Revenue) Meaning",
     description:
-      "ARR is an annualized recurring revenue run-rate (typically MRR * 12). Definition, formula, example, and common mistakes.",
+      "ARR meaning in SaaS finance: annualized recurring revenue run-rate (typically MRR * 12), with formula, example, and common mistakes.",
     category: "saas-metrics",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-03-07",
     sections: [
       { type: "h2", text: "Definition" },
       {
@@ -52,11 +52,11 @@ export const termsCore: GlossaryTerm[] = [
   },
   {
     slug: "mrr",
-    title: "MRR (Monthly Recurring Revenue)",
+    title: "MRR (Monthly Recurring Revenue) Meaning",
     description:
-      "MRR is recurring subscription revenue expected in a month. Learn components, how to measure it, and pitfalls.",
+      "MRR meaning in SaaS: recurring subscription revenue expected in a month, plus components, formula logic, and pitfalls.",
     category: "saas-metrics",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-03-07",
     sections: [
       { type: "h2", text: "Definition" },
       {

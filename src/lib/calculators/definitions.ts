@@ -8376,12 +8376,12 @@ export const calculators: CalculatorDefinition[] = [
     slug: "saas-magic-number-calculator",
     title: "SaaS Magic Number Calculator",
     description:
-      "SaaS Magic Number definition and calculation using net new ARR and prior-period sales & marketing spend.",
+      "SaaS Magic Number calculator: definition and formula using net new ARR and prior-period sales & marketing spend.",
     category: "saas-metrics",
     guideSlug: "saas-magic-number-guide",
     seo: {
       intro: [
-        "The SaaS Magic Number is a rough sales efficiency heuristic. It compares revenue output (net new ARR) to sales & marketing spend with a lag.",
+        "This SaaS Magic Number calculator applies the standard formula: annualized net new ARR divided by prior-period sales and marketing spend.",
       ],
       steps: [
         "Pick a quarter (or month) and measure net new ARR for that period.",
@@ -9477,7 +9477,7 @@ export const calculators: CalculatorDefinition[] = [
     slug: "mrr-forecast-calculator",
     title: "MRR Forecast Calculator",
     description:
-      "Forecast MRR over time using new MRR plus expansion, contraction, and churn rates.",
+      "MRR forecast calculator: project MRR over time using new MRR plus expansion, contraction, and churn rates.",
     category: "saas-metrics",
     guideSlug: "mrr-forecast-guide",
     relatedGlossarySlugs: [
@@ -9492,7 +9492,7 @@ export const calculators: CalculatorDefinition[] = [
     ],
     seo: {
       intro: [
-        "An MRR forecast helps you sanity-check growth assumptions and understand which lever matters most: new customer acquisition (new MRR) or retention and expansion (NRR).",
+        "This MRR forecast calculator helps you stress-test growth assumptions and see which lever matters most: new MRR vs retention and expansion.",
         "This calculator models a simple monthly MRR bridge: starting MRR plus new MRR, expansion, minus contraction and churn, repeated for the number of months you choose.",
       ],
       steps: [
