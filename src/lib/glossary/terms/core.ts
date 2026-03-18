@@ -3,16 +3,16 @@ import type { GlossaryTerm } from "../types";
 export const termsCore: GlossaryTerm[] = [
   {
     slug: "arr",
-    title: "ARR (Annual Recurring Revenue) Meaning",
+    title: "ARR Meaning: Formula, Example, and What Counts as ARR",
     description:
-      "ARR meaning in SaaS finance: annualized recurring revenue run-rate (typically MRR * 12), with formula, example, and common mistakes.",
+      "ARR means Annual Recurring Revenue. Learn the ARR formula, what to include, ARR vs bookings, and common SaaS finance mistakes.",
     category: "saas-metrics",
-    updatedAt: "2026-03-07",
+    updatedAt: "2026-03-18",
     sections: [
       { type: "h2", text: "Definition" },
       {
         type: "p",
-        text: "ARR (Annual Recurring Revenue) is the annualized run-rate of your recurring subscription revenue. It is a snapshot of current recurring momentum, not a promise of what you'll recognize over the next 12 months.",
+        text: "ARR means Annual Recurring Revenue: the annualized run-rate of recurring subscription revenue, often estimated as MRR x 12. It is a snapshot of current recurring momentum, not a promise of what you'll recognize over the next 12 months.",
       },
       { type: "h2", text: "Formula" },
       { type: "p", text: "ARR = MRR * 12" },
@@ -43,25 +43,32 @@ export const termsCore: GlossaryTerm[] = [
           "Usually no. ARR is typically reserved for recurring subscription revenue to keep it comparable over time.",
       },
     ],
-    relatedGuideSlugs: ["arr-guide", "mrr-guide"],
+    relatedGuideSlugs: [
+      "arr-guide",
+      "arr-vs-mrr-guide",
+      "bookings-vs-arr-guide",
+      "mrr-guide",
+    ],
     relatedCalculatorSlugs: [
       "arr-calculator",
+      "arr-vs-mrr-calculator",
+      "bookings-vs-arr-calculator",
       "mrr-calculator",
       "arr-valuation-calculator",
     ],
   },
   {
     slug: "mrr",
-    title: "MRR (Monthly Recurring Revenue) Meaning",
+    title: "MRR Meaning: Formula, Components, and How to Calculate MRR",
     description:
-      "MRR meaning in SaaS: recurring subscription revenue expected in a month, plus components, formula logic, and pitfalls.",
+      "MRR means Monthly Recurring Revenue. Learn the MRR formula, what counts in MRR, expansion and churn components, and common mistakes.",
     category: "saas-metrics",
-    updatedAt: "2026-03-07",
+    updatedAt: "2026-03-18",
     sections: [
       { type: "h2", text: "Definition" },
       {
         type: "p",
-        text: "MRR (Monthly Recurring Revenue) is the recurring subscription revenue you expect from active customers in a given month. It is a standard operating metric for subscription businesses because it updates quickly and connects to retention and expansion.",
+        text: "MRR means Monthly Recurring Revenue: the recurring subscription revenue you expect from active customers in a given month. It is a standard operating metric for subscription businesses because it updates quickly and connects to retention and expansion.",
       },
       { type: "h2", text: "Common components" },
       {
@@ -95,10 +102,18 @@ export const termsCore: GlossaryTerm[] = [
           "Use a consistent policy. Most teams report MRR net of recurring discounts and exclude one-time credits so trends remain comparable.",
       },
     ],
-    relatedGuideSlugs: ["mrr-guide", "mrr-forecast-guide", "arr-guide"],
+    relatedGuideSlugs: [
+      "mrr-guide",
+      "mrr-forecast-guide",
+      "mrr-waterfall-guide",
+      "arr-vs-mrr-guide",
+      "arr-guide",
+    ],
     relatedCalculatorSlugs: [
       "mrr-calculator",
       "mrr-forecast-calculator",
+      "mrr-waterfall-calculator",
+      "arr-vs-mrr-calculator",
       "arr-calculator",
     ],
   },

@@ -3642,16 +3642,17 @@ export const calculatorsPart2: CalculatorDefinition[] = [
         },
       ],
     },
-  {
+    {
       slug: "saas-magic-number-calculator",
-      title: "SaaS Magic Number Calculator",
+      title: "SaaS Magic Number Calculator: Formula, Benchmark, and Example",
       description:
-        "SaaS Magic Number calculator: definition and formula using net new ARR and prior-period sales & marketing spend.",
+        "Calculate SaaS Magic Number using net new ARR and prior-period sales and marketing spend, with formula, benchmark ranges, and example.",
       category: "saas-metrics",
       guideSlug: "saas-magic-number-guide",
+      relatedGlossarySlugs: ["arr", "net-new-arr", "sales-efficiency", "burn-multiple"],
       seo: {
         intro: [
-          "This SaaS Magic Number calculator applies the standard formula: annualized net new ARR divided by prior-period sales and marketing spend.",
+          "The SaaS Magic Number formula is annualized net new ARR divided by prior-period sales and marketing spend.",
         ],
         steps: [
           "Pick a quarter (or month) and measure net new ARR for that period.",

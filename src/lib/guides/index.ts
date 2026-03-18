@@ -400,25 +400,27 @@ export const guides: Guide[] = [
   },
   {
     slug: "cpc-guide",
-    title: "CPC (Cost Per Click): definition, formula, and how to calculate",
+    title: "CPC Formula: How to Calculate Cost Per Click + Example",
     description:
-      "CPC formula guide: what cost per click means, how to calculate CPC, and how it connects to CTR, CVR, and CPA.",
+      "Learn the CPC formula, how to calculate cost per click, what affects CPC, and how CPC connects to CTR, CVR, CPA, and bidding.",
     seo: {
-      title: "CPC formula guide: how to calculate cost per click",
+      title: "CPC Formula: How to Calculate Cost Per Click + Example",
     },
     category: "paid-ads",
-    updatedAt: "2026-03-07",
+    updatedAt: "2026-03-18",
     relatedCalculatorSlugs: [
       "paid-ads-funnel-calculator",
       "max-cpc-calculator",
       "break-even-cpm-calculator",
+      "break-even-ctr-calculator",
+      "click-through-conversion-calculator",
     ],
     relatedGlossarySlugs: ["cpc", "cpm", "ctr", "cvr", "cpa"],
     sections: [
       { type: "h2", text: "Definition" },
       {
         type: "p",
-        text: "CPC (cost per click) is how much you pay for each click on your ads. It connects CPM and CTR to downstream CPA and ROAS.",
+        text: "CPC, or cost per click, is calculated as total ad spend divided by total clicks. It connects CPM and CTR to downstream CPA and ROAS.",
       },
       { type: "h2", text: "CPC formula" },
       { type: "p", text: "CPC = ad spend / clicks" },
@@ -4628,21 +4630,24 @@ export const guides: Guide[] = [
   },
   {
     slug: "mrr-forecast-guide",
-    title: "MRR forecasting: a simple bridge model (new, expansion, churn)",
+    title: "MRR Forecast Formula: Example, Template, and Monthly Bridge",
     description:
-      "MRR forecast guide with monthly bridge formula: starting MRR + new MRR + expansion - contraction - churn.",
+      "Learn how to forecast MRR with a monthly bridge model using starting MRR, new MRR, expansion, contraction, and churn.",
     seo: {
-      title: "MRR forecast guide: formula, example, and template",
+      title: "MRR Forecast Formula: Example, Template, and Monthly Bridge",
     },
     category: "saas-metrics",
-    updatedAt: "2026-03-07",
+    updatedAt: "2026-03-18",
     relatedCalculatorSlugs: [
       "mrr-forecast-calculator",
+      "mrr-waterfall-calculator",
       "net-new-mrr-calculator",
       "nrr-calculator",
       "grr-calculator",
+      "arr-calculator",
     ],
     relatedGlossarySlugs: [
+      "arr",
       "mrr",
       "net-new-mrr",
       "new-mrr",
@@ -4657,7 +4662,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "Why a bridge model is useful" },
       {
         type: "p",
-        text: "MRR forecasts can get complicated fast. A bridge model keeps the levers explicit: how much MRR comes from new customers vs how much comes from retaining and expanding existing customers. It's a great first-pass planning tool for budgets, targets, and scenario analysis.",
+        text: "An MRR forecast estimates future recurring revenue by bridging starting MRR with new MRR, expansion, contraction, and churn each month. A bridge model keeps the levers explicit: how much MRR comes from new customers vs how much comes from retaining and expanding existing customers.",
       },
       { type: "h2", text: "Core monthly bridge" },
       {

@@ -926,14 +926,15 @@ export const calculatorsPart3: CalculatorDefinition[] = [
         },
       ],
     },
-  {
+    {
       slug: "mrr-forecast-calculator",
-      title: "MRR Forecast Calculator",
+      title: "MRR Forecast Calculator: Monthly Projection, Formula, and Example",
       description:
-        "MRR forecast calculator: project MRR over time using new MRR plus expansion, contraction, and churn rates.",
+        "Project future MRR using new MRR, expansion, contraction, churn, and time horizon inputs with a simple monthly forecast model.",
       category: "saas-metrics",
       guideSlug: "mrr-forecast-guide",
       relatedGlossarySlugs: [
+        "arr",
         "mrr",
         "net-new-mrr",
         "new-mrr",
@@ -942,10 +943,11 @@ export const calculatorsPart3: CalculatorDefinition[] = [
         "churned-mrr",
         "nrr",
         "grr",
+        "cmgr",
       ],
       seo: {
         intro: [
-          "This MRR forecast calculator helps you stress-test growth assumptions and see which lever matters most: new MRR vs retention and expansion.",
+          "This MRR forecast calculator projects monthly recurring revenue using a simple bridge model of starting MRR, new MRR, expansion, contraction, and churn.",
           "This calculator models a simple monthly MRR bridge: starting MRR plus new MRR, expansion, minus contraction and churn, repeated for the number of months you choose.",
         ],
         steps: [

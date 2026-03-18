@@ -260,7 +260,13 @@ export const calculatorsPart5: CalculatorDefinition[] = [
         "Calculate quota attainment and pacing from booked revenue to date, quota, and days elapsed in the period.",
       category: "saas-metrics",
       guideSlug: "quota-attainment-guide",
-      relatedGlossarySlugs: ["quota", "quota-attainment", "pipeline", "sales-cycle"],
+      relatedGlossarySlugs: [
+        "quota",
+        "quota-attainment",
+        "pipeline",
+        "sales-cycle",
+        "quota-carrying-reps",
+      ],
       seo: {
         intro: [
           "Quota attainment shows how close you are to a revenue target. Pacing adds context by projecting end-of-period bookings based on progress so far.",
@@ -480,6 +486,7 @@ export const calculatorsPart5: CalculatorDefinition[] = [
         "sales-ramp",
         "pipeline-coverage",
         "win-rate",
+        "quota-carrying-reps",
       ],
       seo: {
         intro: [
@@ -1234,7 +1241,14 @@ export const calculatorsPart5: CalculatorDefinition[] = [
         "Estimate period bookings capacity from team size, quota per rep, expected attainment, and ramped vs ramping mix.",
       category: "saas-metrics",
       guideSlug: "sales-capacity-guide",
-      relatedGlossarySlugs: ["sales-ramp", "quota", "quota-attainment", "pipeline"],
+      relatedGlossarySlugs: [
+        "sales-capacity",
+        "sales-ramp",
+        "quota",
+        "quota-attainment",
+        "pipeline",
+        "quota-carrying-reps",
+      ],
       seo: {
         intro: [
           "Sales capacity is the output your team can produce given headcount and productivity. Ramp matters: new reps rarely produce full quota immediately.",
