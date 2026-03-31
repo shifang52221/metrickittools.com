@@ -4,6 +4,12 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: "/search-q=:query",
+        has: [{ type: "host", value: "www.metrickittools.com" }],
+        destination: "https://metrickittools.com/search?q=:query",
+        permanent: true,
+      },
+      {
         source: "/:path*",
         has: [{ type: "host", value: "www.metrickittools.com" }],
         destination: "https://metrickittools.com/:path*",
