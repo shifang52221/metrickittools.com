@@ -88,8 +88,14 @@ export function SearchClient() {
             value={query}
             onChange={(e) => {
               const next = e.target.value;
-              setQuery(next.trim());
+              setQuery(next);
               router.replace(buildSearchHref(next));
+            }}
+            onBlur={() => {
+              const canonicalQuery = query.trim();
+              if (canonicalQuery === query) return;
+              setQuery(canonicalQuery);
+              router.replace(buildSearchHref(canonicalQuery));
             }}
             placeholder="Search (e.g., CAC, ROAS, churn, payback)"
             className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-black dark:focus:border-zinc-600"
