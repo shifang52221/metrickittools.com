@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { calculators, categories } from "@/lib/calculators";
 import { guides } from "@/lib/guides";
@@ -31,6 +31,16 @@ export function SearchClient() {
     pendingCanonical !== null && urlQuery !== pendingCanonical;
   const displayedQuery = isEditing || hasPendingCanonical ? draftQuery : urlQuery;
   const needle = useMemo(() => normalize(displayedQuery), [displayedQuery]);
+
+  useEffect(() => {
+    if (pendingCanonical === null || urlQuery !== pendingCanonical) return;
+    const timeoutId = window.setTimeout(() => {
+      setPendingCanonical((current) =>
+        current === urlQuery ? null : current,
+      );
+    }, 0);
+    return () => window.clearTimeout(timeoutId);
+  }, [pendingCanonical, urlQuery]);
 
   const calculatorResults = useMemo(() => {
     if (!needle) return [];
@@ -89,9 +99,6 @@ export function SearchClient() {
             onFocus={() => {
               setIsEditing(true);
               setDraftQuery(displayedQuery);
-              if (pendingCanonical !== null && urlQuery === pendingCanonical) {
-                setPendingCanonical(null);
-              }
             }}
             onChange={(e) => {
               const next = e.target.value;
