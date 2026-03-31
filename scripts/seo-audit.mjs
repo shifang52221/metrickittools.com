@@ -635,7 +635,6 @@ async function main() {
     };
 
     for (const p of pages) {
-      const key = pageKey(p.finalUrl || p.url);
       const inSitemap = Boolean(p.inSitemap);
 
       if (inSitemap && !(p.status >= 200 && p.status < 300)) {
