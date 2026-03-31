@@ -15,13 +15,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const term = getGlossaryTerm(slug);
   if (!term) return {};
-  const metaDescription = clampMetaDescription(term.description);
+  const metaTitle = term.seo?.title ?? `${term.title} definition`;
+  const metaDescription = clampMetaDescription(term.seo?.description ?? term.description);
   return {
-    title: `${term.title} definition`,
+    title: term.seo?.title ? { absolute: metaTitle } : metaTitle,
     description: metaDescription,
     alternates: { canonical: `/glossary/${term.slug}` },
     openGraph: {
-      title: `${term.title} definition`,
+      title: metaTitle,
       description: metaDescription,
       url: `/glossary/${term.slug}`,
       type: "article",
@@ -139,6 +140,21 @@ export default async function GlossaryTermPage({ params }: PageProps) {
         <p className="max-w-3xl text-pretty text-zinc-600 dark:text-zinc-400">
           {term.description}
         </p>
+        {term.seo?.heroNote ? (
+          <p className="max-w-3xl rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-700 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300">
+            {term.seo.heroNote}
+          </p>
+        ) : null}
+        {term.seo?.nextStepLabel && term.seo.nextStepHref ? (
+          <div>
+            <Link
+              href={term.seo.nextStepHref}
+              className="inline-flex items-center rounded-full border border-zinc-900 px-4 py-2 text-sm font-medium text-zinc-900 transition hover:bg-zinc-900 hover:text-white dark:border-zinc-100 dark:text-zinc-100 dark:hover:bg-zinc-100 dark:hover:text-zinc-900"
+            >
+              {term.seo.nextStepLabel}
+            </Link>
+          </div>
+        ) : null}
         <div className="text-sm text-zinc-500">Updated {term.updatedAt}</div>
       </header>
 

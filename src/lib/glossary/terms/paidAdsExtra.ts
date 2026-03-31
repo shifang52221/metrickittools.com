@@ -12,6 +12,7 @@ type Seed = {
   faqs?: GlossaryFaq[];
   relatedGuideSlugs?: string[];
   relatedCalculatorSlugs?: string[];
+  seo?: GlossaryTerm["seo"];
 };
 
 function sectionsFor(seed: Seed): GlossarySection[] {
@@ -49,6 +50,7 @@ function make(seed: Seed): GlossaryTerm {
     faqs: seed.faqs,
     relatedGuideSlugs: seed.relatedGuideSlugs,
     relatedCalculatorSlugs: seed.relatedCalculatorSlugs,
+    seo: seed.seo,
   };
 }
 
@@ -74,20 +76,32 @@ const seeds: Seed[] = [
   },
   {
     slug: "fbclid",
-    title: "FBCLID (Facebook Click ID) Meaning",
+    title: "FBCLID: what it is, when it appears, and why it matters",
     description:
-      "FBCLID parameter meaning: a Facebook click identifier appended by Meta to landing page URLs to connect sessions and conversions back to ads.",
+      "FBCLID is Meta's click identifier added to landing page URLs after an ad click. It helps match sessions and conversions back to Meta ads, so losing it can break attribution and conversion reporting.",
+    updatedAt: "2026-03-31",
+    seo: {
+      title: "FBCLID: what it is and how Meta attribution uses it",
+      description:
+        "Learn what FBCLID means, when it appears in a URL, why redirects can break it, and what to check next in GA4, UTMs, and Meta conversion tracking.",
+      heroNote:
+        "Best for marketers and developers auditing Meta landing pages: preserve the full query string, keep UTMs readable, and verify whether Meta-reported performance still matches your own analytics.",
+      nextStepLabel: "Check UTM + GA4 tracking",
+      nextStepHref: "/guides/utm-ga4-attribution-guide",
+    },
     example:
-      "A landing page URL includes -fbclid=... so Meta can match the click to a conversion event.",
+      "A landing page URL includes ?fbclid=... after a Meta ad click so the visit can be matched to a later conversion event.",
     bullets: [
-      "Avoid blocking the parameter on redirects; keep the full query string intact.",
-      "Use server-side events and deduplication if you track both pixel and server events.",
-      "Store FBCLID only as long as needed for attribution windows.",
+      "Keep the full query string intact across redirects, vanity URLs, and cross-domain hops.",
+      "Use clean UTMs alongside FBCLID so reports stay readable outside Meta.",
+      "If you send both pixel and server events, use deduplication so matching does not double-count conversions.",
+      "Store FBCLID only as long as your attribution and consent policy requires.",
     ],
     mistakes: [
-      "Stripping query parameters during redirect chains and losing attribution.",
-      "Relying on FBCLID without consistent UTMs for readable reporting.",
-      "Treating FBCLID as a user ID instead of a click identifier.",
+      "Stripping FBCLID during redirect chains and then blaming Meta for missing conversions.",
+      "Using FBCLID without consistent UTMs, which makes cross-channel reporting hard to trust.",
+      "Treating FBCLID like a durable user identifier instead of a click-level attribution signal.",
+      "Comparing Meta numbers to GA4 without aligning attribution windows and deduplication rules.",
     ],
     faqs: [
       {
@@ -106,7 +120,11 @@ const seeds: Seed[] = [
           "No. It identifies a click on a specific device and session. Cross-device attribution still requires platform matching and consented signals.",
       },
     ],
-    relatedGuideSlugs: ["utm-ga4-attribution-guide"],
+    relatedGuideSlugs: [
+      "utm-ga4-attribution-guide",
+      "attribution-incrementality-guide",
+    ],
+    relatedCalculatorSlugs: ["incrementality-lift-calculator"],
   },
   {
     slug: "msclkid",
@@ -1348,19 +1366,31 @@ const seeds: Seed[] = [
   },
   {
     slug: "thumbstop-rate",
-    title: "Thumbstop Rate Meaning",
+    title: "Thumbstop rate: what it measures, when to use it, and what it misses",
     description:
-      "Thumbstop rate meaning: a paid social creative metric estimating how many users stop scrolling to view your ad (definitions vary by platform).",
+      "Thumbstop rate estimates how often people stop scrolling long enough to notice a paid social ad. It is an early attention signal, not proof of clicks, conversions, or incremental revenue.",
+    updatedAt: "2026-03-31",
+    seo: {
+      title: "Thumbstop rate: definition, formula, and what it does not tell you",
+      description:
+        "Learn what thumbstop rate measures, when it helps diagnose creative fatigue, and why it should not replace CTR or conversion quality.",
+      heroNote:
+        "Useful when you are comparing hooks in the same platform, placement, and format. Treat thumbstop as an attention input, then validate CTR, CVR, and contribution before you scale a creative.",
+      nextStepLabel: "See creative fatigue diagnostics",
+      nextStepHref: "/guides/frequency-creative-fatigue-guide",
+    },
     example:
-      "If 10,000 people see a video and 2,200 watch long enough to count as a thumbstop, the rate is 22%.",
+      "If 10,000 people see a short-form ad and 2,200 pause long enough to meet the platform's thumbstop threshold, thumbstop rate is 22%.",
     bullets: [
-      "Treat it as an input to CTR; it is not the business outcome.",
-      "Use it to detect creative fatigue before CPA worsens.",
-      "Compare thumbstop across similar placements and formats.",
+      "Compare thumbstop only within the same platform, placement, and viewing threshold.",
+      "Use it as an upstream input to CTR and CPC, not as the business outcome.",
+      "Watch trend direction to spot creative fatigue before CPA or MER deteriorates.",
+      "Pair it with hold rate, CTR, CVR, and revenue quality before picking a winner.",
     ],
     mistakes: [
-      "Optimizing for thumbstop while ignoring conversion quality.",
-      "Comparing rates across platforms with different definitions.",
+      "Optimizing to thumbstop while ignoring whether clicks or conversions improve.",
+      "Comparing thumbstop across platforms or placements with different definitions and autoplay behavior.",
+      "Assuming a high thumbstop rate means the message, offer, and landing page are all working.",
     ],
     faqs: [
       {
@@ -1369,7 +1399,11 @@ const seeds: Seed[] = [
           "It depends on platform and format. Use your historical baseline and focus on trend direction.",
       },
     ],
-    relatedGuideSlugs: ["frequency-creative-fatigue-guide"],
+    relatedGuideSlugs: [
+      "frequency-creative-fatigue-guide",
+      "paid-ads-creative-landing-playbook-guide",
+    ],
+    relatedCalculatorSlugs: ["break-even-ctr-calculator"],
   },
   {
     slug: "conversion-lift-test",

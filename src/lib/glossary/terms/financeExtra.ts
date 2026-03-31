@@ -12,6 +12,7 @@ type Seed = {
   faqs?: GlossaryFaq[];
   relatedGuideSlugs?: string[];
   relatedCalculatorSlugs?: string[];
+  seo?: GlossaryTerm["seo"];
 };
 
 function sectionsFor(seed: Seed): GlossarySection[] {
@@ -49,6 +50,7 @@ function make(seed: Seed): GlossaryTerm {
     faqs: seed.faqs,
     relatedGuideSlugs: seed.relatedGuideSlugs,
     relatedCalculatorSlugs: seed.relatedCalculatorSlugs,
+    seo: seed.seo,
   };
 }
 
@@ -817,19 +819,30 @@ const seeds: Seed[] = [
   },
   {
     slug: "covenant-headroom",
-    title: "Covenant Headroom Meaning",
+    title: "Covenant headroom: what it means, how to calculate it, and when it turns risky",
     description:
-      "Covenant headroom meaning: the buffer between actual financial metrics and debt covenant thresholds.",
-    updatedAt: "2026-03-07",
-    formula: "Headroom = covenant threshold - actual metric",
+      "Covenant headroom is the buffer between your actual leverage or coverage metric and the covenant threshold in a debt agreement. Shrinking headroom is an early warning that forecast, liquidity, or operating actions may be needed before a breach occurs.",
+    updatedAt: "2026-03-31",
+    formula: "Headroom = covenant threshold - actual metric (or actual metric - threshold, depending on how the covenant is framed)",
     example: "If leverage covenant is 4.0x and actual is 3.2x, headroom is 0.8x.",
+    seo: {
+      title: "Covenant headroom: definition, formula, and monitoring",
+      description:
+        "Learn what covenant headroom means, how to measure the buffer to a leverage or coverage limit, and what teams should monitor next.",
+      heroNote:
+        "Best for finance leaders and operators reviewing monthly debt packs. Look past today's ratio: stress-test the next few quarters, confirm cure rights and waivers, and translate covenant risk into cash and operating actions early.",
+      nextStepLabel: "Model debt payments and liquidity",
+      nextStepHref: "/guides/loan-payment-guide",
+    },
     bullets: [
-      "Track headroom monthly to avoid surprise defaults.",
-      "Model downside cases to ensure buffers remain positive.",
+      "Track headroom monthly and on a forward-looking basis so you see pressure before reporting dates.",
+      "Model downside cases, seasonality, and cash timing to see whether buffers stay positive.",
+      "Confirm covenant definitions in the legal docs because EBITDA, debt, and cures are often customized.",
     ],
     mistakes: [
-      "Relying on trailing data when forward-looking forecasts are weaker.",
-      "Ignoring cure rights or waivers when assessing near-term risk.",
+      "Relying on trailing performance when the next two quarters are materially weaker.",
+      "Ignoring cure rights, equity cures, waivers, or resets that change the real near-term risk.",
+      "Treating all positive headroom as safe without looking at volatility and reporting timing.",
     ],
     faqs: [
       {
@@ -838,7 +851,12 @@ const seeds: Seed[] = [
           "Positive headroom means you are inside covenant limits. Shrinking or negative headroom signals rising breach risk and needs immediate forecast stress testing.",
       },
     ],
-    relatedGuideSlugs: ["loan-payment-guide"],
+    relatedGuideSlugs: [
+      "loan-payment-guide",
+      "runway-burn-cash-guide",
+      "interest-expense-guide",
+    ],
+    relatedCalculatorSlugs: ["loan-payment-calculator"],
   },
   {
     slug: "ebit",

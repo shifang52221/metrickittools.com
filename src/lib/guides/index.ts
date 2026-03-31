@@ -1115,17 +1115,20 @@ export const guides: Guide[] = [
   },
   {
     slug: "fully-loaded-cac-guide",
-    title: "Fully-loaded CAC: definition, formula, and what to include",
+    title: "Fully-loaded CAC: what to include, what to exclude, and how to use it",
     description:
-      "Fully-loaded CAC formula guide: how it differs from paid CAC, what to include, and how to keep the definition consistent for planning.",
+      "Use this guide when paid CAC looks fine but cash efficiency still feels off. It shows which sales and marketing costs belong in fully-loaded CAC, what to exclude, and how to pair the result with payback for planning.",
     seo: {
-      title: "Fully-loaded CAC formula guide: definition and inclusions",
+      title: "Fully-loaded CAC: inclusions, exclusions, and payback",
+      description:
+        "Understand fully-loaded CAC, which costs to include or exclude, how it differs from paid CAC, and how to use it with payback.",
     },
     category: "saas-metrics",
-    updatedAt: "2026-03-07",
+    updatedAt: "2026-03-31",
     relatedCalculatorSlugs: [
       "fully-loaded-cac-calculator",
       "cac-calculator",
+      "blended-cac-calculator",
       "cac-payback-period-calculator",
     ],
     relatedGlossarySlugs: [
@@ -1138,7 +1141,7 @@ export const guides: Guide[] = [
       { type: "h2", text: "Why fully-loaded CAC exists" },
       {
         type: "p",
-        text: "Paid CAC is useful for optimizing ads, but it ignores the people and tools required to acquire customers. Fully-loaded CAC adds sales & marketing costs (salaries, tools, and other acquisition costs) to get a planning-grade CAC for unit economics.",
+        text: "Paid CAC is useful for channel optimization, but it can understate what growth really costs. Fully-loaded CAC exists for planning: it adds the people, tools, and other acquisition costs required to win customers so you can judge whether growth still works after the full go-to-market bill is counted.",
       },
       { type: "h2", text: "Formula" },
       {
@@ -1198,6 +1201,7 @@ export const guides: Guide[] = [
       {
         label: "Fully-loaded example ($60k paid; $90k salaries; $12k tools; $8k other; 120 customers)",
         calculatorSlug: "fully-loaded-cac-calculator",
+        note: "Run the fully-loaded version first, then compare it with paid CAC and payback before you set budgets.",
         params: {
           paidSpend: "60000",
           salaries: "90000",
@@ -6062,21 +6066,23 @@ export const guides: Guide[] = [
   },
   {
     slug: "dau-mau-guide",
-    title: "DAU/MAU (stickiness): definition, how to calculate, and benchmarks",
+    title: "DAU/MAU: how to measure stickiness and when the ratio misleads",
     description:
-      "DAU/MAU formula guide: what it measures, how to calculate stickiness correctly, and how to interpret it by product cadence.",
+      "Use DAU/MAU to check whether monthly actives come back often enough for your product cadence. This guide explains how to define active users, when WAU/MAU is the better lens, and what not to infer from a single benchmark.",
     seo: {
-      title: "DAU/MAU formula guide: stickiness definition and benchmarks",
+      title: "DAU/MAU: stickiness formula, interpretation, and pitfalls",
+      description:
+        "Learn what DAU/MAU measures, how to define active users consistently, and when WAU/MAU is the better stickiness metric.",
     },
     category: "saas-metrics",
-    updatedAt: "2026-03-07",
+    updatedAt: "2026-03-31",
     relatedCalculatorSlugs: ["dau-mau-calculator", "wau-mau-calculator"],
     relatedGlossarySlugs: ["dau", "mau", "wau", "stickiness"],
     sections: [
       { type: "h2", text: "What DAU/MAU measures" },
       {
         type: "p",
-        text: "DAU/MAU is a stickiness metric: how many monthly active users are active on a typical day. It's useful for engagement tracking, but it depends heavily on how you define 'active' and your product's natural cadence.",
+        text: "DAU/MAU is a stickiness metric: how many monthly active users show up on a typical day. It is most useful when the product should be used frequently, but it becomes misleading if your active event is weak or your product's natural cadence is weekly rather than daily.",
       },
       { type: "h2", text: "Formula" },
       { type: "p", text: "DAU/MAU = DAU / MAU" },
@@ -6130,6 +6136,7 @@ export const guides: Guide[] = [
       {
         label: "Example: 1,200 DAU, 8,000 MAU (target 20%)",
         calculatorSlug: "dau-mau-calculator",
+        note: "If your product is used weekly rather than daily, compare this result with WAU/MAU before drawing a conclusion.",
         params: { dau: "1200", mau: "8000", targetPercent: "20" },
       },
     ],
@@ -7377,21 +7384,23 @@ export const guides: Guide[] = [
   },
   {
     slug: "equity-value-guide",
-    title: "Enterprise value vs equity value: how to bridge EV to equity",
+    title: "Equity value: how to bridge from enterprise value without mixing terms",
     description:
-      "A practical guide to converting enterprise value (EV) into equity value using net debt and other claims (and avoiding common valuation mix-ups).",
+      "Use this guide when your DCF or multiples output is EV but the decision you care about is what belongs to shareholders. It shows the EV-to-equity bridge, which balance-sheet items matter, and where analysts commonly double-count or mismatch dates.",
     seo: {
-      title: "Equity value guide: bridge EV to equity",
+      title: "Equity value: EV to equity bridge, net debt, and adjustments",
+      description:
+        "Understand how to bridge enterprise value to equity value using net debt and other claims without mixing dates or terms.",
     },
     category: "finance",
-    updatedAt: "2026-01-28",
+    updatedAt: "2026-03-31",
     relatedCalculatorSlugs: ["equity-value-calculator", "dcf-valuation-calculator"],
     relatedGlossarySlugs: ["enterprise-value", "equity-value", "net-debt", "dcf", "wacc"],
     sections: [
       { type: "h2", text: "Why this bridge matters" },
       {
         type: "p",
-        text: "Valuation outputs are often quoted as enterprise value (EV), especially from DCF models that discount unlevered free cash flows. Investors care about equity value (what's left for shareholders), which requires adjusting EV for net debt and other claims.",
+        text: "Many valuation outputs are quoted as enterprise value, especially when they come from DCF models or EV-based trading multiples. But boards, founders, and investors usually make decisions on what remains for common shareholders, which means you need a clean bridge from EV to equity value using the right balance-sheet claims.",
       },
       { type: "h2", text: "Core bridge" },
       {
@@ -7433,6 +7442,7 @@ export const guides: Guide[] = [
       {
         label: "Example: $50M EV, $8M cash, $12M debt",
         calculatorSlug: "equity-value-calculator",
+        note: "Bridge EV into the equity number shareholders care about, then sanity-check that cash and debt come from the same date.",
         params: {
           enterpriseValue: "50000000",
           cash: "8000000",
@@ -7656,21 +7666,33 @@ export const guides: Guide[] = [
   },
   {
     slug: "safe-guide",
-    title: "SAFE: what it is, valuation cap vs discount, and conversion basics",
+    title: "SAFE conversion explained: cap vs discount, dilution, and priced-round math",
     description:
-      "A practical guide to SAFEs: how valuation caps and discounts work, what converts in a priced round, and common modeling pitfalls.",
+      "Use this guide when you need to model what a SAFE actually turns into in a financing. It covers cap vs discount, pre- vs post-money mechanics, and the dilution mistakes that surprise founders and operators.",
     seo: {
-      title: "SAFE guide: cap vs discount and conversion",
+      title: "SAFE conversion guide: cap vs discount, dilution, and math",
+      description:
+        "Learn how SAFEs convert in a priced round, how cap and discount interact, and why pre-money vs post-money changes dilution.",
     },
     category: "finance",
-    updatedAt: "2026-01-28",
-    relatedCalculatorSlugs: ["safe-conversion-calculator"],
-    relatedGlossarySlugs: ["safe", "valuation-cap", "discount-rate", "dilution"],
+    updatedAt: "2026-03-31",
+    relatedCalculatorSlugs: [
+      "safe-conversion-calculator",
+      "pre-money-post-money-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "safe",
+      "valuation-cap",
+      "discount-rate",
+      "dilution",
+      "pre-money-valuation",
+      "post-money-valuation",
+    ],
     sections: [
       { type: "h2", text: "What a SAFE is" },
       {
         type: "p",
-        text: "A SAFE (Simple Agreement for Future Equity) is a financing instrument that typically converts into equity at a future priced round. It usually has a valuation cap, a discount, or both.",
+        text: "A SAFE is a financing instrument that usually converts into equity in a future priced round. In practice, the hard part is not the acronym; it is understanding which price applies, how the document defines dilution, and how conversion changes ownership across the cap table.",
       },
       { type: "h2", text: "Cap vs discount (intuition)" },
       {
@@ -7715,6 +7737,7 @@ export const guides: Guide[] = [
       {
         label: "Example: $500k SAFE, $8M cap, 20% discount, $20M pre-money",
         calculatorSlug: "safe-conversion-calculator",
+        note: "Compare the cap-price outcome with the discount-price outcome before you discuss ownership or dilution.",
         params: {
           safeAmount: "500000",
           valuationCap: "8000000",
@@ -7805,21 +7828,26 @@ export const guides: Guide[] = [
   },
   {
     slug: "liquidation-preference-guide",
-    title: "Liquidation preference (1* non-participating): what it means at exit",
+    title: "Liquidation preference: who gets paid first and when investors convert",
     description:
-      "Understand 1* non-participating liquidation preference, when investors convert to common, and how this changes proceeds at different exit values.",
+      "Use this guide to model exit proceeds under 1x non-participating preferred. It explains the preference-vs-conversion decision, the break-even exit value, and the cap-table details that change founder outcomes.",
     seo: {
-      title: "Liquidation preference guide: 1x non-participating",
+      title: "Liquidation preference: 1x non-participating and exit proceeds",
+      description:
+        "Understand 1x non-participating liquidation preference, when investors convert to common, and how exit value changes the payout.",
     },
     category: "finance",
-    updatedAt: "2026-01-28",
-    relatedCalculatorSlugs: ["liquidation-preference-calculator"],
-    relatedGlossarySlugs: ["liquidation-preference", "equity-value"],
+    updatedAt: "2026-03-31",
+    relatedCalculatorSlugs: [
+      "liquidation-preference-calculator",
+      "pre-money-post-money-calculator",
+    ],
+    relatedGlossarySlugs: ["liquidation-preference", "equity-value", "dilution"],
     sections: [
       { type: "h2", text: "What liquidation preference does" },
       {
         type: "p",
-        text: "Liquidation preference sets the payout order at an exit (sale, liquidation). With preferred stock, investors often have a preference claim ahead of common shareholders.",
+        text: "Liquidation preference controls the payout order at an exit. If you are comparing founder, employee, and investor outcomes, this is the clause that decides whether preferred investors take their preference or convert and share the upside as common.",
       },
       { type: "h2", text: "1* non-participating in plain English" },
       {
@@ -7874,6 +7902,7 @@ export const guides: Guide[] = [
       {
         label: "Example: $50M exit, $5M investment, 20% as-converted",
         calculatorSlug: "liquidation-preference-calculator",
+        note: "Use the calculator to find the exit value where converting becomes better than taking the 1x preference.",
         params: {
           exitValue: "50000000",
           investment: "5000000",
@@ -8346,21 +8375,23 @@ export const guides: Guide[] = [
   },
   {
     slug: "dcf-sensitivity-guide",
-    title: "DCF sensitivity: discount rate vs terminal growth (how to read it)",
+    title: "DCF sensitivity analysis: how WACC and terminal growth move valuation",
     description:
-      "DCF sensitivity analysis guide: how WACC and terminal growth move valuation, how to pick ranges, and how to avoid terminal value traps.",
+      "Use this guide when a single DCF output looks too precise. It shows how to build a WACC vs terminal growth grid, choose defensible ranges, and judge whether a valuation is robust enough to use in a decision.",
     seo: {
-      title: "DCF sensitivity analysis: WACC vs terminal growth",
+      title: "DCF sensitivity analysis: WACC, terminal growth, and valuation range",
+      description:
+        "Learn how to run a DCF sensitivity table, choose WACC and terminal growth ranges, and see whether valuation is robust or fragile.",
     },
     category: "finance",
-    updatedAt: "2026-03-07",
+    updatedAt: "2026-03-31",
     relatedCalculatorSlugs: ["dcf-sensitivity-calculator", "dcf-valuation-calculator", "wacc-calculator"],
     relatedGlossarySlugs: ["dcf", "wacc", "discount-rate", "terminal-value", "sensitivity-analysis"],
     sections: [
       { type: "h2", text: "Why sensitivity matters" },
       {
         type: "p",
-        text: "DCF valuation is highly sensitive to discount rate and terminal assumptions. Sensitivity analysis shows how robust your conclusion is to reasonable ranges of inputs.",
+        text: "Use sensitivity analysis when the decision matters more than the headline valuation. A DCF can look precise while the answer is still fragile, so the real question is how valuation changes when WACC and terminal growth move inside a defensible range.",
       },
       { type: "h2", text: "How to run DCF sensitivity (step-by-step)" },
       {
@@ -8430,6 +8461,7 @@ export const guides: Guide[] = [
       {
         label: "Example: $5M FCF, 5 years @ 15% growth, base 12% discount +/-2%, base 3% terminal +/-1%",
         calculatorSlug: "dcf-sensitivity-calculator",
+        note: "Start with a base-case DCF, then stress the same WACC and terminal growth assumptions stakeholders will challenge.",
         params: {
           annualFcf: "5000000",
           forecastYears: "5",

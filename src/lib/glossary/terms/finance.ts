@@ -12,6 +12,7 @@ type Seed = {
   faqs?: GlossaryFaq[];
   relatedGuideSlugs?: string[];
   relatedCalculatorSlugs?: string[];
+  seo?: GlossaryTerm["seo"];
 };
 
 function sectionsFor(seed: Seed): GlossarySection[] {
@@ -49,6 +50,7 @@ function make(seed: Seed): GlossaryTerm {
     faqs: seed.faqs,
     relatedGuideSlugs: seed.relatedGuideSlugs,
     relatedCalculatorSlugs: seed.relatedCalculatorSlugs,
+    seo: seed.seo,
   };
 }
 
@@ -251,23 +253,40 @@ const seeds: Seed[] = [
   },
   {
     slug: "net-debt",
-    title: "Net Debt",
+    title: "Net debt: formula, what to include, and how it changes equity value",
     description:
-      "Net debt is total debt minus cash and cash equivalents. It bridges enterprise value to equity value in valuation models.",
-    updatedAt: "2026-01-27",
-    formula: "Net debt = debt - cash",
+      "Net debt is debt minus cash and cash equivalents, adjusted for any debt-like items your team includes in the bridge from enterprise value to equity value. The number only works if you define both debt and usable cash consistently.",
+    updatedAt: "2026-03-31",
+    formula: "Net debt = total debt + debt-like items - cash - cash equivalents",
+    seo: {
+      title: "Net debt: formula, inclusions, exclusions, and equity value",
+      description:
+        "Understand net debt, what to include or exclude, and how it changes the bridge from enterprise value to equity value.",
+      heroNote:
+        "Use this when a DCF or multiples output gives you enterprise value but the real question is what belongs to shareholders. Before you compare valuation outcomes, align the balance-sheet date and decide whether restricted cash or lease-like items belong in your bridge.",
+      nextStepLabel: "Bridge EV to equity value",
+      nextStepHref: "/guides/equity-value-guide",
+    },
     bullets: [
-      "Include short-term and long-term debt; exclude operating liabilities unless they are debt-like.",
-      "Use the same balance sheet date as your enterprise value inputs.",
-      "If cash exceeds debt, net debt is negative (net cash).",
+      "Include short-term and long-term borrowings, plus other debt-like items if your valuation policy treats them as financing claims.",
+      "Use the same balance-sheet date as the enterprise value, share count, and trading-multiple inputs.",
+      "Decide whether restricted cash really offsets debt before netting it against liabilities.",
+      "If cash exceeds debt, the company has net cash, which increases equity value relative to EV.",
     ],
     mistakes: [
-      "Mixing market value of equity with a balance sheet from a different date.",
-      "Counting restricted cash as fully available.",
-      "Double-counting lease liabilities if EV already includes them.",
+      "Mixing a current market or DCF enterprise value with a stale balance sheet.",
+      "Counting restricted or operationally trapped cash as if it were freely available.",
+      "Double-counting leases, pensions, or preferred claims if they were already handled elsewhere in the bridge.",
+      "Treating net debt as a universal formula when your board or model uses a different debt-like items policy.",
     ],
-    relatedGuideSlugs: ["equity-value-guide"],
-    relatedCalculatorSlugs: ["equity-value-calculator"],
+    relatedGuideSlugs: [
+      "equity-value-guide",
+      "dcf-valuation-guide",
+    ],
+    relatedCalculatorSlugs: [
+      "equity-value-calculator",
+      "dcf-valuation-calculator",
+    ],
   },
   {
     slug: "sensitivity-analysis",

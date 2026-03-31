@@ -7,6 +7,14 @@ export type GlossarySection =
 
 export type GlossaryFaq = { question: string; answer: string };
 
+export type GlossarySeo = {
+  title?: string;
+  description?: string;
+  heroNote?: string;
+  nextStepLabel?: string;
+  nextStepHref?: string;
+};
+
 export type GlossaryTerm = {
   slug: string;
   title: string;
@@ -17,5 +25,6 @@ export type GlossaryTerm = {
   faqs?: GlossaryFaq[];
   relatedGuideSlugs?: string[];
   relatedCalculatorSlugs?: string[];
+  seo?: GlossarySeo;
 };
 
