@@ -49,6 +49,12 @@ export function SiteHeader() {
         </nav>
         <div className="flex items-center gap-2">
           <HeaderSearch />
+          <Link
+            href="/saas-metrics"
+            className="inline-flex rounded-full bg-black px-3 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 sm:hidden dark:bg-white dark:text-black dark:hover:bg-zinc-200"
+          >
+            Browse
+          </Link>
           <MobileNav />
           <Link
             href="/saas-metrics"

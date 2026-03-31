@@ -19,6 +19,11 @@ const nextConfig: NextConfig = {
         destination: "/guides/cac-payback-guide",
         permanent: true,
       },
+      {
+        source: "/search-q=:query",
+        destination: "/search?q=:query",
+        permanent: true,
+      },
     ];
   },
 };
