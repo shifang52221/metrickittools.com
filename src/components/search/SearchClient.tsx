@@ -23,10 +23,13 @@ export function SearchClient() {
   const router = useRouter();
   const urlQuery = readSearchQuery(params);
 
-  const [query, setQuery] = useState(urlQuery);
+  const [draftQuery, setDraftQuery] = useState(urlQuery);
   const [isEditing, setIsEditing] = useState(false);
+  const [pendingCanonical, setPendingCanonical] = useState<string | null>(null);
   const [kind, setKind] = useState<FilterKind>("all");
-  const displayedQuery = isEditing ? query : urlQuery;
+  const hasPendingCanonical =
+    pendingCanonical !== null && urlQuery !== pendingCanonical;
+  const displayedQuery = isEditing || hasPendingCanonical ? draftQuery : urlQuery;
   const needle = useMemo(() => normalize(displayedQuery), [displayedQuery]);
 
   const calculatorResults = useMemo(() => {
@@ -85,20 +88,29 @@ export function SearchClient() {
             value={displayedQuery}
             onFocus={() => {
               setIsEditing(true);
-              setQuery(urlQuery);
+              setDraftQuery(displayedQuery);
+              if (pendingCanonical !== null && urlQuery === pendingCanonical) {
+                setPendingCanonical(null);
+              }
             }}
             onChange={(e) => {
               const next = e.target.value;
-              setQuery(next);
+              setDraftQuery(next);
+              if (pendingCanonical !== null) {
+                setPendingCanonical(null);
+              }
               router.replace(buildSearchHref(next));
             }}
             onBlur={() => {
-              const canonicalQuery = query.trim();
-              setQuery(canonicalQuery);
+              const canonicalQuery = draftQuery.trim();
+              setDraftQuery(canonicalQuery);
               setIsEditing(false);
-              if (canonicalQuery !== urlQuery) {
-                router.replace(buildSearchHref(canonicalQuery));
+              if (canonicalQuery === urlQuery) {
+                setPendingCanonical(null);
+                return;
               }
+              setPendingCanonical(canonicalQuery);
+              router.replace(buildSearchHref(canonicalQuery));
             }}
             placeholder="Search (e.g., CAC, ROAS, churn, payback)"
             className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-black dark:focus:border-zinc-600"
