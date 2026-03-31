@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { calculators, categories } from "@/lib/calculators";
 import { guides } from "@/lib/guides";
@@ -24,13 +24,10 @@ export function SearchClient() {
   const urlQuery = readSearchQuery(params);
 
   const [query, setQuery] = useState(urlQuery);
+  const [isEditing, setIsEditing] = useState(false);
   const [kind, setKind] = useState<FilterKind>("all");
-
-  useEffect(() => {
-    setQuery(urlQuery);
-  }, [urlQuery]);
-
-  const needle = useMemo(() => normalize(query), [query]);
+  const displayedQuery = isEditing ? query : urlQuery;
+  const needle = useMemo(() => normalize(displayedQuery), [displayedQuery]);
 
   const calculatorResults = useMemo(() => {
     if (!needle) return [];
@@ -85,7 +82,11 @@ export function SearchClient() {
       <div className="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-black">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <input
-            value={query}
+            value={displayedQuery}
+            onFocus={() => {
+              setIsEditing(true);
+              setQuery(urlQuery);
+            }}
             onChange={(e) => {
               const next = e.target.value;
               setQuery(next);
@@ -93,9 +94,11 @@ export function SearchClient() {
             }}
             onBlur={() => {
               const canonicalQuery = query.trim();
-              if (canonicalQuery === query) return;
               setQuery(canonicalQuery);
-              router.replace(buildSearchHref(canonicalQuery));
+              setIsEditing(false);
+              if (canonicalQuery !== urlQuery) {
+                router.replace(buildSearchHref(canonicalQuery));
+              }
             }}
             placeholder="Search (e.g., CAC, ROAS, churn, payback)"
             className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-black dark:focus:border-zinc-600"
