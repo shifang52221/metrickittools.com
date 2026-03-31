@@ -3,6 +3,7 @@ import { categories } from "@/lib/calculators";
 import { siteConfig } from "@/lib/site";
 import { LogoMark } from "@/components/site/LogoMark";
 import { HeaderSearch } from "@/components/search/HeaderSearch";
+import { MobileNav } from "@/components/site/MobileNav";
 
 export function SiteHeader() {
   return (
@@ -46,13 +47,16 @@ export function SiteHeader() {
             About
           </Link>
         </nav>
-        <HeaderSearch />
-        <Link
-          href="/saas-metrics"
-          className="rounded-full bg-black px-3 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
-        >
-          Browse calculators
-        </Link>
+        <div className="flex items-center gap-2">
+          <HeaderSearch />
+          <MobileNav />
+          <Link
+            href="/saas-metrics"
+            className="hidden rounded-full bg-black px-3 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 sm:inline-flex dark:bg-white dark:text-black dark:hover:bg-zinc-200"
+          >
+            Browse calculators
+          </Link>
+        </div>
       </div>
     </header>
   );
