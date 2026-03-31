@@ -88,7 +88,7 @@ export function SearchClient() {
             value={query}
             onChange={(e) => {
               const next = e.target.value;
-              setQuery(next);
+              setQuery(next.trim());
               router.replace(buildSearchHref(next));
             }}
             placeholder="Search (e.g., CAC, ROAS, churn, payback)"
