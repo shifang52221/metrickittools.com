@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { buildSearchHref } from "@/lib/search/url";
 
 export function HeaderSearch() {
   const router = useRouter();
@@ -12,8 +13,7 @@ export function HeaderSearch() {
       className="hidden items-center gap-2 md:flex"
       onSubmit={(e) => {
         e.preventDefault();
-        const query = q.trim();
-        router.push(query ? `/search-q=${encodeURIComponent(query)}` : "/search");
+        router.push(buildSearchHref(q));
       }}
     >
       <input

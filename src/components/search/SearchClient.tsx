@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { calculators, categories } from "@/lib/calculators";
 import { guides } from "@/lib/guides";
 import { glossaryTerms } from "@/lib/glossary";
+import { buildSearchHref, readSearchQuery } from "@/lib/search/url";
 
 function normalize(value: string): string {
   return value.trim().toLowerCase();
@@ -20,10 +21,14 @@ type FilterKind = "all" | "calculators" | "guides" | "glossary";
 export function SearchClient() {
   const params = useSearchParams();
   const router = useRouter();
-  const initial = params.get("q") ?? "";
+  const urlQuery = readSearchQuery(params);
 
-  const [query, setQuery] = useState(initial);
+  const [query, setQuery] = useState(urlQuery);
   const [kind, setKind] = useState<FilterKind>("all");
+
+  useEffect(() => {
+    setQuery(urlQuery);
+  }, [urlQuery]);
 
   const needle = useMemo(() => normalize(query), [query]);
 
@@ -84,8 +89,7 @@ export function SearchClient() {
             onChange={(e) => {
               const next = e.target.value;
               setQuery(next);
-              const q = next.trim();
-              router.replace(q ? `/search-q=${encodeURIComponent(q)}` : "/search");
+              router.replace(buildSearchHref(next));
             }}
             placeholder="Search (e.g., CAC, ROAS, churn, payback)"
             className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-black dark:focus:border-zinc-600"
