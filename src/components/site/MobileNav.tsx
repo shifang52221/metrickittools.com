@@ -1,36 +1,83 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { categories } from "@/lib/calculators";
 
-const mobileNavLinks = [
-  { href: "/saas-metrics", label: "SaaS Metrics" },
-  { href: "/paid-ads", label: "Paid Ads" },
-  { href: "/finance", label: "Finance" },
+const secondaryMobileNavLinks = [
   { href: "/guides", label: "Guides" },
   { href: "/glossary", label: "Glossary" },
   { href: "/search", label: "Search" },
+  { href: "/about", label: "About" },
 ];
 
 export function MobileNav() {
   const [isOpen, setIsOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const previousFocusedElementRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
 
+    const triggerElement = triggerRef.current;
+    previousFocusedElementRef.current = document.activeElement as HTMLElement;
+    closeButtonRef.current?.focus();
+
     const onKeyDown = (event: KeyboardEvent) => {
+      if (!dialogRef.current) return;
+
       if (event.key === "Escape") {
         setIsOpen(false);
+        return;
+      }
+
+      if (event.key !== "Tab") {
+        return;
+      }
+
+      const focusableElements = Array.from(
+        dialogRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])',
+        ),
+      );
+
+      if (!focusableElements.length) {
+        event.preventDefault();
+        return;
+      }
+
+      const firstFocusableElement = focusableElements[0];
+      const lastFocusableElement = focusableElements[focusableElements.length - 1];
+      const activeElement = document.activeElement as HTMLElement | null;
+
+      if (event.shiftKey) {
+        if (activeElement === firstFocusableElement) {
+          event.preventDefault();
+          lastFocusableElement.focus();
+        }
+        return;
+      }
+
+      if (activeElement === lastFocusableElement) {
+        event.preventDefault();
+        firstFocusableElement.focus();
       }
     };
 
     window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      const focusTarget = previousFocusedElementRef.current ?? triggerElement;
+      focusTarget?.focus();
+    };
   }, [isOpen]);
 
   return (
     <div className="sm:hidden">
       <button
+        ref={triggerRef}
         type="button"
         aria-label="Open site navigation menu"
         aria-expanded={isOpen}
@@ -46,6 +93,7 @@ export function MobileNav() {
           onClick={() => setIsOpen(false)}
         >
           <div
+            ref={dialogRef}
             id="mobile-site-nav"
             role="dialog"
             aria-modal="true"
@@ -58,6 +106,7 @@ export function MobileNav() {
                 Navigate
               </p>
               <button
+                ref={closeButtonRef}
                 type="button"
                 aria-label="Close site navigation menu"
                 onClick={() => setIsOpen(false)}
@@ -67,7 +116,17 @@ export function MobileNav() {
               </button>
             </div>
             <nav aria-label="Mobile site sections" className="flex flex-col gap-1">
-              {mobileNavLinks.map((link) => (
+              {categories.map((category) => (
+                <Link
+                  key={category.slug}
+                  href={`/${category.slug}`}
+                  onClick={() => setIsOpen(false)}
+                  className="rounded-lg px-3 py-2 text-zinc-700 hover:bg-zinc-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                >
+                  {category.title}
+                </Link>
+              ))}
+              {secondaryMobileNavLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
