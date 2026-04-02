@@ -13,6 +13,7 @@ type Seed = {
   relatedGuideSlugs?: string[];
   relatedCalculatorSlugs?: string[];
   seo?: GlossaryTerm["seo"];
+  modules?: GlossaryTerm["modules"];
 };
 
 function sectionsFor(seed: Seed): GlossarySection[] {
@@ -51,6 +52,7 @@ function make(seed: Seed): GlossaryTerm {
     relatedGuideSlugs: seed.relatedGuideSlugs,
     relatedCalculatorSlugs: seed.relatedCalculatorSlugs,
     seo: seed.seo,
+    modules: seed.modules,
   };
 }
 
@@ -88,6 +90,12 @@ const seeds: Seed[] = [
         "Best for marketers and developers auditing Meta landing pages: preserve the full query string, keep UTMs readable, and verify whether Meta-reported performance still matches your own analytics.",
       nextStepLabel: "Check UTM + GA4 tracking",
       nextStepHref: "/guides/utm-ga4-attribution-guide",
+    },
+    modules: {
+      compareWith: [
+        "FBCLID is a Meta-generated click identifier. UTM parameters are campaign tags you control so the visit still stays readable across GA4, BI, and CRM reports.",
+        "Keep FBCLID for platform-side matching, but do not treat it as a replacement for UTMs, consent handling, or your own attribution rules.",
+      ],
     },
     example:
       "A landing page URL includes ?fbclid=... after a Meta ad click so the visit can be matched to a later conversion event.",
@@ -1371,13 +1379,19 @@ const seeds: Seed[] = [
       "Thumbstop rate estimates how often people stop scrolling long enough to notice a paid social ad. It is an early attention signal, not proof of clicks, conversions, or incremental revenue.",
     updatedAt: "2026-03-31",
     seo: {
-      title: "Thumbstop rate: definition, formula, and what it does not tell you",
+      title: "Thumbstop rate: definition, formula, and limits",
       description:
         "Learn what thumbstop rate measures, when it helps diagnose creative fatigue, and why it should not replace CTR or conversion quality.",
       heroNote:
         "Useful when you are comparing hooks in the same platform, placement, and format. Treat thumbstop as an attention input, then validate CTR, CVR, and contribution before you scale a creative.",
       nextStepLabel: "See creative fatigue diagnostics",
       nextStepHref: "/guides/frequency-creative-fatigue-guide",
+    },
+    modules: {
+      compareWith: [
+        "Thumbstop rate tells you whether the ad stopped the scroll. CTR tells you whether the message earned a click. CVR tells you whether the traffic actually converted.",
+        "A stronger thumbstop rate can still be a commercial downgrade if CTR, landing-page fit, conversion rate, or contribution margin gets worse.",
+      ],
     },
     example:
       "If 10,000 people see a short-form ad and 2,200 pause long enough to meet the platform's thumbstop threshold, thumbstop rate is 22%.",

@@ -13,6 +13,7 @@ type Seed = {
   relatedGuideSlugs?: string[];
   relatedCalculatorSlugs?: string[];
   seo?: GlossaryTerm["seo"];
+  modules?: GlossaryTerm["modules"];
 };
 
 function sectionsFor(seed: Seed): GlossarySection[] {
@@ -51,6 +52,7 @@ function make(seed: Seed): GlossaryTerm {
     relatedGuideSlugs: seed.relatedGuideSlugs,
     relatedCalculatorSlugs: seed.relatedCalculatorSlugs,
     seo: seed.seo,
+    modules: seed.modules,
   };
 }
 
@@ -266,6 +268,12 @@ const seeds: Seed[] = [
         "Use this when a DCF or multiples output gives you enterprise value but the real question is what belongs to shareholders. Before you compare valuation outcomes, align the balance-sheet date and decide whether restricted cash or lease-like items belong in your bridge.",
       nextStepLabel: "Bridge EV to equity value",
       nextStepHref: "/guides/equity-value-guide",
+    },
+    modules: {
+      compareWith: [
+        "Enterprise value measures the operating asset before financing claims. Net debt is one of the main adjustments that bridges EV down to equity value.",
+        "If cash exceeds debt, the business has net cash instead of net debt, which raises equity value relative to enterprise value rather than reducing it.",
+      ],
     },
     bullets: [
       "Include short-term and long-term borrowings, plus other debt-like items if your valuation policy treats them as financing claims.",

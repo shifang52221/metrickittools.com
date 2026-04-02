@@ -9,6 +9,14 @@ export type GuideSection =
       rows: string[][];
     };
 
+export type GuideSummary = {
+  audience?: string;
+  decision?: string;
+  useWhen?: string;
+  reviewedBy?: string;
+  reviewNote?: string;
+};
+
 export type Guide = {
   slug: string;
   title: string;
@@ -19,6 +27,7 @@ export type Guide = {
   };
   category: "saas-metrics" | "paid-ads" | "finance";
   updatedAt: string; // YYYY-MM-DD
+  summary?: GuideSummary;
   sections: GuideSection[];
   relatedCalculatorSlugs: string[];
   relatedGlossarySlugs?: string[];
@@ -27,6 +36,6 @@ export type Guide = {
     label: string;
     calculatorSlug: string;
     params: Record<string, string>;
-  note?: string;
+    note?: string;
   }>;
 };

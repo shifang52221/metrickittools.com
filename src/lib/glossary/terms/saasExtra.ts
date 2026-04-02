@@ -12,6 +12,7 @@ type Seed = {
   faqs?: GlossaryFaq[];
   relatedGuideSlugs?: string[];
   relatedCalculatorSlugs?: string[];
+  modules?: GlossaryTerm["modules"];
 };
 
 function sectionsFor(seed: Seed): GlossarySection[] {
@@ -49,6 +50,7 @@ function make(seed: Seed): GlossaryTerm {
     faqs: seed.faqs,
     relatedGuideSlugs: seed.relatedGuideSlugs,
     relatedCalculatorSlugs: seed.relatedCalculatorSlugs,
+    modules: seed.modules,
   };
 }
 

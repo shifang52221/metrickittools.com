@@ -6,6 +6,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { calculators, categories } from "@/lib/calculators";
 import { guides } from "@/lib/guides";
 import { getGlossaryTerm, glossaryTerms } from "@/lib/glossary";
+import { getGlossaryPageModules } from "@/lib/glossary/pageModules";
 import { clampMetaDescription } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
 
@@ -39,77 +40,24 @@ export default async function GlossaryTermPage({ params }: PageProps) {
   const term = getGlossaryTerm(slug);
   if (!term) notFound();
 
-  type Calculator = (typeof calculators)[number];
-  type Guide = (typeof guides)[number];
-
   const relatedCalcs = [
     ...(term.relatedCalculatorSlugs ?? [])
       .map((s) => calculators.find((c) => c.slug === s))
-      .filter((c): c is Calculator => Boolean(c)),
+      .filter((c): c is (typeof calculators)[number] => Boolean(c)),
     ...calculators.filter((c) => (c.relatedGlossarySlugs ?? []).includes(term.slug)),
   ].filter((c, i, arr) => arr.findIndex((x) => x.slug === c.slug) === i);
 
   const relatedGuides = [
     ...(term.relatedGuideSlugs ?? [])
       .map((s) => guides.find((g) => g.slug === s))
-      .filter((g): g is Guide => Boolean(g)),
+      .filter((g): g is (typeof guides)[number] => Boolean(g)),
     ...guides.filter((g) => (g.relatedGlossarySlugs ?? []).includes(term.slug)),
   ].filter((g, i, arr) => arr.findIndex((x) => x.slug === g.slug) === i);
 
-  const whyThisMatters = (() => {
-    if (term.category === "paid-ads") {
-      return `This term matters because it affects how you interpret performance and make budget decisions. If you use inconsistent definitions or windows, ROAS/CPA can look "better" while profit gets worse.`;
-    }
-    if (term.category === "finance") {
-      return `This term matters because cash timing and risk are usually the difference between a plan that works on paper and a plan that survives. Use consistent definitions so decisions are comparable over time.`;
-    }
-    return `This term matters because small changes compound in SaaS metrics. Use consistent definitions by cohort and segment so you can diagnose retention, payback, and growth quality.`;
-  })();
-
-  const checklistItems = (() => {
-    const items: string[] = [
-      `Write a 1-line definition for "${term.title}" that your team will use consistently.`,
-      "Keep the time window consistent (weekly/monthly/quarterly) when comparing trends.",
-      "Segment results (channel/plan/cohort) before drawing big conclusions from blended averages.",
-    ];
-    if (relatedCalcs.length) {
-      items.push(
-        `Use a calculator that references this term (e.g., ${relatedCalcs[0].title}) to sanity-check assumptions.`,
-      );
-    } else {
-      items.push("Sanity-check with a related calculator from the same category on MetricKit.");
-    }
-    if (relatedGuides.length) {
-      items.push(
-        `Read the related guide (e.g., ${relatedGuides[0].title}) for context and common pitfalls.`,
-      );
-    } else {
-      items.push("Document common pitfalls so the metric doesn't get gamed.");
-    }
-    return items.slice(0, 6);
-  })();
-
-  const stableOffset = (value: string, modulo: number) => {
-    let h = 0;
-    for (let i = 0; i < value.length; i += 1) h = (h * 31 + value.charCodeAt(i)) >>> 0;
-    return modulo ? h % modulo : 0;
-  };
-
-  const recommendedCalcs = (() => {
-    if (relatedCalcs.length) return relatedCalcs.slice(0, 6);
-    const inCategory = calculators.filter((c) => c.category === term.category);
-    const start = stableOffset(term.slug, inCategory.length);
-    const rotated = [...inCategory.slice(start), ...inCategory.slice(0, start)];
-    return rotated.slice(0, 6);
-  })();
-
-  const recommendedGuides = (() => {
-    if (relatedGuides.length) return relatedGuides.slice(0, 6);
-    const inCategory = guides.filter((g) => g.category === term.category);
-    const start = stableOffset(term.slug, inCategory.length);
-    const rotated = [...inCategory.slice(start), ...inCategory.slice(0, start)];
-    return rotated.slice(0, 6);
-  })();
+  const pageModules = getGlossaryPageModules(term, {
+    relatedCalculators: relatedCalcs,
+    relatedGuides,
+  });
 
   const definedTermLd = {
     "@context": "https://schema.org",
@@ -187,27 +135,34 @@ export default async function GlossaryTermPage({ params }: PageProps) {
             );
           })}
 
-          <h2 className="text-lg font-semibold tracking-tight">Why this matters</h2>
-          <p className="text-pretty text-zinc-700 dark:text-zinc-300">{whyThisMatters}</p>
+          {pageModules.map((module) => (
+            <section key={module.key} className="space-y-3">
+              <h2 className="text-lg font-semibold tracking-tight">{module.title}</h2>
+              {module.items.length === 1 ? (
+                <p className="text-pretty text-zinc-700 dark:text-zinc-300">
+                  {module.items[0]}
+                </p>
+              ) : (
+                <ul className="list-disc space-y-1 pl-5 text-zinc-700 dark:text-zinc-300">
+                  {module.items.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          ))}
 
-          <h2 className="text-lg font-semibold tracking-tight">Practical checklist</h2>
-          <ul className="list-disc space-y-1 pl-5 text-zinc-700 dark:text-zinc-300">
-            {checklistItems.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-
-          {recommendedCalcs.length || recommendedGuides.length ? (
+          {relatedCalcs.length || relatedGuides.length ? (
             <>
               <h2 className="text-lg font-semibold tracking-tight">
                 Where to use this on MetricKit
               </h2>
               <div className="space-y-4">
-                {recommendedCalcs.length ? (
+                {relatedCalcs.length ? (
                   <div className="space-y-2">
                     <h3 className="text-base font-medium">Calculators</h3>
                     <ul className="list-disc space-y-1 pl-5 text-zinc-700 dark:text-zinc-300">
-                      {recommendedCalcs.slice(0, 5).map((c) => (
+                      {relatedCalcs.slice(0, 5).map((c) => (
                         <li key={c.slug}>
                           <Link className="underline" href={`/${c.category}/${c.slug}`}>
                             {c.title}
@@ -219,11 +174,11 @@ export default async function GlossaryTermPage({ params }: PageProps) {
                   </div>
                 ) : null}
 
-                {recommendedGuides.length ? (
+                {relatedGuides.length ? (
                   <div className="space-y-2">
                     <h3 className="text-base font-medium">Guides</h3>
                     <ul className="list-disc space-y-1 pl-5 text-zinc-700 dark:text-zinc-300">
-                      {recommendedGuides.slice(0, 5).map((g) => (
+                      {relatedGuides.slice(0, 5).map((g) => (
                         <li key={g.slug}>
                           <Link className="underline" href={`/guides/${g.slug}`}>
                             {g.title}

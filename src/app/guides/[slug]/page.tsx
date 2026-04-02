@@ -170,6 +170,62 @@ export default async function GuidePage({ params }: PageProps) {
         <div className="text-sm text-zinc-500">Updated {guide.updatedAt}</div>
       </header>
 
+      {guide.summary ? (
+        <section className="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-black">
+          <div className="grid gap-4 sm:grid-cols-2">
+            {guide.summary.audience ? (
+              <div className="space-y-1">
+                <div className="text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
+                  Best for
+                </div>
+                <p className="text-sm text-zinc-700 dark:text-zinc-300">
+                  {guide.summary.audience}
+                </p>
+              </div>
+            ) : null}
+
+            {guide.summary.decision ? (
+              <div className="space-y-1">
+                <div className="text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
+                  Decision
+                </div>
+                <p className="text-sm text-zinc-700 dark:text-zinc-300">
+                  {guide.summary.decision}
+                </p>
+              </div>
+            ) : null}
+
+            {guide.summary.useWhen ? (
+              <div className="space-y-1">
+                <div className="text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
+                  Use it when
+                </div>
+                <p className="text-sm text-zinc-700 dark:text-zinc-300">
+                  {guide.summary.useWhen}
+                </p>
+              </div>
+            ) : null}
+
+            {guide.summary.reviewedBy ? (
+              <div className="space-y-1">
+                <div className="text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
+                  Reviewed by
+                </div>
+                <p className="text-sm text-zinc-700 dark:text-zinc-300">
+                  {guide.summary.reviewedBy}
+                </p>
+              </div>
+            ) : null}
+          </div>
+
+          {guide.summary.reviewNote ? (
+            <div className="mt-4 rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-700 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300">
+              {guide.summary.reviewNote}
+            </div>
+          ) : null}
+        </section>
+      ) : null}
+
       {examples.length ? (
         <section className="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-black">
           <h2 className="text-lg font-semibold tracking-tight">

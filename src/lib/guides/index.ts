@@ -1125,6 +1125,17 @@ export const guides: Guide[] = [
     },
     category: "saas-metrics",
     updatedAt: "2026-03-31",
+    summary: {
+      audience:
+        "Growth, finance, and GTM operators comparing paid CAC to the full cost of acquisition.",
+      decision:
+        "Whether current customer acquisition still works after salaries, tooling, and non-media costs are included.",
+      useWhen:
+        "Paid CAC looks acceptable but payback, cash efficiency, or planning confidence still feels weaker than expected.",
+      reviewedBy: "MetricKit editorial review for SaaS unit economics planning.",
+      reviewNote:
+        "Reviewed to keep cost-inclusion rules and payback interpretation aligned across CAC, blended CAC, and fully-loaded CAC content.",
+    },
     relatedCalculatorSlugs: [
       "fully-loaded-cac-calculator",
       "cac-calculator",
@@ -3694,6 +3705,17 @@ export const guides: Guide[] = [
     },
     category: "saas-metrics",
     updatedAt: "2026-01-23",
+    summary: {
+      audience:
+        "Founders, finance partners, and growth leads standardizing the core SaaS operating model.",
+      decision:
+        "Whether CAC, payback, LTV, and LTV:CAC support the current growth plan or need a reset.",
+      useWhen:
+        "You want one reference point for metric definitions before planning, board reporting, or diagnosing growth quality.",
+      reviewedBy: "MetricKit editorial review for SaaS operating models.",
+      reviewNote:
+        "Reviewed to keep CAC, LTV, payback, and gross-margin assumptions using consistent numerator and denominator rules across the unit-economics stack.",
+    },
     relatedCalculatorSlugs: [
       "unit-economics-calculator",
       "cac-calculator",
@@ -6076,6 +6098,17 @@ export const guides: Guide[] = [
     },
     category: "saas-metrics",
     updatedAt: "2026-03-31",
+    summary: {
+      audience:
+        "Product, growth, and lifecycle teams evaluating engagement quality and product cadence.",
+      decision:
+        "Whether the product behaves like a daily habit, a weekly habit, or a lower-frequency workflow that needs a different stickiness lens.",
+      useWhen:
+        "Monthly actives look healthy but you still need to judge engagement depth, active-user quality, and benchmark relevance.",
+      reviewedBy: "MetricKit editorial review for SaaS engagement metrics.",
+      reviewNote:
+        "Reviewed to keep active-user definitions, WAU/MAU comparisons, and benchmark cautions consistent with the linked stickiness calculators.",
+    },
     relatedCalculatorSlugs: ["dau-mau-calculator", "wau-mau-calculator"],
     relatedGlossarySlugs: ["dau", "mau", "wau", "stickiness"],
     sections: [
@@ -6570,6 +6603,17 @@ export const guides: Guide[] = [
     },
     category: "finance",
     updatedAt: "2026-02-22",
+    summary: {
+      audience:
+        "Finance teams, operators, and investors building a first-pass intrinsic valuation model.",
+      decision:
+        "Whether forecast cash flows support a defensible valuation range before you move into sensitivity work.",
+      useWhen:
+        "You need a base-case DCF and want the forecast, discount-rate, and terminal-value logic spelled out cleanly.",
+      reviewedBy: "MetricKit editorial review for valuation modeling.",
+      reviewNote:
+        "Reviewed to keep the base-case DCF flow consistent with the linked WACC, terminal-value, and equity-value guidance.",
+    },
     relatedCalculatorSlugs: ["dcf-valuation-calculator", "npv-calculator", "irr-calculator"],
     relatedGlossarySlugs: [
       "dcf",
@@ -6905,6 +6949,17 @@ export const guides: Guide[] = [
     },
     category: "finance",
     updatedAt: "2026-02-22",
+    summary: {
+      audience:
+        "Finance practitioners estimating a workable discount-rate range for DCF or capital allocation work.",
+      decision:
+        "What discount-rate range is defensible enough to use without hiding the underlying cost-of-capital assumptions.",
+      useWhen:
+        "You need to make CAPM, debt-cost, tax, and capital-structure choices explicit before valuing the business.",
+      reviewedBy: "MetricKit editorial review for valuation modeling.",
+      reviewNote:
+        "Reviewed to keep WACC inputs connected to the downstream DCF and sensitivity pages instead of treating the rate as a black box.",
+    },
     relatedCalculatorSlugs: ["wacc-calculator", "dcf-valuation-calculator"],
     relatedGlossarySlugs: ["wacc", "discount-rate", "cost-of-equity", "cost-of-debt", "terminal-value"],
     sections: [
@@ -7394,6 +7449,17 @@ export const guides: Guide[] = [
     },
     category: "finance",
     updatedAt: "2026-03-31",
+    summary: {
+      audience:
+        "Boards, founders, investors, and finance teams moving from enterprise value to what belongs to common shareholders.",
+      decision:
+        "Which balance-sheet claims and adjustments belong in the EV-to-equity bridge before you discuss share value or proceeds.",
+      useWhen:
+        "Your model output is enterprise value but the decision you care about is equity value, per-share value, or exit proceeds.",
+      reviewedBy: "MetricKit editorial review for valuation bridges.",
+      reviewNote:
+        "Reviewed to keep net-debt, preferred-claim, and date-matching rules consistent with the connected valuation pages.",
+    },
     relatedCalculatorSlugs: ["equity-value-calculator", "dcf-valuation-calculator"],
     relatedGlossarySlugs: ["enterprise-value", "equity-value", "net-debt", "dcf", "wacc"],
     sections: [
@@ -7465,6 +7531,17 @@ export const guides: Guide[] = [
     },
     category: "finance",
     updatedAt: "2026-01-28",
+    summary: {
+      audience:
+        "Founders and investors negotiating round ownership, dilution, and option-pool mechanics.",
+      decision:
+        "How investment size, valuation framing, and option-pool setup change effective ownership after the round.",
+      useWhen:
+        "You need to sanity-check dilution before a term-sheet discussion or board conversation.",
+      reviewedBy: "MetricKit editorial review for startup fundraising mechanics.",
+      reviewNote:
+        "Reviewed to keep pre/post-money definitions and dilution math aligned with SAFE, note, and liquidation-preference content.",
+    },
     relatedCalculatorSlugs: [
       "pre-money-post-money-calculator",
       "option-pool-shuffle-calculator",
@@ -7676,6 +7753,17 @@ export const guides: Guide[] = [
     },
     category: "finance",
     updatedAt: "2026-03-31",
+    summary: {
+      audience:
+        "Founders, investors, and finance operators modeling what SAFE terms mean in an actual priced round.",
+      decision:
+        "How valuation caps, discounts, and pre- vs post-money mechanics change dilution and ownership outcomes.",
+      useWhen:
+        "You want to compare SAFE outcomes before a financing closes or before the cap-table math surprises the team.",
+      reviewedBy: "MetricKit editorial review for startup fundraising mechanics.",
+      reviewNote:
+        "Reviewed to keep cap, discount, and dilution language consistent with the pre/post-money and fundraising hub pages.",
+    },
     relatedCalculatorSlugs: [
       "safe-conversion-calculator",
       "pre-money-post-money-calculator",
@@ -7759,6 +7847,17 @@ export const guides: Guide[] = [
     },
     category: "finance",
     updatedAt: "2026-01-28",
+    summary: {
+      audience:
+        "Founders and finance teams comparing note mechanics with SAFEs and priced-round outcomes.",
+      decision:
+        "How accrued interest, maturity, and cap-or-discount terms change note conversion economics.",
+      useWhen:
+        "You need to model a note stack before a financing event or compare note terms with an alternative structure.",
+      reviewedBy: "MetricKit editorial review for startup fundraising mechanics.",
+      reviewNote:
+        "Reviewed to keep conversion-price logic and accrued-interest treatment coherent with the SAFE and pre/post-money pages.",
+    },
     relatedCalculatorSlugs: ["convertible-note-conversion-calculator"],
     relatedGlossarySlugs: ["convertible-note", "interest-rate", "valuation-cap", "discount-rate", "dilution"],
     sections: [
@@ -7832,12 +7931,23 @@ export const guides: Guide[] = [
     description:
       "Use this guide to model exit proceeds under 1x non-participating preferred. It explains the preference-vs-conversion decision, the break-even exit value, and the cap-table details that change founder outcomes.",
     seo: {
-      title: "Liquidation preference: 1x non-participating and exit proceeds",
+      title: "Liquidation preference: exit payouts and conversion",
       description:
         "Understand 1x non-participating liquidation preference, when investors convert to common, and how exit value changes the payout.",
     },
     category: "finance",
     updatedAt: "2026-03-31",
+    summary: {
+      audience:
+        "Founders, board members, and investors modeling how exit proceeds change under preferred-stock terms.",
+      decision:
+        "Whether preferred holders are better off taking their preference or converting to common at a given exit value.",
+      useWhen:
+        "You need a clearer view of downside protection, founder proceeds, or the exit value where conversion becomes rational.",
+      reviewedBy: "MetricKit editorial review for startup exit modeling.",
+      reviewNote:
+        "Reviewed to keep payout-order logic and EV-to-equity thinking consistent with the connected financing and valuation pages.",
+    },
     relatedCalculatorSlugs: [
       "liquidation-preference-calculator",
       "pre-money-post-money-calculator",
@@ -7922,6 +8032,17 @@ export const guides: Guide[] = [
     },
     category: "saas-metrics",
     updatedAt: "2026-01-28",
+    summary: {
+      audience:
+        "Operators who need a practical dashboard view of CAC, LTV, payback, and the levers behind them.",
+      decision:
+        "Which lever to fix first when unit economics slip: acquisition cost, retention, pricing, or margin.",
+      useWhen:
+        "You need a working diagnostic layer for week-to-week reviews rather than a single headline ratio.",
+      reviewedBy: "MetricKit editorial review for SaaS dashboard metrics.",
+      reviewNote:
+        "Reviewed to connect dashboard metrics back to actionable levers so the page supports diagnosis, not just reporting.",
+    },
     relatedCalculatorSlugs: [
       "unit-economics-dashboard-calculator",
       "ltv-calculator",
@@ -8379,12 +8500,23 @@ export const guides: Guide[] = [
     description:
       "Use this guide when a single DCF output looks too precise. It shows how to build a WACC vs terminal growth grid, choose defensible ranges, and judge whether a valuation is robust enough to use in a decision.",
     seo: {
-      title: "DCF sensitivity analysis: WACC, terminal growth, and valuation range",
+      title: "DCF sensitivity: WACC, growth, and valuation",
       description:
         "Learn how to run a DCF sensitivity table, choose WACC and terminal growth ranges, and see whether valuation is robust or fragile.",
     },
     category: "finance",
     updatedAt: "2026-03-31",
+    summary: {
+      audience:
+        "Finance teams, founders, and investors testing whether a DCF conclusion stays intact once key assumptions move.",
+      decision:
+        "Whether valuation is robust enough to use in a real decision or too fragile to trust at a single point estimate.",
+      useWhen:
+        "A headline DCF output looks precise, but the real risk sits in the discount-rate and terminal-growth range.",
+      reviewedBy: "MetricKit editorial review for valuation sensitivity analysis.",
+      reviewNote:
+        "Reviewed to keep the sensitivity workflow tied to defensible input ranges rather than a decorative spreadsheet heatmap.",
+    },
     relatedCalculatorSlugs: ["dcf-sensitivity-calculator", "dcf-valuation-calculator", "wacc-calculator"],
     relatedGlossarySlugs: ["dcf", "wacc", "discount-rate", "terminal-value", "sensitivity-analysis"],
     sections: [
@@ -9450,6 +9582,17 @@ export const guides: Guide[] = [
     },
     category: "finance",
     updatedAt: "2026-01-28",
+    summary: {
+      audience:
+        "Founders and finance teams choosing which fundraising mechanic or dilution issue to model first.",
+      decision:
+        "Whether the next question is ownership dilution, SAFE or note conversion, liquidation preference, or exit sensitivity.",
+      useWhen:
+        "You need a practical entry page for startup financing scenarios instead of jumping between isolated calculators.",
+      reviewedBy: "MetricKit editorial review for fundraising workflows.",
+      reviewNote:
+        "Reviewed to keep the guide acting like a scenario map so users can move from a financing question into the right calculator quickly.",
+    },
     relatedCalculatorSlugs: [
       "pre-money-post-money-calculator",
       "pro-rata-investment-calculator",
@@ -9635,6 +9778,17 @@ export const guides: Guide[] = [
     },
     category: "saas-metrics",
     updatedAt: "2026-01-28",
+    summary: {
+      audience:
+        "Founders and operators who need one starting point for CAC, LTV, payback, margin, burn, and runway together.",
+      decision:
+        "Where to start when growth quality, burn efficiency, and capital planning all interact.",
+      useWhen:
+        "You want a practical entry page that links the right calculators and guides before building a broader operating review.",
+      reviewedBy: "MetricKit editorial review for SaaS planning workflows.",
+      reviewNote:
+        "Reviewed to keep the entry path task-oriented so users can move from headline metrics into the next calculator or guide with less guesswork.",
+    },
     relatedCalculatorSlugs: [
       "unit-economics-dashboard-calculator",
       "unit-economics-calculator",
@@ -9746,6 +9900,17 @@ export const guides: Guide[] = [
     },
     category: "paid-ads",
     updatedAt: "2026-01-28",
+    summary: {
+      audience:
+        "Performance marketers and growth leaders reconciling channel metrics with profit and incrementality.",
+      decision:
+        "Whether to trust ROAS, MER, marginal ROAS, or an incrementality test as the next decision tool.",
+      useWhen:
+        "Spend is scaling, reports disagree, or you need a clearer path from platform metrics to business outcomes.",
+      reviewedBy: "MetricKit editorial review for paid ads measurement.",
+      reviewNote:
+        "Reviewed to connect top-down and bottom-up measurement methods so the page acts like a decision map, not just a glossary of ad metrics.",
+    },
     relatedCalculatorSlugs: [
       "roas-calculator",
       "break-even-roas-calculator",
@@ -9939,6 +10104,17 @@ export const guides: Guide[] = [
     },
     category: "finance",
     updatedAt: "2026-01-28",
+    summary: {
+      audience:
+        "Finance teams and investors choosing where to start inside a valuation modeling workflow.",
+      decision:
+        "Whether the next step should be WACC setup, a base-case DCF, sensitivity work, multiples, or the EV-to-equity bridge.",
+      useWhen:
+        "You want one entry page that organizes valuation calculators and guides into a cleaner modeling sequence.",
+      reviewedBy: "MetricKit editorial review for valuation workflows.",
+      reviewNote:
+        "Reviewed to keep the page task-oriented so the route from discount-rate work into valuation outputs feels deliberate rather than list-based.",
+    },
     relatedCalculatorSlugs: [
       "wacc-calculator",
       "dcf-valuation-calculator",
@@ -10105,6 +10281,17 @@ export const guides: Guide[] = [
     },
     category: "paid-ads",
     updatedAt: "2026-01-28",
+    summary: {
+      audience:
+        "Paid-ads and analytics teams deciding when attribution is directionally useful and when lift testing is required.",
+      decision:
+        "Whether platform-reported performance is credible enough to act on or whether you need a holdout, geo test, or stricter incrementality check.",
+      useWhen:
+        "Meta, Google Ads, and analytics tools disagree or spend is rising faster than your confidence in the reported ROAS.",
+      reviewedBy: "MetricKit editorial review for attribution and incrementality.",
+      reviewNote:
+        "Reviewed to align attribution windows, MER, marginal ROAS, and lift-testing language across the connected paid ads content set.",
+    },
     relatedCalculatorSlugs: [
       "incrementality-lift-calculator",
       "mer-calculator",
@@ -10289,6 +10476,17 @@ export const guides: Guide[] = [
     },
     category: "finance",
     updatedAt: "2026-01-28",
+    summary: {
+      audience:
+        "Founders, operators, and finance partners translating burn into actual time and operating choices.",
+      decision:
+        "How much time the business really has and which cash levers matter most before runway compresses further.",
+      useWhen:
+        "Collections, working capital, hiring, or burn are moving and profit metrics are not telling the full cash story.",
+      reviewedBy: "MetricKit editorial review for cash-planning workflows.",
+      reviewNote:
+        "Reviewed to keep gross burn, net burn, runway, and working-capital language tied to real operating decisions instead of vanity metrics.",
+    },
     relatedCalculatorSlugs: [
       "cash-runway-calculator",
       "burn-multiple-calculator",

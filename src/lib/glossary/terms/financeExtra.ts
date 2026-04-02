@@ -13,6 +13,7 @@ type Seed = {
   relatedGuideSlugs?: string[];
   relatedCalculatorSlugs?: string[];
   seo?: GlossaryTerm["seo"];
+  modules?: GlossaryTerm["modules"];
 };
 
 function sectionsFor(seed: Seed): GlossarySection[] {
@@ -51,6 +52,7 @@ function make(seed: Seed): GlossaryTerm {
     relatedGuideSlugs: seed.relatedGuideSlugs,
     relatedCalculatorSlugs: seed.relatedCalculatorSlugs,
     seo: seed.seo,
+    modules: seed.modules,
   };
 }
 
@@ -833,6 +835,12 @@ const seeds: Seed[] = [
         "Best for finance leaders and operators reviewing monthly debt packs. Look past today's ratio: stress-test the next few quarters, confirm cure rights and waivers, and translate covenant risk into cash and operating actions early.",
       nextStepLabel: "Model debt payments and liquidity",
       nextStepHref: "/guides/loan-payment-guide",
+    },
+    modules: {
+      compareWith: [
+        "Runway asks how many months of cash you have. Covenant headroom asks how close you are to breaching lender limits. A company can have runway and still face covenant pressure.",
+        "Leverage and coverage covenants move with EBITDA, debt, and document-specific definitions, so operational volatility matters more than a single static ratio.",
+      ],
     },
     bullets: [
       "Track headroom monthly and on a forward-looking basis so you see pressure before reporting dates.",

@@ -18,6 +18,7 @@ type Seed = {
   faqs?: GlossaryFaq[];
   relatedGuideSlugs?: string[];
   relatedCalculatorSlugs?: string[];
+  modules?: GlossaryTerm["modules"];
 };
 
 function buildSections(seed: Seed): GlossarySection[] {
@@ -57,6 +58,7 @@ function makeTerm(seed: Seed): GlossaryTerm {
     faqs: seed.faqs,
     relatedGuideSlugs: seed.relatedGuideSlugs,
     relatedCalculatorSlugs: seed.relatedCalculatorSlugs,
+    modules: seed.modules,
   };
 }
 

@@ -7,16 +7,17 @@ import { glossaryTerms } from "@/lib/glossary";
 import { siteConfig } from "@/lib/site";
 import { AdUnit } from "@/components/ads/AdUnit";
 import { getAdSenseSlot } from "@/lib/adsense";
+import { getCategoryHubContent } from "@/lib/content/categoryIntro";
 
 export const metadata: Metadata = {
   title: {
-    absolute: "MetricKit: free SaaS metrics and paid ads calculators",
+    absolute: "MetricKit: free SaaS, paid ads, and finance calculators",
   },
   description:
     "Free calculators for SaaS metrics, paid ads, and finance. Compute CAC, LTV, ROAS, payback, and churn with clear formulas and assumptions.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "MetricKit: free SaaS metrics and paid ads calculators",
+    title: "MetricKit: free SaaS, paid ads, and finance calculators",
     description:
       "Free calculators for SaaS metrics, paid ads, and finance. Compute CAC, LTV, ROAS, payback, and churn with clear formulas and assumptions.",
     url: "/",
@@ -26,6 +27,16 @@ export const metadata: Metadata = {
 
 export default function Home() {
   const featured = calculators.filter((c) => c.featured).slice(0, 6);
+  const taskEntryCategories = categories.map((cat) => {
+    const hubContent = getCategoryHubContent(cat.slug);
+    return {
+      ...cat,
+      hubContent,
+      taskTitles: hubContent.taskGroups
+        .flatMap((group) => group.tasks.map((task) => task.title))
+        .slice(0, 3),
+    };
+  });
   const featuredGuides = guides
     .filter((g) =>
       [
@@ -54,11 +65,12 @@ export default function Home() {
     <div className="space-y-12">
       <section className="space-y-4">
         <h1 className="text-balance text-3xl font-semibold tracking-tight sm:text-5xl">
-          Free SaaS metrics & paid ads calculators
+          Free calculators for SaaS metrics, paid ads, and finance
         </h1>
         <p className="max-w-2xl text-pretty text-base text-zinc-600 dark:text-zinc-400 sm:text-lg">
-          {siteConfig.name} helps you quickly compute CAC, LTV, ROAS, payback
-          period, and more - with clear formulas and assumptions.
+          {siteConfig.name} helps you start from the decision you are trying to
+          make, then move into the right calculator or guide for CAC, LTV,
+          ROAS, payback, runway, and more.
         </p>
         <div className="flex flex-wrap gap-2 pt-2">
           {categories.map((cat) => (
@@ -68,6 +80,44 @@ export default function Home() {
               className="rounded-full border border-zinc-200 px-3 py-1 text-sm hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
             >
               {cat.title}
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="space-y-4">
+        <div className="space-y-1">
+          <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
+            Choose your task
+          </h2>
+          <p className="max-w-3xl text-sm text-zinc-600 dark:text-zinc-400">
+            Start from the business question, not just the metric name. Each
+            hub below is organized around the jobs users usually need to get
+            done first.
+          </p>
+        </div>
+        <div className="grid gap-4 lg:grid-cols-3">
+          {taskEntryCategories.map((cat) => (
+            <Link
+              key={cat.slug}
+              href={`/${cat.slug}`}
+              className="group rounded-3xl border border-zinc-200 bg-white p-6 transition hover:-translate-y-0.5 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-black dark:hover:bg-zinc-950"
+            >
+              <div className="text-sm font-medium text-zinc-500">{cat.title}</div>
+              <div className="mt-2 text-lg font-semibold tracking-tight group-hover:underline">
+                {cat.hubContent.audience}
+              </div>
+              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+                {cat.hubContent.intro[0]}
+              </p>
+              <ul className="mt-4 space-y-2 text-sm text-zinc-700 dark:text-zinc-300">
+                {cat.taskTitles.map((taskTitle) => (
+                  <li key={taskTitle}>{taskTitle}</li>
+                ))}
+              </ul>
+              <div className="mt-4 text-sm font-medium text-zinc-600 group-hover:text-zinc-900 dark:text-zinc-400 dark:group-hover:text-zinc-100">
+                Explore {cat.title} tasks {"\u2192"}
+              </div>
             </Link>
           ))}
         </div>

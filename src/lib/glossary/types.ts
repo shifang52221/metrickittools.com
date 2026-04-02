@@ -15,6 +15,25 @@ export type GlossarySeo = {
   nextStepHref?: string;
 };
 
+export type GlossaryPageModuleKey =
+  | "compareWith"
+  | "misusedWhen"
+  | "measuredAs"
+  | "operatorTakeaway"
+  | "nextDecision";
+
+export type GlossaryPageModuleValue = string | string[];
+
+export type GlossaryPageModules = Partial<
+  Record<GlossaryPageModuleKey, GlossaryPageModuleValue>
+>;
+
+export type GlossaryPageModule = {
+  key: GlossaryPageModuleKey;
+  title: string;
+  items: string[];
+};
+
 export type GlossaryTerm = {
   slug: string;
   title: string;
@@ -26,5 +45,6 @@ export type GlossaryTerm = {
   relatedGuideSlugs?: string[];
   relatedCalculatorSlugs?: string[];
   seo?: GlossarySeo;
+  modules?: GlossaryPageModules;
 };
 
