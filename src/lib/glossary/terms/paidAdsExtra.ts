@@ -78,14 +78,14 @@ const seeds: Seed[] = [
   },
   {
     slug: "fbclid",
-    title: "FBCLID: what it is, when it appears, and why it matters",
+    title: "FBCLID: what the URL parameter means and how Meta uses it",
     description:
       "FBCLID is Meta's click identifier added to landing page URLs after an ad click. It helps match sessions and conversions back to Meta ads, so losing it can break attribution and conversion reporting.",
     updatedAt: "2026-03-31",
     seo: {
-      title: "FBCLID: what it is and how Meta attribution uses it",
+      title: "FBCLID: what the URL parameter means and how Meta uses it",
       description:
-        "Learn what FBCLID means, when it appears in a URL, why redirects can break it, and what to check next in GA4, UTMs, and Meta conversion tracking.",
+        "FBCLID is a Meta click identifier added to landing page URLs after an ad click. Learn what it means, why redirects can break attribution, and how to check it alongside UTMs and GA4.",
       heroNote:
         "Best for marketers and developers auditing Meta landing pages: preserve the full query string, keep UTMs readable, and verify whether Meta-reported performance still matches your own analytics.",
       nextStepLabel: "Check UTM + GA4 tracking",
@@ -1374,14 +1374,14 @@ const seeds: Seed[] = [
   },
   {
     slug: "thumbstop-rate",
-    title: "Thumbstop rate: what it measures, when to use it, and what it misses",
+    title: "Thumbstop rate: definition, formula, and why it is not enough",
     description:
-      "Thumbstop rate estimates how often people stop scrolling long enough to notice a paid social ad. It is an early attention signal, not proof of clicks, conversions, or incremental revenue.",
+      "Thumbstop rate measures whether an ad stopped the scroll, not whether it earned clicks or revenue. Learn how to use it, compare it properly, and avoid overvaluing attention metrics.",
     updatedAt: "2026-03-31",
     seo: {
-      title: "Thumbstop rate: definition, formula, and limits",
+      title: "Thumbstop rate: definition, formula, and why it is not enough",
       description:
-        "Learn what thumbstop rate measures, when it helps diagnose creative fatigue, and why it should not replace CTR or conversion quality.",
+        "Thumbstop rate measures whether an ad stopped the scroll, not whether it earned clicks or revenue. Learn how to use it, compare it properly, and avoid overvaluing attention metrics.",
       heroNote:
         "Useful when you are comparing hooks in the same platform, placement, and format. Treat thumbstop as an attention input, then validate CTR, CVR, and contribution before you scale a creative.",
       nextStepLabel: "See creative fatigue diagnostics",

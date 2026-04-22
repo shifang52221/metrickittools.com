@@ -1115,13 +1115,13 @@ export const guides: Guide[] = [
   },
   {
     slug: "fully-loaded-cac-guide",
-    title: "Fully-loaded CAC: what to include, what to exclude, and how to use it",
+    title: "Fully-loaded CAC: formula, what to include, and how to use it",
     description:
-      "Use this guide when paid CAC looks fine but cash efficiency still feels off. It shows which sales and marketing costs belong in fully-loaded CAC, what to exclude, and how to pair the result with payback for planning.",
+      "Learn how to calculate fully-loaded CAC, which sales and marketing costs belong in it, how it differs from paid CAC, and how to pair it with payback for planning.",
     seo: {
-      title: "Fully-loaded CAC: inclusions, exclusions, and payback",
+      title: "Fully-loaded CAC: formula, what to include, and how to use it",
       description:
-        "Understand fully-loaded CAC, which costs to include or exclude, how it differs from paid CAC, and how to use it with payback.",
+        "Learn how to calculate fully-loaded CAC, which sales and marketing costs belong in it, how it differs from paid CAC, and how to pair it with payback for planning.",
     },
     category: "saas-metrics",
     updatedAt: "2026-03-31",
@@ -6088,13 +6088,13 @@ export const guides: Guide[] = [
   },
   {
     slug: "dau-mau-guide",
-    title: "DAU/MAU: how to measure stickiness and when the ratio misleads",
+    title: "DAU/MAU stickiness: formula, benchmarks, and when the ratio misleads",
     description:
-      "Use DAU/MAU to check whether monthly actives come back often enough for your product cadence. This guide explains how to define active users, when WAU/MAU is the better lens, and what not to infer from a single benchmark.",
+      "Use DAU/MAU to understand product stickiness, define active users consistently, and judge when WAU/MAU is a better fit. Includes formula, interpretation, and common mistakes.",
     seo: {
-      title: "DAU/MAU: stickiness formula, interpretation, and pitfalls",
+      title: "DAU/MAU stickiness: formula, benchmarks, and when the ratio misleads",
       description:
-        "Learn what DAU/MAU measures, how to define active users consistently, and when WAU/MAU is the better stickiness metric.",
+        "Use DAU/MAU to understand product stickiness, define active users consistently, and judge when WAU/MAU is a better fit. Includes formula, interpretation, and common mistakes.",
     },
     category: "saas-metrics",
     updatedAt: "2026-03-31",
@@ -7439,13 +7439,13 @@ export const guides: Guide[] = [
   },
   {
     slug: "equity-value-guide",
-    title: "Equity value: how to bridge from enterprise value without mixing terms",
+    title: "Equity value explained: EV to equity bridge, net debt, and adjustments",
     description:
-      "Use this guide when your DCF or multiples output is EV but the decision you care about is what belongs to shareholders. It shows the EV-to-equity bridge, which balance-sheet items matter, and where analysts commonly double-count or mismatch dates.",
+      "Use this guide to move from enterprise value to what belongs to shareholders. Learn the EV-to-equity bridge, which claims and adjustments matter, and how to avoid date mismatches or double-counting.",
     seo: {
-      title: "Equity value: EV to equity bridge, net debt, and adjustments",
+      title: "Equity value explained: EV to equity bridge, net debt, and adjustments",
       description:
-        "Understand how to bridge enterprise value to equity value using net debt and other claims without mixing dates or terms.",
+        "Use this guide to move from enterprise value to what belongs to shareholders. Learn the EV-to-equity bridge, which claims and adjustments matter, and how to avoid date mismatches or double-counting.",
     },
     category: "finance",
     updatedAt: "2026-03-31",
@@ -7523,11 +7523,13 @@ export const guides: Guide[] = [
   },
   {
     slug: "pre-money-post-money-guide",
-    title: "Pre-money vs post-money valuation: formulas, ownership, and pitfalls",
+    title: "Pre-money vs post-money valuation: dilution, ownership, and option pool math",
     description:
-      "Learn pre-money vs post-money valuation, how investor ownership is estimated, and why the option pool shuffle changes effective dilution.",
+      "Learn how pre-money vs post-money valuation affects investor ownership, founder dilution, and the option pool shuffle before a round closes.",
     seo: {
-      title: "Pre vs post-money guide: valuation and dilution",
+      title: "Pre-money vs post-money valuation: dilution, ownership, and option pool math",
+      description:
+        "Learn how pre-money vs post-money valuation affects investor ownership, founder dilution, and the option pool shuffle before a round closes.",
     },
     category: "finance",
     updatedAt: "2026-01-28",
@@ -7743,13 +7745,13 @@ export const guides: Guide[] = [
   },
   {
     slug: "safe-guide",
-    title: "SAFE conversion explained: cap vs discount, dilution, and priced-round math",
+    title: "SAFE conversion explained: cap vs discount, dilution, and pre- vs post-money",
     description:
-      "Use this guide when you need to model what a SAFE actually turns into in a financing. It covers cap vs discount, pre- vs post-money mechanics, and the dilution mistakes that surprise founders and operators.",
+      "A practical guide to how SAFEs convert in a priced round. Understand cap vs discount, how dilution changes under pre- vs post-money terms, and what founders should model before a round closes.",
     seo: {
-      title: "SAFE conversion guide: cap vs discount, dilution, and math",
+      title: "SAFE conversion explained: cap vs discount, dilution, and pre- vs post-money",
       description:
-        "Learn how SAFEs convert in a priced round, how cap and discount interact, and why pre-money vs post-money changes dilution.",
+        "A practical guide to how SAFEs convert in a priced round. Understand cap vs discount, how dilution changes under pre- vs post-money terms, and what founders should model before a round closes.",
     },
     category: "finance",
     updatedAt: "2026-03-31",
@@ -7927,13 +7929,13 @@ export const guides: Guide[] = [
   },
   {
     slug: "liquidation-preference-guide",
-    title: "Liquidation preference: who gets paid first and when investors convert",
+    title: "Liquidation preference explained: 1x non-participating, conversion, and exit payouts",
     description:
-      "Use this guide to model exit proceeds under 1x non-participating preferred. It explains the preference-vs-conversion decision, the break-even exit value, and the cap-table details that change founder outcomes.",
+      "Learn how liquidation preference changes exit proceeds, when investors take the preference instead of converting, and how 1x non-participating terms affect founder and shareholder outcomes.",
     seo: {
-      title: "Liquidation preference: exit payouts and conversion",
+      title: "Liquidation preference explained: 1x non-participating, conversion, and exit payouts",
       description:
-        "Understand 1x non-participating liquidation preference, when investors convert to common, and how exit value changes the payout.",
+        "Learn how liquidation preference changes exit proceeds, when investors take the preference instead of converting, and how 1x non-participating terms affect founder and shareholder outcomes.",
     },
     category: "finance",
     updatedAt: "2026-03-31",
@@ -8496,13 +8498,13 @@ export const guides: Guide[] = [
   },
   {
     slug: "dcf-sensitivity-guide",
-    title: "DCF sensitivity analysis: how WACC and terminal growth move valuation",
+    title: "DCF sensitivity: WACC, terminal growth, and how valuation moves",
     description:
-      "Use this guide when a single DCF output looks too precise. It shows how to build a WACC vs terminal growth grid, choose defensible ranges, and judge whether a valuation is robust enough to use in a decision.",
+      "Learn how to run a DCF sensitivity table, choose defensible WACC and terminal growth ranges, and see whether valuation is robust or too fragile to trust at one number.",
     seo: {
-      title: "DCF sensitivity: WACC, growth, and valuation",
+      title: "DCF sensitivity: WACC, terminal growth, and how valuation moves",
       description:
-        "Learn how to run a DCF sensitivity table, choose WACC and terminal growth ranges, and see whether valuation is robust or fragile.",
+        "Learn how to run a DCF sensitivity table, choose defensible WACC and terminal growth ranges, and see whether valuation is robust or too fragile to trust at one number.",
     },
     category: "finance",
     updatedAt: "2026-03-31",
