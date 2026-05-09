@@ -8,7 +8,7 @@ import { calculators } from "@/lib/calculators";
 import { getGuide, guides } from "@/lib/guides";
 import { glossaryTerms } from "@/lib/glossary";
 import { clampMetaDescription } from "@/lib/seo";
-import { siteConfig } from "@/lib/site";
+import { absoluteUrl, siteConfig } from "@/lib/site";
 import { getAdSenseSlot } from "@/lib/adsense";
 
 type PageProps = { params: Promise<{ slug: string }> };
@@ -131,8 +131,27 @@ export default async function GuidePage({ params }: PageProps) {
     description: guide.description,
     dateModified: guide.updatedAt,
     datePublished: guide.updatedAt,
-    mainEntityOfPage: `${siteConfig.siteUrl}/guides/${guide.slug}`,
-    publisher: { "@type": "Organization", name: siteConfig.name },
+    inLanguage: siteConfig.language,
+    mainEntityOfPage: absoluteUrl(`/guides/${guide.slug}`),
+    author: {
+      "@type": "Organization",
+      name: siteConfig.editorialTeamName,
+      url: siteConfig.siteUrl,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: siteConfig.publisherName,
+      url: siteConfig.siteUrl,
+      logo: {
+        "@type": "ImageObject",
+        url: absoluteUrl(siteConfig.logoPath),
+      },
+    },
+    isPartOf: {
+      "@type": "WebSite",
+      name: siteConfig.name,
+      url: siteConfig.siteUrl,
+    },
   };
 
   const faqLd =
@@ -167,7 +186,17 @@ export default async function GuidePage({ params }: PageProps) {
         <p className="max-w-3xl text-pretty text-zinc-600 dark:text-zinc-400">
           {guide.description}
         </p>
-        <div className="text-sm text-zinc-500">Updated {guide.updatedAt}</div>
+        <div className="flex flex-wrap gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <span className="rounded-full border border-zinc-200 px-3 py-1 dark:border-zinc-800">
+            Written by {siteConfig.editorialTeamName}
+          </span>
+          <span className="rounded-full border border-zinc-200 px-3 py-1 dark:border-zinc-800">
+            Reviewed by {siteConfig.reviewTeamName}
+          </span>
+          <span className="rounded-full border border-zinc-200 px-3 py-1 dark:border-zinc-800">
+            Updated {guide.updatedAt}
+          </span>
+        </div>
       </header>
 
       {guide.summary ? (

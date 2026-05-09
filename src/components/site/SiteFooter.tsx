@@ -35,6 +35,15 @@ export function SiteFooter() {
             <Link href="/glossary" className="hover:underline">
               Glossary
             </Link>
+            <Link href="/about" className="hover:underline">
+              About
+            </Link>
+            <Link href="/methodology" className="hover:underline">
+              Methodology
+            </Link>
+            <Link href="/editorial-policy" className="hover:underline">
+              Editorial Policy
+            </Link>
             <Link href="/privacy" className="hover:underline">
               Privacy
             </Link>
@@ -49,6 +58,11 @@ export function SiteFooter() {
         </div>
         <div className="mt-8 text-xs text-zinc-500 dark:text-zinc-500">
           (c) {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
+        </div>
+        <div className="mt-2 text-xs text-zinc-500 dark:text-zinc-500">
+          Published by {siteConfig.editorialTeamName}. Review framework:
+          {" "}
+          {siteConfig.reviewTeamName}.
         </div>
       </div>
     </footer>

@@ -9,7 +9,7 @@ import { GoogleConsentHead } from "@/components/consent/GoogleConsentHead";
 import { GoogleConsentSync } from "@/components/consent/GoogleConsentSync";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
-import { siteConfig } from "@/lib/site";
+import { absoluteUrl, siteConfig } from "@/lib/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -64,9 +64,20 @@ export default function RootLayout({
   const orgLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: siteConfig.name,
+    name: siteConfig.publisherName,
     url: siteConfig.siteUrl,
+    logo: absoluteUrl(siteConfig.logoPath),
+    description: siteConfig.description,
     email: siteConfig.email,
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer support",
+      email: siteConfig.email,
+      url: absoluteUrl(siteConfig.contactPath),
+      availableLanguage: ["en"],
+    },
+    knowsAbout: siteConfig.knowledgeAreas,
+    publishingPrinciples: absoluteUrl(siteConfig.editorialPolicyPath),
   };
 
   const webSiteLd = {
@@ -74,6 +85,12 @@ export default function RootLayout({
     "@type": "WebSite",
     name: siteConfig.name,
     url: siteConfig.siteUrl,
+    inLanguage: siteConfig.language,
+    publisher: {
+      "@type": "Organization",
+      name: siteConfig.publisherName,
+      url: siteConfig.siteUrl,
+    },
     potentialAction: {
       "@type": "SearchAction",
       target: `${siteConfig.siteUrl}/search?q={search_term_string}`,

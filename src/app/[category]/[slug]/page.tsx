@@ -6,7 +6,7 @@ import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { calculators, categories, getCalculator } from "@/lib/calculators";
 import type { CalculatorCategorySlug } from "@/lib/calculators/types";
 import { clampMetaDescription } from "@/lib/seo";
-import { siteConfig } from "@/lib/site";
+import { absoluteUrl, siteConfig } from "@/lib/site";
 
 type PageProps = { params: Promise<{ category: string; slug: string }> };
 
@@ -45,6 +45,7 @@ export default async function CalculatorPage({ params }: PageProps) {
   if (calc.category !== category) notFound();
   const categoryTitle =
     categories.find((c) => c.slug === category)?.title ?? category;
+  const calculatorReviewDate = siteConfig.contentReviewDate;
 
   const quickChecks = (() => {
     if (category === "paid-ads") {
@@ -74,9 +75,26 @@ export default async function CalculatorPage({ params }: PageProps) {
     name: calc.title,
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
+    inLanguage: siteConfig.language,
+    isAccessibleForFree: true,
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-    url: `${siteConfig.siteUrl}/${calc.category}/${calc.slug}`,
+    url: absoluteUrl(`/${calc.category}/${calc.slug}`),
     description: calc.description,
+    dateModified: calculatorReviewDate,
+    author: {
+      "@type": "Organization",
+      name: siteConfig.editorialTeamName,
+      url: siteConfig.siteUrl,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: siteConfig.publisherName,
+      url: siteConfig.siteUrl,
+      logo: {
+        "@type": "ImageObject",
+        url: absoluteUrl(siteConfig.logoPath),
+      },
+    },
   };
 
   const faqLd =
@@ -137,6 +155,17 @@ export default async function CalculatorPage({ params }: PageProps) {
           JavaScript and reload.
         </div>
       </noscript>
+      <div className="mb-6 flex flex-wrap gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+        <span className="rounded-full border border-zinc-200 px-3 py-1 dark:border-zinc-800">
+          Written by {siteConfig.editorialTeamName}
+        </span>
+        <span className="rounded-full border border-zinc-200 px-3 py-1 dark:border-zinc-800">
+          Reviewed by {siteConfig.reviewTeamName}
+        </span>
+        <span className="rounded-full border border-zinc-200 px-3 py-1 dark:border-zinc-800">
+          Updated {calculatorReviewDate}
+        </span>
+      </div>
       <CalculatorPageClient slug={calc.slug} />
       <section className="mt-10 space-y-3">
         <h2 className="text-lg font-semibold tracking-tight">Quick checks</h2>

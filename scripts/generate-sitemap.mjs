@@ -7,7 +7,17 @@ const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://metrickittools.com
   "",
 );
 
-const staticRoutes = ["/", "/about", "/privacy", "/terms", "/contact", "/guides", "/glossary"];
+const staticRoutes = [
+  "/",
+  "/about",
+  "/methodology",
+  "/editorial-policy",
+  "/privacy",
+  "/terms",
+  "/contact",
+  "/guides",
+  "/glossary",
+];
 
 function readText(relPath) {
   return fs.readFileSync(path.join(root, relPath), "utf8");

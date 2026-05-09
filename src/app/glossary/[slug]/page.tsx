@@ -8,7 +8,7 @@ import { guides } from "@/lib/guides";
 import { getGlossaryTerm, glossaryTerms } from "@/lib/glossary";
 import { getGlossaryPageModules } from "@/lib/glossary/pageModules";
 import { clampMetaDescription } from "@/lib/seo";
-import { siteConfig } from "@/lib/site";
+import { absoluteUrl, siteConfig } from "@/lib/site";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -65,12 +65,38 @@ export default async function GlossaryTermPage({ params }: PageProps) {
     name: term.title,
     description: term.description,
     inDefinedTermSet: `${siteConfig.siteUrl}/glossary`,
-    url: `${siteConfig.siteUrl}/glossary/${term.slug}`,
+    url: absoluteUrl(`/glossary/${term.slug}`),
+  };
+
+  const articleLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: term.title,
+    description: term.description,
+    dateModified: term.updatedAt,
+    datePublished: term.updatedAt,
+    inLanguage: siteConfig.language,
+    mainEntityOfPage: absoluteUrl(`/glossary/${term.slug}`),
+    author: {
+      "@type": "Organization",
+      name: siteConfig.editorialTeamName,
+      url: siteConfig.siteUrl,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: siteConfig.publisherName,
+      url: siteConfig.siteUrl,
+      logo: {
+        "@type": "ImageObject",
+        url: absoluteUrl(siteConfig.logoPath),
+      },
+    },
   };
 
   return (
     <div className="space-y-8">
       <JsonLd data={definedTermLd} />
+      <JsonLd data={articleLd} />
 
       <Breadcrumbs
         items={[
@@ -103,7 +129,17 @@ export default async function GlossaryTermPage({ params }: PageProps) {
             </Link>
           </div>
         ) : null}
-        <div className="text-sm text-zinc-500">Updated {term.updatedAt}</div>
+        <div className="flex flex-wrap gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <span className="rounded-full border border-zinc-200 px-3 py-1 dark:border-zinc-800">
+            Written by {siteConfig.editorialTeamName}
+          </span>
+          <span className="rounded-full border border-zinc-200 px-3 py-1 dark:border-zinc-800">
+            Reviewed by {siteConfig.reviewTeamName}
+          </span>
+          <span className="rounded-full border border-zinc-200 px-3 py-1 dark:border-zinc-800">
+            Updated {term.updatedAt}
+          </span>
+        </div>
       </header>
 
       <div className="grid gap-8 lg:grid-cols-5">
