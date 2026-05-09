@@ -7754,7 +7754,7 @@ export const guides: Guide[] = [
         "A practical guide to how SAFEs convert in a priced round. Understand cap vs discount, how dilution changes under pre- vs post-money terms, and what founders should model before a round closes.",
     },
     category: "finance",
-    updatedAt: "2026-03-31",
+    updatedAt: "2026-05-09",
     summary: {
       audience:
         "Founders, investors, and finance operators modeling what SAFE terms mean in an actual priced round.",
@@ -7779,6 +7779,11 @@ export const guides: Guide[] = [
       "post-money-valuation",
     ],
     sections: [
+      { type: "h2", text: "Quick answer" },
+      {
+        type: "p",
+        text: "SAFE conversion means the SAFE turns into shares during a priced round using the lowest price the document allows. In most simple models, that means comparing the cap price, the discount price, and the round price, then converting at the investor-favorable result required by the SAFE terms.",
+      },
       { type: "h2", text: "What a SAFE is" },
       {
         type: "p",
@@ -7791,6 +7796,15 @@ export const guides: Guide[] = [
           "Valuation cap: sets a maximum valuation used for conversion, producing a lower conversion price if the priced round valuation is high.",
           "Discount: converts at a percentage off the priced round price per share (e.g., 20% discount).",
           "Many SAFEs convert at the better (lower price) of cap or discount (terms vary).",
+        ],
+      },
+      { type: "h2", text: "The decision rule in plain English" },
+      {
+        type: "bullets",
+        items: [
+          "If the cap price is lower than the discount price, the cap wins and the SAFE holder gets more shares.",
+          "If the discount price is lower than the cap price, the discount wins and the SAFE holder gets more shares.",
+          "If the SAFE is post-money, be extra careful with dilution assumptions because the founder dilution pattern is usually less forgiving than founders expect.",
         ],
       },
       { type: "h2", text: "How to model conversion (simplified)" },
@@ -7811,6 +7825,16 @@ export const guides: Guide[] = [
           "Does it include a cap, a discount, or both-",
           "What counts as a qualified financing and what is the conversion trigger-",
           "How are pro-rata rights handled, if any-",
+          "Does the model use the same fully diluted share definition the legal documents use-",
+        ],
+      },
+      { type: "h2", text: "What founders usually miss" },
+      {
+        type: "bullets",
+        items: [
+          "The headline SAFE amount is not the dilution outcome. Conversion price mechanics determine the real share count issued.",
+          "Option-pool changes, multiple SAFEs, and note conversions can move founder ownership more than the headline round valuation does.",
+          "The safest workflow is to model the round before documents are final so the team sees the ownership math early.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
@@ -7938,7 +7962,7 @@ export const guides: Guide[] = [
         "Learn how liquidation preference changes exit proceeds, when investors take the preference instead of converting, and how 1x non-participating terms affect founder and shareholder outcomes.",
     },
     category: "finance",
-    updatedAt: "2026-03-31",
+    updatedAt: "2026-05-09",
     summary: {
       audience:
         "Founders, board members, and investors modeling how exit proceeds change under preferred-stock terms.",
@@ -7956,6 +7980,11 @@ export const guides: Guide[] = [
     ],
     relatedGlossarySlugs: ["liquidation-preference", "equity-value", "dilution"],
     sections: [
+      { type: "h2", text: "Quick answer" },
+      {
+        type: "p",
+        text: "Liquidation preference decides whether preferred investors take their preference amount first or convert to common and share the exit upside. In a simple 1x non-participating structure, investors choose whichever payout is larger at the exit value you are modeling.",
+      },
       { type: "h2", text: "What liquidation preference does" },
       {
         type: "p",
@@ -7969,6 +7998,15 @@ export const guides: Guide[] = [
           "At low exit values, preference often dominates; at high exit values, conversion often dominates.",
         ],
       },
+      { type: "h2", text: "The decision rule in plain English" },
+      {
+        type: "bullets",
+        items: [
+          "If the investor's as-converted ownership share of the exit is less than the preference amount, they usually take the preference.",
+          "If the as-converted common payout is higher than the preference amount, they usually convert.",
+          "The break-even exit value is the point where those two payouts are equal.",
+        ],
+      },
       { type: "h2", text: "Convert or take preference: the decision rule" },
       {
         type: "bullets",
@@ -7976,6 +8014,15 @@ export const guides: Guide[] = [
           "Preference payout ~= investment * preferenceMultiple (for 1x, it is the investment).",
           "As-converted common payout ~= ownershipPercent * exitValue (ignoring other classes).",
           "Break-even exit value ~= preferenceAmount / ownershipPercent.",
+        ],
+      },
+      { type: "h2", text: "What this changes for founders" },
+      {
+        type: "bullets",
+        items: [
+          "At lower exits, liquidation preference can absorb proceeds that founders and employees assumed would flow to common.",
+          "At higher exits, the same investors may rationally convert, which changes the payout split again.",
+          "Once you add stacked rounds, seniority, or participation, intuition breaks quickly and you need a real waterfall model.",
         ],
       },
       { type: "h2", text: "A practical waterfall checklist" },
@@ -8507,7 +8554,7 @@ export const guides: Guide[] = [
         "Learn how to run a DCF sensitivity table, choose defensible WACC and terminal growth ranges, and see whether valuation is robust or too fragile to trust at one number.",
     },
     category: "finance",
-    updatedAt: "2026-03-31",
+    updatedAt: "2026-05-09",
     summary: {
       audience:
         "Finance teams, founders, and investors testing whether a DCF conclusion stays intact once key assumptions move.",
@@ -8522,6 +8569,11 @@ export const guides: Guide[] = [
     relatedCalculatorSlugs: ["dcf-sensitivity-calculator", "dcf-valuation-calculator", "wacc-calculator"],
     relatedGlossarySlugs: ["dcf", "wacc", "discount-rate", "terminal-value", "sensitivity-analysis"],
     sections: [
+      { type: "h2", text: "Quick answer" },
+      {
+        type: "p",
+        text: "DCF sensitivity is the check that tells you whether your valuation conclusion still holds when discount rate and terminal growth move within a defensible range. If a small change in assumptions creates a huge swing in value, the model is fragile and the single headline number should not be treated as truth.",
+      },
       { type: "h2", text: "Why sensitivity matters" },
       {
         type: "p",
@@ -8535,6 +8587,15 @@ export const guides: Guide[] = [
           "Pick a range for discount rate (r) and terminal growth (g).",
           "Recalculate value for each r/g pair to build a grid.",
           "Compare how far valuations move from the base case.",
+        ],
+      },
+      { type: "h2", text: "How to tell if the DCF is robust" },
+      {
+        type: "bullets",
+        items: [
+          "If the valuation story stays directionally similar across reasonable WACC and terminal-growth pairs, the conclusion is more robust.",
+          "If a 1-2 point move in WACC or terminal growth changes the decision, treat the DCF as fragile and widen the decision range.",
+          "If terminal value dominates most of enterprise value, challenge the forecast length, reinvestment logic, and terminal assumptions before defending the headline output.",
         ],
       },
       { type: "h2", text: "How to pick ranges" },

@@ -257,8 +257,8 @@ const seeds: Seed[] = [
     slug: "net-debt",
     title: "Net debt: formula, what to include, and how it affects equity value",
     description:
-      "Net debt is debt minus cash and cash equivalents, adjusted for any debt-like items your team includes in the bridge from enterprise value to equity value. The number only works if you define both debt and usable cash consistently.",
-    updatedAt: "2026-03-31",
+      "Net debt means total debt minus cash and cash equivalents, with debt-like items added only if your valuation policy includes them. It is the adjustment that usually bridges enterprise value to equity value.",
+    updatedAt: "2026-05-09",
     formula: "Net debt = total debt + debt-like items - cash - cash equivalents",
     seo: {
       title: "Net debt: formula, what to include, and how it affects equity value",
@@ -274,8 +274,19 @@ const seeds: Seed[] = [
         "Enterprise value measures the operating asset before financing claims. Net debt is one of the main adjustments that bridges EV down to equity value.",
         "If cash exceeds debt, the business has net cash instead of net debt, which raises equity value relative to enterprise value rather than reducing it.",
       ],
+      operatorTakeaway: [
+        "If someone asks for the shortest definition, use this: net debt is debt minus cash, then adjust for debt-like items only if your team explicitly includes them.",
+        "The number is only decision-useful when the debt, cash, and valuation date all match the same bridge from enterprise value to equity value.",
+      ],
+      nextDecision: [
+        "Decide which debt-like items belong in your bridge before you compare valuation cases, board materials, or fairness-style analyses.",
+        "If the company holds restricted cash, trapped cash, leases, or preferred claims, decide whether they were already handled elsewhere so you do not double-count them.",
+      ],
     },
+    example:
+      "Example: if total debt is $120M, debt-like items are $10M, and cash is $35M, net debt is $95M. If enterprise value is $500M, a simple bridge would imply equity value of about $405M before other claims or adjustments.",
     bullets: [
+      "Start with the plain-English rule most searchers want: net debt is debt minus cash. Add debt-like items only if your model, committee, or board definition says they belong there.",
       "Include short-term and long-term borrowings, plus other debt-like items if your valuation policy treats them as financing claims.",
       "Use the same balance-sheet date as the enterprise value, share count, and trading-multiple inputs.",
       "Decide whether restricted cash really offsets debt before netting it against liabilities.",
