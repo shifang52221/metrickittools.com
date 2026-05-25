@@ -258,12 +258,12 @@ const seeds: Seed[] = [
     title: "Net debt: formula, what to include, and how it affects equity value",
     description:
       "Net debt means total debt minus cash and cash equivalents, with debt-like items added only if your valuation policy includes them. It is the adjustment that usually bridges enterprise value to equity value.",
-    updatedAt: "2026-05-09",
+    updatedAt: "2026-05-25",
     formula: "Net debt = total debt + debt-like items - cash - cash equivalents",
     seo: {
-      title: "Net debt: formula, what to include, and how it affects equity value",
+      title: "Net debt formula: what to include and equity value impact",
       description:
-        "Net debt is total debt minus cash, adjusted for debt-like items when needed. Learn what to include, what to exclude, and how net debt changes the bridge from enterprise value to equity value.",
+        "Net debt is total debt minus cash, with debt-like items added only when policy says they belong. See what to include and how it affects equity value.",
       heroNote:
         "Use this when a DCF or multiples output gives you enterprise value but the real question is what belongs to shareholders. Before you compare valuation outcomes, align the balance-sheet date and decide whether restricted cash or lease-like items belong in your bridge.",
       nextStepLabel: "Bridge EV to equity value",

@@ -1,3 +1,19 @@
+export function clampMetaTitle(
+  title: string | null | undefined,
+  maxLength: number = 60,
+): string | undefined {
+  if (!title) return undefined;
+  const cleaned = title.replace(/\s+/g, " ").trim();
+  if (cleaned.length <= maxLength) return cleaned;
+  const cutoff = cleaned.slice(0, Math.max(0, maxLength - 3));
+  const lastSpace = cutoff.lastIndexOf(" ");
+  const trimmed = (lastSpace > 30 ? cutoff.slice(0, lastSpace) : cutoff).replace(
+    /[\s,;:!-]+$/,
+    "",
+  );
+  return `${trimmed}...`;
+}
+
 export function clampMetaDescription(
   description: string | null | undefined,
   maxLength: number = 160,

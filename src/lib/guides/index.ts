@@ -2275,7 +2275,8 @@ export const guides: Guide[] = [
       title: "ARR vs MRR guide: definitions, formulas, and conversion",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-05-25",
+    partOfGuideSlug: "arr-guide",
     relatedCalculatorSlugs: ["arr-vs-mrr-calculator", "arr-calculator", "mrr-calculator"],
     relatedGlossarySlugs: ["arr", "mrr"],
     sections: [
@@ -2489,14 +2490,55 @@ export const guides: Guide[] = [
   },
   {
     slug: "arr-guide",
-    title: "Bookings vs ARR: what ARR means (and what it doesn't)",
+    title: "ARR guide: meaning, formula, MRR, bookings, and growth",
     description:
-      "Bookings vs ARR explained: what ARR is (and isn't), plus how it differs from bookings and cash receipts.",
+      "A practical ARR guide covering meaning, formula, ARR vs MRR, bookings vs cash, net new ARR, waterfalls, and how to use ARR without misleading yourself.",
     seo: {
-      title: "Bookings vs ARR guide: what ARR means and what it is not",
+      title: "ARR guide: meaning, formula, MRR, bookings, and growth",
+      description:
+        "Learn what ARR means, how to calculate it, how it differs from MRR, bookings, and cash, and how to use ARR in growth and valuation work.",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-05-25",
+    summary: {
+      audience:
+        "Founders, finance partners, RevOps, and operators using ARR to compare growth quality, scale, and capital efficiency.",
+      decision:
+        "Whether ARR is defined cleanly enough to trust in board reporting, planning, and valuation work.",
+      useWhen:
+        "You need one reference point for ARR before you compare MRR, bookings, net new ARR, growth rate, or valuation outcomes.",
+      reviewedBy: "MetricKit editorial review for SaaS metric definitions.",
+      reviewNote:
+        "Reviewed to keep ARR, MRR, bookings, and waterfall logic consistent across the SaaS metrics stack.",
+    },
+    topicHub: {
+      title: "Explore the ARR stack",
+      description:
+        "Start here for the main ARR workflow, then go deeper into reconciliation, growth, MRR conversion, bookings, and valuation with the related spoke pages below.",
+      guideSlugs: [
+        "arr-vs-mrr-guide",
+        "arr-growth-rate-guide",
+        "arr-waterfall-guide",
+        "net-new-arr-guide",
+        "bookings-vs-arr-guide",
+      ],
+      glossarySlugs: [
+        "arr",
+        "mrr",
+        "arr-vs-bookings",
+        "billings",
+        "net-new-arr",
+        "arr-waterfall",
+      ],
+      calculatorSlugs: [
+        "arr-calculator",
+        "arr-vs-mrr-calculator",
+        "arr-growth-rate-calculator",
+        "arr-waterfall-calculator",
+        "net-new-arr-calculator",
+        "bookings-vs-arr-calculator",
+      ],
+    },
     relatedCalculatorSlugs: [
       "arr-calculator",
       "arr-vs-mrr-calculator",
@@ -2511,22 +2553,24 @@ export const guides: Guide[] = [
       "mrr",
       "arr-vs-bookings",
       "billings",
+      "net-new-arr",
+      "arr-waterfall",
       "recognized-revenue",
       "deferred-revenue",
     ],
     sections: [
-      { type: "h2", text: "Definition" },
+      { type: "h2", text: "Quick answer" },
       {
         type: "p",
-        text: "ARR (Annual Recurring Revenue) is MRR annualized (MRR * 12). It's an annualized run-rate snapshot, not a promise of revenue.",
+        text: "ARR means Annual Recurring Revenue. In most SaaS operating models, it is recurring monthly run-rate annualized, usually MRR * 12. It is a snapshot of recurring momentum, not a promise of what you will recognize as revenue over the next 12 months.",
       },
-      { type: "h2", text: "Bookings vs ARR (and cash)" },
+      { type: "h2", text: "What counts as ARR" },
       {
         type: "bullets",
         items: [
-          "ARR measures recurring run-rate; bookings measure contracted value; cash measures receipts.",
-          "For annual prepay, cash can be high while ARR grows more steadily.",
-          "Use ARR for comparability across SaaS businesses; use cash for runway planning.",
+          "Include recurring subscription value that reflects ongoing run-rate.",
+          "Exclude one-time fees, implementation services, and non-recurring projects.",
+          "Keep discount treatment, active-customer rules, and timing definitions consistent across months.",
         ],
       },
       { type: "h2", text: "ARR vs MRR" },
@@ -2538,7 +2582,32 @@ export const guides: Guide[] = [
           "If ARR and MRR don't reconcile, definitions or timestamps likely differ.",
         ],
       },
-      { type: "h2", text: "ARR movements (net new ARR)" },
+      { type: "h2", text: "ARR vs bookings, billings, and cash" },
+      {
+        type: "table",
+        columns: ["Metric", "What it measures", "Best use", "Typical mistake"],
+        rows: [
+          [
+            "ARR",
+            "Recurring run-rate, usually MRR * 12.",
+            "Comparing SaaS scale, momentum, and recurring efficiency.",
+            "Treating ARR as guaranteed annual revenue or mixing in services.",
+          ],
+          [
+            "Bookings",
+            "Contracted value signed in a period.",
+            "Understanding sales output and contracted demand.",
+            "Comparing bookings directly to ARR without normalizing one-time items and term length.",
+          ],
+          [
+            "Cash",
+            "Money collected based on billing timing.",
+            "Runway planning and liquidity management.",
+            "Treating annual-prepay cash spikes as recurring growth.",
+          ],
+        ],
+      },
+      { type: "h2", text: "How ARR moves over time" },
       {
         type: "bullets",
         items: [
@@ -2547,70 +2616,56 @@ export const guides: Guide[] = [
           "Segment by plan/channel/customer size to avoid blended averages hiding churn pockets.",
         ],
       },
-      { type: "h2", text: "Bookings vs ARR vs cash: quick comparison" },
+      { type: "h2", text: "How to calculate and QA ARR" },
       {
-        type: "table",
-        columns: ["Metric", "What it measures", "When to use", "Common mistake"],
-        rows: [
-          [
-            "ARR",
-            "Recurring run-rate (typically MRR * 12). Excludes one-time fees/services.",
-            "Comparing SaaS scale and momentum across time or companies.",
-            "Treating ARR as guaranteed annual revenue or including services revenue.",
-          ],
-          [
-            "Bookings",
-            "Contracted value closed in a period (may include prepay, one-time fees, services).",
-            "Sales performance, pipeline conversion, and forecasting contracted demand.",
-            "Assuming bookings equals recurring run-rate or comparing bookings to ARR without adjusting for one-time items.",
-          ],
-          [
-            "Cash",
-            "Money collected (cash receipts). Sensitive to billing terms and prepay timing.",
-            "Runway planning and cash-flow management.",
-            "Using cash spikes from annual prepay as proof of recurring growth without checking retention and renewals.",
-          ],
+        type: "bullets",
+        items: [
+          "Start with clean recurring MRR or normalize recurring contract value into monthly run-rate first.",
+          "Annualize the recurring run-rate: ARR = MRR * 12.",
+          "Reconcile the result against your ARR waterfall, net new ARR, and period-end customer base.",
+          "Check whether services, credits, annual prepay timing, or stale snapshot dates are distorting the number.",
         ],
       },
-      { type: "h2", text: "Pitfalls" },
+      { type: "h2", text: "When ARR is useful and when it misleads" },
+      {
+        type: "bullets",
+        items: [
+          "ARR is useful when you need a clean recurring-scale metric across periods, segments, or comparable SaaS businesses.",
+          "ARR misleads when you ignore retention quality, churn pockets, or the difference between run-rate and recognized revenue.",
+          "If ARR looks strong but cash or payback is weak, pair it with bookings, burn, and margin instead of trusting ARR alone.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
         items: [
           "Counting services revenue as ARR inflates true recurring run-rate.",
-          "Ignoring churn/retention when annualizing short-term MRR spikes.",
-          "Treating bookings/billings/cash timing as ARR growth (different concepts).",
-        ],
-      },
-      { type: "h2", text: "Examples (annual prepay vs monthly)" },
-      {
-        type: "bullets",
-        items: [
-          "Annual prepay: cash may spike today, while ARR reflects ongoing run-rate (MRR * 12).",
-          "A large annual contract can increase bookings immediately even if ARR only increases as recurring run-rate grows.",
-          "If you add one-time services to a deal, bookings rise but ARR should not include the services portion.",
+          "Ignoring churn and retention when annualizing a short-term MRR spike.",
+          "Treating bookings, billings, or cash timing as if they were ARR growth.",
+          "Comparing ARR snapshots built from different definitions, geographies, or period cutoffs.",
         ],
       },
     ],
     faqs: [
       {
-        question: "What is bookings-",
-        answer:
-          "Bookings are the value of contracts you sign in a period. Bookings can include recurring subscriptions and non-recurring items (services, setup fees) depending on how you define it.",
-      },
-      {
-        question: "Why can bookings be higher than ARR-",
-        answer:
-          "Bookings often include the full contract value (including one-time or non-recurring items), while ARR is a recurring run-rate snapshot. A big annual prepay can increase bookings and cash immediately, while ARR reflects recurring value over time.",
-      },
-      {
         question: "Is ARR the same as annual revenue-",
         answer:
-          "Not always. ARR is a recurring run-rate snapshot. Annual revenue can include one-time fees or services, and it reflects what you recognized over a year rather than a current run-rate.",
+          "No. ARR is a recurring run-rate snapshot. Annual revenue is what you recognize over a year under accounting rules and can include timing effects or non-recurring items.",
       },
       {
-        question: "How does annual prepay affect ARR-",
+        question: "Should ARR always equal MRR times 12-",
         answer:
-          "Annual prepay increases cash receipts immediately, but ARR reflects recurring run-rate. ARR typically increases based on the recurring subscription amount, not the timing of cash collection.",
+          "Yes, if both are based on the same recurring run-rate definition and the same snapshot date. If they do not match, definitions or timing are usually the problem.",
+      },
+      {
+        question: "Why can bookings be much higher than ARR-",
+        answer:
+          "Bookings can include the full contracted value, one-time fees, and annual prepay timing. ARR only captures the recurring run-rate portion.",
+      },
+      {
+        question: "What does net new ARR tell me that ARR alone does not-",
+        answer:
+          "ARR gives you the ending recurring scale. Net new ARR explains the movement by showing how much came from new, expansion, contraction, and churn.",
       },
     ],
     examples: [
@@ -3387,7 +3442,8 @@ export const guides: Guide[] = [
       title: "ARR growth rate guide: period, CMGR, annualized",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-05-25",
+    partOfGuideSlug: "arr-guide",
     relatedCalculatorSlugs: ["arr-growth-rate-calculator", "arr-calculator", "mrr-calculator"],
     relatedGlossarySlugs: ["arr", "cmgr"],
     sections: [
@@ -3459,7 +3515,8 @@ export const guides: Guide[] = [
       title: "ARR waterfall guide: reconcile ARR and net new ARR",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-05-25",
+    partOfGuideSlug: "arr-guide",
     relatedCalculatorSlugs: ["arr-waterfall-calculator", "net-new-arr-calculator", "burn-multiple-calculator"],
     relatedGlossarySlugs: ["arr", "net-new-arr", "arr-waterfall", "burn-multiple"],
     sections: [
@@ -3634,7 +3691,8 @@ export const guides: Guide[] = [
       title: "Net new ARR guide: definition, formula, mistakes",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-05-25",
+    partOfGuideSlug: "arr-guide",
     relatedCalculatorSlugs: ["net-new-arr-calculator", "burn-multiple-calculator"],
     relatedGlossarySlugs: ["arr", "net-new-arr"],
     sections: [
@@ -3822,7 +3880,8 @@ export const guides: Guide[] = [
       title: "ARR vs Bookings: formula, example, and calculator",
     },
     category: "saas-metrics",
-    updatedAt: "2026-02-22",
+    updatedAt: "2026-05-25",
+    partOfGuideSlug: "arr-guide",
     relatedCalculatorSlugs: ["bookings-vs-arr-calculator", "arr-calculator", "mrr-calculator"],
     sections: [
       { type: "h2", text: "Bookings vs ARR (quick definition)" },
@@ -7745,16 +7804,16 @@ export const guides: Guide[] = [
   },
   {
     slug: "safe-guide",
-    title: "SAFE conversion explained: cap vs discount, dilution, and pre- vs post-money",
+    title: "SAFE conversion guide: cap vs discount and dilution",
     description:
-      "A practical guide to how SAFEs convert in a priced round. Understand cap vs discount, how dilution changes under pre- vs post-money terms, and what founders should model before a round closes.",
+      "How SAFE conversion works in a priced round, when the cap or discount wins, and how pre- vs post-money terms change dilution.",
     seo: {
-      title: "SAFE conversion explained: cap vs discount, dilution, and pre- vs post-money",
+      title: "SAFE conversion guide: cap vs discount and dilution",
       description:
-        "A practical guide to how SAFEs convert in a priced round. Understand cap vs discount, how dilution changes under pre- vs post-money terms, and what founders should model before a round closes.",
+        "How SAFE conversion works in a priced round, when the cap or discount wins, and how pre- vs post-money terms change dilution.",
     },
     category: "finance",
-    updatedAt: "2026-05-09",
+    updatedAt: "2026-05-25",
     summary: {
       audience:
         "Founders, investors, and finance operators modeling what SAFE terms mean in an actual priced round.",
@@ -7953,16 +8012,16 @@ export const guides: Guide[] = [
   },
   {
     slug: "liquidation-preference-guide",
-    title: "Liquidation preference explained: 1x non-participating, conversion, and exit payouts",
+    title: "Liquidation preference: 1x payouts, conversion, break-even",
     description:
-      "Learn how liquidation preference changes exit proceeds, when investors take the preference instead of converting, and how 1x non-participating terms affect founder and shareholder outcomes.",
+      "How 1x non-participating liquidation preference changes founder payouts, when investors convert, and the break-even exit value.",
     seo: {
-      title: "Liquidation preference explained: 1x non-participating, conversion, and exit payouts",
+      title: "Liquidation preference: 1x payouts, conversion, break-even",
       description:
-        "Learn how liquidation preference changes exit proceeds, when investors take the preference instead of converting, and how 1x non-participating terms affect founder and shareholder outcomes.",
+        "How 1x non-participating liquidation preference changes founder payouts, when investors convert, and the break-even exit value.",
     },
     category: "finance",
-    updatedAt: "2026-05-09",
+    updatedAt: "2026-05-25",
     summary: {
       audience:
         "Founders, board members, and investors modeling how exit proceeds change under preferred-stock terms.",
@@ -8545,16 +8604,16 @@ export const guides: Guide[] = [
   },
   {
     slug: "dcf-sensitivity-guide",
-    title: "DCF sensitivity: WACC, terminal growth, and how valuation moves",
+    title: "DCF sensitivity guide: WACC, terminal growth, valuation",
     description:
-      "Learn how to run a DCF sensitivity table, choose defensible WACC and terminal growth ranges, and see whether valuation is robust or too fragile to trust at one number.",
+      "How to run a DCF sensitivity table, choose defensible WACC and terminal growth ranges, and judge whether valuation is robust.",
     seo: {
-      title: "DCF sensitivity: WACC, terminal growth, and how valuation moves",
+      title: "DCF sensitivity guide: WACC, terminal growth, valuation",
       description:
-        "Learn how to run a DCF sensitivity table, choose defensible WACC and terminal growth ranges, and see whether valuation is robust or too fragile to trust at one number.",
+        "How to run a DCF sensitivity table, choose defensible WACC and terminal growth ranges, and judge whether valuation is robust.",
     },
     category: "finance",
-    updatedAt: "2026-05-09",
+    updatedAt: "2026-05-25",
     summary: {
       audience:
         "Finance teams, founders, and investors testing whether a DCF conclusion stays intact once key assumptions move.",

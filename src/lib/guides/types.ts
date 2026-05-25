@@ -17,6 +17,14 @@ export type GuideSummary = {
   reviewNote?: string;
 };
 
+export type GuideTopicHub = {
+  title?: string;
+  description?: string;
+  guideSlugs?: string[];
+  glossarySlugs?: string[];
+  calculatorSlugs?: string[];
+};
+
 export type Guide = {
   slug: string;
   title: string;
@@ -28,6 +36,8 @@ export type Guide = {
   category: "saas-metrics" | "paid-ads" | "finance";
   updatedAt: string; // YYYY-MM-DD
   summary?: GuideSummary;
+  partOfGuideSlug?: string;
+  topicHub?: GuideTopicHub;
   sections: GuideSection[];
   relatedCalculatorSlugs: string[];
   relatedGlossarySlugs?: string[];

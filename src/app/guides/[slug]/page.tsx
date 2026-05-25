@@ -7,7 +7,7 @@ import { AdUnit } from "@/components/ads/AdUnit";
 import { calculators } from "@/lib/calculators";
 import { getGuide, guides } from "@/lib/guides";
 import { glossaryTerms } from "@/lib/glossary";
-import { clampMetaDescription } from "@/lib/seo";
+import { clampMetaDescription, clampMetaTitle } from "@/lib/seo";
 import { absoluteUrl, siteConfig } from "@/lib/site";
 import { getAdSenseSlot } from "@/lib/adsense";
 
@@ -36,7 +36,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const guide = getGuide(slug);
   if (!guide) return {};
-  const metaTitle = guide.seo?.title ?? guide.title;
+  const rawMetaTitle = guide.seo?.title ?? guide.title;
+  const metaTitle = clampMetaTitle(rawMetaTitle) ?? rawMetaTitle;
   const metaDescription = clampMetaDescription(
     guide.seo?.description ?? guide.description,
   );
@@ -74,6 +75,18 @@ export default async function GuidePage({ params }: PageProps) {
   const relatedGlossary = (guide.relatedGlossarySlugs ?? [])
     .map((s) => glossaryTerms.find((t) => t.slug === s))
     .filter((t): t is (typeof glossaryTerms)[number] => Boolean(t));
+  const partOfGuide = guide.partOfGuideSlug
+    ? getGuide(guide.partOfGuideSlug)
+    : null;
+  const topicHubGuides = (guide.topicHub?.guideSlugs ?? [])
+    .map((s) => getGuide(s))
+    .filter((g): g is NonNullable<ReturnType<typeof getGuide>> => Boolean(g));
+  const topicHubGlossary = (guide.topicHub?.glossarySlugs ?? [])
+    .map((s) => glossaryTerms.find((t) => t.slug === s))
+    .filter((t): t is (typeof glossaryTerms)[number] => Boolean(t));
+  const topicHubCalculators = (guide.topicHub?.calculatorSlugs ?? [])
+    .map((s) => calculators.find((c) => c.slug === s))
+    .filter((c): c is (typeof calculators)[number] => Boolean(c));
 
   const examples = (guide.examples ?? [])
     .map((ex) => {
@@ -252,6 +265,97 @@ export default async function GuidePage({ params }: PageProps) {
               {guide.summary.reviewNote}
             </div>
           ) : null}
+        </section>
+      ) : null}
+
+      {partOfGuide ? (
+        <section className="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-black">
+          <div className="text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
+            Part of this topic
+          </div>
+          <div className="mt-2 text-lg font-semibold tracking-tight">
+            <Link className="hover:underline" href={`/guides/${partOfGuide.slug}`}>
+              {partOfGuide.title}
+            </Link>
+          </div>
+          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+            Use the topic guide when you need the broader ARR workflow, not
+            just this specific sub-question.
+          </p>
+        </section>
+      ) : null}
+
+      {guide.topicHub &&
+      (topicHubGuides.length ||
+        topicHubGlossary.length ||
+        topicHubCalculators.length) ? (
+        <section className="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-black">
+          <div className="text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
+            Topic hub
+          </div>
+          <h2 className="mt-2 text-xl font-semibold tracking-tight">
+            {guide.topicHub.title ?? "Explore this topic"}
+          </h2>
+          {guide.topicHub.description ? (
+            <p className="mt-2 max-w-3xl text-sm text-zinc-600 dark:text-zinc-400">
+              {guide.topicHub.description}
+            </p>
+          ) : null}
+          <div className="mt-4 grid gap-4 lg:grid-cols-3">
+            {topicHubGuides.length ? (
+              <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-950">
+                <div className="text-sm font-medium">Related guides</div>
+                <ul className="mt-3 space-y-2 text-sm text-zinc-700 dark:text-zinc-300">
+                  {topicHubGuides.map((hubGuide) => (
+                    <li key={hubGuide.slug}>
+                      <Link
+                        className="underline"
+                        href={`/guides/${hubGuide.slug}`}
+                      >
+                        {hubGuide.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+
+            {topicHubGlossary.length ? (
+              <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-950">
+                <div className="text-sm font-medium">Core definitions</div>
+                <ul className="mt-3 space-y-2 text-sm text-zinc-700 dark:text-zinc-300">
+                  {topicHubGlossary.map((term) => (
+                    <li key={term.slug}>
+                      <Link
+                        className="underline"
+                        href={`/glossary/${term.slug}`}
+                      >
+                        {term.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+
+            {topicHubCalculators.length ? (
+              <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-950">
+                <div className="text-sm font-medium">Try the calculators</div>
+                <ul className="mt-3 space-y-2 text-sm text-zinc-700 dark:text-zinc-300">
+                  {topicHubCalculators.map((calc) => (
+                    <li key={calc.slug}>
+                      <Link
+                        className="underline"
+                        href={`/${calc.category}/${calc.slug}`}
+                      >
+                        {calc.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </div>
         </section>
       ) : null}
 

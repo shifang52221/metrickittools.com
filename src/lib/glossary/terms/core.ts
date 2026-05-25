@@ -7,7 +7,16 @@ export const termsCore: GlossaryTerm[] = [
     description:
       "ARR means Annual Recurring Revenue. Learn the ARR formula, what to include, ARR vs bookings, and common SaaS finance mistakes.",
     category: "saas-metrics",
-    updatedAt: "2026-03-18",
+    updatedAt: "2026-05-25",
+    seo: {
+      title: "ARR meaning: formula, example, and what counts as ARR",
+      description:
+        "ARR means Annual Recurring Revenue. Learn the formula, what counts, how ARR differs from MRR and bookings, and when to read the full ARR guide.",
+      heroNote:
+        "Use this page for the fast definition. If you need the full workflow for ARR, MRR, bookings, net new ARR, waterfalls, and growth interpretation, go to the ARR guide next.",
+      nextStepLabel: "Read the full ARR guide",
+      nextStepHref: "/guides/arr-guide",
+    },
     sections: [
       { type: "h2", text: "Definition" },
       {

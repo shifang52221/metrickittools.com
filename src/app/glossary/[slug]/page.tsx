@@ -7,7 +7,7 @@ import { calculators, categories } from "@/lib/calculators";
 import { guides } from "@/lib/guides";
 import { getGlossaryTerm, glossaryTerms } from "@/lib/glossary";
 import { getGlossaryPageModules } from "@/lib/glossary/pageModules";
-import { clampMetaDescription } from "@/lib/seo";
+import { clampMetaDescription, clampMetaTitle } from "@/lib/seo";
 import { absoluteUrl, siteConfig } from "@/lib/site";
 
 type PageProps = { params: Promise<{ slug: string }> };
@@ -16,7 +16,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const term = getGlossaryTerm(slug);
   if (!term) return {};
-  const metaTitle = term.seo?.title ?? `${term.title} definition`;
+  const rawMetaTitle = term.seo?.title ?? `${term.title} definition`;
+  const metaTitle = clampMetaTitle(rawMetaTitle) ?? rawMetaTitle;
   const metaDescription = clampMetaDescription(term.seo?.description ?? term.description);
   return {
     title: term.seo?.title ? { absolute: metaTitle } : metaTitle,
