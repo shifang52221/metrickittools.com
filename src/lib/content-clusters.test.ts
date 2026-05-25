@@ -40,3 +40,41 @@ test("CAC glossary entry routes quick-definition traffic to the full guide", () 
     /full CAC guide/i,
   );
 });
+
+test("LTV guide exposes a topic hub for the cluster", () => {
+  const guide = getGuide("ltv-guide");
+
+  assert.ok(guide, "expected ltv-guide to exist");
+  assert.equal(guide.topicHub?.title, "Understand LTV with more confidence");
+  assert.deepEqual(guide.topicHub?.guideSlugs, [
+    "ltv-sensitivity-guide",
+    "customer-lifetime-guide",
+    "cohort-ltv-forecast-guide",
+    "ltv-cac-guide",
+  ]);
+  assert.deepEqual(guide.topicHub?.calculatorSlugs, [
+    "ltv-calculator",
+    "ltv-sensitivity-calculator",
+    "cohort-ltv-forecast-calculator",
+    "ltv-to-cac-calculator",
+    "unit-economics-calculator",
+  ]);
+});
+
+test("Direct LTV spoke guides point back to the parent topic", () => {
+  assert.equal(getGuide("ltv-sensitivity-guide")?.partOfGuideSlug, "ltv-guide");
+  assert.equal(getGuide("customer-lifetime-guide")?.partOfGuideSlug, "ltv-guide");
+  assert.equal(getGuide("cohort-ltv-forecast-guide")?.partOfGuideSlug, "ltv-guide");
+});
+
+test("LTV glossary entry routes quick-definition traffic to the full guide", () => {
+  const term = termsCore.find((entry) => entry.slug === "ltv");
+
+  assert.ok(term, "expected glossary term ltv to exist");
+  assert.equal(term.seo?.nextStepLabel, "Read the full LTV guide");
+  assert.equal(term.seo?.nextStepHref, "/guides/ltv-guide");
+  assert.match(
+    term.seo?.heroNote ?? "",
+    /full LTV guide/i,
+  );
+});

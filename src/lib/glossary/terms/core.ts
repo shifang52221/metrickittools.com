@@ -327,11 +327,20 @@ export const termsCore: GlossaryTerm[] = [
   },
   {
     slug: "ltv",
-    title: "LTV (Lifetime Value)",
+    title: "LTV Meaning: Formula, Example, and When the Shortcut Breaks",
     description:
-      "LTV estimates the value a customer generates over their lifetime. For unit economics, gross profit LTV is usually more useful than revenue LTV.",
+      "LTV estimates the value a customer generates over their lifetime. Learn the shortcut formula, when to use gross profit LTV, and when to move to the full guide.",
     category: "saas-metrics",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-05-25",
+    seo: {
+      title: "LTV meaning: formula, example, and when the shortcut breaks",
+      description:
+        "LTV means Lifetime Value. Learn the shortcut formula, how churn and gross margin shape the estimate, and when to read the full LTV guide.",
+      heroNote:
+        "Use this page for the fast definition. If you need the broader workflow for customer lifetime, cohort modeling, churn assumptions, and LTV:CAC, go to the full LTV guide next.",
+      nextStepLabel: "Read the full LTV guide",
+      nextStepHref: "/guides/ltv-guide",
+    },
     sections: [
       { type: "h2", text: "Definition" },
       {

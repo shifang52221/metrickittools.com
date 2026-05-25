@@ -1309,54 +1309,137 @@ export const guides: Guide[] = [
   },
   {
     slug: "ltv-guide",
-    title: "LTV: How to estimate Lifetime Value (and when not to)",
+    title: "LTV guide: formula, customer lifetime, cohort models, and LTV:CAC",
     description:
-      "A practical LTV guide: quick models vs cohort-based LTV, unit consistency, and pitfalls with churn and gross margin.",
+      "A practical LTV guide covering shortcut formulas, gross profit vs revenue LTV, customer lifetime, cohort-based models, and how to connect LTV to CAC and payback.",
     seo: {
-      title: "LTV guide: lifetime value models, churn pitfalls, and usage",
+      title: "LTV guide: formula, customer lifetime, cohort models, and LTV:CAC",
+      description:
+        "Learn how to estimate LTV, when the shortcut works, when to switch to cohort-based modeling, and how LTV connects to CAC, payback, and growth decisions.",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-05",
+    updatedAt: "2026-05-25",
+    summary: {
+      audience:
+        "Founders, growth leaders, finance partners, and operators trying to decide what a customer is really worth before they set spend targets or growth expectations.",
+      decision:
+        "Whether the current LTV estimate is trustworthy enough to use in CAC targets, payback planning, and broader unit-economics decisions.",
+      useWhen:
+        "You need one parent page before you branch into churn sensitivity, customer lifetime, cohort modeling, or LTV:CAC interpretation.",
+      reviewedBy: "MetricKit editorial review for SaaS unit economics planning.",
+      reviewNote:
+        "Reviewed to keep LTV, churn, customer lifetime, and gross-margin assumptions aligned across the SaaS metrics cluster.",
+    },
+    topicHub: {
+      title: "Understand LTV with more confidence",
+      description:
+        "Start here for the main LTV question, then go deeper into customer lifetime, churn and margin sensitivity, cohort-based modeling, and the bridge into LTV:CAC.",
+      guideSlugs: [
+        "ltv-sensitivity-guide",
+        "customer-lifetime-guide",
+        "cohort-ltv-forecast-guide",
+        "ltv-cac-guide",
+      ],
+      glossarySlugs: [
+        "ltv",
+        "customer-lifetime",
+        "cohorted-ltv",
+        "churn-rate",
+        "logo-churn",
+        "gross-margin",
+        "arpa",
+        "ltv-to-cac",
+      ],
+      calculatorSlugs: [
+        "ltv-calculator",
+        "ltv-sensitivity-calculator",
+        "cohort-ltv-forecast-calculator",
+        "ltv-to-cac-calculator",
+        "unit-economics-calculator",
+      ],
+    },
     relatedCalculatorSlugs: [
       "ltv-calculator",
+      "ltv-sensitivity-calculator",
+      "cohort-ltv-forecast-calculator",
       "ltv-to-cac-calculator",
       "cac-payback-period-calculator",
+      "unit-economics-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "ltv",
+      "customer-lifetime",
+      "cohorted-ltv",
+      "churn-rate",
+      "logo-churn",
+      "gross-margin",
+      "arpa",
+      "ltv-to-cac",
     ],
     sections: [
-      { type: "h2", text: "Definition" },
+      { type: "h2", text: "Quick answer" },
       {
         type: "p",
-        text: "LTV (Lifetime Value) is the gross profit you expect to earn from a customer over their lifetime. The best LTV models are cohort-based, but simple formulas are useful for fast planning.",
+        text: "LTV (Lifetime Value) is the value you expect to earn from a customer over time. For operating decisions, the number is usually most useful when it is based on gross profit, not just revenue. The real question is not only how to calculate LTV, but how much confidence you should have in that estimate before you use it to justify CAC, payback, or growth plans.",
       },
-      { type: "h2", text: "A common quick model" },
+      { type: "h2", text: "A common shortcut" },
       {
         type: "p",
         text: "LTV ~= (ARPA * gross margin) / churn rate (with consistent time units).",
       },
-      { type: "h2", text: "Make sure your units match" },
+      { type: "h2", text: "When the shortcut is good enough" },
       {
         type: "bullets",
         items: [
-          "Monthly ARPA must use monthly churn; annual churn must use annual ARPA.",
-          "Gross margin should reflect COGS, not operating expenses.",
-          "If you use revenue churn (NRR/GRR), label it clearly; don't mix with customer churn.",
+          "The business has relatively stable churn and limited expansion noise.",
+          "You need a quick planning estimate before you build a heavier cohort model.",
+          "ARPA, gross margin, and churn all come from the same segment and the same time unit.",
         ],
       },
-      { type: "h2", text: "When the quick model breaks" },
+      { type: "h2", text: "When the shortcut breaks" },
       {
         type: "bullets",
         items: [
-          "Expansion revenue is significant (upsells/cross-sells).",
-          "Churn changes over time (early churn vs long-term retention).",
-          "Different segments have very different retention curves.",
+          "Expansion revenue is significant and simple churn formulas understate value timing.",
+          "Churn changes over time, especially when early churn is much higher than later churn.",
+          "Different segments behave differently and blended averages hide what is really happening.",
+        ],
+      },
+      { type: "h2", text: "The assumptions that matter most" },
+      {
+        type: "bullets",
+        items: [
+          "Use gross margin, not operating margin, when the number is meant to support CAC and payback decisions.",
+          "Match monthly ARPA with monthly churn, or annual ARPA with annual churn.",
+          "Be explicit about logo churn vs revenue churn because the two can tell very different stories.",
+        ],
+      },
+      { type: "h2", text: "Customer lifetime is often the next question" },
+      {
+        type: "bullets",
+        items: [
+          "If you want to understand how long customers actually survive, go next to Customer lifetime.",
+          "If you need to see how fragile the estimate is, go next to LTV sensitivity.",
+          "If the shortcut feels too thin, go next to Cohort LTV forecasting.",
         ],
       },
       { type: "h2", text: "What to pair with LTV" },
       {
         type: "bullets",
         items: [
-          "CAC and payback period for growth planning.",
-          "NRR/GRR for revenue retention and expansion effects.",
+          "Use CAC and payback when the question is whether acquisition still works in cash terms.",
+          "Use LTV:CAC when the question is long-term sustainability, but only after you align definitions.",
+          "Use NRR/GRR and cohort retention when expansion or contraction changes the lifetime story.",
+        ],
+      },
+      { type: "h2", text: "Common mistakes" },
+      {
+        type: "bullets",
+        items: [
+          "Using revenue LTV while comparing it to fully-loaded CAC.",
+          "Mixing monthly churn with annual ARPA or other unit mismatches.",
+          "Letting one low blended churn number hide segment instability.",
+          "Treating a shortcut estimate as precise when the business clearly needs cohorts.",
         ],
       },
     ],
@@ -1370,6 +1453,11 @@ export const guides: Guide[] = [
         question: "What churn should I use-",
         answer:
           "Use customer churn for a simple model, but consider revenue churn (NRR/GRR) if expansion and downgrades matter for your business.",
+      },
+      {
+        question: "When should I stop using the simple LTV formula-",
+        answer:
+          "Move beyond the shortcut when churn changes materially by tenure, expansion matters, or segment behavior differs enough that one blended estimate is misleading. That is the point where cohort-based LTV becomes more trustworthy.",
       },
     ],
     examples: [
@@ -1390,7 +1478,8 @@ export const guides: Guide[] = [
     description:
       "A practical guide to LTV sensitivity: vary churn and gross margin to see how gross profit LTV changes under realistic scenarios.",
     category: "saas-metrics",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-05-25",
+    partOfGuideSlug: "ltv-guide",
     relatedCalculatorSlugs: [
       "ltv-sensitivity-calculator",
       "ltv-calculator",
@@ -4157,7 +4246,8 @@ export const guides: Guide[] = [
       title: "Customer lifetime guide: churn-based estimate and cohorts",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-05-25",
+    partOfGuideSlug: "ltv-guide",
     relatedCalculatorSlugs: ["customer-lifetime-calculator", "churn-rate-calculator"],
     sections: [
       { type: "h2", text: "Definition" },
@@ -5076,7 +5166,8 @@ export const guides: Guide[] = [
       title: "Cohort LTV forecast guide: churn, expansion, discounting",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-05-25",
+    partOfGuideSlug: "ltv-guide",
     relatedCalculatorSlugs: ["cohort-ltv-forecast-calculator", "ltv-calculator"],
     relatedGlossarySlugs: [
       "cohorted-ltv",
