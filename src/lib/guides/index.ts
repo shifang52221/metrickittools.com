@@ -8393,21 +8393,24 @@ export const guides: Guide[] = [
   },
   {
     slug: "unit-economics-dashboard-guide",
-    title: "Unit economics dashboard: LTV, CAC, payback, and what to improve",
+    title: "Unit economics dashboard: what to improve first when unit economics slip",
     description:
-      "A practical guide to unit economics: how to compute gross profit LTV, CAC payback, and LTV:CAC (and what levers improve them).",
+      "A practical diagnostic guide to deciding what to improve first when unit economics weaken: acquisition cost, retention, pricing, margin, or payback timing.",
     seo: {
-      title: "Unit economics dashboard guide: LTV, CAC, payback",
+      title: "Unit economics dashboard guide: what to improve first",
+      description:
+        "Learn how to diagnose weak unit economics, identify the primary constraint, and decide whether to fix acquisition, retention, pricing, margin, or payback first.",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-28",
+    updatedAt: "2026-05-25",
+    partOfGuideSlug: "unit-economics-guide",
     summary: {
       audience:
-        "Operators who need a practical dashboard view of CAC, LTV, payback, and the levers behind them.",
+        "Operators who need a practical diagnostic view of unit economics before they decide what to fix first.",
       decision:
-        "Which lever to fix first when unit economics slip: acquisition cost, retention, pricing, or margin.",
+        "Which lever to fix first when unit economics slip: acquisition cost, retention, pricing, margin, or cash timing.",
       useWhen:
-        "You need a working diagnostic layer for week-to-week reviews rather than a single headline ratio.",
+        "You have the headline ratios already, but you need a clear next action for the review meeting.",
       reviewedBy: "MetricKit editorial review for SaaS dashboard metrics.",
       reviewNote:
         "Reviewed to connect dashboard metrics back to actionable levers so the page supports diagnosis, not just reporting.",
@@ -8429,37 +8432,41 @@ export const guides: Guide[] = [
       "cohorted-ltv",
     ],
     sections: [
-      { type: "h2", text: "What unit economics tells you" },
+      { type: "h2", text: "What the dashboard is for" },
       {
         type: "p",
-        text: "Unit economics evaluates whether acquiring a customer creates enough gross profit to justify acquisition cost, and whether payback is fast enough for your cash constraints.",
+        text: "The dashboard is not meant to replace the underlying metric pages. It is meant to tell you which lever is probably wrong when the headline stack looks weak or contradictory. Use it when you already know the definitions and need a decision path.",
       },
-      { type: "h2", text: "Core metrics" },
+      { type: "h2", text: "Five failure zones" },
       {
         type: "bullets",
         items: [
-          "Gross profit LTV: expected gross profit from a customer over their lifetime.",
-          "CAC payback: months to recover CAC from monthly gross profit.",
-          "LTV:CAC: value relative to acquisition cost (helpful, but not sufficient).",
+          "Acquisition cost is too high: CAC or blended CAC is the first problem.",
+          "Retention is too weak: churn or customer lifetime is pulling LTV down.",
+          "Pricing or monetization is too low: ARPA is not supporting the model.",
+          "Gross margin is too thin: the business cannot recover spend quickly enough.",
+          "Cash timing is too slow: payback is too long even if the ratio stack looks fine.",
         ],
       },
-      { type: "h2", text: "How to improve the dashboard" },
+      { type: "h2", text: "How to diagnose the bottleneck" },
       {
         type: "bullets",
         items: [
-          "Increase ARPA: pricing, packaging, upsells, better monetization.",
-          "Increase gross margin: reduce COGS/variable costs, optimize infra and support.",
-          "Reduce churn: activation, onboarding, product quality, customer success.",
-          "Reduce CAC: improve conversion rates, targeting, and sales efficiency.",
+          "If CAC is high and ARR growth is weak, start with acquisition efficiency.",
+          "If LTV looks fine on paper but payback is long, check gross margin and cash timing next.",
+          "If LTV is weak, inspect churn, customer lifetime, and cohort behavior before changing spend.",
+          "If the dashboard looks healthy in aggregate but bad by segment, stop trusting blended averages.",
         ],
       },
-      { type: "h2", text: "Common mistakes" },
+      { type: "h2", text: "What to open next" },
       {
         type: "bullets",
         items: [
-          "Using revenue LTV instead of gross profit LTV.",
-          "Mixing fully-loaded CAC with revenue-based LTV (mismatch).",
-          "Relying on a single ratio (track payback and cash runway too).",
+          "Open CAC if the main issue is acquisition cost.",
+          "Open LTV if the main issue is retention, lifetime, or churn assumptions.",
+          "Open CAC payback if the main issue is cash recovery speed.",
+          "Open ARR if the main issue is recurring scale or growth quality.",
+          "Open the unit economics hub if you need the top-level map first.",
         ],
       },
     ],
@@ -8473,6 +8480,11 @@ export const guides: Guide[] = [
         question: "Should I use logo churn or revenue churn in LTV-",
         answer:
           "For accuracy, use cohort-based revenue retention curves (especially if expansion is meaningful). Logo churn is a shortcut that can mislead when revenue per account changes over time.",
+      },
+      {
+        question: "Which lever should I fix first-",
+        answer:
+          "Fix the first constraint you find. If acquisition cost is too high, work CAC. If retention is weak, work churn and customer lifetime. If LTV looks acceptable but cash is still tight, work payback and gross margin.",
       },
     ],
     examples: [

@@ -114,3 +114,15 @@ test("Unit economics glossary entry routes quick-definition traffic to the full 
     /full unit economics guide/i,
   );
 });
+
+test("Unit economics dashboard guide points back to the unit economics hub", () => {
+  const guide = getGuide("unit-economics-dashboard-guide");
+
+  assert.ok(guide, "expected unit-economics-dashboard-guide to exist");
+  assert.equal(guide.partOfGuideSlug, "unit-economics-guide");
+  assert.match(guide.title, /dashboard/i);
+  assert.match(
+    guide.description,
+    /which lever to fix first|what to improve|diagnostic/i,
+  );
+});
