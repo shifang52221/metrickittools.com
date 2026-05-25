@@ -296,7 +296,7 @@ export const termsCore: GlossaryTerm[] = [
     description:
       "Fully-loaded CAC includes more of your acquisition costs (often sales & marketing salaries and tools) to make CAC planning-grade for unit economics.",
     category: "saas-metrics",
-    updatedAt: "2026-01-24",
+    updatedAt: "2026-05-25",
     sections: [
       { type: "h2", text: "Definition" },
       {

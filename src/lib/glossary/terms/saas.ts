@@ -108,6 +108,7 @@ const seeds: Seed[] = [
     title: "CAC Payback Period",
     description:
       "CAC payback period estimates how long it takes to recover customer acquisition cost (CAC) using the gross profit generated each month by a customer/account.",
+    updatedAt: "2026-05-25",
     formula: "Payback (months) ~ CAC / (ARPA * gross margin)",
     bullets: [
       "Shorter payback reduces cash risk and improves your ability to scale acquisition.",
@@ -249,6 +250,7 @@ const seeds: Seed[] = [
     title: "Churn Rate",
     description:
       "Churn rate measures the fraction of customers (logo churn) or recurring revenue (revenue churn) lost over a period. It is one of the most important drivers of LTV and payback.",
+    updatedAt: "2026-05-25",
     formula: "Churn rate = losses / starting base (customers or revenue)",
     example:
       "If you start the month with 1,000 customers and lose 35, logo churn = 35 / 1,000 = 3.5% for the month.",
@@ -377,6 +379,7 @@ const seeds: Seed[] = [
     title: "Logo Churn",
     description:
       "Logo churn is customer churn measured in count (accounts lost), not dollars. It can be high even when NRR is strong.",
+    updatedAt: "2026-05-25",
     formula: "Logo churn = customers lost / customers at start of period",
     example:
       "If you started with 1,000 customers and lost 30, logo churn = 30 / 1,000 = 3% for the period.",
@@ -807,6 +810,7 @@ const seeds: Seed[] = [
     title: "Unit Economics",
     description:
       "Unit economics evaluate profitability and cash efficiency at the level of a unit. Learn how CAC, LTV, payback, and ARR fit together before you jump to the full guide.",
+    updatedAt: "2026-05-25",
     seo: {
       title: "Unit economics meaning: CAC, LTV, payback, and growth efficiency",
       description:
@@ -896,6 +900,7 @@ const seeds: Seed[] = [
     title: "Net New ARR",
     description:
       "Net new ARR is the net change in ARR over a period after adding new and expansion ARR and subtracting contraction and churn.",
+    updatedAt: "2026-05-25",
     formula: "Net new ARR = new ARR + expansion ARR - contraction ARR - churned ARR",
     example:
       "If new ARR is $1.2M, expansion is $0.6M, contraction is $0.2M, and churn is $0.4M, net new ARR = $1.2M + $0.6M - $0.2M - $0.4M = $1.2M.",
@@ -950,6 +955,7 @@ const seeds: Seed[] = [
     title: "LTV:CAC Ratio",
     description:
       "LTV:CAC compares lifetime value to acquisition cost. It's a unit economics sanity check, but can mislead if definitions mismatch.",
+    updatedAt: "2026-05-25",
     formula: "LTV:CAC = LTV / CAC",
     example: "If LTV is $5,400 and CAC is $600, LTV:CAC = $5,400 / $600 = 9.0.",
     mistakes: [
@@ -981,6 +987,7 @@ const seeds: Seed[] = [
     title: "Cohort-based LTV",
     description:
       "Cohort-based LTV estimates lifetime value using observed retention and gross profit over time for a cohort, rather than a simple churn formula.",
+    updatedAt: "2026-05-25",
     bullets: [
       "More accurate when churn changes over time or expansion is meaningful.",
       "Use cohorts by plan/channel to avoid mixing behaviors.",
@@ -1117,6 +1124,7 @@ const seeds: Seed[] = [
     title: "ARR Waterfall",
     description:
       "An ARR waterfall reconciles starting ARR to ending ARR using new, expansion, contraction, and churned ARR movements.",
+    updatedAt: "2026-05-25",
     formula:
       "Ending ARR = starting ARR + new ARR + expansion ARR - contraction ARR - churned ARR",
     example:
@@ -1146,6 +1154,7 @@ const seeds: Seed[] = [
     title: "Customer Lifetime",
     description:
       "Customer lifetime is the expected duration a customer stays subscribed. It's often approximated from churn rate (with consistent time units).",
+    updatedAt: "2026-05-25",
     formula: "Customer lifetime ~ 1 / churn rate",
     mistakes: [
       "Using monthly churn to compute annual lifetime (unit mismatch).",

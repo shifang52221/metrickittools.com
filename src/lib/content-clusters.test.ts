@@ -113,6 +113,7 @@ test("Unit economics glossary entry routes quick-definition traffic to the full 
     term.seo?.heroNote ?? "",
     /full unit economics guide/i,
   );
+  assert.equal(term.updatedAt, "2026-05-25");
 });
 
 test("Unit economics dashboard guide points back to the unit economics hub", () => {
@@ -125,4 +126,25 @@ test("Unit economics dashboard guide points back to the unit economics hub", () 
     guide.description,
     /which lever to fix first|what to improve|diagnostic/i,
   );
+});
+
+test("Cluster glossary entries keep updated timestamps aligned with the latest hub rollout", () => {
+  const expectedDates = new Map([
+    ["ltv-to-cac", "2026-05-25"],
+    ["customer-lifetime", "2026-05-25"],
+    ["net-new-arr", "2026-05-25"],
+    ["arr-waterfall", "2026-05-25"],
+    ["cac-payback-period", "2026-05-25"],
+    ["fully-loaded-cac", "2026-05-25"],
+    ["churn-rate", "2026-05-25"],
+    ["logo-churn", "2026-05-25"],
+    ["cohorted-ltv", "2026-05-25"],
+  ]);
+
+  for (const [slug, updatedAt] of expectedDates) {
+    const term = [...termsCore, ...termsSaas].find((entry) => entry.slug === slug);
+
+    assert.ok(term, `expected glossary term ${slug} to exist`);
+    assert.equal(term.updatedAt, updatedAt, `expected ${slug} to have an aligned updatedAt`);
+  }
 });
