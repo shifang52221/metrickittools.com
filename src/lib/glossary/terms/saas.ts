@@ -109,6 +109,15 @@ const seeds: Seed[] = [
     description:
       "CAC payback period estimates how long it takes to recover customer acquisition cost (CAC) using the gross profit generated each month by a customer/account.",
     updatedAt: "2026-05-25",
+    seo: {
+      title: "CAC payback period meaning: formula, gross margin, and recovery time",
+      description:
+        "CAC payback period means the months needed to recover acquisition cost from gross profit. Learn the quick definition and when to read the full CAC payback guide.",
+      heroNote:
+        "Use this page for the fast definition. If you need the full workflow for payback interpretation, gross-margin assumptions, benchmarks, and channel comparisons, go to the full CAC payback guide next.",
+      nextStepLabel: "Read the full CAC payback guide",
+      nextStepHref: "/guides/cac-payback-guide",
+    },
     formula: "Payback (months) ~ CAC / (ARPA * gross margin)",
     bullets: [
       "Shorter payback reduces cash risk and improves your ability to scale acquisition.",
@@ -251,6 +260,15 @@ const seeds: Seed[] = [
     description:
       "Churn rate measures the fraction of customers (logo churn) or recurring revenue (revenue churn) lost over a period. It is one of the most important drivers of LTV and payback.",
     updatedAt: "2026-05-25",
+    seo: {
+      title: "Churn rate meaning: formula, logo vs revenue churn, and retention impact",
+      description:
+        "Churn rate means the share of customers or revenue lost in a period. Learn the quick definition and when to read the full cohort LTV forecasting guide.",
+      heroNote:
+        "Use this page for the fast definition. If you need the fuller model for how churn shapes customer lifetime, cohort behavior, and LTV decisions, go to the full cohort LTV forecasting guide next.",
+      nextStepLabel: "Read the full cohort LTV forecasting guide",
+      nextStepHref: "/guides/cohort-ltv-forecast-guide",
+    },
     formula: "Churn rate = losses / starting base (customers or revenue)",
     example:
       "If you start the month with 1,000 customers and lose 35, logo churn = 35 / 1,000 = 3.5% for the month.",
@@ -380,6 +398,15 @@ const seeds: Seed[] = [
     description:
       "Logo churn is customer churn measured in count (accounts lost), not dollars. It can be high even when NRR is strong.",
     updatedAt: "2026-05-25",
+    seo: {
+      title: "Logo churn meaning: customer-count churn, formula, and retention context",
+      description:
+        "Logo churn means customer churn measured by lost accounts rather than lost revenue. Learn the quick definition and when to read the full retention and churn guide.",
+      heroNote:
+        "Use this page for the fast definition. If you need the broader framework for retention, churn, NRR, GRR, and why logo losses can hide inside healthy revenue retention, go to the full retention and churn guide next.",
+      nextStepLabel: "Read the full retention and churn guide",
+      nextStepHref: "/guides/retention-churn-hub-guide",
+    },
     formula: "Logo churn = customers lost / customers at start of period",
     example:
       "If you started with 1,000 customers and lost 30, logo churn = 30 / 1,000 = 3% for the period.",
@@ -901,6 +928,15 @@ const seeds: Seed[] = [
     description:
       "Net new ARR is the net change in ARR over a period after adding new and expansion ARR and subtracting contraction and churn.",
     updatedAt: "2026-05-25",
+    seo: {
+      title: "Net new ARR meaning: formula, components, and growth interpretation",
+      description:
+        "Net new ARR means the net ARR added after expansion, contraction, and churn. Learn the quick definition and when to read the full net new ARR guide.",
+      heroNote:
+        "Use this page for the fast definition. If you need the full workflow for reconciling growth, linking net new ARR to burn multiple, and reading the metric in context, go to the full net new ARR guide next.",
+      nextStepLabel: "Read the full net new ARR guide",
+      nextStepHref: "/guides/net-new-arr-guide",
+    },
     formula: "Net new ARR = new ARR + expansion ARR - contraction ARR - churned ARR",
     example:
       "If new ARR is $1.2M, expansion is $0.6M, contraction is $0.2M, and churn is $0.4M, net new ARR = $1.2M + $0.6M - $0.2M - $0.4M = $1.2M.",
@@ -956,6 +992,15 @@ const seeds: Seed[] = [
     description:
       "LTV:CAC compares lifetime value to acquisition cost. It's a unit economics sanity check, but can mislead if definitions mismatch.",
     updatedAt: "2026-05-25",
+    seo: {
+      title: "LTV:CAC ratio meaning: what it shows, where it misleads, and next steps",
+      description:
+        "LTV:CAC means comparing customer lifetime value to acquisition cost. Learn the quick definition and when to read the full LTV:CAC guide.",
+      heroNote:
+        "Use this page for the fast definition. If you need the full guide for interpreting the ratio, avoiding definition mismatch, and connecting it to payback and unit economics, go to the full LTV:CAC guide next.",
+      nextStepLabel: "Read the full LTV:CAC guide",
+      nextStepHref: "/guides/ltv-cac-guide",
+    },
     formula: "LTV:CAC = LTV / CAC",
     example: "If LTV is $5,400 and CAC is $600, LTV:CAC = $5,400 / $600 = 9.0.",
     mistakes: [
@@ -988,6 +1033,15 @@ const seeds: Seed[] = [
     description:
       "Cohort-based LTV estimates lifetime value using observed retention and gross profit over time for a cohort, rather than a simple churn formula.",
     updatedAt: "2026-05-25",
+    seo: {
+      title: "Cohort-based LTV meaning: retention-based lifetime value modeling",
+      description:
+        "Cohort-based LTV means estimating lifetime value from observed cohort retention and gross profit over time. Learn the quick definition and when to read the full cohort LTV forecasting guide.",
+      heroNote:
+        "Use this page for the fast definition. If you need the full framework for modeling cohort retention, expansion, discounting, and more realistic LTV forecasts, go to the full cohort LTV forecasting guide next.",
+      nextStepLabel: "Read the full cohort LTV forecasting guide",
+      nextStepHref: "/guides/cohort-ltv-forecast-guide",
+    },
     bullets: [
       "More accurate when churn changes over time or expansion is meaningful.",
       "Use cohorts by plan/channel to avoid mixing behaviors.",
@@ -1125,6 +1179,15 @@ const seeds: Seed[] = [
     description:
       "An ARR waterfall reconciles starting ARR to ending ARR using new, expansion, contraction, and churned ARR movements.",
     updatedAt: "2026-05-25",
+    seo: {
+      title: "ARR waterfall meaning: reconcile ARR movements and net new ARR",
+      description:
+        "ARR waterfall means reconciling starting ARR to ending ARR through new, expansion, contraction, and churn. Learn the quick definition and when to read the full ARR waterfall guide.",
+      heroNote:
+        "Use this page for the fast definition. If you need the full workflow for reconciling ARR movements, finding net new ARR, and explaining growth changes clearly, go to the full ARR waterfall guide next.",
+      nextStepLabel: "Read the full ARR waterfall guide",
+      nextStepHref: "/guides/arr-waterfall-guide",
+    },
     formula:
       "Ending ARR = starting ARR + new ARR + expansion ARR - contraction ARR - churned ARR",
     example:
@@ -1155,6 +1218,15 @@ const seeds: Seed[] = [
     description:
       "Customer lifetime is the expected duration a customer stays subscribed. It's often approximated from churn rate (with consistent time units).",
     updatedAt: "2026-05-25",
+    seo: {
+      title: "Customer lifetime meaning: formula, churn link, and estimation limits",
+      description:
+        "Customer lifetime means the expected duration a customer stays active. Learn the quick definition and when to read the full customer lifetime guide.",
+      heroNote:
+        "Use this page for the fast definition. If you need the full guide for estimating lifetime, handling churn assumptions, and deciding when averages break down, go to the full customer lifetime guide next.",
+      nextStepLabel: "Read the full customer lifetime guide",
+      nextStepHref: "/guides/customer-lifetime-guide",
+    },
     formula: "Customer lifetime ~ 1 / churn rate",
     mistakes: [
       "Using monthly churn to compute annual lifetime (unit mismatch).",

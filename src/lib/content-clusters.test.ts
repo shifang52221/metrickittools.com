@@ -148,3 +148,29 @@ test("Cluster glossary entries keep updated timestamps aligned with the latest h
     assert.equal(term.updatedAt, updatedAt, `expected ${slug} to have an aligned updatedAt`);
   }
 });
+
+test("Priority glossary terms route quick-definition traffic into the strongest full guides", () => {
+  const expectedSeo = new Map([
+    ["ltv-to-cac", "/guides/ltv-cac-guide"],
+    ["cac-payback-period", "/guides/cac-payback-guide"],
+    ["customer-lifetime", "/guides/customer-lifetime-guide"],
+    ["net-new-arr", "/guides/net-new-arr-guide"],
+    ["arr-waterfall", "/guides/arr-waterfall-guide"],
+    ["churn-rate", "/guides/cohort-ltv-forecast-guide"],
+    ["cohorted-ltv", "/guides/cohort-ltv-forecast-guide"],
+    ["logo-churn", "/guides/retention-churn-hub-guide"],
+  ]);
+
+  for (const [slug, nextStepHref] of expectedSeo) {
+    const term = [...termsCore, ...termsSaas].find((entry) => entry.slug === slug);
+
+    assert.ok(term, `expected glossary term ${slug} to exist`);
+    assert.ok(term.seo?.nextStepLabel, `expected ${slug} to expose a next-step label`);
+    assert.equal(term.seo?.nextStepHref, nextStepHref, `expected ${slug} to point to the right full guide`);
+    assert.match(
+      term.seo?.heroNote ?? "",
+      /fast definition|full guide/i,
+      `expected ${slug} to frame the page as a quick definition with a stronger next step`,
+    );
+  }
+});
