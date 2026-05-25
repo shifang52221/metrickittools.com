@@ -997,89 +997,167 @@ export const guides: Guide[] = [
   },
   {
     slug: "cac-guide",
-    title: "CAC: how to calculate Customer Acquisition Cost (formula + examples)",
+    title: "CAC guide: formula, payback, fully-loaded CAC, and LTV:CAC",
     description:
-      "Customer acquisition cost (CAC) explained: formula, what to include, and practical CAC metrics (paid vs fully-loaded) you can trust.",
+      "A practical CAC guide covering the formula, what to include, paid vs fully-loaded CAC, payback, LTV:CAC, and how to judge acquisition quality without fooling yourself.",
     seo: {
-      title: "CAC guide: formula, what to include, and examples",
+      title: "CAC guide: formula, payback, fully-loaded CAC, and LTV:CAC",
+      description:
+        "Learn how to calculate CAC, what costs belong in it, when to use paid vs fully-loaded CAC, and how payback and LTV:CAC change the decision.",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-05-25",
+    summary: {
+      audience:
+        "Founders, growth leaders, finance partners, and GTM operators trying to decide whether acquisition economics are strong enough to scale.",
+      decision:
+        "Whether CAC is defined cleanly enough to support spend decisions, planning, and board-level unit economics conversations.",
+      useWhen:
+        "You need one parent page before you branch into fully-loaded CAC, payback, blended CAC, or LTV:CAC interpretation.",
+      reviewedBy: "MetricKit editorial review for SaaS unit economics planning.",
+      reviewNote:
+        "Reviewed to keep CAC definition rules, payback math, and LTV:CAC interpretation consistent across the unit economics cluster.",
+    },
+    topicHub: {
+      title: "Understand CAC end to end",
+      description:
+        "Start here for the main CAC decision, then go deeper into cost inclusion, payback speed, blended vs paid definitions, and LTV:CAC interpretation.",
+      guideSlugs: [
+        "fully-loaded-cac-guide",
+        "cac-payback-guide",
+        "blended-cac-guide",
+        "ltv-cac-guide",
+      ],
+      glossarySlugs: [
+        "cac",
+        "fully-loaded-cac",
+        "cac-payback-period",
+        "ltv",
+        "ltv-to-cac",
+        "gross-margin",
+        "arpa",
+      ],
+      calculatorSlugs: [
+        "cac-calculator",
+        "fully-loaded-cac-calculator",
+        "cac-payback-period-calculator",
+        "ltv-to-cac-calculator",
+        "blended-cac-calculator",
+      ],
+    },
     relatedCalculatorSlugs: [
       "cac-calculator",
+      "fully-loaded-cac-calculator",
       "ltv-to-cac-calculator",
       "cac-payback-period-calculator",
+      "blended-cac-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "cac",
+      "fully-loaded-cac",
+      "cac-payback-period",
+      "ltv",
+      "ltv-to-cac",
+      "gross-margin",
+      "arpa",
     ],
     sections: [
-      { type: "h2", text: "Definition" },
+      { type: "h2", text: "Quick answer" },
       {
         type: "p",
-        text: "CAC (Customer Acquisition Cost) is the cost to acquire a new paying customer. It's a core unit economics metric for SaaS and subscription businesses.",
+        text: "CAC (Customer Acquisition Cost) is the cost to win a new paying customer. The metric is only useful when the spend definition, the customer count, and the time window all match. The real job is not just to calculate CAC, but to decide whether that acquisition cost still works after you account for payback speed, gross margin, and retention quality.",
       },
       { type: "h2", text: "CAC formula" },
       { type: "p", text: "CAC = acquisition spend / new customers acquired" },
-      { type: "h2", text: "How to calculate CAC (step-by-step)" },
+      { type: "h2", text: "What belongs in CAC" },
       {
         type: "bullets",
         items: [
-          "Pick a time window (usually monthly) and a segment (channel, plan, geo).",
-          "Sum acquisition spend for that window (paid spend + variable acquisition costs).",
-          "Count new paying customers acquired in that window (not leads or trials).",
-          "Divide spend by new customers to get CAC.",
+          "Paid CAC usually includes variable acquisition costs tied to the channel, such as ad spend, agency fees, and variable creative.",
+          "Fully-loaded CAC adds the people, tooling, and other acquisition costs required to make the engine run.",
+          "Do not mix customer acquisition cost with COGS, support, or unrelated overhead unless your team deliberately allocates them and labels the metric.",
         ],
       },
-      { type: "h2", text: "Benchmarks (rule of thumb)" },
+      { type: "h2", text: "How to calculate CAC without lying to yourself" },
       {
         type: "bullets",
         items: [
-          "There is no universal 'good CAC' without knowing ARPA, margin, and retention.",
-          "Use CAC payback (months) to compare channels more fairly when pricing differs.",
-          "Track CAC by cohort: CAC often rises as channels saturate.",
+          "Pick one time window and one segment before you start. Monthly by channel or plan is usually the clearest place to begin.",
+          "Make the denominator new paying customers, not leads, trials, demos, or signups.",
+          "Match the spend window to the customer window so you do not create fake CAC movements.",
+          "Label the version clearly: paid CAC, fully-loaded CAC, or blended CAC.",
         ],
       },
-      { type: "h2", text: "CAC metrics (paid vs fully-loaded)" },
+      { type: "h2", text: "Paid CAC vs fully-loaded CAC vs blended CAC" },
       {
-        type: "bullets",
-        items: [
-          "Paid CAC: ad spend (and variable creative/agency) / new customers (useful for channel optimization).",
-          "Fully-loaded CAC: paid spend + sales/marketing salaries + tools / new customers (useful for planning).",
-          "Blended CAC: includes all acquisition sources (paid + organic + outbound). Always label the definition.",
+        type: "table",
+        columns: ["Version", "What it includes", "Best use", "Typical mistake"],
+        rows: [
+          [
+            "Paid CAC",
+            "Variable paid acquisition costs tied to the channel.",
+            "Channel optimization and media efficiency.",
+            "Comparing it directly to fully-loaded targets or board metrics.",
+          ],
+          [
+            "Fully-loaded CAC",
+            "Paid spend plus allocated sales, marketing, and tooling costs.",
+            "Planning and board-level unit economics.",
+            "Forgetting that salaries and tooling still count when growth scales.",
+          ],
+          [
+            "Blended CAC",
+            "All acquisition cost spread across all new customers.",
+            "Company-level planning and segment comparisons.",
+            "Letting organic or outbound mix hide weak paid channels.",
+          ],
         ],
       },
-      { type: "h2", text: "What costs to include" },
+      { type: "h2", text: "What to check after CAC" },
       {
         type: "bullets",
         items: [
-          "Paid media (ad spend), agencies, creative production (if variable).",
-          "Sales/marketing tools (CRM, email, analytics) if you include them consistently.",
-          "Salaries/commissions: include if you want a fully-loaded CAC (recommended for planning).",
+          "Use CAC payback when the real question is cash efficiency and how fast acquisition spend comes back.",
+          "Use LTV:CAC when the real question is long-term sustainability, but only if LTV and CAC use compatible definitions.",
+          "Use segment-level CAC when blended averages hide whether specific channels, plans, or geographies still work.",
+        ],
+      },
+      { type: "h2", text: "There is no universal good CAC" },
+      {
+        type: "bullets",
+        items: [
+          "A high CAC can still be healthy if ARPA, gross margin, and retention make payback acceptable.",
+          "A low CAC can still be weak if customers churn quickly or require heavy support to stay.",
+          "Track cohorts because CAC often rises as channels saturate and early winners become harder to repeat.",
         ],
       },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
         items: [
-          "Using leads/trials as 'customers' (denominator mismatch).",
-          "Comparing paid-only CAC to a fully-loaded CAC target (definition drift).",
-          "Ignoring churn: low CAC can still be bad if customers churn quickly.",
+          "Using leads, demos, or trials as if they were customers.",
+          "Comparing paid-only CAC to a fully-loaded planning target.",
+          "Using revenue LTV against fully-loaded CAC without checking gross margin and churn assumptions.",
+          "Treating annual prepay cash collections as proof of fast CAC payback.",
         ],
       },
       { type: "h2", text: "How to segment CAC" },
       {
         type: "bullets",
         items: [
-          "By channel (paid search, paid social, partners, outbound).",
-          "By customer segment (SMB vs mid-market vs enterprise).",
-          "By cohort (month acquired) to see how CAC changes with scale.",
+          "By channel when the goal is to improve paid efficiency.",
+          "By plan, persona, or company size when the goal is to improve sales quality.",
+          "By acquisition cohort when the goal is to see whether scale is making CAC structurally worse.",
         ],
       },
-      { type: "h2", text: "What to pair with CAC" },
+      { type: "h2", text: "The next page to read depends on the question" },
       {
         type: "bullets",
         items: [
-          "LTV and LTV:CAC to understand sustainability.",
-          "Payback period to understand cash efficiency.",
-          "Churn/retention to validate that customers stick around long enough.",
+          "If your main debate is what costs belong in the numerator, go next to Fully-loaded CAC.",
+          "If your main debate is how fast spend comes back, go next to CAC payback.",
+          "If your main debate is whether the business can support the spend over time, go next to LTV:CAC.",
+          "If your main debate is why channel reporting and company planning disagree, go next to Blended CAC vs paid CAC.",
         ],
       },
     ],
@@ -1104,6 +1182,11 @@ export const guides: Guide[] = [
         answer:
           "Use customer CAC for unit economics. Lead CAC can help diagnose funnel performance but isn't directly comparable to LTV.",
       },
+      {
+        question: "Is a low CAC always good-",
+        answer:
+          "No. Low CAC can still be weak if retention is poor, gross margin is low, or customers take too long to pay back acquisition spend. CAC becomes decision-useful only when you pair it with payback, LTV:CAC, and churn quality.",
+      },
     ],
     examples: [
       {
@@ -1124,7 +1207,8 @@ export const guides: Guide[] = [
         "Learn how to calculate fully-loaded CAC, which sales and marketing costs belong in it, how it differs from paid CAC, and how to pair it with payback for planning.",
     },
     category: "saas-metrics",
-    updatedAt: "2026-03-31",
+    updatedAt: "2026-05-25",
+    partOfGuideSlug: "cac-guide",
     summary: {
       audience:
         "Growth, finance, and GTM operators comparing paid CAC to the full cost of acquisition.",
@@ -1390,7 +1474,8 @@ export const guides: Guide[] = [
       title: "CAC payback guide: definition, formula, and benchmarks",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-05",
+    updatedAt: "2026-05-25",
+    partOfGuideSlug: "cac-guide",
     relatedCalculatorSlugs: ["cac-payback-period-calculator", "cac-calculator"],
     sections: [
       { type: "h2", text: "Definition" },
@@ -2690,7 +2775,8 @@ export const guides: Guide[] = [
       title: "LTV:CAC ratio guide: benchmarks, interpretation, mistakes",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-27",
+    updatedAt: "2026-05-25",
+    partOfGuideSlug: "cac-guide",
     relatedCalculatorSlugs: [
       "ltv-to-cac-calculator",
       "ltv-calculator",
@@ -4906,14 +4992,15 @@ export const guides: Guide[] = [
       title: "Blended CAC guide: paid vs fully-loaded CAC",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-05-25",
+    partOfGuideSlug: "cac-guide",
     relatedCalculatorSlugs: [
       "blended-cac-calculator",
       "cac-calculator",
       "cac-payback-period-calculator",
       "ltv-to-cac-calculator",
     ],
-    relatedGlossarySlugs: ["cac", "arpa", "gross-margin", "payback-period", "ltv"],
+    relatedGlossarySlugs: ["cac", "arpa", "gross-margin", "payback-period", "ltv", "ltv-to-cac"],
     sections: [
       { type: "h2", text: "Why CAC has multiple definitions" },
       {

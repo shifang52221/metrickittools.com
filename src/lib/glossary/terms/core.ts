@@ -229,11 +229,20 @@ export const termsCore: GlossaryTerm[] = [
   },
   {
     slug: "cac",
-    title: "CAC (Customer Acquisition Cost)",
+    title: "CAC Meaning: Formula, Example, and What Counts in CAC",
     description:
-      "CAC is acquisition spend divided by new paying customers. Learn the formula, what to include, and how to segment CAC.",
+      "CAC is acquisition spend divided by new paying customers. Learn the formula, what belongs in CAC, and when to move from a quick definition to the full guide.",
     category: "saas-metrics",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-05-25",
+    seo: {
+      title: "CAC meaning: formula, example, and what counts in CAC",
+      description:
+        "CAC means Customer Acquisition Cost. Learn the formula, what to include, how paid CAC differs from fully-loaded CAC, and when to read the full CAC guide.",
+      heroNote:
+        "Use this page for the fast definition. If you need the broader workflow for paid CAC, fully-loaded CAC, payback, and LTV:CAC, go to the full CAC guide next.",
+      nextStepLabel: "Read the full CAC guide",
+      nextStepHref: "/guides/cac-guide",
+    },
     sections: [
       { type: "h2", text: "Definition" },
       {
