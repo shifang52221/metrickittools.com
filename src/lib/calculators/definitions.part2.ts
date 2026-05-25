@@ -3188,6 +3188,24 @@ export const calculatorsPart2: CalculatorDefinition[] = [
             "Because ARPA is monthly in this model. Time units must match: monthly ARPA uses monthly churn. If you prefer annual units, convert both ARPA and churn consistently.",
         },
       ],
+      guide: [
+        {
+          title: "Read the stack in order",
+          bullets: [
+            "Start with payback if cash efficiency is the immediate constraint. A healthy LTV:CAC ratio can still hide cash stress if CAC comes back too slowly.",
+            "Then check LTV:CAC to see whether the customer creates enough gross-profit value relative to acquisition cost.",
+            "Use estimated lifetime as a sanity check, not as ground truth. If churn is unstable, a shortcut model can overstate quality.",
+          ],
+        },
+        {
+          title: "What to inspect next",
+          bullets: [
+            "If payback is weak first, inspect pricing, gross margin, onboarding, and acquisition efficiency before scaling spend.",
+            "If the ratio is weak because LTV is low, retention and expansion usually matter more than simply lowering top-of-funnel cost.",
+            "If the ratio looks strong but the business still feels fragile, compare channel-level payback and cohort behavior instead of trusting the blended average.",
+          ],
+        },
+      ],
     },
   {
       slug: "bookings-vs-arr-calculator",

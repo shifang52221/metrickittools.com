@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { getGuide } from "./guides/index.ts";
 import { termsCore } from "./glossary/terms/core.ts";
 import { termsSaas } from "./glossary/terms/saas.ts";
@@ -172,5 +173,50 @@ test("Priority glossary terms route quick-definition traffic into the strongest 
       /fast definition|full guide/i,
       `expected ${slug} to frame the page as a quick definition with a stronger next step`,
     );
+  }
+});
+
+test("Priority SaaS calculators expose interpretation depth, not just formulas", () => {
+  const calculatorSources = [
+    readFileSync(new URL("./calculators/definitions.part1.ts", import.meta.url), "utf8"),
+    readFileSync(new URL("./calculators/definitions.part2.ts", import.meta.url), "utf8"),
+    readFileSync(new URL("./calculators/definitions.part3.ts", import.meta.url), "utf8"),
+  ];
+
+  const getCalculatorChunk = (slug: string) => {
+    for (const source of calculatorSources) {
+      const marker = `slug: "${slug}"`;
+      const start = source.indexOf(marker);
+      if (start === -1) continue;
+
+      const nextStart = source.indexOf('\n  {\n      slug: "', start + marker.length);
+      return source.slice(start, nextStart === -1 ? undefined : nextStart);
+    }
+
+    return "";
+  };
+
+  const mustHaveBenchmarks = new Set([
+    "ltv-to-cac-calculator",
+    "cac-payback-period-calculator",
+    "unit-economics-calculator",
+  ]);
+
+  for (const slug of [
+    "ltv-to-cac-calculator",
+    "cac-payback-period-calculator",
+    "unit-economics-calculator",
+    "cohort-ltv-forecast-calculator",
+  ]) {
+    const chunk = getCalculatorChunk(slug);
+
+    assert.ok(chunk, `expected calculator ${slug} to exist`);
+    assert.match(chunk, /intro:\s*\[/, `expected ${slug} to have intro guidance`);
+    assert.match(chunk, /pitfalls:\s*\[/, `expected ${slug} to have pitfalls guidance`);
+    assert.match(chunk, /guide:\s*\[/, `expected ${slug} to have interpretation guidance`);
+
+    if (mustHaveBenchmarks.has(slug)) {
+      assert.match(chunk, /benchmarks:\s*\[/, `expected ${slug} to have benchmark guidance`);
+    }
   }
 });

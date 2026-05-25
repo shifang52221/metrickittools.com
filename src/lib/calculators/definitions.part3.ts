@@ -1771,6 +1771,7 @@ export const calculatorsPart3: CalculatorDefinition[] = [
         intro: [
           "Simple LTV formulas can be misleading when churn changes over time or when expansion meaningfully offsets churn. A cohort-style forecast is a better planning tool.",
           "This calculator models expected gross profit from a cohort over time using constant monthly churn and expansion assumptions, and can apply a discount rate to compute discounted LTV.",
+          "Use discounted LTV for planning decisions and undiscounted LTV for intuition. The gap between the two helps show how much timing matters.",
         ],
         steps: [
           "Enter ARPA and gross margin to get gross profit per account per month.",
@@ -1778,10 +1779,16 @@ export const calculatorsPart3: CalculatorDefinition[] = [
           "Choose a horizon (e.g., 36-60 months) and an optional annual discount rate.",
           "Use the discounted LTV for planning and the undiscounted LTV for intuition.",
         ],
+        benchmarks: [
+          "There is no universal 'good' cohort LTV number without CAC, payback, and segment context.",
+          "A large gap between discounted and undiscounted LTV usually means time-to-value matters more than the headline suggests.",
+          "If month-12 retention is weak, a high long-horizon LTV estimate usually deserves a harder sensitivity check.",
+        ],
         pitfalls: [
           "Mixing logo churn (customer count) with revenue churn (MRR dollars).",
           "Using annual churn as a monthly churn input (time unit mismatch).",
           "Forecasting far horizons without scenarios (small rate changes compound).",
+          "Treating a long-horizon forecast as certain instead of stress-testing churn, margin, and expansion assumptions.",
         ],
       },
       inputs: [
@@ -2003,6 +2010,24 @@ export const calculatorsPart3: CalculatorDefinition[] = [
           question: "What discount rate should I use-",
           answer:
             "Use your required return / cost of capital as a rough starting point (e.g., 8-20% annually). If you're comparing scenarios, keep the discount rate consistent.",
+        },
+      ],
+      guide: [
+        {
+          title: "Why this model is more decision-useful",
+          bullets: [
+            "This model is still simplified, but it separates churn, expansion, margin, and time horizon instead of hiding everything inside one blended shortcut.",
+            "That makes it more useful when retention changes over time or when expansion meaningfully affects cohort economics.",
+            "It is best used for scenario planning, not as a promise of what every cohort will do.",
+          ],
+        },
+        {
+          title: "How to read the output",
+          bullets: [
+            "Use discounted LTV when you care about economically meaningful value, not just nominal lifetime revenue or gross profit.",
+            "Compare month-12 retention and horizon retention to see whether the model is leaning on a fragile long tail.",
+            "If small churn or expansion edits move LTV sharply, treat the output as a range and test best/base/worst cases before using it in CAC decisions.",
+          ],
         },
       ],
     },
