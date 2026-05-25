@@ -3930,24 +3930,56 @@ export const guides: Guide[] = [
   },
   {
     slug: "unit-economics-guide",
-    title: "Unit economics: CAC, payback, LTV, and LTV:CAC (how to model them)",
+    title: "Unit economics guide: ARR, CAC, LTV, payback, and growth efficiency",
     description:
-      "A practical unit economics guide: consistent definitions for CAC and LTV, how to calculate CAC payback period, and how to interpret LTV:CAC.",
+      "A practical unit economics guide to how ARR, CAC, LTV, payback, and LTV:CAC work together when you judge growth quality, cash efficiency, and scale readiness.",
     seo: {
-      title: "Unit economics guide: CAC, payback, LTV, and ratios",
+      title: "Unit economics guide: ARR, CAC, LTV, payback, and growth efficiency",
+      description:
+        "Learn how ARR, CAC, LTV, payback, and LTV:CAC fit together, which metric to trust for which decision, and how to avoid definition mismatches.",
     },
     category: "saas-metrics",
-    updatedAt: "2026-01-23",
+    updatedAt: "2026-05-25",
     summary: {
       audience:
-        "Founders, finance partners, and growth leads standardizing the core SaaS operating model.",
+        "Founders, finance partners, growth leads, and operators who need one top-level map of SaaS growth quality and cash efficiency.",
       decision:
-        "Whether CAC, payback, LTV, and LTV:CAC support the current growth plan or need a reset.",
+        "Whether the company’s growth model is healthy enough to scale once recurring revenue quality, acquisition cost, customer value, and cash timing are viewed together.",
       useWhen:
-        "You want one reference point for metric definitions before planning, board reporting, or diagnosing growth quality.",
+        "You want one top-layer entry point before drilling into ARR, CAC, LTV, payback, or dashboard-level diagnosis.",
       reviewedBy: "MetricKit editorial review for SaaS operating models.",
       reviewNote:
-        "Reviewed to keep CAC, LTV, payback, and gross-margin assumptions using consistent numerator and denominator rules across the unit-economics stack.",
+        "Reviewed to keep ARR, CAC, LTV, payback, and gross-margin assumptions aligned so the guide supports operating decisions rather than isolated metric definitions.",
+    },
+    topicHub: {
+      title: "Connect the SaaS unit economics stack",
+      description:
+        "Use this page as the top-level map, then go deeper into recurring scale, acquisition cost, customer value, payback speed, and week-to-week diagnostics with the connected guides below.",
+      guideSlugs: [
+        "cac-guide",
+        "cac-payback-guide",
+        "ltv-guide",
+        "ltv-cac-guide",
+        "arr-guide",
+        "unit-economics-dashboard-guide",
+      ],
+      glossarySlugs: [
+        "unit-economics",
+        "cac",
+        "ltv",
+        "ltv-to-cac",
+        "cac-payback-period",
+        "gross-margin",
+        "arr",
+      ],
+      calculatorSlugs: [
+        "unit-economics-calculator",
+        "cac-calculator",
+        "cac-payback-period-calculator",
+        "ltv-calculator",
+        "ltv-to-cac-calculator",
+        "arr-calculator",
+      ],
     },
     relatedCalculatorSlugs: [
       "unit-economics-calculator",
@@ -3955,6 +3987,8 @@ export const guides: Guide[] = [
       "cac-payback-period-calculator",
       "ltv-calculator",
       "ltv-to-cac-calculator",
+      "arr-calculator",
+      "unit-economics-dashboard-calculator",
     ],
     relatedGlossarySlugs: [
       "unit-economics",
@@ -3965,49 +3999,93 @@ export const guides: Guide[] = [
       "gross-margin",
       "churn-rate",
       "customer-lifetime",
+      "arr",
     ],
     sections: [
-      { type: "h2", text: "What unit economics are" },
+      { type: "h2", text: "What unit economics is really for" },
       {
         type: "p",
-        text: "Unit economics measure profitability and cash efficiency at the level of a unit (usually a customer or account). For SaaS, the core unit stack is CAC (cost to acquire), LTV (value over lifetime), and payback (time to recover CAC from gross profit).",
+        text: "Unit economics is not just a spreadsheet of ratios. Its job is to tell you whether growth creates enough recurring value, quickly enough, to justify the cash you are spending to scale. For SaaS, that usually means connecting ARR, CAC, LTV, payback, and LTV:CAC rather than trusting any one metric alone.",
+      },
+      { type: "h2", text: "Which metric answers which question" },
+      {
+        type: "table",
+        columns: ["Metric", "Best question it answers", "What it does not answer well"],
+        rows: [
+          [
+            "ARR",
+            "How much recurring scale and momentum do we have-",
+            "Whether acquisition is cash-efficient.",
+          ],
+          [
+            "CAC",
+            "What does it cost to win a customer-",
+            "Whether that cost pays back fast enough.",
+          ],
+          [
+            "LTV",
+            "What is a customer worth over time-",
+            "Whether cash returns soon enough to fund growth.",
+          ],
+          [
+            "Payback",
+            "How quickly does acquisition spend come back-",
+            "Whether the long-run value is high enough.",
+          ],
+          [
+            "LTV:CAC",
+            "Is value large relative to acquisition cost-",
+            "Whether the business can survive the timing of that return.",
+          ],
+        ],
+      },
+      { type: "h2", text: "How the stack fits together" },
+      {
+        type: "bullets",
+        items: [
+          "ARR helps you understand recurring scale and growth quality at the company level.",
+          "CAC tells you the acquisition bill, but only if the numerator and denominator are clearly defined.",
+          "LTV tells you what that customer may be worth, but the estimate is only as good as the churn and margin assumptions underneath it.",
+          "Payback tells you whether the cash return arrives soon enough to support the growth plan.",
+          "LTV:CAC is a useful sustainability check after the lower-level definitions are already aligned.",
+        ],
       },
       { type: "h2", text: "Use gross profit, not revenue" },
       {
         type: "p",
         text: "A common mistake is to compute LTV using revenue but compare it to a fully-loaded CAC. For cleaner unit economics, compute LTV on gross profit (revenue * gross margin) and label CAC definitions clearly.",
       },
-      { type: "h2", text: "Core formulas" },
+      { type: "h2", text: "A practical decision order" },
       {
         type: "bullets",
         items: [
-          "CAC = acquisition spend / new customers acquired.",
-          "Monthly gross profit per customer ~ ARPA * gross margin.",
-          "Payback (months) = CAC / (ARPA * gross margin).",
-          "Lifetime (months) ~ 1 / monthly churn (rough shortcut).",
-          "LTV (gross profit) ~ (ARPA * gross margin) / monthly churn.",
-          "LTV:CAC = LTV / CAC.",
+          "Start with ARR when you need the top-line recurring scale and movement context.",
+          "Check CAC next to understand what growth currently costs.",
+          "Estimate LTV with assumptions you can defend, then ask whether customer lifetime and cohorts change the picture.",
+          "Check payback before you trust the ratio stack, because cash timing can break an otherwise attractive model.",
+          "Use LTV:CAC as the summary ratio only after the definitions underneath are already clean.",
         ],
       },
-      { type: "h2", text: "How to model it (step-by-step)" },
+      { type: "h2", text: "Common mismatches that create fake confidence" },
       {
         type: "bullets",
         items: [
-          "Pick a segment (channel, plan, geo) and a consistent time unit (monthly is common).",
-          "Measure ARPA and gross margin for that segment.",
-          "Measure churn for that segment (logo churn or revenue churn; label it).",
-          "Measure CAC with a clear definition (paid-only vs fully-loaded).",
-          "Compute payback and LTV, then compare to your cash constraints.",
+          "Comparing revenue LTV to fully-loaded CAC.",
+          "Using monthly ARPA with annual churn or other unit mismatches.",
+          "Trusting blended CAC, blended churn, or blended ARR when segments behave very differently.",
+          "Using a strong LTV:CAC ratio to ignore long payback or weak cash runway.",
+          "Talking about scale efficiency without checking whether ARR itself is defined cleanly.",
         ],
       },
-      { type: "h2", text: "Common pitfalls" },
+      { type: "h2", text: "Where to go next" },
       {
         type: "bullets",
         items: [
-          "Unit mismatch: using annual churn with monthly ARPA (or vice versa).",
-          "Blended averages hiding segment problems (SMB vs enterprise).",
-          "Optimizing LTV:CAC without checking payback (ratio can look good with very long payback).",
-          "Treating churn as constant over time (cohort curves are more accurate).",
+          "Go to ARR if the first problem is recurring scale, bookings confusion, or growth quality.",
+          "Go to CAC if the first problem is what acquisition really costs.",
+          "Go to LTV if the first problem is whether customer value estimates are believable.",
+          "Go to CAC payback if the first problem is cash return speed.",
+          "Go to the dashboard guide if the first problem is which operational lever to pull next.",
         ],
       },
       { type: "h2", text: "How to improve unit economics" },
@@ -4031,6 +4109,11 @@ export const guides: Guide[] = [
         question: "Should I use logo churn or revenue churn for LTV-",
         answer:
           "For a simple customer LTV model, logo churn (customer churn) is common. If expansion is meaningful, cohort-based revenue retention (NRR/GRR) may be more informative than a single churn number.",
+      },
+      {
+        question: "What metric should I look at first-",
+        answer:
+          "Start with the decision, not the metric. If you need scale context, start with ARR. If you need acquisition cost clarity, start with CAC. If you need value confidence, start with LTV. If cash is the constraint, start with payback.",
       },
     ],
     examples: [

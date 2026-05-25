@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { getGuide } from "./guides/index.ts";
 import { termsCore } from "./glossary/terms/core.ts";
+import { termsSaas } from "./glossary/terms/saas.ts";
 
 test("CAC guide exposes a topic hub for the cluster", () => {
   const guide = getGuide("cac-guide");
@@ -76,5 +77,40 @@ test("LTV glossary entry routes quick-definition traffic to the full guide", () 
   assert.match(
     term.seo?.heroNote ?? "",
     /full LTV guide/i,
+  );
+});
+
+test("Unit economics guide exposes a top-layer topic hub", () => {
+  const guide = getGuide("unit-economics-guide");
+
+  assert.ok(guide, "expected unit-economics-guide to exist");
+  assert.equal(guide.topicHub?.title, "Connect the SaaS unit economics stack");
+  assert.deepEqual(guide.topicHub?.guideSlugs, [
+    "cac-guide",
+    "cac-payback-guide",
+    "ltv-guide",
+    "ltv-cac-guide",
+    "arr-guide",
+    "unit-economics-dashboard-guide",
+  ]);
+  assert.deepEqual(guide.topicHub?.calculatorSlugs, [
+    "unit-economics-calculator",
+    "cac-calculator",
+    "cac-payback-period-calculator",
+    "ltv-calculator",
+    "ltv-to-cac-calculator",
+    "arr-calculator",
+  ]);
+});
+
+test("Unit economics glossary entry routes quick-definition traffic to the full guide", () => {
+  const term = termsSaas.find((entry) => entry.slug === "unit-economics");
+
+  assert.ok(term, "expected glossary term unit-economics to exist");
+  assert.equal(term.seo?.nextStepLabel, "Read the full unit economics guide");
+  assert.equal(term.seo?.nextStepHref, "/guides/unit-economics-guide");
+  assert.match(
+    term.seo?.heroNote ?? "",
+    /full unit economics guide/i,
   );
 });

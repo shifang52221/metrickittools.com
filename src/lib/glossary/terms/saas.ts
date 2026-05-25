@@ -11,6 +11,7 @@ type Seed = {
   description: string;
   category?: GlossaryCategorySlug;
   updatedAt?: string; // YYYY-MM-DD
+  seo?: GlossaryTerm["seo"];
   formula?: string;
   example?: string;
   bullets?: string[];
@@ -54,6 +55,7 @@ function makeTerm(seed: Seed): GlossaryTerm {
     description: seed.description,
     category: seed.category ?? "saas-metrics",
     updatedAt: seed.updatedAt ?? "2026-01-23",
+    seo: seed.seo,
     sections: buildSections(seed),
     faqs: seed.faqs,
     relatedGuideSlugs: seed.relatedGuideSlugs,
@@ -804,7 +806,16 @@ const seeds: Seed[] = [
     slug: "unit-economics",
     title: "Unit Economics",
     description:
-      "Unit economics evaluate profitability and cash efficiency at the level of a unit (customer/account/order). Common unit metrics are CAC, LTV, and payback.",
+      "Unit economics evaluate profitability and cash efficiency at the level of a unit. Learn how CAC, LTV, payback, and ARR fit together before you jump to the full guide.",
+    seo: {
+      title: "Unit economics meaning: CAC, LTV, payback, and growth efficiency",
+      description:
+        "Unit economics means judging growth through CAC, LTV, payback, and related metrics. Learn the quick definition and when to read the full unit economics guide.",
+      heroNote:
+        "Use this page for the fast definition. If you need the broader framework for ARR, CAC, LTV, payback, and how to judge growth efficiency together, go to the full unit economics guide next.",
+      nextStepLabel: "Read the full unit economics guide",
+      nextStepHref: "/guides/unit-economics-guide",
+    },
     example:
       "A simple unit economics stack is: compute CAC, estimate LTV, sanity-check LTV:CAC, then confirm cash feasibility with CAC payback and runway.",
     bullets: [
