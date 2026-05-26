@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { CalculatorPageClient } from "@/components/calculators/CalculatorPageClient";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
+import { TrustPanel } from "@/components/site/TrustPanel";
 import { calculators, categories, getCalculator } from "@/lib/calculators";
 import type { CalculatorCategorySlug } from "@/lib/calculators/types";
 import { clampMetaDescription, clampMetaTitle } from "@/lib/seo";
@@ -166,6 +167,13 @@ export default async function CalculatorPage({ params }: PageProps) {
         <span className="rounded-full border border-zinc-200 px-3 py-1 dark:border-zinc-800">
           Updated {calculatorReviewDate}
         </span>
+      </div>
+      <div className="mb-6">
+        <TrustPanel
+          methodologyHref={siteConfig.methodologyPath}
+          editorialPolicyHref={siteConfig.editorialPolicyPath}
+          contactHref={siteConfig.contactPath}
+        />
       </div>
       <CalculatorPageClient slug={calc.slug} />
       <section className="mt-10 space-y-3">

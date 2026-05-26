@@ -296,3 +296,33 @@ test("Priority calculators expose calculator-level updatedAt values", () => {
     );
   }
 });
+
+test("Priority content templates expose a shared trust panel with visible ownership signals", () => {
+  const pageSources = [
+    readFileSync(new URL("../app/[category]/[slug]/page.tsx", import.meta.url), "utf8"),
+    readFileSync(new URL("../app/guides/[slug]/page.tsx", import.meta.url), "utf8"),
+    readFileSync(new URL("../app/glossary/[slug]/page.tsx", import.meta.url), "utf8"),
+  ];
+
+  for (const source of pageSources) {
+    assert.match(source, /TrustPanel/, "expected the page template to use the shared TrustPanel");
+    assert.match(
+      source,
+      /siteConfig\.methodologyPath/,
+      "expected the page template to expose a methodology path",
+    );
+    assert.match(
+      source,
+      /siteConfig\.editorialPolicyPath/,
+      "expected the page template to expose an editorial policy path",
+    );
+    assert.match(
+      source,
+      /siteConfig\.contactPath/,
+      "expected the page template to expose a contact path",
+    );
+    assert.match(source, /Written by/, "expected the page template to keep the Written by signal");
+    assert.match(source, /Reviewed by/, "expected the page template to keep the Reviewed by signal");
+    assert.match(source, /Updated/, "expected the page template to keep the Updated signal");
+  }
+});

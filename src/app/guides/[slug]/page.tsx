@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
+import { TrustPanel } from "@/components/site/TrustPanel";
 import { AdUnit } from "@/components/ads/AdUnit";
 import { calculators } from "@/lib/calculators";
 import { getGuide, guides } from "@/lib/guides";
@@ -211,6 +212,12 @@ export default async function GuidePage({ params }: PageProps) {
           </span>
         </div>
       </header>
+
+      <TrustPanel
+        methodologyHref={siteConfig.methodologyPath}
+        editorialPolicyHref={siteConfig.editorialPolicyPath}
+        contactHref={siteConfig.contactPath}
+      />
 
       {guide.summary ? (
         <section className="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-black">

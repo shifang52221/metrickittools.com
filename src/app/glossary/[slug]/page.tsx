@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { TrustPanel } from "@/components/site/TrustPanel";
 import { calculators, categories } from "@/lib/calculators";
 import { guides } from "@/lib/guides";
 import { getGlossaryTerm, glossaryTerms } from "@/lib/glossary";
@@ -142,6 +143,12 @@ export default async function GlossaryTermPage({ params }: PageProps) {
           </span>
         </div>
       </header>
+
+      <TrustPanel
+        methodologyHref={siteConfig.methodologyPath}
+        editorialPolicyHref={siteConfig.editorialPolicyPath}
+        contactHref={siteConfig.contactPath}
+      />
 
       <div className="grid gap-8 lg:grid-cols-5">
         <article className="space-y-6 lg:col-span-3">
