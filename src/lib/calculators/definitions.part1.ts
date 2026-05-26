@@ -2201,6 +2201,15 @@ export const calculatorsPart1: CalculatorDefinition[] = [
       featured: true,
       guideSlug: "ltv-cac-guide",
       updatedAt: "2026-05-26",
+      nextAction: {
+        title: "Read ratio quality and payback together",
+        body:
+          "Use this result as a decision signal, not a final verdict. A solid LTV:CAC ratio can still hide cash stress if payback is slow or if churn assumptions are too generous.",
+        primaryLabel: "Read the full LTV:CAC guide",
+        primaryHref: "/guides/ltv-cac-guide",
+        secondaryLabel: "Check CAC payback next",
+        secondaryHref: "/saas-metrics/cac-payback-period-calculator",
+      },
       relatedGlossarySlugs: ["ltv", "cac", "ltv-to-cac", "cac-payback-period", "gross-margin"],
       seo: {
         intro: [
@@ -2413,6 +2422,15 @@ export const calculatorsPart1: CalculatorDefinition[] = [
       featured: true,
       guideSlug: "cac-payback-guide",
       updatedAt: "2026-05-26",
+      nextAction: {
+        title: "Decide whether cash recovery is fast enough",
+        body:
+          "Treat payback as a cash-efficiency check before you scale spend. If payback is long, inspect margin, onboarding, churn, and segment mix before assuming the channel is healthy.",
+        primaryLabel: "Read the full CAC payback guide",
+        primaryHref: "/guides/cac-payback-guide",
+        secondaryLabel: "Compare with LTV:CAC",
+        secondaryHref: "/saas-metrics/ltv-to-cac-calculator",
+      },
       seo: {
         intro: [
           "CAC payback period tells you how many months it takes to earn back CAC from monthly gross profit. It is one of the fastest ways to assess cash efficiency for subscription businesses.",

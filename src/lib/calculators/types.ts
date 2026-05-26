@@ -36,6 +36,14 @@ export type CalculatorDefinition = {
   featured?: boolean;
   guideSlug?: string;
   updatedAt?: string;
+  nextAction?: {
+    title: string;
+    body: string;
+    primaryLabel: string;
+    primaryHref: string;
+    secondaryLabel?: string;
+    secondaryHref?: string;
+  };
   relatedGlossarySlugs?: string[];
   seo?: {
     intro?: string[];

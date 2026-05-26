@@ -1760,6 +1760,15 @@ export const calculatorsPart3: CalculatorDefinition[] = [
       category: "saas-metrics",
       guideSlug: "cohort-ltv-forecast-guide",
       updatedAt: "2026-05-26",
+      nextAction: {
+        title: "Stress-test the cohort before trusting the headline LTV",
+        body:
+          "A forecasted LTV is most useful when it survives sensitivity checks on churn, expansion, and timing. If the discounted and undiscounted results diverge a lot, the next decision is usually about retention quality, not just scale.",
+        primaryLabel: "Read the cohort LTV forecasting guide",
+        primaryHref: "/guides/cohort-ltv-forecast-guide",
+        secondaryLabel: "Compare with LTV:CAC",
+        secondaryHref: "/saas-metrics/ltv-to-cac-calculator",
+      },
       relatedGlossarySlugs: [
         "cohorted-ltv",
         "customer-lifetime",

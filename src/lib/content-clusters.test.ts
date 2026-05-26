@@ -326,3 +326,47 @@ test("Priority content templates expose a shared trust panel with visible owners
     assert.match(source, /Updated/, "expected the page template to keep the Updated signal");
   }
 });
+
+test("Priority calculators expose next-action guidance and the calculator client renders it", () => {
+  const clientSource = readFileSync(
+    new URL("../components/calculators/CalculatorPageClient.tsx", import.meta.url),
+    "utf8",
+  );
+  const calculatorSources = [
+    readFileSync(new URL("./calculators/definitions.part1.ts", import.meta.url), "utf8"),
+    readFileSync(new URL("./calculators/definitions.part2.ts", import.meta.url), "utf8"),
+    readFileSync(new URL("./calculators/definitions.part3.ts", import.meta.url), "utf8"),
+  ];
+
+  const getCalculatorChunk = (slug: string) => {
+    for (const source of calculatorSources) {
+      const marker = `slug: "${slug}"`;
+      const start = source.indexOf(marker);
+      if (start === -1) continue;
+
+      const nextStart = source.indexOf('\n    },\n  {', start + marker.length);
+      return source.slice(start, nextStart === -1 ? undefined : nextStart);
+    }
+
+    return "";
+  };
+
+  assert.match(clientSource, /NextActionPanel/, "expected the calculator client to render NextActionPanel");
+  assert.match(clientSource, /Result/, "expected the calculator client to keep the Result heading");
+
+  for (const slug of [
+    "unit-economics-calculator",
+    "cohort-ltv-forecast-calculator",
+    "ltv-to-cac-calculator",
+    "cac-payback-period-calculator",
+  ]) {
+    const chunk = getCalculatorChunk(slug);
+
+    assert.ok(chunk, `expected calculator ${slug} to exist`);
+    assert.match(
+      chunk,
+      /nextAction:\s*\{/,
+      `expected ${slug} to expose calculator-level next-action guidance`,
+    );
+  }
+});

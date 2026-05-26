@@ -14,6 +14,7 @@ import Link from "next/link";
 import { AdUnit } from "@/components/ads/AdUnit";
 import { guides } from "@/lib/guides";
 import { getAdSenseSlot } from "@/lib/adsense";
+import { NextActionPanel } from "@/components/calculators/NextActionPanel";
 
 function formatValue(result: ResultValue): string {
   const maxFractionDigits = result.maxFractionDigits ?? 2;
@@ -333,6 +334,17 @@ export function CalculatorPageClient({ slug }: { slug: string }) {
             </div>
           </div>
         </div>
+
+        {calc.nextAction ? (
+          <NextActionPanel
+            title={calc.nextAction.title}
+            body={calc.nextAction.body}
+            primaryLabel={calc.nextAction.primaryLabel}
+            primaryHref={calc.nextAction.primaryHref}
+            secondaryLabel={calc.nextAction.secondaryLabel}
+            secondaryHref={calc.nextAction.secondaryHref}
+          />
+        ) : null}
 
         {defaultExample ? (
           <div className="space-y-3">

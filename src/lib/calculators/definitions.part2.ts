@@ -3046,6 +3046,15 @@ export const calculatorsPart2: CalculatorDefinition[] = [
       featured: true,
       guideSlug: "unit-economics-guide",
       updatedAt: "2026-05-26",
+      nextAction: {
+        title: "Use the stack to find the weakest lever",
+        body:
+          "Read this result as a bundle: payback tells you about cash timing, while LTV and LTV:CAC tell you whether the customer creates enough value. The next step is to identify which lever breaks first.",
+        primaryLabel: "Read the full unit economics guide",
+        primaryHref: "/guides/unit-economics-guide",
+        secondaryLabel: "Open the dashboard guide",
+        secondaryHref: "/guides/unit-economics-dashboard-guide",
+      },
       relatedGlossarySlugs: [
         "unit-economics",
         "cac",
