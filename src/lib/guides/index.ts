@@ -1652,6 +1652,8 @@ export const guides: Guide[] = [
         label: "Payback example (CAC $500; ARPA $200; margin 80%)",
         calculatorSlug: "cac-payback-period-calculator",
         params: { cac: "500", arpaMonthly: "200", grossMarginPercent: "80" },
+        decisionNote:
+          "Use this scenario to judge whether the current CAC comes back fast enough for your cash tolerance before you add spend.",
       },
     ],
   },
@@ -2942,6 +2944,15 @@ export const guides: Guide[] = [
         ],
       },
     ],
+    examples: [
+      {
+        label: "LTV:CAC example (LTV $4,800; CAC $1,200)",
+        calculatorSlug: "ltv-to-cac-calculator",
+        params: { ltv: "4800", cac: "1200" },
+        decisionNote:
+          "Use this scenario to compare headline ratio quality with payback and cash timing before you call the model scalable.",
+      },
+    ],
   },
   {
     slug: "nrr-guide",
@@ -4126,6 +4137,8 @@ export const guides: Guide[] = [
           monthlyChurnPercent: "3",
           cac: "800",
         },
+        decisionNote:
+          "Use this scenario to see which lever breaks first in the stack before you decide whether pricing, retention, or acquisition needs attention.",
       },
     ],
   },
@@ -5319,6 +5332,8 @@ export const guides: Guide[] = [
           months: "60",
           annualDiscountRatePercent: "12",
         },
+        decisionNote:
+          "Use this scenario to test how churn, expansion, and timing assumptions change the headline LTV before you set CAC guardrails.",
       },
     ],
   },

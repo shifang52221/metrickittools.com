@@ -370,3 +370,47 @@ test("Priority calculators expose next-action guidance and the calculator client
     );
   }
 });
+
+test("Priority guides expose stronger calculator example actions", () => {
+  const guidePageSource = readFileSync(
+    new URL("../app/guides/[slug]/page.tsx", import.meta.url),
+    "utf8",
+  );
+  const guidesSource = readFileSync(new URL("./guides/index.ts", import.meta.url), "utf8");
+
+  const getGuideChunk = (slug: string) => {
+    const marker = `slug: "${slug}"`;
+    const start = guidesSource.indexOf(marker);
+    if (start === -1) return "";
+
+    const nextStart = guidesSource.indexOf('\n  },\n  {', start + marker.length);
+    return guidesSource.slice(start, nextStart === -1 ? undefined : nextStart);
+  };
+
+  assert.match(
+    guidePageSource,
+    /Try it in a calculator/,
+    "expected the guide page template to keep the calculator example section",
+  );
+  assert.match(
+    guidePageSource,
+    /Opens the calculator with this scenario/,
+    "expected the guide page template to render stronger calculator action phrasing",
+  );
+
+  for (const slug of [
+    "unit-economics-guide",
+    "ltv-cac-guide",
+    "cac-payback-guide",
+    "cohort-ltv-forecast-guide",
+  ]) {
+    const chunk = getGuideChunk(slug);
+
+    assert.ok(chunk, `expected guide ${slug} to exist`);
+    assert.match(
+      chunk,
+      /decisionNote:/,
+      `expected ${slug} to expose example-level decision guidance`,
+    );
+  }
+});

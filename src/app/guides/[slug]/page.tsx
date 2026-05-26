@@ -107,10 +107,13 @@ export default async function GuidePage({ params }: PageProps) {
     calculatorSlug: string;
     params: Record<string, string>;
     note?: string;
+    decisionNote?: string;
     calculatorTitle: string;
     calculatorHref: string;
     hrefWithParams: string;
   }>;
+
+  const exampleActionLabel = "Opens the calculator with this scenario";
 
   const inSameCategory = guides.filter(
     (g) => g.category === guide.category && g.slug !== guide.slug,
@@ -380,6 +383,14 @@ export default async function GuidePage({ params }: PageProps) {
               >
                 <div className="text-sm text-zinc-500">{ex.calculatorTitle}</div>
                 <div className="mt-1 font-medium">{ex.label}</div>
+                <div className="mt-2 text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                  {exampleActionLabel}
+                </div>
+                {ex.decisionNote ? (
+                  <div className="mt-1 text-sm text-zinc-700 dark:text-zinc-300">
+                    {ex.decisionNote}
+                  </div>
+                ) : null}
                 {ex.note ? (
                   <div className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
                     {ex.note}

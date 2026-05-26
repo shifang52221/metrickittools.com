@@ -47,5 +47,6 @@ export type Guide = {
     calculatorSlug: string;
     params: Record<string, string>;
     note?: string;
+    decisionNote?: string;
   }>;
 };
