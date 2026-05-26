@@ -220,3 +220,42 @@ test("Priority SaaS calculators expose interpretation depth, not just formulas",
     }
   }
 });
+
+test("LTV:CAC and CAC payback calculators provide multi-step decision guidance", () => {
+  const source = readFileSync(new URL("./calculators/definitions.part1.ts", import.meta.url), "utf8");
+
+  const getCalculatorChunk = (slug: string) => {
+    const marker = `slug: "${slug}"`;
+    const start = source.indexOf(marker);
+    if (start === -1) return "";
+
+    const nextStart = source.indexOf('\n    },\n  {', start + marker.length);
+    return source.slice(start, nextStart === -1 ? undefined : nextStart);
+  };
+
+  const expectedTitles = new Map([
+    [
+      "ltv-to-cac-calculator",
+      ["Read ratio and payback together", "When a good ratio can still mislead you"],
+    ],
+    [
+      "cac-payback-period-calculator",
+      ["What different payback ranges suggest", "What to inspect before scaling"],
+    ],
+  ]);
+
+  for (const [slug, titles] of expectedTitles) {
+    const chunk = getCalculatorChunk(slug);
+
+    assert.ok(chunk, `expected calculator ${slug} to exist`);
+    assert.match(chunk, /guide:\s*\[/, `expected ${slug} to expose interpretation guidance`);
+
+    for (const title of titles) {
+      assert.match(
+        chunk,
+        new RegExp(`title:\\s*"${title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"`),
+        `expected ${slug} to include the interpretation section "${title}"`,
+      );
+    }
+  }
+});

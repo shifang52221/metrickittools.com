@@ -2386,11 +2386,19 @@ export const calculatorsPart1: CalculatorDefinition[] = [
       ],
       guide: [
         {
-          title: "Benchmarks (rule of thumb)",
+          title: "Read ratio and payback together",
           bullets: [
-            "Many SaaS teams target ~3:1, but it depends on growth and cash needs.",
-            "Higher ratios can signal under-investment in growth.",
-            "Lower ratios can be fine if payback is fast and churn is low.",
+            "Treat the ratio as incomplete on its own. A high LTV:CAC can still be weak if CAC payback is slow and cash comes back too late.",
+            "A lower ratio can still be workable when payback is fast, churn is controlled, and the company can recycle capital quickly.",
+            "Read LTV, payback, and ratio together before deciding whether a channel or segment is truly scalable.",
+          ],
+        },
+        {
+          title: "When a good ratio can still mislead you",
+          bullets: [
+            "Blended numbers can hide weak cohorts. Segment by channel, plan, or customer type before trusting a strong headline ratio.",
+            "Definition mismatch can inflate confidence: gross-margin LTV should be compared to a CAC definition that matches the decision you are making.",
+            "If the ratio looks healthy but the business still feels cash-constrained, inspect payback, gross profit per month, and cohort retention before raising spend.",
           ],
         },
       ],
@@ -2667,11 +2675,19 @@ export const calculatorsPart1: CalculatorDefinition[] = [
           ],
         },
         {
-          title: "How to interpret payback",
+          title: "What different payback ranges suggest",
           bullets: [
-            "Shorter payback improves cash efficiency and reduces risk.",
-            "Compare payback by channel - some channels are slow but scalable.",
-            "Pair with churn: long payback + high churn is dangerous.",
+            "Very short payback usually gives more room to scale because cash recycles faster and mistakes are cheaper.",
+            "Mid-range payback can still work when retention is strong, gross margin is stable, and the company has enough cash flexibility.",
+            "Long payback is not automatically wrong, but it raises the bar on churn, margin quality, and balance-sheet resilience.",
+          ],
+        },
+        {
+          title: "What to inspect before scaling",
+          bullets: [
+            "Check churn first: if payback is long and customer lifetime is short, the economics can break even when the headline result looks acceptable.",
+            "Check gross margin next: small margin compression can push payback out more than teams expect.",
+            "Check channel and segment mix before trusting a blended result. Some channels deserve slower payback; others should not.",
           ],
         },
       ],
