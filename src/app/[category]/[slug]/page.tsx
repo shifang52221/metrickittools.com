@@ -46,7 +46,7 @@ export default async function CalculatorPage({ params }: PageProps) {
   if (calc.category !== category) notFound();
   const categoryTitle =
     categories.find((c) => c.slug === category)?.title ?? category;
-  const calculatorReviewDate = siteConfig.contentReviewDate;
+  const calculatorReviewDate = calc.updatedAt ?? siteConfig.contentReviewDate;
 
   const quickChecks = (() => {
     if (category === "paid-ads") {

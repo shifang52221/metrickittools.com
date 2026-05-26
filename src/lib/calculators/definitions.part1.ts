@@ -2200,6 +2200,7 @@ export const calculatorsPart1: CalculatorDefinition[] = [
       category: "saas-metrics",
       featured: true,
       guideSlug: "ltv-cac-guide",
+      updatedAt: "2026-05-26",
       relatedGlossarySlugs: ["ltv", "cac", "ltv-to-cac", "cac-payback-period", "gross-margin"],
       seo: {
         intro: [
@@ -2411,6 +2412,7 @@ export const calculatorsPart1: CalculatorDefinition[] = [
       category: "saas-metrics",
       featured: true,
       guideSlug: "cac-payback-guide",
+      updatedAt: "2026-05-26",
       seo: {
         intro: [
           "CAC payback period tells you how many months it takes to earn back CAC from monthly gross profit. It is one of the fastest ways to assess cash efficiency for subscription businesses.",

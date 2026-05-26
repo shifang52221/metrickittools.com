@@ -259,3 +259,40 @@ test("LTV:CAC and CAC payback calculators provide multi-step decision guidance",
     }
   }
 });
+
+test("Priority calculators expose calculator-level updatedAt values", () => {
+  const calculatorSources = [
+    readFileSync(new URL("./calculators/definitions.part1.ts", import.meta.url), "utf8"),
+    readFileSync(new URL("./calculators/definitions.part2.ts", import.meta.url), "utf8"),
+    readFileSync(new URL("./calculators/definitions.part3.ts", import.meta.url), "utf8"),
+  ];
+
+  const getCalculatorChunk = (slug: string) => {
+    for (const source of calculatorSources) {
+      const marker = `slug: "${slug}"`;
+      const start = source.indexOf(marker);
+      if (start === -1) continue;
+
+      const nextStart = source.indexOf('\n    },\n  {', start + marker.length);
+      return source.slice(start, nextStart === -1 ? undefined : nextStart);
+    }
+
+    return "";
+  };
+
+  for (const slug of [
+    "unit-economics-calculator",
+    "cohort-ltv-forecast-calculator",
+    "ltv-to-cac-calculator",
+    "cac-payback-period-calculator",
+  ]) {
+    const chunk = getCalculatorChunk(slug);
+
+    assert.ok(chunk, `expected calculator ${slug} to exist`);
+    assert.match(
+      chunk,
+      /updatedAt:\s*"2026-05-26"/,
+      `expected ${slug} to expose a calculator-level updatedAt`,
+    );
+  }
+});

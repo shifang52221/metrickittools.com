@@ -1759,6 +1759,7 @@ export const calculatorsPart3: CalculatorDefinition[] = [
         "Estimate cohort-based LTV using churn, expansion, gross margin, and optional discounting.",
       category: "saas-metrics",
       guideSlug: "cohort-ltv-forecast-guide",
+      updatedAt: "2026-05-26",
       relatedGlossarySlugs: [
         "cohorted-ltv",
         "customer-lifetime",

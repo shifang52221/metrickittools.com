@@ -3045,6 +3045,7 @@ export const calculatorsPart2: CalculatorDefinition[] = [
       category: "saas-metrics",
       featured: true,
       guideSlug: "unit-economics-guide",
+      updatedAt: "2026-05-26",
       relatedGlossarySlugs: [
         "unit-economics",
         "cac",
