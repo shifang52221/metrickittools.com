@@ -7480,8 +7480,12 @@ export const guides: Guide[] = [
     category: "paid-ads",
     updatedAt: "2026-02-16",
     relatedCalculatorSlugs: ["mer-calculator", "break-even-roas-calculator", "marginal-roas-calculator"],
-    relatedGlossarySlugs: ["mer", "blended-roas", "roas", "contribution-margin", "incrementality", "attribution-window"],
     sections: [
+      { type: "h2", text: "Quick answer" },
+      {
+        type: "p",
+        text: "MER is useful when you want a top-down read on whether marketing spend and revenue still make sense together. It stops being enough when you need to decide which channel to scale, where the blended number may be hiding weak marginal returns or attribution bias.",
+      },
       { type: "h2", text: "What MER is" },
       {
         type: "p",
@@ -7509,6 +7513,15 @@ export const guides: Guide[] = [
           "Adjust analysis for seasonality, promos, pricing changes, and returns.",
         ],
       },
+      { type: "h2", text: "When MER stops being enough" },
+      {
+        type: "bullets",
+        items: [
+          "A good blended MER can still hide weak marginal ROAS in the next dollars of spend.",
+          "A rising MER can still be misleading if attribution windows, promos, or delayed revenue changed the picture.",
+          "When you are deciding whether to scale or cut spend, move from blended MER into marginal ROAS and incrementality checks.",
+        ],
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -7518,6 +7531,15 @@ export const guides: Guide[] = [
           "Using gross revenue without netting refunds/returns where meaningful.",
         ],
       },
+    ],
+    relatedGlossarySlugs: [
+      "mer",
+      "blended-roas",
+      "roas",
+      "contribution-margin",
+      "incrementality",
+      "attribution-window",
+      "marginal-roas",
     ],
     faqs: [
       {
@@ -7541,6 +7563,8 @@ export const guides: Guide[] = [
           contributionMarginPercent: "40",
           profitBufferPercent: "20",
         },
+        decisionNote:
+          "Use this scenario to decide whether the blended MER is actually healthy enough to scale, or whether you need to inspect marginal ROAS and incrementality next.",
       },
     ],
   },

@@ -414,3 +414,80 @@ test("Priority guides expose stronger calculator example actions", () => {
     );
   }
 });
+
+test("MER cluster keeps the blended metric, guide, and calculator roles distinct", () => {
+  const glossarySource = readFileSync(
+    new URL("./glossary/terms/paidAds.ts", import.meta.url),
+    "utf8",
+  );
+  const guideSource = readFileSync(new URL("./guides/index.ts", import.meta.url), "utf8");
+  const calculatorSource = readFileSync(
+    new URL("./calculators/definitions.part3.ts", import.meta.url),
+    "utf8",
+  );
+
+  const glossaryChunk = (() => {
+    const marker = 'slug: "mer"';
+    const start = glossarySource.indexOf(marker);
+    if (start === -1) return "";
+    const nextStart = glossarySource.indexOf('\n  },\n  {', start + marker.length);
+    return glossarySource.slice(start, nextStart === -1 ? undefined : nextStart);
+  })();
+
+  const guideChunk = (() => {
+    const marker = 'slug: "mer-guide"';
+    const start = guideSource.indexOf(marker);
+    if (start === -1) return "";
+    const nextStart = guideSource.indexOf('\n  },\n  {', start + marker.length);
+    return guideSource.slice(start, nextStart === -1 ? undefined : nextStart);
+  })();
+
+  const calculatorChunk = (() => {
+    const marker = 'slug: "mer-calculator"';
+    const start = calculatorSource.indexOf(marker);
+    if (start === -1) return "";
+    const nextStart = calculatorSource.indexOf('\n  },\n  {', start + marker.length);
+    return calculatorSource.slice(start, nextStart === -1 ? undefined : nextStart);
+  })();
+
+  assert.ok(glossaryChunk, "expected the MER glossary entry to exist");
+  assert.ok(guideChunk, "expected the MER guide to exist");
+  assert.ok(calculatorChunk, "expected the MER calculator to exist");
+
+  assert.match(glossaryChunk, /mer-guide/, "expected MER glossary to point to the full guide");
+  assert.match(
+    glossaryChunk,
+    /heroNote:|nextStepLabel:|nextStepHref:/,
+    "expected MER glossary to frame itself as a quick definition with a stronger next step",
+  );
+  assert.match(
+    guideChunk,
+    /mer-calculator/,
+    "expected MER guide to keep the calculator as the main worked example",
+  );
+  assert.match(
+    guideChunk,
+    /marginal-roas|incrementality/,
+    "expected MER guide to send users to marginal ROAS or incrementality next",
+  );
+  assert.match(
+    guideChunk,
+    /decisionNote:/,
+    "expected MER guide examples to explain why the calculator scenario matters",
+  );
+  assert.match(
+    calculatorChunk,
+    /benchmark/i,
+    "expected MER calculator to expose decision-oriented benchmark guidance",
+  );
+  assert.match(
+    calculatorChunk,
+    /nextAction:\s*\{/,
+    "expected MER calculator to expose a stronger next action",
+  );
+  assert.match(
+    calculatorChunk,
+    /incrementality|marginal ROAS|ROAS/i,
+    "expected MER calculator to frame the next step beyond blended MER",
+  );
+});

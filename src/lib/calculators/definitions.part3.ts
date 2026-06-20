@@ -4397,6 +4397,15 @@ export const calculatorsPart3: CalculatorDefinition[] = [
         "Calculate MER (Marketing Efficiency Ratio / blended ROAS) and estimate break-even and target MER from margin assumptions.",
       category: "paid-ads",
       guideSlug: "mer-guide",
+      nextAction: {
+        title: "Use blended MER as a top-down signal, then inspect the next decision",
+        body:
+          "A strong blended MER does not prove the next dollars of spend are still efficient. Use the full MER guide to interpret the result, then move to marginal ROAS or incrementality when you are making scaling decisions.",
+        primaryLabel: "Read the full MER guide",
+        primaryHref: "/guides/mer-guide",
+        secondaryLabel: "Check marginal ROAS next",
+        secondaryHref: "/guides/marginal-roas-guide",
+      },
       relatedGlossarySlugs: [
         "mer",
         "blended-roas",
@@ -4407,23 +4416,26 @@ export const calculatorsPart3: CalculatorDefinition[] = [
       ],
       seo: {
         intro: [
-          "This MER calculator uses total revenue divided by total marketing spend over the same period. It's a useful top-down health metric that reduces channel attribution noise.",
-          "To make MER decision-useful, translate it into profit using contribution margin and compute break-even and target MER thresholds.",
+          "This MER calculator uses total revenue divided by total marketing spend over the same period. Use it when you need a top-down answer to a practical question: is blended marketing efficiency still healthy enough to support current spend.",
+          "To make MER decision-useful, translate it into profit using contribution margin and compute break-even and target MER thresholds before you trust the headline number.",
         ],
         steps: [
           "Enter total revenue and total marketing spend for the same window.",
           "Enter contribution margin to estimate gross profit after variable costs.",
           "Optionally set a profit buffer to compute a target MER (more conservative than break-even).",
+          "Use the result to decide whether blended efficiency is really healthy, or whether the next spend decision requires marginal ROAS or incrementality analysis.",
         ],
         benchmarks: [
           "Break-even MER is 1 / contribution margin (a floor, not a scaling target).",
           "If profit after spend is negative at the blended level, scaling spend typically scales losses unless mix or margin improves.",
           "Use MER for top-down health and use channel metrics (ROAS, marginal ROAS) for allocation decisions.",
+          "A good blended MER can still hide weak next-dollar efficiency, so treat it as a top-down benchmark rather than final proof of scale readiness.",
         ],
         pitfalls: [
           "Using MER alone to optimize channel budgets (it hides what's working).",
           "Mixing time windows (weekly spend with monthly revenue).",
           "Ignoring promos/seasonality and concluding performance changed structurally.",
+          "Treating blended MER as causal truth when incrementality or marginal ROAS is the real next diagnostic step.",
         ],
       },
       inputs: [

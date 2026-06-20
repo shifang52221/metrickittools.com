@@ -5,6 +5,7 @@ type Seed = {
   title: string;
   description: string;
   updatedAt?: string; // YYYY-MM-DD
+  seo?: GlossaryTerm["seo"];
   formula?: string;
   example?: string;
   bullets?: string[];
@@ -48,6 +49,7 @@ function make(seed: Seed): GlossaryTerm {
     updatedAt: seed.updatedAt ?? "2026-01-23",
     sections: sectionsFor(seed),
     faqs: seed.faqs,
+    seo: seed.seo,
     relatedGuideSlugs: seed.relatedGuideSlugs,
     relatedCalculatorSlugs: seed.relatedCalculatorSlugs,
     modules: seed.modules,
@@ -500,7 +502,16 @@ const seeds: Seed[] = [
     slug: "mer",
     title: "MER (Marketing Efficiency Ratio)",
     description:
-      "MER (also called blended ROAS) is total revenue divided by total marketing spend over the same period. It's useful for top-down health checks.",
+      "MER (also called blended ROAS) is total revenue divided by total marketing spend over the same period. Use it as a top-down efficiency check, then move to the full guide when you need to judge whether blended performance is actually strong enough to scale.",
+    seo: {
+      title: "MER meaning: formula, blended ROAS, and what to do next",
+      description:
+        "MER means Marketing Efficiency Ratio. Learn the formula, how MER differs from ROAS, and when to move from a quick definition to the full MER guide.",
+      heroNote:
+        "Use this page for the fast definition. If you need to decide whether blended efficiency is really strong enough to scale, read the full MER guide next.",
+      nextStepLabel: "Read the full MER guide",
+      nextStepHref: "/guides/mer-guide",
+    },
     formula: "MER = total revenue / total marketing spend",
     example:
       "If total revenue is $500k and total marketing spend is $100k, MER = $500k / $100k = 5.0.",
