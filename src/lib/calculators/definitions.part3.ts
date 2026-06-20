@@ -926,13 +926,23 @@ export const calculatorsPart3: CalculatorDefinition[] = [
         },
       ],
     },
-    {
+  {
       slug: "mrr-forecast-calculator",
       title: "MRR Forecast Calculator: Monthly Projection, Formula, and Example",
       description:
         "Project future MRR using new MRR, expansion, contraction, churn, and time horizon inputs with a simple monthly forecast model.",
       category: "saas-metrics",
       guideSlug: "mrr-forecast-guide",
+      updatedAt: "2026-06-20",
+      nextAction: {
+        title: "Use the projection as a planning signal, then inspect retention quality",
+        body:
+          "A rising MRR forecast does not automatically mean the revenue engine is healthy. Use the forecast guide to interpret the bridge, then move to an MRR waterfall or NRR/GRR analysis if new MRR may be hiding weak existing-customer retention.",
+        primaryLabel: "Read the MRR forecast guide",
+        primaryHref: "/guides/mrr-forecast-guide",
+        secondaryLabel: "Check the MRR waterfall next",
+        secondaryHref: "/guides/mrr-waterfall-guide",
+      },
       relatedGlossarySlugs: [
         "arr",
         "mrr",
@@ -948,7 +958,7 @@ export const calculatorsPart3: CalculatorDefinition[] = [
       seo: {
         intro: [
           "This MRR forecast calculator projects monthly recurring revenue using a simple bridge model of starting MRR, new MRR, expansion, contraction, and churn.",
-          "This calculator models a simple monthly MRR bridge: starting MRR plus new MRR, expansion, minus contraction and churn, repeated for the number of months you choose.",
+          "Use it when you need a planning answer to a practical question: if current acquisition and retention assumptions continue, where does recurring revenue land and what part of the bridge deserves the next decision.",
         ],
         steps: [
           "Enter your starting MRR (current recurring run-rate).",
@@ -956,10 +966,16 @@ export const calculatorsPart3: CalculatorDefinition[] = [
           "Set monthly expansion, contraction, and churn rates for existing MRR.",
           "Choose a horizon (e.g., 6-24 months) and compare scenarios.",
         ],
+        benchmarks: [
+          "A strong ending MRR can still be fragile if implied NRR or GRR is weak and the model depends too heavily on new MRR.",
+          "If month-6 or month-12 MRR only looks healthy under one narrow assumption set, treat the forecast as directional planning input rather than operating certainty.",
+          "Use the projection for planning, then use an MRR waterfall, NRR, and GRR to understand whether existing-customer health supports the headline path.",
+        ],
         pitfalls: [
           "Mixing time units (monthly churn with annual inputs).",
           "Using expansion/churn rates that imply impossible outcomes (e.g., churn > 100%).",
           "Treating this as a replacement for cohort-based retention curves; use cohorts for higher accuracy.",
+          "Trusting projected ending MRR without checking whether the bridge is being carried by new MRR while NRR or GRR is weakening.",
         ],
       },
       inputs: [

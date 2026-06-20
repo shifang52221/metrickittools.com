@@ -70,9 +70,18 @@ export const termsCore: GlossaryTerm[] = [
     slug: "mrr",
     title: "MRR Meaning: Formula, Components, and How to Calculate MRR",
     description:
-      "MRR means Monthly Recurring Revenue. Learn the MRR formula, what counts in MRR, expansion and churn components, and common mistakes.",
+      "MRR means Monthly Recurring Revenue. Learn the MRR formula, what counts in MRR, the main recurring components, and when to use the MRR forecast guide next.",
     category: "saas-metrics",
-    updatedAt: "2026-03-18",
+    updatedAt: "2026-06-20",
+    seo: {
+      title: "MRR meaning: formula, components, and forecasting next steps",
+      description:
+        "MRR means Monthly Recurring Revenue. Learn the formula, what counts in MRR, how new and churned MRR fit together, and when to read the MRR forecast guide next.",
+      heroNote:
+        "Use this page for the fast definition. If you need the full workflow for MRR planning, monthly bridges, retention assumptions, and forecast interpretation, go to the MRR forecast guide next.",
+      nextStepLabel: "Read the MRR forecast guide",
+      nextStepHref: "/guides/mrr-forecast-guide",
+    },
     sections: [
       { type: "h2", text: "Definition" },
       {

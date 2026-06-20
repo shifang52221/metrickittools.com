@@ -491,3 +491,84 @@ test("MER cluster keeps the blended metric, guide, and calculator roles distinct
     "expected MER calculator to frame the next step beyond blended MER",
   );
 });
+
+test("MRR forecast cluster keeps the definition, guide, and calculator roles distinct", () => {
+  const glossarySource = readFileSync(
+    new URL("./glossary/terms/core.ts", import.meta.url),
+    "utf8",
+  );
+  const guideSource = readFileSync(new URL("./guides/index.ts", import.meta.url), "utf8");
+  const calculatorSource = readFileSync(
+    new URL("./calculators/definitions.part3.ts", import.meta.url),
+    "utf8",
+  );
+
+  const glossaryChunk = (() => {
+    const marker = 'slug: "mrr"';
+    const start = glossarySource.indexOf(marker);
+    if (start === -1) return "";
+    const nextStart = glossarySource.indexOf('\n  },\n  {', start + marker.length);
+    return glossarySource.slice(start, nextStart === -1 ? undefined : nextStart);
+  })();
+
+  const guideChunk = (() => {
+    const marker = 'slug: "mrr-forecast-guide"';
+    const start = guideSource.indexOf(marker);
+    if (start === -1) return "";
+    const nextStart = guideSource.indexOf('\n  },\n  {', start + marker.length);
+    return guideSource.slice(start, nextStart === -1 ? undefined : nextStart);
+  })();
+
+  const calculatorChunk = (() => {
+    const marker = 'slug: "mrr-forecast-calculator"';
+    const start = calculatorSource.indexOf(marker);
+    if (start === -1) return "";
+    const nextStart = calculatorSource.indexOf('\n  },\n  {', start + marker.length);
+    return calculatorSource.slice(start, nextStart === -1 ? undefined : nextStart);
+  })();
+
+  assert.ok(glossaryChunk, "expected the MRR glossary entry to exist");
+  assert.ok(guideChunk, "expected the MRR forecast guide to exist");
+  assert.ok(calculatorChunk, "expected the MRR forecast calculator to exist");
+
+  assert.match(
+    glossaryChunk,
+    /mrr-forecast-guide/,
+    "expected the MRR glossary to point to the forecast guide",
+  );
+  assert.match(
+    glossaryChunk,
+    /heroNote:|nextStepLabel:|nextStepHref:/,
+    "expected the MRR glossary to frame itself as a fast definition with a stronger next step",
+  );
+  assert.match(
+    guideChunk,
+    /mrr-forecast-calculator/,
+    "expected the MRR forecast guide to keep the calculator as the main worked example",
+  );
+  assert.match(
+    guideChunk,
+    /nrr|grr|mrr-waterfall/i,
+    "expected the MRR forecast guide to send users toward retention-aware next steps",
+  );
+  assert.match(
+    guideChunk,
+    /decisionNote:/,
+    "expected the MRR forecast guide example to explain why the calculator scenario matters",
+  );
+  assert.match(
+    calculatorChunk,
+    /benchmark/i,
+    "expected the MRR forecast calculator to expose planning-oriented benchmark guidance",
+  );
+  assert.match(
+    calculatorChunk,
+    /nextAction:\s*\{/,
+    "expected the MRR forecast calculator to expose a stronger next action",
+  );
+  assert.match(
+    calculatorChunk,
+    /nrr|grr|waterfall/i,
+    "expected the MRR forecast calculator to frame the next step beyond the projection",
+  );
+});

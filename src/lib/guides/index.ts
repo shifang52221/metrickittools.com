@@ -4994,7 +4994,7 @@ export const guides: Guide[] = [
       title: "MRR Forecast Formula: Example, Template, and Monthly Bridge",
     },
     category: "saas-metrics",
-    updatedAt: "2026-03-18",
+    updatedAt: "2026-06-20",
     relatedCalculatorSlugs: [
       "mrr-forecast-calculator",
       "mrr-waterfall-calculator",
@@ -5016,6 +5016,11 @@ export const guides: Guide[] = [
       "cmgr",
     ],
     sections: [
+      { type: "h2", text: "Quick answer" },
+      {
+        type: "p",
+        text: "An MRR forecast is useful when you need a planning-grade bridge from today's recurring revenue to a likely future run-rate. It stops being enough when retention behavior changes by cohort, when expansion is uneven, or when you need to separate acquisition growth from existing-customer health.",
+      },
       { type: "h2", text: "Why a bridge model is useful" },
       {
         type: "p",
@@ -5045,6 +5050,15 @@ export const guides: Guide[] = [
           "Implied monthly NRR/GRR reflects existing-customer health independent of new MRR.",
         ],
       },
+      { type: "h2", text: "When a simple bridge stops being enough" },
+      {
+        type: "bullets",
+        items: [
+          "If expansion and churn differ a lot by cohort or segment, a single blended rate can hide where future MRR is really breaking.",
+          "If the forecast looks good only because new MRR is masking weak existing-customer retention, inspect NRR, GRR, and an MRR waterfall next.",
+          "If planning decisions depend on activation timing, seasonality, or pricing changes, move from a simple bridge into cohort and scenario analysis.",
+        ],
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -5067,6 +5081,11 @@ export const guides: Guide[] = [
         answer:
           "Most simple models apply the rates to the current MRR base at the start of each month (then update). For precision, use cohort-based retention curves and apply behavior by segment.",
       },
+      {
+        question: "What should I check after the forecast if I do not trust the headline result-",
+        answer:
+          "Start with an MRR waterfall to see whether the projected change is coming from new, expansion, contraction, or churn. Then inspect NRR and GRR to understand whether existing-customer health is strong enough to support the headline projection.",
+      },
     ],
     examples: [
       {
@@ -5080,6 +5099,8 @@ export const guides: Guide[] = [
           churnRatePercent: "1.5",
           months: "12",
         },
+        decisionNote:
+          "Use this scenario to judge whether growth is coming from durable retention and expansion, or whether the model only looks healthy because new MRR is covering up weak NRR, GRR, or waterfall dynamics.",
       },
     ],
   },
