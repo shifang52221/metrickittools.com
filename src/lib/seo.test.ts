@@ -55,15 +55,20 @@ test("audited titles stay within the 60 character SEO budget", () => {
   const mrrForecastTitle = mrrForecastChunk?.[1] ?? null;
   const quotaCarryingRepsTitle = quotaCarryingRepsChunk?.[1] ?? null;
 
-  const auditedTitles = [
+  const renderedTitles = [
     editorialPolicyTitle,
-    magicNumberTitle,
-    mrrForecastTitle,
-    quotaCarryingRepsTitle,
+    magicNumberTitle ? `${magicNumberTitle} | MetricKit` : null,
+    mrrForecastTitle ? `${mrrForecastTitle} | MetricKit` : null,
+    quotaCarryingRepsTitle
+      ? `${quotaCarryingRepsTitle} definition | MetricKit`
+      : null,
   ];
 
-  for (const title of auditedTitles) {
+  for (const title of renderedTitles) {
     assert.ok(title, "expected the audited title to exist");
-    assert.ok(title.length <= 60, `expected "${title}" to stay within 60 characters`);
+    assert.ok(
+      title.length <= 60,
+      `expected rendered title "${title}" to stay within 60 characters`,
+    );
   }
 });

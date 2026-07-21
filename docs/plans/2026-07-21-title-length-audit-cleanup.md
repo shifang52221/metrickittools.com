@@ -4,7 +4,7 @@
 
 **Goal:** Remove the four overlong title findings from the July 21 SEO audit and prevent them from regressing.
 
-**Architecture:** Add one focused regression test that checks the audited page titles directly from the metadata and content-definition sources. Introduce one shared metadata constant for the editorial policy page so the test can import a plain TypeScript value, then shorten only the flagged titles.
+**Architecture:** Add one focused regression test that checks the final rendered title budget, including the root layout's ` | MetricKit` suffix and the glossary page's ` definition` suffix. Introduce one shared metadata constant for the editorial policy page so the test can import a plain TypeScript value, then shorten only the flagged titles.
 
 **Tech Stack:** Next.js App Router, TypeScript, Node test runner, ESLint, Next production build, `scripts/seo-audit.mjs`
 
@@ -17,12 +17,12 @@
 
 **Step 1: Write the failing test**
 
-Add a test that asserts the following titles are `<= 60` characters:
+Add a test that asserts the following final rendered titles are `<= 60` characters:
 
 - editorial policy metadata title
-- `saas-magic-number-calculator`
-- `mrr-forecast-calculator`
-- `quota-carrying-reps`
+- `saas-magic-number-calculator` plus ` | MetricKit`
+- `mrr-forecast-calculator` plus ` | MetricKit`
+- `quota-carrying-reps` plus ` definition | MetricKit`
 
 **Step 2: Run the focused test**
 
@@ -57,7 +57,7 @@ Replace the inline absolute title in `src/app/editorial-policy/page.tsx` with th
 
 **Step 1: Update titles**
 
-Shorten only these titles:
+Shorten only these title sources:
 
 - SaaS Magic Number calculator
 - MRR Forecast calculator
@@ -107,7 +107,7 @@ $env:SEO_AUDIT_CONCURRENCY='10'
 node scripts\seo-audit.mjs
 ```
 
-Expected: `titleTooLong` drops from `4` to `0`.
+Expected: `titleTooLong` drops from `4` to `0`, using the final rendered `<title>` values rather than source strings.
 
 ### Task 7: Review and prepare the batch
 

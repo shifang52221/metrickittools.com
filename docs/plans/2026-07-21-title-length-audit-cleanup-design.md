@@ -31,6 +31,7 @@ Use the smallest possible content change:
 
 ## Success Criteria
 
+- The new regression test models the final rendered title, including the site suffix and glossary definition suffix.
 - The new regression test fails before the title changes and passes after them.
 - `npm run lint` passes.
 - `npm run build` passes.
