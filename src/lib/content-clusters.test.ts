@@ -458,6 +458,36 @@ test("Priority guides expose stronger calculator example actions", () => {
   }
 });
 
+test("Core SaaS guides expose a calculator-led decision handoff", () => {
+  const expected = new Map([
+    ["arr-guide", { calculatorSlug: "arr-calculator", next: /waterfall|bookings|net new arr/i }],
+    ["mrr-forecast-guide", { calculatorSlug: "mrr-forecast-calculator", next: /nrr|grr|waterfall/i }],
+    ["cac-guide", { calculatorSlug: "cac-calculator", next: /payback|ltv:cac|gross margin/i }],
+    ["cac-payback-guide", { calculatorSlug: "cac-payback-period-calculator", next: /cash|ltv|break-even/i }],
+  ]);
+
+  for (const [slug, expectation] of expected) {
+    const guide = getGuide(slug);
+
+    assert.ok(guide, `expected ${slug} to exist`);
+    assert.equal(guide.updatedAt, "2026-07-21", `expected ${slug} to be refreshed`);
+    assert.ok(guide.examples?.length, `expected ${slug} to expose a worked example`);
+    assert.ok(
+      guide.examples?.some((example) => example.calculatorSlug === expectation.calculatorSlug),
+      `expected ${slug} to use ${expectation.calculatorSlug} in an example`,
+    );
+    assert.ok(
+      guide.examples?.some((example) => example.decisionNote),
+      `expected ${slug} examples to explain the decision`,
+    );
+    assert.match(
+      JSON.stringify(guide),
+      expectation.next,
+      `expected ${slug} to expose a next-decision handoff`,
+    );
+  }
+});
+
 test("MER cluster keeps the blended metric, guide, and calculator roles distinct", () => {
   const glossarySource = readFileSync(
     new URL("./glossary/terms/paidAds.ts", import.meta.url),

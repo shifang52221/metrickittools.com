@@ -1040,7 +1040,7 @@ export const guides: Guide[] = [
         "Learn how to calculate CAC, what costs belong in it, when to use paid vs fully-loaded CAC, and how payback and LTV:CAC change the decision.",
     },
     category: "saas-metrics",
-    updatedAt: "2026-05-25",
+    updatedAt: "2026-07-21",
     summary: {
       audience:
         "Founders, growth leaders, finance partners, and GTM operators trying to decide whether acquisition economics are strong enough to scale.",
@@ -1156,6 +1156,15 @@ export const guides: Guide[] = [
           "Use segment-level CAC when blended averages hide whether specific channels, plans, or geographies still work.",
         ],
       },
+      { type: "h2", text: "Use the calculator first, then test the economics" },
+      {
+        type: "bullets",
+        items: [
+          "Use the CAC calculator first when the immediate decision is whether the spend and new-customer denominator are defined consistently.",
+          "Use CAC payback next when cash timing matters, especially if growth spend is high or runway is tight.",
+          "Use LTV:CAC and gross margin before increasing budget; a low CAC can still be bad if the cohort churns quickly or pays back too slowly.",
+        ],
+      },
       { type: "h2", text: "There is no universal good CAC" },
       {
         type: "bullets",
@@ -1227,6 +1236,8 @@ export const guides: Guide[] = [
         label: "Marketing spend example ($20,000; 40 new customers)",
         calculatorSlug: "cac-calculator",
         params: { spend: "20000", newCustomers: "40" },
+        decisionNote:
+          "Use this scenario to lock the basic CAC denominator first, then move to payback, gross margin, and LTV:CAC before deciding whether to scale spend.",
       },
     ],
   },
@@ -1597,7 +1608,7 @@ export const guides: Guide[] = [
       title: "CAC payback guide: definition, formula, and benchmarks",
     },
     category: "saas-metrics",
-    updatedAt: "2026-05-25",
+    updatedAt: "2026-07-21",
     partOfGuideSlug: "cac-guide",
     relatedCalculatorSlugs: ["cac-payback-period-calculator", "cac-calculator"],
     sections: [
@@ -1628,6 +1639,15 @@ export const guides: Guide[] = [
           "Compute gross profit per month: ARPA * gross margin.",
           "Compute payback months: CAC / gross profit per month.",
           "Compare across channels and cohorts, not just the blended average.",
+        ],
+      },
+      { type: "h2", text: "Use the calculator first, then choose the next test" },
+      {
+        type: "bullets",
+        items: [
+          "Use the CAC payback calculator first when the decision is whether acquisition spend comes back fast enough for your cash tolerance.",
+          "If payback is too long, test whether the issue is CAC, ARPA, gross margin, or churn before you cut a channel.",
+          "Do not treat payback as the same thing as LTV or company break-even. Payback answers cash recovery timing; LTV and break-even answer different questions.",
         ],
       },
       { type: "h2", text: "Benchmarks (rule of thumb)" },
@@ -2709,7 +2729,7 @@ export const guides: Guide[] = [
         "Learn what ARR means, how to calculate it, how it differs from MRR, bookings, and cash, and how to use ARR in growth and valuation work.",
     },
     category: "saas-metrics",
-    updatedAt: "2026-05-25",
+    updatedAt: "2026-07-21",
     summary: {
       audience:
         "Founders, finance partners, RevOps, and operators using ARR to compare growth quality, scale, and capital efficiency.",
@@ -2836,6 +2856,16 @@ export const guides: Guide[] = [
           "Check whether services, credits, annual prepay timing, or stale snapshot dates are distorting the number.",
         ],
       },
+      { type: "h2", text: "Use the calculator first, then explain the movement" },
+      {
+        type: "bullets",
+        items: [
+          "Use the ARR calculator first when the immediate question is the current recurring run-rate.",
+          "Use an ARR waterfall next when the decision depends on why ARR changed: new, expansion, contraction, or churned ARR.",
+          "Use bookings vs ARR when sales output and recurring run-rate disagree, especially around annual prepay, services, or contract timing.",
+          "Do not use ARR alone to claim durable growth. Check net new ARR, retention quality, cash timing, and payback before turning the number into a planning decision.",
+        ],
+      },
       { type: "h2", text: "When ARR is useful and when it misleads" },
       {
         type: "bullets",
@@ -2883,11 +2913,15 @@ export const guides: Guide[] = [
         label: "ARR example (250 customers; $200 ARPA/month)",
         calculatorSlug: "arr-calculator",
         params: { customers: "250", arpaMonthly: "200" },
+        decisionNote:
+          "Use this scenario to confirm the clean run-rate first, then inspect ARR waterfall or bookings if the number does not reconcile with sales output, cash, or net new ARR.",
       },
       {
         label: "ARR valuation example ($2.4M ARR; 6* multiple)",
         calculatorSlug: "arr-valuation-calculator",
         params: { arr: "2400000", multiple: "6" },
+        decisionNote:
+          "Use this only after the ARR definition is clean; valuation multiples can mislead if ARR includes services, weak retention, or non-recurring revenue.",
       },
     ],
   },
@@ -5028,7 +5062,7 @@ export const guides: Guide[] = [
       title: "MRR Forecast Formula: Example, Template, and Monthly Bridge",
     },
     category: "saas-metrics",
-    updatedAt: "2026-06-20",
+    updatedAt: "2026-07-21",
     relatedCalculatorSlugs: [
       "mrr-forecast-calculator",
       "mrr-waterfall-calculator",
@@ -5082,6 +5116,15 @@ export const guides: Guide[] = [
           "Ending MRR and ARR run-rate show where the business lands if assumptions hold.",
           "CMGR helps compare scenarios (growth rate compounded monthly).",
           "Implied monthly NRR/GRR reflects existing-customer health independent of new MRR.",
+        ],
+      },
+      { type: "h2", text: "Use the calculator first, then inspect retention" },
+      {
+        type: "bullets",
+        items: [
+          "Use the MRR forecast calculator first when you need a quick bridge from current MRR to an expected future run-rate.",
+          "Use an MRR waterfall next if the result looks surprising, because the waterfall shows whether new, expansion, contraction, or churned MRR is driving the change.",
+          "Use NRR and GRR before calling the forecast healthy; new MRR can hide weak existing-customer retention.",
         ],
       },
       { type: "h2", text: "When a simple bridge stops being enough" },
