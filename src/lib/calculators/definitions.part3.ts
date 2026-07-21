@@ -4412,6 +4412,7 @@ export const calculatorsPart3: CalculatorDefinition[] = [
       description:
         "Calculate MER (Marketing Efficiency Ratio / blended ROAS) and estimate break-even and target MER from margin assumptions.",
       category: "paid-ads",
+      updatedAt: "2026-07-21",
       guideSlug: "mer-guide",
       nextAction: {
         title: "Use blended MER as a top-down signal, then inspect the next decision",
@@ -4429,6 +4430,7 @@ export const calculatorsPart3: CalculatorDefinition[] = [
         "gross-margin",
         "roas",
         "incrementality",
+        "marginal-roas",
       ],
       seo: {
         intro: [

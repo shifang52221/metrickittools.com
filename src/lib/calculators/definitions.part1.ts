@@ -558,12 +558,31 @@ export const calculatorsPart1: CalculatorDefinition[] = [
         "Estimate a target ROAS to cover variable costs plus a desired margin buffer.",
       category: "paid-ads",
       featured: true,
+      updatedAt: "2026-07-21",
       guideSlug: "target-roas-guide",
-      relatedGlossarySlugs: ["target-roas", "break-even-roas", "contribution-margin", "roas"],
+      nextAction: {
+        title: "Validate the target before scaling spend",
+        body:
+          "Use the target ROAS as a planning constraint, then compare blended MER for top-down health and marginal ROAS or incrementality for the next budget decision.",
+        primaryLabel: "Read the target ROAS guide",
+        primaryHref: "/guides/target-roas-guide",
+        secondaryLabel: "Validate blended MER",
+        secondaryHref: "/paid-ads/mer-calculator",
+      },
+      relatedGlossarySlugs: [
+        "target-roas",
+        "break-even-roas",
+        "contribution-margin",
+        "roas",
+        "mer",
+        "marginal-roas",
+        "incrementality",
+      ],
       seo: {
         intro: [
           "Target ROAS is the ROAS you aim for to cover variable costs, fixed cost allocation, and a profit buffer.",
           "Unlike break-even ROAS (a floor), target ROAS is a planning constraint that reflects your business model and risk tolerance.",
+          "Use the result as a guardrail, not as proof that the next dollar of spend will be efficient. Validate the target against blended MER and marginal ROAS when you decide whether to scale.",
         ],
         steps: [
           "Enter gross margin and variable costs to compute contribution margin.",
@@ -575,6 +594,7 @@ export const calculatorsPart1: CalculatorDefinition[] = [
           "Target ROAS should be higher than break-even ROAS to cover overhead and volatility.",
           "If target ROAS is impossible (<= 0 ad budget), reduce buffers or improve margin first.",
           "Use different targets by channel if volatility and incrementality differ.",
+          "A target ROAS is a planning constraint; it does not replace a top-down MER check or a marginal efficiency test.",
         ],
         pitfalls: [
           "Allocating all fixed costs into target ROAS without considering growth investments and timing.",

@@ -492,6 +492,85 @@ test("MER cluster keeps the blended metric, guide, and calculator roles distinct
   );
 });
 
+test("Paid ads efficiency cluster connects MER, target ROAS, and marginal ROAS roles", () => {
+  const glossarySource = readFileSync(
+    new URL("./glossary/terms/paidAds.ts", import.meta.url),
+    "utf8",
+  );
+  const guideSource = readFileSync(new URL("./guides/index.ts", import.meta.url), "utf8");
+  const targetCalculatorSource = readFileSync(
+    new URL("./calculators/definitions.part1.ts", import.meta.url),
+    "utf8",
+  );
+  const merCalculatorSource = readFileSync(
+    new URL("./calculators/definitions.part3.ts", import.meta.url),
+    "utf8",
+  );
+
+  const chunkFrom = (source: string, marker: string) => {
+    const start = source.indexOf(marker);
+    if (start === -1) return "";
+    const nextStart = source.indexOf('\n  },\n  {', start + marker.length);
+    return source.slice(start, nextStart === -1 ? undefined : nextStart);
+  };
+
+  const targetGuideChunk = chunkFrom(guideSource, 'slug: "target-roas-guide"');
+  const merGuideChunk = chunkFrom(guideSource, 'slug: "mer-guide"');
+  const marginalGlossaryChunk = chunkFrom(glossarySource, 'slug: "marginal-roas"');
+  const targetCalculatorChunk = chunkFrom(
+    targetCalculatorSource,
+    'slug: "target-roas-calculator"',
+  );
+  const merCalculatorChunk = chunkFrom(merCalculatorSource, 'slug: "mer-calculator"');
+
+  assert.ok(targetGuideChunk, "expected target-roas-guide to exist");
+  assert.ok(merGuideChunk, "expected mer-guide to exist");
+  assert.ok(marginalGlossaryChunk, "expected marginal-roas glossary to exist");
+  assert.ok(targetCalculatorChunk, "expected target-roas-calculator to exist");
+  assert.ok(merCalculatorChunk, "expected mer-calculator to exist");
+
+  assert.match(
+    targetGuideChunk,
+    /target-roas-calculator/,
+    "expected target ROAS guide to keep the calculator as its worked example",
+  );
+  assert.match(
+    targetGuideChunk,
+    /mer-guide|mer-calculator/i,
+    "expected target ROAS guide to route users toward MER for top-down validation",
+  );
+  assert.match(
+    targetGuideChunk,
+    /marginal-roas/i,
+    "expected target ROAS guide to connect targets to next-dollar efficiency",
+  );
+  assert.match(
+    targetCalculatorChunk,
+    /nextAction:\s*\{/,
+    "expected target ROAS calculator to expose a next action",
+  );
+  assert.match(
+    targetCalculatorChunk,
+    /break-even ROAS|planning constraint|profit buffer/i,
+    "expected target ROAS calculator to distinguish break-even floors from planning targets",
+  );
+  assert.match(
+    merCalculatorChunk,
+    /next dollar|next dollars|next spend decision/i,
+    "expected MER calculator to distinguish blended health from next-dollar spend decisions",
+  );
+  assert.match(
+    marginalGlossaryChunk,
+    /mer-guide|mer-calculator/i,
+    "expected marginal ROAS glossary to connect back to the MER decision path",
+  );
+  assert.match(
+    marginalGlossaryChunk,
+    /nextStepLabel:|nextStepHref:/,
+    "expected marginal ROAS glossary to send users to a practical next step",
+  );
+});
+
 test("MRR forecast cluster keeps the definition, guide, and calculator roles distinct", () => {
   const glossarySource = readFileSync(
     new URL("./glossary/terms/core.ts", import.meta.url),

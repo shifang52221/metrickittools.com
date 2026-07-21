@@ -910,13 +910,36 @@ export const guides: Guide[] = [
       "A practical guide to target ROAS: use contribution margin and allocations for fixed costs and profit to set a ROAS goal that fits your business.",
     seo: {
       title: "Target ROAS formula: how to set a ROAS goal",
+      description:
+        "Learn how to set target ROAS from contribution margin, fixed-cost allocation, and profit buffer, then validate the target with MER and marginal ROAS.",
     },
     category: "paid-ads",
-    updatedAt: "2026-02-16",
+    updatedAt: "2026-07-21",
+    summary: {
+      audience:
+        "Performance marketers, growth leaders, and finance partners setting spend guardrails around margin and profit.",
+      decision:
+        "Whether a target ROAS is realistic enough to guide budget decisions without confusing a break-even floor with a growth target.",
+      useWhen:
+        "You need to turn contribution margin and business constraints into a channel or product-level ROAS target.",
+      reviewedBy: "MetricKit editorial review for paid ads efficiency planning.",
+      reviewNote:
+        "Reviewed to keep target ROAS, break-even economics, MER, and marginal ROAS roles distinct across the paid ads efficiency cluster.",
+    },
     relatedCalculatorSlugs: [
       "target-roas-calculator",
       "break-even-roas-calculator",
       "roas-calculator",
+      "mer-calculator",
+      "marginal-roas-calculator",
+    ],
+    relatedGlossarySlugs: [
+      "target-roas",
+      "break-even-roas",
+      "contribution-margin",
+      "mer",
+      "marginal-roas",
+      "incrementality",
     ],
     sections: [
       { type: "h2", text: "Break-even vs target ROAS" },
@@ -942,6 +965,15 @@ export const guides: Guide[] = [
       {
         type: "p",
         text: "If contribution margin is 50% and you want 10% for fixed costs and 10% profit, target ROAS = 1 / (0.50 - 0.10 - 0.10) = 3.33.",
+      },
+      { type: "h2", text: "Validate the target from both directions" },
+      {
+        type: "bullets",
+        items: [
+          "Use the target ROAS calculator to make the margin, fixed-cost, and profit assumptions explicit.",
+          "Compare the resulting target with blended MER when you need a top-down check across channels and the same time window.",
+          "When the decision is whether to add the next dollars of spend, move from the target to marginal ROAS and incrementality rather than treating the target as proof of scale readiness.",
+        ],
       },
       { type: "h2", text: "Formula" },
       {
@@ -992,6 +1024,8 @@ export const guides: Guide[] = [
           desiredProfitPercent: "10",
         },
         note: "A quick planning target that includes fixed costs and a profit buffer.",
+        decisionNote:
+          "Use the target as a planning constraint, then compare blended MER for overall health and marginal ROAS before scaling the next budget increment.",
       },
     ],
   },
@@ -7497,10 +7531,28 @@ export const guides: Guide[] = [
       "A practical guide to MER: what it is, how it differs from ROAS, how to compute break-even/target MER, and common pitfalls.",
     seo: {
       title: "MER guide: marketing efficiency ratio",
+      description:
+        "Use MER as a top-down marketing health check, compare it with target ROAS, and move to marginal ROAS or incrementality before scaling spend.",
     },
     category: "paid-ads",
-    updatedAt: "2026-02-16",
-    relatedCalculatorSlugs: ["mer-calculator", "break-even-roas-calculator", "marginal-roas-calculator"],
+    updatedAt: "2026-07-21",
+    summary: {
+      audience:
+        "Growth leaders, paid media operators, and finance partners reconciling marketing spend with contribution profit.",
+      decision:
+        "Whether blended marketing efficiency is healthy enough to support current spend and what evidence is needed before scaling.",
+      useWhen:
+        "Channel reports disagree, attribution is noisy, or you need a top-down health check before making a marginal spend decision.",
+      reviewedBy: "MetricKit editorial review for paid ads measurement.",
+      reviewNote:
+        "Reviewed to keep MER, target ROAS, marginal ROAS, and incrementality connected without treating any single metric as causal truth.",
+    },
+    relatedCalculatorSlugs: [
+      "mer-calculator",
+      "break-even-roas-calculator",
+      "target-roas-calculator",
+      "marginal-roas-calculator",
+    ],
     sections: [
       { type: "h2", text: "Quick answer" },
       {
@@ -7523,6 +7575,15 @@ export const guides: Guide[] = [
         items: [
           "Break-even MER ~ 1 / contribution margin (variable economics).",
           "Target MER should be higher than break-even to leave buffer for uncertainty, overhead, and measurement error.",
+        ],
+      },
+      { type: "h2", text: "MER and target ROAS answer different questions" },
+      {
+        type: "bullets",
+        items: [
+          "Use MER to check whether total revenue and total marketing spend still make sense together across the same period.",
+          "Use target ROAS to set a planning constraint for margin, fixed-cost allocation, and desired profit.",
+          "If the target looks achievable but the next spend decision is uncertain, inspect marginal ROAS and incrementality instead of relying on blended averages.",
         ],
       },
       { type: "h2", text: "How to use MER in practice" },
