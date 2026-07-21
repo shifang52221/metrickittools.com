@@ -926,9 +926,9 @@ export const calculatorsPart3: CalculatorDefinition[] = [
         },
       ],
     },
-  {
+    {
       slug: "mrr-forecast-calculator",
-      title: "MRR Forecast Calculator: Monthly Projection, Formula, and Example",
+      title: "MRR Forecast Calculator: Projection and Formula",
       description:
         "Project future MRR using new MRR, expansion, contraction, churn, and time horizon inputs with a simple monthly forecast model.",
       category: "saas-metrics",

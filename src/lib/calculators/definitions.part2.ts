@@ -3672,7 +3672,7 @@ export const calculatorsPart2: CalculatorDefinition[] = [
     },
     {
       slug: "saas-magic-number-calculator",
-      title: "SaaS Magic Number Calculator: Formula, Benchmark, and Example",
+      title: "SaaS Magic Number Calculator: Formula and Benchmark",
       description:
         "Calculate SaaS Magic Number using net new ARR and prior-period sales and marketing spend, with formula, benchmark ranges, and example.",
       category: "saas-metrics",

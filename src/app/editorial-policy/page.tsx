@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { siteConfig } from "@/lib/site";
+import { editorialPolicyTitle } from "@/lib/static-metadata";
 
 export const metadata: Metadata = {
-  title: { absolute: "MetricKit editorial policy: drafting, review, and corrections" },
+  title: { absolute: editorialPolicyTitle },
   description:
     "See how MetricKit drafts, reviews, updates, and corrects calculators, guides, and glossary pages, including how editorial review and feedback are handled.",
   alternates: { canonical: "/editorial-policy" },

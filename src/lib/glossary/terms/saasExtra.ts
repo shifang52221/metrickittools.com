@@ -1262,7 +1262,7 @@ const seeds: Seed[] = [
   },
   {
     slug: "quota-carrying-reps",
-    title: "Quota-Carrying Reps Meaning: Definition, Capacity, and Planning",
+    title: "Quota-Carrying Reps: Definition and Capacity",
     description:
       "Quota-carrying reps are salespeople with assigned revenue targets. Learn the definition, how they affect sales capacity, and how to use them in planning.",
     updatedAt: "2026-03-18",
