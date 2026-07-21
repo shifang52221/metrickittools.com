@@ -3,16 +3,17 @@ import Link from "next/link";
 import { guides } from "@/lib/guides";
 import { AdUnit } from "@/components/ads/AdUnit";
 import { getAdSenseSlot } from "@/lib/adsense";
+import { guideDecisionPaths } from "@/lib/content/hubHighlights";
 
 export const metadata: Metadata = {
   title: { absolute: "SaaS metrics and paid ads guides" },
   description:
-    "Practical guides for SaaS metrics and paid ads: definitions, formulas, benchmarks, and pitfalls.",
+    "Decision-oriented guides for SaaS metrics, paid ads, and finance: choose the right workflow, calculator, and assumptions for the problem you are solving.",
   alternates: { canonical: "/guides" },
   openGraph: {
     title: "SaaS metrics and paid ads guides",
     description:
-      "Practical guides for SaaS metrics and paid ads: definitions, formulas, benchmarks, and pitfalls.",
+      "Decision-oriented guides for SaaS metrics, paid ads, and finance: choose the right workflow, calculator, and assumptions for the problem you are solving.",
     url: "/guides",
     type: "website",
   },
@@ -35,6 +36,51 @@ export default function GuidesIndexPage() {
           avoid common mistakes.
         </p>
       </div>
+
+      <section className="space-y-4">
+        <div className="space-y-1">
+          <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
+            Start from the decision
+          </h2>
+          <p className="max-w-3xl text-sm text-zinc-600 dark:text-zinc-400">
+            Choose the business question first. Each path below connects the
+            strongest existing guides so you can move from definition to
+            interpretation without guessing where to start.
+          </p>
+        </div>
+        <div className="grid gap-4 lg:grid-cols-2">
+          {guideDecisionPaths.map((path) => (
+            <section
+              key={path.title}
+              className="rounded-3xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-black"
+            >
+              <h3 className="text-lg font-semibold tracking-tight">
+                {path.title}
+              </h3>
+              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+                {path.description}
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Link
+                  href={path.primary.href}
+                  className="inline-flex items-center rounded-full border border-zinc-900 px-4 py-2 text-sm font-medium text-zinc-900 transition hover:bg-zinc-900 hover:text-white dark:border-zinc-100 dark:text-zinc-100 dark:hover:bg-zinc-100 dark:hover:text-zinc-900"
+                >
+                  {path.primary.label}
+                </Link>
+                {path.secondary?.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="inline-flex items-center rounded-full border border-zinc-200 px-4 py-2 text-sm text-zinc-600 transition hover:bg-zinc-50 hover:text-zinc-900 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-950 dark:hover:text-zinc-100"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      </section>
 
       <section className="space-y-3">
         <h2 className="text-lg font-semibold tracking-tight">How to use these guides</h2>
