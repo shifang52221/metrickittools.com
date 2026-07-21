@@ -176,6 +176,49 @@ test("Priority glossary terms route quick-definition traffic into the strongest 
   }
 });
 
+test("High-impression ARR, MRR, and CAC glossary pages expose decision-oriented modules", () => {
+  const terms = new Map(
+    [...termsCore, ...termsSaas].map((term) => [term.slug, term]),
+  );
+
+  const moduleText = (slug: string, key: keyof NonNullable<(typeof termsCore)[number]["modules"]>) => {
+    const value = terms.get(slug)?.modules?.[key];
+    return Array.isArray(value) ? value.join(" ") : value ?? "";
+  };
+
+  for (const slug of ["arr", "mrr", "cac"]) {
+    const term = terms.get(slug);
+    assert.ok(term, `expected ${slug} to exist`);
+    assert.equal(term.updatedAt, "2026-07-21", `expected ${slug} to be refreshed`);
+    assert.ok(term.modules, `expected ${slug} to expose custom glossary modules`);
+    assert.match(moduleText(slug, "compareWith"), /vs|versus|difference/i);
+    assert.match(moduleText(slug, "measuredAs"), /formula|divide|MRR|spend|customer/i);
+    assert.match(moduleText(slug, "misusedWhen"), /cash|bookings|revenue|paid|loaded|denominator/i);
+    assert.match(moduleText(slug, "operatorTakeaway"), /retention|margin|payback|waterfall|cohort/i);
+    assert.match(moduleText(slug, "nextDecision"), /guide|calculator|waterfall|payback|LTV:CAC/i);
+  }
+});
+
+test("Core SaaS glossary pages explain their highest-impression search distinctions", () => {
+  const arr = termsCore.find((term) => term.slug === "arr");
+  const mrr = termsCore.find((term) => term.slug === "mrr");
+  const cac = termsCore.find((term) => term.slug === "cac");
+
+  assert.ok(arr && mrr && cac, "expected core SaaS glossary terms to exist");
+
+  const text = (term: NonNullable<typeof arr>) =>
+    JSON.stringify(term).toLowerCase();
+
+  assert.match(text(arr), /bookings/);
+  assert.match(text(arr), /waterfall/);
+  assert.match(text(mrr), /cash collections|cash collected/);
+  assert.match(text(mrr), /expansion mrr/);
+  assert.match(text(mrr), /contraction mrr/);
+  assert.match(text(cac), /fully-loaded cac/);
+  assert.match(text(cac), /payback/);
+  assert.match(text(cac), /ltv:cac/);
+});
+
 test("Priority SaaS calculators expose interpretation depth, not just formulas", () => {
   const calculatorSources = [
     readFileSync(new URL("./calculators/definitions.part1.ts", import.meta.url), "utf8"),

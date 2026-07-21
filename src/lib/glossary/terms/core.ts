@@ -5,15 +5,15 @@ export const termsCore: GlossaryTerm[] = [
     slug: "arr",
     title: "ARR Meaning: Formula, Example, and What Counts as ARR",
     description:
-      "ARR means Annual Recurring Revenue. Learn the ARR formula, what to include, ARR vs bookings, and common SaaS finance mistakes.",
+      "ARR means Annual Recurring Revenue. Learn the ARR formula, how to calculate ARR, what counts as recurring revenue, and how ARR differs from bookings and recognized revenue.",
     category: "saas-metrics",
-    updatedAt: "2026-05-25",
+    updatedAt: "2026-07-21",
     seo: {
-      title: "ARR meaning: formula, example, and what counts as ARR",
+      title: "ARR meaning: formula, calculation, and what counts as ARR",
       description:
-        "ARR means Annual Recurring Revenue. Learn the formula, what counts, how ARR differs from MRR and bookings, and when to read the full ARR guide.",
+        "ARR means Annual Recurring Revenue. Learn the formula, how to calculate ARR, what counts, and how ARR differs from MRR, bookings, cash, and recognized revenue.",
       heroNote:
-        "Use this page for the fast definition. If you need the full workflow for ARR, MRR, bookings, net new ARR, waterfalls, and growth interpretation, go to the ARR guide next.",
+        "Quick answer: for a monthly subscription business, ARR is usually current MRR x 12. Use the full ARR guide when you need to explain ARR movement, bookings, net new ARR, or growth quality.",
       nextStepLabel: "Read the full ARR guide",
       nextStepHref: "/guides/arr-guide",
     },
@@ -30,6 +30,15 @@ export const termsCore: GlossaryTerm[] = [
         type: "p",
         text: "If your MRR is $200,000, your ARR is $2,400,000. With annual prepaid plans, cash can spike while ARR moves based on recurring run-rate.",
       },
+      { type: "h2", text: "ARR vs MRR, bookings, and revenue" },
+      {
+        type: "bullets",
+        items: [
+          "ARR annualizes the current recurring run-rate; MRR reports the same recurring base on a monthly basis.",
+          "Bookings represent contracted business and may include one-time work or future-period value, so bookings are not automatically ARR.",
+          "Recognized revenue follows accounting timing, while ARR is an operating run-rate metric. Cash collected can also move differently because of annual prepayments.",
+        ],
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -37,6 +46,7 @@ export const termsCore: GlossaryTerm[] = [
           "Treating ARR as recognized revenue for the next year.",
           "Including one-time fees or services revenue in ARR.",
           "Comparing bookings to ARR without normalizing one-time items and term length.",
+          "Calling ARR growth healthy without checking retention, expansion, customer mix, and margin.",
         ],
       },
     ],
@@ -52,6 +62,29 @@ export const termsCore: GlossaryTerm[] = [
           "Usually no. ARR is typically reserved for recurring subscription revenue to keep it comparable over time.",
       },
     ],
+    modules: {
+      compareWith: [
+        "ARR vs MRR: ARR annualizes the recurring run-rate; MRR shows the monthly recurring base.",
+        "ARR vs bookings: bookings reflect contracted value, while ARR isolates the recurring portion of the run-rate.",
+        "ARR vs recognized revenue: revenue follows accounting timing; ARR is an operating snapshot.",
+      ],
+      measuredAs: [
+        "For monthly subscriptions, ARR = current MRR x 12.",
+        "Use the recurring subscription value at a defined measurement date and exclude one-time fees.",
+      ],
+      misusedWhen: [
+        "When annual prepayments, services, setup fees, or implementation work are treated as recurring ARR.",
+        "When ARR is used as a substitute for recognized revenue or cash collected.",
+        "When a growth percentage is judged without checking the ARR waterfall behind it.",
+      ],
+      operatorTakeaway: [
+        "Use ARR as a scale snapshot, then use net new ARR and an ARR waterfall to explain what changed.",
+        "Pair ARR growth with retention, expansion, customer mix, and margin before calling growth durable.",
+      ],
+      nextDecision: [
+        "Use the ARR calculator for a quick run-rate check, then read the ARR guide for bookings, waterfalls, and growth interpretation.",
+      ],
+    },
     relatedGuideSlugs: [
       "arr-guide",
       "arr-vs-mrr-guide",
@@ -70,15 +103,15 @@ export const termsCore: GlossaryTerm[] = [
     slug: "mrr",
     title: "MRR Meaning: Formula, Components, and How to Calculate MRR",
     description:
-      "MRR means Monthly Recurring Revenue. Learn the MRR formula, what counts in MRR, the main recurring components, and when to use the MRR forecast guide next.",
+      "MRR means Monthly Recurring Revenue. Learn how to calculate MRR, what counts as recurring revenue, how new and churned MRR change the total, and how MRR connects to forecasting.",
     category: "saas-metrics",
-    updatedAt: "2026-06-20",
+    updatedAt: "2026-07-21",
     seo: {
-      title: "MRR meaning: formula, components, and forecasting next steps",
+      title: "MRR meaning: formula, calculation, and components",
       description:
-        "MRR means Monthly Recurring Revenue. Learn the formula, what counts in MRR, how new and churned MRR fit together, and when to read the MRR forecast guide next.",
+        "MRR means Monthly Recurring Revenue. Learn the MRR calculation, new, expansion, contraction, and churned MRR, and why MRR is not the same as cash collected.",
       heroNote:
-        "Use this page for the fast definition. If you need the full workflow for MRR planning, monthly bridges, retention assumptions, and forecast interpretation, go to the MRR forecast guide next.",
+        "Quick answer: MRR is the recurring subscription run-rate for a month. Use the MRR forecast guide when you need to explain the monthly bridge, retention assumptions, or future scenarios.",
       nextStepLabel: "Read the MRR forecast guide",
       nextStepHref: "/guides/mrr-forecast-guide",
     },
@@ -98,6 +131,16 @@ export const termsCore: GlossaryTerm[] = [
           "Churned MRR: cancellations and lost recurring revenue.",
         ],
       },
+      { type: "h2", text: "MRR formula and monthly movement" },
+      {
+        type: "p",
+        text: "A practical bridge is: ending MRR = starting MRR + new MRR + expansion MRR - contraction MRR - churned MRR. The bridge explains why MRR changed; it does not by itself forecast what happens next month.",
+      },
+      { type: "h2", text: "MRR is not cash collected" },
+      {
+        type: "p",
+        text: "MRR is a recurring run-rate metric. Cash collections can be lumpy because of annual prepayments, billing dates, refunds, credits, and payment terms, so cash collected should not be substituted for MRR.",
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
@@ -105,6 +148,7 @@ export const termsCore: GlossaryTerm[] = [
           "Including one-time revenue in MRR.",
           "Mixing revenue recognition with billing/cash timing.",
           "Changing definitions month-to-month (breaking trend analysis).",
+          "Reporting the ending MRR without showing new, expansion, contraction, and churned MRR.",
         ],
       },
     ],
@@ -120,6 +164,28 @@ export const termsCore: GlossaryTerm[] = [
           "Use a consistent policy. Most teams report MRR net of recurring discounts and exclude one-time credits so trends remain comparable.",
       },
     ],
+    modules: {
+      compareWith: [
+        "MRR vs ARR: MRR is the monthly recurring base; ARR is usually MRR x 12 for a monthly subscription business.",
+        "MRR vs cash collected: MRR is a run-rate; cash depends on billing timing, prepayments, refunds, and payment terms.",
+      ],
+      measuredAs: [
+        "Track ending MRR for the period and reconcile it with new, expansion, contraction, and churned MRR.",
+        "Keep the same recurring-revenue policy, discount treatment, and customer scope from month to month.",
+      ],
+      misusedWhen: [
+        "When annual prepayments, one-time services, or non-recurring fees are counted as monthly recurring revenue.",
+        "When cash collected or recognized revenue is used as a replacement for MRR.",
+        "When the total is reported without a monthly movement bridge.",
+      ],
+      operatorTakeaway: [
+        "MRR is a fast operating signal, but retention and expansion determine whether the base is durable.",
+        "Use the MRR waterfall before interpreting a change as growth, pricing impact, or churn improvement.",
+      ],
+      nextDecision: [
+        "Use the MRR calculator for a current total, then use the MRR forecast and waterfall tools when the decision depends on future movement.",
+      ],
+    },
     relatedGuideSlugs: [
       "mrr-guide",
       "mrr-forecast-guide",
@@ -240,15 +306,15 @@ export const termsCore: GlossaryTerm[] = [
     slug: "cac",
     title: "CAC Meaning: Formula, Example, and What Counts in CAC",
     description:
-      "CAC is acquisition spend divided by new paying customers. Learn the formula, what belongs in CAC, and when to move from a quick definition to the full guide.",
+      "CAC is acquisition spend divided by new paying customers. Learn how to calculate CAC, what belongs in paid and fully-loaded CAC, and how CAC connects to payback, gross margin, and LTV.",
     category: "saas-metrics",
-    updatedAt: "2026-05-25",
+    updatedAt: "2026-07-21",
     seo: {
-      title: "CAC meaning: formula, example, and what counts in CAC",
+      title: "CAC meaning: formula, calculation, and what counts",
       description:
-        "CAC means Customer Acquisition Cost. Learn the formula, what to include, how paid CAC differs from fully-loaded CAC, and when to read the full CAC guide.",
+        "CAC means Customer Acquisition Cost. Learn the formula, how to calculate CAC, what counts in paid versus fully-loaded CAC, and how to judge payback and LTV.",
       heroNote:
-        "Use this page for the fast definition. If you need the broader workflow for paid CAC, fully-loaded CAC, payback, and LTV:CAC, go to the full CAC guide next.",
+        "Quick answer: CAC is acquisition cost divided by new paying customers. Use the full CAC guide when you need paid versus fully-loaded CAC, payback, gross margin, and LTV:CAC interpretation.",
       nextStepLabel: "Read the full CAC guide",
       nextStepHref: "/guides/cac-guide",
     },
@@ -265,13 +331,23 @@ export const termsCore: GlossaryTerm[] = [
         type: "p",
         text: "If you spent $120,000 on acquisition in a month and acquired 80 new paying customers, CAC = $120,000 / 80 = $1,500.",
       },
+      { type: "h2", text: "What belongs in CAC" },
+      {
+        type: "bullets",
+        items: [
+          "Paid CAC can focus on advertising and directly attributable acquisition spend for channel decisions.",
+          "Fully-loaded CAC can include sales and marketing salaries, commissions, tooling, and other acquisition costs for planning and unit economics.",
+          "The denominator should be new paying customers acquired in the same period, not leads, trials, or signups unless you explicitly label a different metric.",
+        ],
+      },
       { type: "h2", text: "Common mistakes" },
       {
         type: "bullets",
         items: [
           "Using leads or trials as 'customers'.",
           "Mixing paid-only CAC and fully-loaded CAC without labeling.",
-          "Ignoring churn and gross margin when judging CAC.",
+          "Ignoring churn, gross margin, and payback when judging CAC.",
+          "Comparing blended CAC across segments with very different customer mix or sales cycles.",
         ],
       },
     ],
@@ -287,6 +363,28 @@ export const termsCore: GlossaryTerm[] = [
           "Segment by channel and by customer type (plan, company size) because CAC and retention vary widely. Blended CAC can hide unprofitable segments.",
       },
     ],
+    modules: {
+      compareWith: [
+        "Paid CAC vs fully-loaded CAC: paid CAC is useful for channel optimization; fully-loaded CAC is better for planning and unit economics.",
+        "CAC vs CPA: CAC uses new paying customers as the denominator; CPA may use a lead, trial, or other conversion event.",
+      ],
+      measuredAs: [
+        "CAC = acquisition spend / new paying customers acquired in the same period.",
+        "Keep the spend scope, customer definition, attribution rule, and time window consistent before comparing CAC.",
+      ],
+      misusedWhen: [
+        "When leads, trials, or signups are counted as customers without labeling the denominator.",
+        "When paid CAC and fully-loaded CAC are mixed across reports.",
+        "When CAC is judged without gross margin, payback period, retention, or LTV.",
+      ],
+      operatorTakeaway: [
+        "A lower CAC is not automatically better if the acquired cohort has weaker retention or margin.",
+        "Use payback and gross-profit LTV to decide whether the acquisition engine is financing growth or masking losses.",
+      ],
+      nextDecision: [
+        "Use the CAC calculator for a consistent baseline, then move to payback and LTV:CAC analysis before changing budget or scale.",
+      ],
+    },
     relatedGuideSlugs: [
       "cac-guide",
       "cac-vs-cpa-guide",
