@@ -870,14 +870,7 @@
     <lastmod>2026-05-25</lastmod>
   </url>
   <url>
-    <loc>https://metrickittools.com/glossary/arr-vs-bookings</loc>
-    <lastmod>2026-02-22</lastmod>
-  </url>
-  <url>
     <loc>https://metrickittools.com/glossary/acv</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/tcv</loc>
   </url>
   <url>
     <loc>https://metrickittools.com/glossary/price-increase</loc>
@@ -921,9 +914,6 @@
     <loc>https://metrickittools.com/glossary/grr</loc>
   </url>
   <url>
-    <loc>https://metrickittools.com/glossary/cohort-analysis</loc>
-  </url>
-  <url>
     <loc>https://metrickittools.com/glossary/activation-rate</loc>
   </url>
   <url>
@@ -957,14 +947,8 @@
     <loc>https://metrickittools.com/glossary/arrr-funnel</loc>
   </url>
   <url>
-    <loc>https://metrickittools.com/glossary/payback-months</loc>
-  </url>
-  <url>
     <loc>https://metrickittools.com/glossary/unit-economics</loc>
     <lastmod>2026-05-25</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/rule-of-40</loc>
   </url>
   <url>
     <loc>https://metrickittools.com/glossary/burn-multiple</loc>
@@ -974,15 +958,8 @@
     <lastmod>2026-05-25</lastmod>
   </url>
   <url>
-    <loc>https://metrickittools.com/glossary/saas-magic-number</loc>
-    <lastmod>2026-02-22</lastmod>
-  </url>
-  <url>
     <loc>https://metrickittools.com/glossary/ltv-to-cac</loc>
     <lastmod>2026-05-25</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/break-even-saas</loc>
   </url>
   <url>
     <loc>https://metrickittools.com/glossary/cohorted-ltv</loc>
@@ -1002,9 +979,6 @@
   </url>
   <url>
     <loc>https://metrickittools.com/glossary/mrr-churn-rate</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/mrr-growth-rate</loc>
   </url>
   <url>
     <loc>https://metrickittools.com/glossary/arr-waterfall</loc>
@@ -1054,9 +1028,6 @@
     <loc>https://metrickittools.com/glossary/sales-cycle</loc>
   </url>
   <url>
-    <loc>https://metrickittools.com/glossary/net-dollar-retention</loc>
-  </url>
-  <url>
     <loc>https://metrickittools.com/glossary/ab-test</loc>
   </url>
   <url>
@@ -1084,9 +1055,6 @@
     <loc>https://metrickittools.com/glossary/cpm</loc>
   </url>
   <url>
-    <loc>https://metrickittools.com/glossary/max-cpc</loc>
-  </url>
-  <url>
     <loc>https://metrickittools.com/glossary/break-even-cpm</loc>
   </url>
   <url>
@@ -1111,18 +1079,6 @@
     <loc>https://metrickittools.com/glossary/blended-roas</loc>
   </url>
   <url>
-    <loc>https://metrickittools.com/glossary/attribution</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/attribution-window</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/last-click-attribution</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/multi-touch-attribution</loc>
-  </url>
-  <url>
     <loc>https://metrickittools.com/glossary/incrementality</loc>
   </url>
   <url>
@@ -1134,60 +1090,6 @@
   </url>
   <url>
     <loc>https://metrickittools.com/glossary/diminishing-returns</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/geo-test</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/pixel</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/utm-parameters</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/ga4</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/conversion</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/frequency</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/frequency-cap</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/reach</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/impressions</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/landing-page</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/creative-fatigue</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/retargeting</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/prospecting</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/branded-search</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/non-branded-search</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/quality-score</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/impression-share</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/cvr-funnel</loc>
   </url>
   <url>
     <loc>https://metrickittools.com/glossary/dcf</loc>
@@ -1249,12 +1151,6 @@
     <loc>https://metrickittools.com/glossary/gross-margin</loc>
   </url>
   <url>
-    <loc>https://metrickittools.com/glossary/gross-profit</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/cogs</loc>
-  </url>
-  <url>
     <loc>https://metrickittools.com/glossary/contribution-margin</loc>
   </url>
   <url>
@@ -1273,9 +1169,6 @@
     <loc>https://metrickittools.com/glossary/burn-rate</loc>
   </url>
   <url>
-    <loc>https://metrickittools.com/glossary/gross-burn</loc>
-  </url>
-  <url>
     <loc>https://metrickittools.com/glossary/net-burn</loc>
   </url>
   <url>
@@ -1285,28 +1178,7 @@
     <loc>https://metrickittools.com/glossary/cash-flow</loc>
   </url>
   <url>
-    <loc>https://metrickittools.com/glossary/working-capital</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/accounts-receivable</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/accounts-payable</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/cash-conversion-cycle</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/days-sales-outstanding</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/days-payables-outstanding</loc>
-  </url>
-  <url>
     <loc>https://metrickittools.com/glossary/billings</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/cash-receipts</loc>
   </url>
   <url>
     <loc>https://metrickittools.com/glossary/recognized-revenue</loc>
@@ -1316,27 +1188,6 @@
   </url>
   <url>
     <loc>https://metrickittools.com/glossary/revenue-recognition</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/capex</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/opex</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/operating-margin</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/ebitda</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/free-cash-flow</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/lifetime-gross-profit</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/pricing-power</loc>
   </url>
   <url>
     <loc>https://metrickittools.com/glossary/discount-rate</loc>
@@ -1350,15 +1201,6 @@
   </url>
   <url>
     <loc>https://metrickittools.com/glossary/payback-period</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/operating-leverage</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/unit-margin</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/break-even-point</loc>
   </url>
   <url>
     <loc>https://metrickittools.com/glossary/marr</loc>
@@ -1393,206 +1235,18 @@
     <loc>https://metrickittools.com/glossary/liquidation-preference</loc>
   </url>
   <url>
-    <loc>https://metrickittools.com/glossary/gclid</loc>
-  </url>
-  <url>
     <loc>https://metrickittools.com/glossary/fbclid</loc>
     <lastmod>2026-05-09</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/msclkid</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/click-id</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/enhanced-conversions</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/consent-mode</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/server-side-tagging</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/conversion-api</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/offline-conversions</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/event-deduplication</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/data-layer</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/tag-manager</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/attribution-model</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/incremental-roas</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/data-driven-attribution</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/first-click-attribution</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/linear-attribution</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/time-decay-attribution</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/position-based-attribution</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/view-through-conversion</loc>
   </url>
   <url>
     <loc>https://metrickittools.com/glossary/click-through-conversion</loc>
   </url>
   <url>
-    <loc>https://metrickittools.com/glossary/conversion-lag</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/assisted-conversions</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/last-non-direct-click</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/direct-traffic</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/cross-domain-tracking</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/referral-exclusion</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/self-referral</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/utm-content</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/utm-term</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/campaign-naming-convention</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/match-type</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/broad-match</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/phrase-match</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/exact-match</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/negative-keywords</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/search-terms-report</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/keyword-cannibalization</loc>
-  </url>
-  <url>
     <loc>https://metrickittools.com/glossary/auction-overlap</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/impression-share-lost-budget</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/impression-share-lost-rank</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/ad-rank</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/expected-ctr</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/ad-relevance</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/landing-page-experience</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/learning-phase</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/bid-strategy</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/target-roas-bidding</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/target-cpa-bidding</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/budget-pacing</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/dayparting</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/creative-angle</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/creative-iteration</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/hook-rate</loc>
   </url>
   <url>
     <loc>https://metrickittools.com/glossary/thumbstop-rate</loc>
     <lastmod>2026-03-31</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/conversion-lift-test</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/geo-holdout</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/psa-test</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/lift-study</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/marketing-mix-modeling</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/creative-testing</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/ad-fatigue</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/frequency-saturation</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/incremental-conversion-rate</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/landing-page-speed</loc>
-    <lastmod>2026-01-28</lastmod>
   </url>
   <url>
     <loc>https://metrickittools.com/glossary/offer-structure</loc>
@@ -1603,151 +1257,13 @@
     <lastmod>2026-01-28</lastmod>
   </url>
   <url>
-    <loc>https://metrickittools.com/glossary/account-structure</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/utm-governance</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/retention-remarketing</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/pipeline-velocity</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/stage-conversion-rate</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/sales-forecast</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/forecast-accuracy</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/deal-slippage</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/average-sales-price</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/sales-accepted-lead</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/sales-qualified-opportunity</loc>
-  </url>
-  <url>
     <loc>https://metrickittools.com/glossary/sales-qualified-pipeline</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/opportunity-win-rate</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/sales-cycle-variance</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/time-to-close</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/time-to-value</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/onboarding-completion</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/product-adoption</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/customer-health-score</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/expansion-rate</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/downgrade-rate</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/renewal-rate</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/renewal-forecast</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/customer-success</loc>
   </url>
   <url>
     <loc>https://metrickittools.com/glossary/customer-success-cost</loc>
   </url>
   <url>
-    <loc>https://metrickittools.com/glossary/churn-reasons</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/churn-prediction</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/plg</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/slg</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/hybrid-growth</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/product-market-fit</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/retention-cohort</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/cohort-month</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/cohort-age</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/cohort-maturity</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/usage-based-pricing</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/seat-based-pricing</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/annual-prepay</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/freemium</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/trial-length</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/activation-funnel</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/feature-activation</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/expansion-playbook</loc>
-  </url>
-  <url>
     <loc>https://metrickittools.com/glossary/sales-efficiency</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/logo-retention-rate</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/gross-adds</loc>
-    <lastmod>2026-02-22</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/expansion-bookings</loc>
     <lastmod>2026-01-28</lastmod>
   </url>
   <url>
@@ -1759,280 +1275,19 @@
     <lastmod>2026-01-28</lastmod>
   </url>
   <url>
-    <loc>https://metrickittools.com/glossary/sales-quota-coverage</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/win-loss-analysis</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/lead-response-time</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/pipeline-hygiene</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/sales-pipeline-coverage</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/sales-cycle-length</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
     <loc>https://metrickittools.com/glossary/quota-carrying-reps</loc>
     <lastmod>2026-03-18</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/pipeline-review</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/deal-age</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/sales-stage-velocity</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/account-expansion-rate</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/customer-advocacy</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/csm-to-account-ratio</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/renewal-playbook</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/cash-balance</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/cash-reserve</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/operating-cash-flow</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/investing-cash-flow</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/financing-cash-flow</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/cash-flow-statement</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/balance-sheet</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/income-statement</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/accrual-accounting</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/cash-accounting</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/current-ratio</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/acid-test-ratio</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/liquidity</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/interest-coverage-ratio</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/debt-service-coverage-ratio</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/receivables-aging</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/bad-debt</loc>
-    <lastmod>2026-01-27</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/allowance-for-doubtful-accounts</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/days-inventory-outstanding</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/net-margin</loc>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/capital-structure</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/debt-to-equity</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/effective-tax-rate</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/tax-shield</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/discount-factor</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/net-working-capital</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/interest-expense</loc>
-    <lastmod>2026-02-22</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/cash-flow-forecast</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/operating-expense-ratio</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/maintenance-capex</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/working-capital-change</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/operating-cash-margin</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/cash-interest-coverage</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/debt-capacity</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/capital-charge</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/cash-sweep</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/revolving-credit</loc>
-    <lastmod>2026-01-28</lastmod>
   </url>
   <url>
     <loc>https://metrickittools.com/glossary/covenant-headroom</loc>
     <lastmod>2026-03-31</lastmod>
   </url>
   <url>
-    <loc>https://metrickittools.com/glossary/ebit</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
     <loc>https://metrickittools.com/glossary/ebt</loc>
     <lastmod>2026-01-28</lastmod>
   </url>
   <url>
-    <loc>https://metrickittools.com/glossary/fixed-charge-coverage</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/debt-amortization</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/operating-cash-conversion</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/capex-budget</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/cash-buffer-policy</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/debt-schedule</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/free-cash-flow-margin</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/interest-rate-sensitivity</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/days-cash-on-hand</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/working-capital-policy</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/net-interest-margin</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/operating-margin-rate</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/cash-burn-multiple</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/margin-of-safety</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
     <loc>https://metrickittools.com/glossary/capital-efficiency</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/cash-flow-volatility</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/cash-collection-forecast</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/capital-allocation</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/cost-of-capital-buffer</loc>
-    <lastmod>2026-01-28</lastmod>
-  </url>
-  <url>
-    <loc>https://metrickittools.com/glossary/runway-extension-plan</loc>
     <lastmod>2026-01-28</lastmod>
   </url>
 </urlset>

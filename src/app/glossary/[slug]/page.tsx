@@ -8,6 +8,7 @@ import { calculators, categories } from "@/lib/calculators";
 import { guides } from "@/lib/guides";
 import { getGlossaryTerm, glossaryTerms } from "@/lib/glossary";
 import { getGlossaryPageModules } from "@/lib/glossary/pageModules";
+import { getGlossaryIndexingDecision } from "@/lib/indexing";
 import { clampMetaDescription, clampMetaTitle } from "@/lib/seo";
 import { absoluteUrl, siteConfig } from "@/lib/site";
 
@@ -20,10 +21,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const rawMetaTitle = term.seo?.title ?? `${term.title} definition`;
   const metaTitle = clampMetaTitle(rawMetaTitle) ?? rawMetaTitle;
   const metaDescription = clampMetaDescription(term.seo?.description ?? term.description);
+  const indexing = getGlossaryIndexingDecision(term);
   return {
     title: term.seo?.title ? { absolute: metaTitle } : metaTitle,
     description: metaDescription,
     alternates: { canonical: `/glossary/${term.slug}` },
+    robots: indexing.index ? undefined : { index: false, follow: indexing.follow },
     openGraph: {
       title: metaTitle,
       description: metaDescription,

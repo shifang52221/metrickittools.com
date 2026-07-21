@@ -1,5 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
+import {
+  getSharedGlossaryIndexingReason,
+} from "../src/lib/indexing-policy-data.js";
 
 const root = process.cwd();
 const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://metrickittools.com").replace(
@@ -138,6 +141,7 @@ function parseGlossaryTerms(text) {
   let depth = 0;
   let slug = null;
   let updatedAt = null;
+  let hasNextStep = false;
   for (const line of lines) {
     if (!inTerms && (line.includes("const seeds") || line.includes("export const terms"))) {
       inTerms = true;
@@ -151,18 +155,21 @@ function parseGlossaryTerms(text) {
     if (depth === 0 && open > 0) {
       slug = null;
       updatedAt = null;
+      hasNextStep = false;
     }
     if (depth >= 1 || open > 0) {
       const slugMatch = line.match(/^ {4}slug:\s*"([^"]+)"/);
       if (slugMatch && depth === 1) slug = slugMatch[1];
       const updatedMatch = line.match(/^ {4}updatedAt:\s*"([^"]+)"/);
       if (updatedMatch && depth === 1) updatedAt = updatedMatch[1];
+      if (line.includes("nextStepHref:")) hasNextStep = true;
     }
     depth += open - close;
     if (depth === 0 && slug) {
-      results.push({ slug, updatedAt });
+      results.push({ slug, updatedAt, hasNextStep });
       slug = null;
       updatedAt = null;
+      hasNextStep = false;
     }
   }
   return results;
@@ -231,6 +238,12 @@ for (const guide of guides) {
 }
 
 for (const term of glossaryTerms) {
+  const reason = getSharedGlossaryIndexingReason({
+    slug: term.slug,
+    hasNextStep: term.hasNextStep,
+  });
+  if (reason === "low-value-glossary-first-pass") continue;
+
   urls.push({
     loc: `${siteUrl}/glossary/${term.slug}`,
     lastmod: toLastMod(term.updatedAt),
