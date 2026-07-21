@@ -20,7 +20,10 @@ const slotsFromEnv = {
 export function isAdSenseEnabled() {
   const explicit = process.env.NEXT_PUBLIC_ADSENSE_ENABLED;
   if (explicit !== undefined) return explicit === "true";
-  return process.env.NODE_ENV === "production";
+  // Keep ads off unless they are explicitly enabled for the current deployment.
+  // This avoids shipping empty ad containers on sites that have not yet cleared
+  // AdSense review or that are still being tuned for trust and page quality.
+  return false;
 }
 
 export function getAdSenseClient() {
