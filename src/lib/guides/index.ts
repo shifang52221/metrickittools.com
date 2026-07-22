@@ -8446,7 +8446,7 @@ export const guides: Guide[] = [
         "How 1x non-participating liquidation preference changes founder payouts, when investors convert, and the break-even exit value.",
     },
     category: "finance",
-    updatedAt: "2026-05-25",
+    updatedAt: "2026-07-21",
     summary: {
       audience:
         "Founders, board members, and investors modeling how exit proceeds change under preferred-stock terms.",
@@ -8500,6 +8500,15 @@ export const guides: Guide[] = [
           "Break-even exit value ~= preferenceAmount / ownershipPercent.",
         ],
       },
+      { type: "h2", text: "Use the calculator first, then test the exit case" },
+      {
+        type: "bullets",
+        items: [
+          "Start with the liquidation preference calculator for a simple 1x non-participating case and compare preference payout, as-converted payout, and break-even exit value.",
+          "If the cap table has multiple classes, seniority, participation, or a carve-out, move from the simple result to a full waterfall model instead of treating the first output as final.",
+          "Use the result as a scenario for planning and negotiation; confirm the governing financing documents and legal interpretation separately.",
+        ],
+      },
       { type: "h2", text: "What this changes for founders" },
       {
         type: "bullets",
@@ -8546,6 +8555,8 @@ export const guides: Guide[] = [
         label: "Example: $50M exit, $5M investment, 20% as-converted",
         calculatorSlug: "liquidation-preference-calculator",
         note: "Use the calculator to find the exit value where converting becomes better than taking the 1x preference.",
+        decisionNote:
+          "Use this scenario to compare the preference payout, as-converted payout, and break-even exit value before adding multiple classes or participation features.",
         params: {
           exitValue: "50000000",
           investment: "5000000",
@@ -9692,7 +9703,7 @@ export const guides: Guide[] = [
       title: "Interest expense: definition, formula, how to calculate",
     },
     category: "finance",
-    updatedAt: "2026-02-16",
+    updatedAt: "2026-07-21",
     relatedCalculatorSlugs: ["loan-payment-calculator", "wacc-calculator"],
     relatedGlossarySlugs: ["interest-expense", "interest-rate", "cost-of-debt", "apr"],
     sections: [
@@ -9725,6 +9736,15 @@ export const guides: Guide[] = [
       {
         type: "p",
         text: "Net interest expense = interest expense - interest income. If interest income is higher, you report net interest income.",
+      },
+      { type: "h2", text: "Use the calculator first, then reconcile the expense" },
+      {
+        type: "bullets",
+        items: [
+          "Use a loan payment calculator first when you need a contractual payment and interest schedule; that output is not automatically the full accounting interest expense.",
+          "Use average debt balance and the rate for the period when estimating interest expense, then add non-cash fee or discount amortization when your reporting basis requires it.",
+          "Use net interest expense when interest income offsets borrowing cost. Use WACC or cost of debt for financing and valuation decisions, not as a substitute for interest expense.",
+        ],
       },
       { type: "h2", text: "Cash vs non-cash interest" },
       {
@@ -9776,6 +9796,8 @@ export const guides: Guide[] = [
       {
         label: "Example: $1M principal, 8% APR, 5 years",
         calculatorSlug: "loan-payment-calculator",
+        decisionNote:
+          "Use this scenario to estimate the contractual schedule first, then reconcile average balance, non-cash amortization, and interest income before calling the result accounting interest expense.",
         params: { principal: "1000000", aprPercent: "8", termYears: "5" },
       },
     ],

@@ -488,6 +488,49 @@ test("Core SaaS guides expose a calculator-led decision handoff", () => {
   }
 });
 
+test("Third-pass SERP opportunity pages expose decision bridges", () => {
+  const expected = new Map([
+    [
+      "interest-expense-guide",
+      { next: /average balance|net interest|accounting|loan payment/i },
+    ],
+    [
+      "liquidation-preference-guide",
+      { next: /preference|conversion|waterfall|break-even/i },
+    ],
+  ]);
+
+  for (const [slug, expectation] of expected) {
+    const guide = getGuide(slug);
+
+    assert.ok(guide, `expected ${slug} to exist`);
+    assert.equal(guide.updatedAt, "2026-07-21", `expected ${slug} to be refreshed`);
+    assert.match(
+      JSON.stringify(guide),
+      expectation.next,
+      `expected ${slug} to expose the next decision`,
+    );
+    assert.ok(
+      guide.examples?.some((example) => example.decisionNote),
+      `expected ${slug} examples to explain the decision`,
+    );
+  }
+
+  const calculatorSource = readFileSync(
+    new URL("./calculators/definitions.part5.ts", import.meta.url),
+    "utf8",
+  );
+  const calculatorChunk = calculatorSource.match(
+    /slug:\s*"trial-to-paid-calculator"[\s\S]*?(?=\n\s*\{\n\s*slug:|$)/,
+  )?.[0];
+
+  assert.ok(calculatorChunk, "expected trial-to-paid calculator definition");
+  assert.match(calculatorChunk, /updatedAt:\s*"2026-07-21"/);
+  assert.match(calculatorChunk, /nextAction:\s*\{/);
+  assert.match(calculatorChunk, /trial-to-paid-guide/);
+  assert.match(calculatorChunk, /activation-rate-guide/);
+});
+
 test("MER cluster keeps the blended metric, guide, and calculator roles distinct", () => {
   const glossarySource = readFileSync(
     new URL("./glossary/terms/paidAds.ts", import.meta.url),

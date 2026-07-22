@@ -2010,7 +2010,17 @@ export const calculatorsPart5: CalculatorDefinition[] = [
       description:
         "Compute trial-to-paid conversion rate and estimate required conversions to hit a target.",
       category: "saas-metrics",
+      updatedAt: "2026-07-21",
       guideSlug: "trial-to-paid-guide",
+      nextAction: {
+        title: "Calculate the rate, then diagnose the funnel",
+        body:
+          "Trial-to-paid tells you what converted within the chosen window, but not why. Read the guide to check cohort timing and funnel definitions, then inspect activation before changing pricing, onboarding, or acquisition spend.",
+        primaryLabel: "Read the trial-to-paid guide",
+        primaryHref: "/guides/trial-to-paid-guide",
+        secondaryLabel: "Check activation next",
+        secondaryHref: "/guides/activation-rate-guide",
+      },
       relatedGlossarySlugs: ["trial-to-paid", "conversion-rate", "funnel", "arrr-funnel"],
       seo: {
         intro: [
